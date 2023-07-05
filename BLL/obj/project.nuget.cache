@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "jdp7Bk3LrWa77gYepjWBcc2il0Z2gWGxgXEaFvlr1Sdjvg5TLYJbUmeU0WLfvdITGNDj2CXZC5Up/ga2Vi6vRA==",
+  "success": true,
+  "projectFilePath": "E:\\IT\\DIPLOMA\\OnePlace\\BLL\\BLL.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Vladi\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Vladi\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\Vladi\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Vladi\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Vladi\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
