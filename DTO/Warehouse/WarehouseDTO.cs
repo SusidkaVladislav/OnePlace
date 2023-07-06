@@ -8,7 +8,7 @@ namespace DTO.Warehouse
 {
     public class WarehouseDTO
     {
-        public int WarehouseId { get; set; }
-        public string WarehouseLocation { get; set; }
+        public long WarehouseId { get; set; }
+        public string WarehouseLocation { get; set; } = "";
     }
 }

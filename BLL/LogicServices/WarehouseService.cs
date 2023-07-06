@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace BLL.LogicServices
 {
+    //Модель-заглушка (Entity)
     public class Warehouse
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Location { get; set; }
     }
 
@@ -46,21 +47,20 @@ namespace BLL.LogicServices
         }
 
 
-        public async Task<WarehouseDTO> AddWarehouseAsync(WarehouseDTO warehouseDTO)
+        public async Task<WarehouseDTO> AddWarehouseAsync(WarehouseToAddDTO warehouseToAddDTO)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<WarehouseDTO, Warehouse>()
-            .ForMember("Id", opt => opt.MapFrom(src => src.WarehouseId))
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<WarehouseToAddDTO, Warehouse>()
             .ForMember("Location", opt => opt.MapFrom(src => src.WarehouseLocation)));
 
             var mapper = new Mapper(config);
-            Warehouse warehouse = mapper.Map<WarehouseDTO, Warehouse>(warehouseDTO);
+            Warehouse warehouse = mapper.Map<WarehouseToAddDTO, Warehouse>(warehouseToAddDTO);
 
             warehouseList.Add(warehouse);
 
-            return warehouseDTO;
+            return mapper.Map<Warehouse, WarehouseDTO>(warehouse);
         }
 
-        public async Task<WarehouseDTO> GetWarehouseByIdAsync(int id)
+        public async Task<WarehouseDTO> GetWarehouseByIdAsync(long id)
         {
             var warehouse = warehouseList.Where(w=>w.Id== id).FirstOrDefault();
             if(warehouse is null)
@@ -78,7 +78,7 @@ namespace BLL.LogicServices
         }
 
 
-        public async Task DeleteWarehouseAsync(int id)
+        public async Task DeleteWarehouseAsync(long id)
         {
             Warehouse warehouse = warehouseList.Where(w => w.Id == id).FirstOrDefault();
             if(warehouse is null)

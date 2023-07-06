@@ -20,7 +20,16 @@ namespace BLL
             //services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddScoped<IWarehouseService, WarehouseService>();
             services.AddScoped<IWarehouseProductService, WarehouseProductService>();
-
+            services.AddScoped<IFirstLevelCategoryService, FirstLevelCategoryService>();
+            services.AddScoped<ISecondLevelCategoryService, SecondLevelCategoryService>();
+            services.AddScoped<IThirdLevelCategoryService, ThirdLevelCategoryService>();
+            services.AddScoped<IDescriptionService, DescriptionService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPictureService, PictureService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ILikedProductService, LikedProductService>();
         }
 
             

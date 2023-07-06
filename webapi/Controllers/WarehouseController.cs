@@ -19,41 +19,69 @@ namespace webapi.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<WarehouseDTO>>> GetAllWarehousesAsync()
+        public async Task<ActionResult<List<WarehouseDTO>>> GetAllWarehouses()
         {
             try
             {
                 return Ok(await _warehouseService.GetWarehousesAsync());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<WarehouseDTO>> GetWarehouseAsync(int id)
+        public async Task<ActionResult<WarehouseDTO>> GetWarehouse(long id)
         {
             try
             {
                 return Ok(await _warehouseService.GetWarehouseByIdAsync(id));
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return BadRequest(exception.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<WarehouseDTO>> AddWarehouseAsync(WarehouseDTO warehouseDTO)
+        public async Task<ActionResult<WarehouseDTO>> AddWarehouse(WarehouseToAddDTO warehouseDTO)
         {
             try
             {
                 return Ok(await _warehouseService.AddWarehouseAsync(warehouseDTO));
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        public async Task<ActionResult<WarehouseDTO>> UpdateWarehouse(WarehouseDTO warehouseDTO) 
+        {
+            try
+            {
+                return Ok(await _warehouseService.UpdateWarehouseAsync(warehouseDTO));
+            }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteWarehouse(long id)
+        {
+            try
+            {
+                return Ok(/*await _warehouseService.DeleteWarehouseAsync(id)*/);
+            }
+            catch(Exception exception)
+            {
+                return BadRequest(exception.Message);
             }
         }
     }
