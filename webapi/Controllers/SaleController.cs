@@ -1,5 +1,5 @@
 ﻿using BLL.Interfaces;
-using DTO.LikedProduct;
+using DTO.Sale;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,20 +7,20 @@ namespace webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LikedProductController : ControllerBase
+    public class SaleController : ControllerBase
     {
-        private readonly ILikedProductService _likedProductService;
-        public LikedProductController(ILikedProductService likedProductService)
+        private readonly ISaleService _saleService;
+        public SaleController(ISaleService saleService)
         {
-            _likedProductService = likedProductService;
+            _saleService = saleService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<LikedProductDTO>>> GetLikedProducts()
+        public async Task<ActionResult<List<SaleDTO>>> GetSales()
         {
             try
             {
-                return Ok(await _likedProductService.GetLikedProductsAsync());
+                return Ok(await _saleService.GetSalesAsync());
             }
             catch (Exception ex)
             {
@@ -29,11 +29,11 @@ namespace webapi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LikedProductDTO>> GetLikedProduct(long id)
+        public async Task<ActionResult<SaleDTO>> GetSale(long id)
         {
             try
             {
-                return Ok(await _likedProductService.GetLikedProductByIdAsync(id));
+                return Ok(await _saleService.GetSaleByIdAsync(id));
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<LikedProductDTO>> AddLikedProduct(LikedProductDTO likedProductDTO)
+        public async Task<ActionResult<SaleDTO>> AddSale(SaleToAddDTO saleToAddDTO)
         {
             try
             {
-                return Ok(await _likedProductService.AddLikedProductAsync(likedProductDTO));
+                return Ok(await _saleService.AddSaleAsync(saleToAddDTO));
             }
             catch (Exception ex)
             {
@@ -55,11 +55,11 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<LikedProductDTO>> UpdateLikedProduct(LikedProductDTO likedProductDTO)
+        public async Task<ActionResult<SaleDTO>> UpdateSale(SaleDTO saleDTO)
         {
             try
             {
-                return Ok(await _likedProductService.UpdateLikedProductAsync(likedProductDTO));
+                return Ok(await _saleService.UpdateSaleAsync(saleDTO));
             }
             catch (Exception ex)
             {
@@ -68,11 +68,11 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteLikedProduct(long id)
+        public async Task<ActionResult> DeleteSale(long id)
         {
             try
             {
-                return Ok(/*await _likedProductService.DeleteLikedProductAsync(id)*/);
+                return Ok(/*await _saleService.DeleteSaleAsync(id)*/);
             }
             catch (Exception ex)
             {

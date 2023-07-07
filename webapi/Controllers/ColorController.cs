@@ -1,5 +1,5 @@
 ﻿using BLL.Interfaces;
-using DTO.LikedProduct;
+using DTO.Color;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,20 +7,20 @@ namespace webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LikedProductController : ControllerBase
+    public class ColorController : ControllerBase
     {
-        private readonly ILikedProductService _likedProductService;
-        public LikedProductController(ILikedProductService likedProductService)
+        private readonly IColorService _colorService;
+        public ColorController(IColorService colorService)
         {
-            _likedProductService = likedProductService;
+            _colorService = colorService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<LikedProductDTO>>> GetLikedProducts()
+        public async Task<ActionResult<List<ColorDTO>>> GetColors()
         {
             try
             {
-                return Ok(await _likedProductService.GetLikedProductsAsync());
+                return Ok(await _colorService.GetColorsAsync());
             }
             catch (Exception ex)
             {
@@ -29,11 +29,11 @@ namespace webapi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LikedProductDTO>> GetLikedProduct(long id)
+        public async Task<ActionResult<ColorDTO>> GetColor(long id)
         {
             try
             {
-                return Ok(await _likedProductService.GetLikedProductByIdAsync(id));
+                return Ok(await _colorService.GetColorByIdAsync(id));
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<LikedProductDTO>> AddLikedProduct(LikedProductDTO likedProductDTO)
+        public async Task<ActionResult<ColorDTO>> AddColor(ColorToAddDTO colorToAddDTO)
         {
             try
             {
-                return Ok(await _likedProductService.AddLikedProductAsync(likedProductDTO));
+                return Ok(await _colorService.AddColorAsync(colorToAddDTO));
             }
             catch (Exception ex)
             {
@@ -55,11 +55,11 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<LikedProductDTO>> UpdateLikedProduct(LikedProductDTO likedProductDTO)
+        public async Task<ActionResult<ColorDTO>> UpdateColor(ColorDTO colorDTO)
         {
             try
             {
-                return Ok(await _likedProductService.UpdateLikedProductAsync(likedProductDTO));
+                return Ok(await _colorService.UpdateColorAsync(colorDTO));
             }
             catch (Exception ex)
             {
@@ -68,11 +68,11 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteLikedProduct(long id)
+        public async Task<ActionResult> DeleteColor(long id)
         {
             try
             {
-                return Ok(/*await _likedProductService.DeleteLikedProductAsync(id)*/);
+                return Ok(/*await _colorService.DeleteColorAsync(id)*/);
             }
             catch (Exception ex)
             {

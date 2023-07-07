@@ -30,8 +30,13 @@ namespace BLL
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ILikedProductService, LikedProductService>();
+            services.AddScoped<ISaleService, SaleService>();
+            services.AddScoped<IManufactureCountryService, ManufactureCountryService>();
+            services.AddScoped<IManufacturerService, ManufacturerService>();
+            services.AddScoped<IMaterialService, MaterialService>();
+        
         }
 
-            
+
     }
 }
