@@ -396,4 +396,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/BLL/bin/Debug/net7.0/BLL.deps.json

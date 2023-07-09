@@ -1,5 +1,5 @@
 ﻿using BLL.Interfaces;
-using DTO.Material;
+using DTO.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,29 +8,29 @@ using System.Threading.Tasks;
 
 namespace BLL.LogicServices
 {
-    public class MaterialService : IMaterialService
+    public class ProductService : IProductService
     {
-        public async Task<MaterialDTO> AddMaterialAsync(MaterialToAddDTO materialToAdd)
+        public async Task<ProductDTO> AddProductAsync(ProductToAddDTO productToAdd)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteMaterialAsync(long id)
+        public async Task DeleteProductAsync(long id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<MaterialDTO>> GetMaterialsAsync()
+        public async Task<ProductDTO> GetProductByIdAsync(long id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<MaterialDTO> GetMaterialByIdAsync(long id)
+        public async Task<List<ProductDTO>> GetProductsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<MaterialDTO> UpdateMaterialAsync(MaterialDTO materialDTO)
+        public async Task<ProductDTO> UpdateProductAsync(ProductDTO productDTO)
         {
             throw new NotImplementedException();
         }

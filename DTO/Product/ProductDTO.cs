@@ -22,5 +22,6 @@ namespace DTO.Product
         public long ThirdLevelCategoryId { get; set; }
         public bool IsInBestProducts { get; set; }
 
+
     }
 }

@@ -10,7 +10,7 @@ namespace BLL.Interfaces
 {
     public interface IMaterialService
     {
-        Task<List<MaterialDTO>> GetMaterialAsync();
+        Task<List<MaterialDTO>> GetMaterialsAsync();
         Task<MaterialDTO> GetMaterialByIdAsync(long id);
         Task<MaterialDTO> AddMaterialAsync(MaterialToAddDTO materialToAdd);
         Task<MaterialDTO> UpdateMaterialAsync(MaterialDTO materialDTO);

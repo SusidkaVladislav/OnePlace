@@ -1,4 +1,5 @@
-﻿using BLL.Interfaces;
+﻿using AutoMapper;
+using BLL.Interfaces;
 using BLL.LogicServices;
 using BLL.Utilities.AutoMapperProfiles;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +19,8 @@ namespace BLL
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
-            //services.AddAutoMapper(typeof(AutoMapperProfiles));
+            
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IWarehouseService, WarehouseService>();
             services.AddScoped<IWarehouseProductService, WarehouseProductService>();
             services.AddScoped<IFirstLevelCategoryService, FirstLevelCategoryService>();
@@ -34,7 +37,7 @@ namespace BLL
             services.AddScoped<IManufactureCountryService, ManufactureCountryService>();
             services.AddScoped<IManufacturerService, ManufacturerService>();
             services.AddScoped<IMaterialService, MaterialService>();
-        
+            services.AddScoped<IProductService, ProductService>();
         }
 
 

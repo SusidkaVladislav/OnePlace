@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTO.Color
 {
-    internal class ColorDTO
+    public class ColorDTO
     {
+        public long Id { get; set; }
+        public string Name { get; set; } = "";
     }
 }

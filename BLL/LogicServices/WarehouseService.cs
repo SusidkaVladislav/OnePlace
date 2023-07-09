@@ -18,12 +18,15 @@ namespace BLL.LogicServices
 
     public class WarehouseService : IWarehouseService
     {
+        private readonly IMapper _mapper;
+
         //Dependency injection of the repository
 
         List<Warehouse> warehouseList;
 
-        public WarehouseService()
+        public WarehouseService(IMapper mapper)
         {
+            _mapper = mapper;
             warehouseList = new List<Warehouse>
             {
                 new Warehouse{ Id = 1, Location = "loc_1"},
@@ -36,11 +39,7 @@ namespace BLL.LogicServices
         public async Task<List<WarehouseDTO>> GetWarehousesAsync()
         {
 
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Warehouse, WarehouseDTO>()
-            .ForMember("WarehouseId", opt => opt.MapFrom(src => src.Id))
-            .ForMember("WarehouseLocation", opt => opt.MapFrom(src => src.Location)));
-            var mapper = new Mapper(config);
-            List<WarehouseDTO> wares = mapper.Map<List<WarehouseDTO>>(warehouseList);
+            List<WarehouseDTO> wares = _mapper.Map<List<WarehouseDTO>>(warehouseList);
             
 
             return wares;

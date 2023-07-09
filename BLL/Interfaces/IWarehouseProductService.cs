@@ -1,4 +1,5 @@
 ﻿using DTO.SecondLevelCategory;
+using DTO.WarehouseProduct;
 using DTO.Warehouse;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,10 @@ namespace BLL.Interfaces
 {
     public interface IWarehouseProductService
     {
-       
+        Task<List<WarehouseProductDTO>> GetWarehouseProductsAsync();
+        Task<WarehouseProductDTO> GetWarehouseProductByIdAsync(long id);
+        Task<WarehouseProductDTO> AddWarehouseProductAsync(WarehouseProductDTO warehouseProduct);
+        Task<WarehouseProductDTO> UpdateWarehouseProductAsync(WarehouseProductDTO warehouseProduct);
+        Task DeleteWarehouseProductAsync(long id);
     }
 }

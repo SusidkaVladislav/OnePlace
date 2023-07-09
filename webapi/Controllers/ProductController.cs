@@ -1,26 +1,26 @@
 ﻿using BLL.Interfaces;
-using DTO.Delivery;
+using DTO.Product;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace webapi.Controllers
 {
-    [Route("api/delivery")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class DeliveryController : ControllerBase
+    public class ProductController : ControllerBase
     {
-        private readonly IDeliveryService _deliveryService;
-        public DeliveryController(IDeliveryService eliveryService)
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService)
         {
-            _deliveryService = eliveryService;
+            _productService = productService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<DeliveryDTO>>> GetDeliveries()
+        public async Task<ActionResult<List<ProductDTO>>> GetProducts()
         {
             try
             {
-                return Ok(await _deliveryService.GetDeliveriesAsync());
+                return Ok(await _productService.GetProductsAsync());
             }
             catch (Exception ex)
             {
@@ -29,11 +29,11 @@ namespace webapi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DeliveryDTO>> GetDelivery(long id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(long id)
         {
             try
             {
-                return Ok(await _deliveryService.GetDeliveryByIdAsync(id));
+                return Ok(await _productService.GetProductByIdAsync(id));
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DeliveryDTO>> AddDelivery(DeliveryToAddDTO deliveryToAddDTO)
+        public async Task<ActionResult<ProductDTO>> AddProduct(ProductToAddDTO productToAddDTO)
         {
             try
             {
-                return Ok(await _deliveryService.AddDeliveryAsync(deliveryToAddDTO));
+                return Ok(await _productService.AddProductAsync(productToAddDTO));
             }
             catch (Exception ex)
             {
@@ -55,11 +55,11 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<DeliveryDTO>> UpdateDelivery(DeliveryDTO deliveryDTO)
+        public async Task<ActionResult<ProductDTO>> UpdateProduct(ProductDTO productDTO)
         {
             try
             {
-                return Ok(await _deliveryService.UpdateDeliveryAsync(deliveryDTO));
+                return Ok(await _productService.UpdateProductAsync(productDTO));
             }
             catch (Exception ex)
             {
@@ -68,11 +68,11 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteDelivery(long id)
+        public async Task<ActionResult> DeleteProduct(long id)
         {
             try
             {
-                return Ok(/*await _deliveryService.DeleteDeliveryAsync(id)*/);
+                return Ok(/*await _productService.DeleteProductAsync(id)*/);
             }
             catch (Exception ex)
             {
