@@ -23,8 +23,8 @@ namespace OnePlace.DAL.Entities
         public Color Color { get; set; }
         public int GenderId { get; set; }
         public Gender Gender { get; set; }
-        public int ThirdLevelCategoryId { get; set; }
-        public ThirdLevelCategory ThirdLevelCategory { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
         public bool IsInBestProducts { get; set; }
 
     }
