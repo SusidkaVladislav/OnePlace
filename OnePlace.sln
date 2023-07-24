@@ -7,7 +7,11 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "reactapp", "reactapp\reacta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webapi", "webapi\webapi.csproj", "{25129203-EA52-4DC6-977E-B88822A9E40C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePlace.DAL", "OnePlace.DAL\OnePlace.DAL.csproj", "{83F073D0-3753-4006-9597-CC13EEE32F29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnePlace.DAL", "OnePlace.DAL\OnePlace.DAL.csproj", "{83F073D0-3753-4006-9597-CC13EEE32F29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePlace.BLL", "OnePlace.BLL\OnePlace.BLL.csproj", "{7138CD24-FC2A-4F0C-982E-71E378778021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnePlace.BOL", "OnePlace.BOL\OnePlace.BOL.csproj", "{E7FC34CF-267B-4B8E-824F-F84A209F24BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +33,14 @@ Global
 		{83F073D0-3753-4006-9597-CC13EEE32F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83F073D0-3753-4006-9597-CC13EEE32F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83F073D0-3753-4006-9597-CC13EEE32F29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7138CD24-FC2A-4F0C-982E-71E378778021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7138CD24-FC2A-4F0C-982E-71E378778021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7138CD24-FC2A-4F0C-982E-71E378778021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7138CD24-FC2A-4F0C-982E-71E378778021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7FC34CF-267B-4B8E-824F-F84A209F24BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7FC34CF-267B-4B8E-824F-F84A209F24BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7FC34CF-267B-4B8E-824F-F84A209F24BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7FC34CF-267B-4B8E-824F-F84A209F24BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
