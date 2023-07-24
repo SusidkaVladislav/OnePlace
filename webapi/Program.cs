@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OnePlace.BLL;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using System;
@@ -53,6 +54,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.RegisterBLLDependencies(builder.Configuration);
 
 var app = builder.Build();
 
