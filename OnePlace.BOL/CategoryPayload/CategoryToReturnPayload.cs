@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnePlace.DAL.Entities
+namespace OnePlace.BOL.CategoryPayload
 {
-    public class Category
+    public class CategoryToReturnPayload
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int ParentCategoryId { get; set; }
-        public Category? ParentCategory { get; set; }
+        public int? idParent { get; set; }
+        public CategoryToReturnPayload? parentCategory { get; set; }
     }
 }

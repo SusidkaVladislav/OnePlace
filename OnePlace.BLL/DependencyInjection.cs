@@ -14,6 +14,7 @@ namespace OnePlace.BLL
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IDeliveryService, IDeliveryService>();
             services.AddScoped<IProductService, IProductService>();
             services.AddScoped<IOrderService, IOrderService>();

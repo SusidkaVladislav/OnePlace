@@ -4,6 +4,7 @@ using OnePlace.BLL;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using System;
+using webapi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,4 +72,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Обробка виключних ситіацій в контролерах
+app.UseException();
 app.Run();
