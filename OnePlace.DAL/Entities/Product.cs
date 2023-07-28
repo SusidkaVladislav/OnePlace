@@ -11,7 +11,7 @@ namespace OnePlace.DAL.Entities
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         public string Description { get; set; }
         public int ManufactureCountryId { get; set; }
         public ManufactureCountry ManufactureCountry { get; set; } 
@@ -26,6 +26,8 @@ namespace OnePlace.DAL.Entities
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public bool IsInBestProducts { get; set; }
-
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<ProductDescription> ProductDescriptions { get; set; } = new List<ProductDescription>();
+        public ICollection<ProductPicture> ProductPictures { get; set; } = new List<ProductPicture>();
     }
 }
