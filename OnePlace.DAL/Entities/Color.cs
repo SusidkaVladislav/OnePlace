@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Entities
 {
-    internal class Color
+    public class Color
     {
         public int Id { get; set; }
         public string Name { get; set; }

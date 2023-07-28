@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Entities
 {
-    internal class Warehouse
+    public class Warehouse
     {
         public int Id { get; set; }
         public string Location { get; set; }

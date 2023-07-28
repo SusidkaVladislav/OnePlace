@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Entities
 {
-    internal class ThirdLevelCategory
+    public class Category
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int SecondLevelCategoryId { get; set; }
-        public SecondLevelCategory SecondLevelCategory { get; set; }
+        public int ParentCategoryId { get; set; }
+        public Category ParentCategory { get; set; }
     }
 }

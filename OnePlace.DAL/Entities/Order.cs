@@ -14,6 +14,9 @@ namespace OnePlace.DAL.Entities
         public string State { get; set; }
         public DateTime Date { get; set; }
         public string UserId { get; set; }
+        public User User {get;set;}
         public int DeliveryId { get; set; }
+        public Delivery Delivery { get; set; }
+        public string DeliveryInfo { get; set; }
     }
 }
