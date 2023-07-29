@@ -29,5 +29,6 @@ namespace OnePlace.DAL.Interfaces
         IRepository<User> Users {  get; }
         IRepository<Warehouse> Warehouses {  get; }
         IRepository<WarehouseProduct> WarehouseProducts {  get; }
+        void Save();
     }
 }

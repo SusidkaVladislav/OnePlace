@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnePlace.DAL.EF;
+﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -49,7 +46,7 @@ namespace OnePlace.DAL.Repositories
 
         public void Update(Category item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }
