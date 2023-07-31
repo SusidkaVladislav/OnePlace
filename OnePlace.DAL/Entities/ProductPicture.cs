@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OnePlace.DAL.Entities
+﻿namespace OnePlace.DAL.Entities
 {
-    internal class ProductPicture
+    public class ProductPicture
     {
         public int ProductId { get; set; }
         public Product Product { get; set; }

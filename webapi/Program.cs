@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using OnePlace.BLL;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using System;
 using webapi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,34 +10,34 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
-// Add services to the container.
+    //Add services to the container.
 
 var serviceProvider = builder.Services.BuildServiceProvider();
 
 using (var scope = serviceProvider.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
-    await CreateRole(roleManager, "admin");
-    await CreateRole(roleManager, "user");
-    await CreateRole(roleManager, "company");
+    await roleManager.CreateAsync(new Role("admin"));//CreateRole(roleManager, "admin");
+    await roleManager.CreateAsync(new Role("user"));//CreateRole(roleManager, "user");
+    await roleManager.CreateAsync(new Role("company"));//CreateRole(roleManager, "company");
     await CreateUser(userManager, "admin", "admin", "0111111111", "admin@gmail.com", "Qwerty+1", "admin");
 }
 
-async Task CreateRole(RoleManager<IdentityRole> roleManager, string roleName)
-{
-    if (!await roleManager.RoleExistsAsync(roleName))
-    {
-        var role = new IdentityRole { Name = roleName };
-        await roleManager.CreateAsync(role);
-    }
-}
+//async Task CreateRole(RoleManager<Role> roleManager, string roleName)
+//{
+//    if (!await roleManager.RoleExistsAsync(roleName))
+//    {
+//        var role = new Role { Name = roleName };
+//        await roleManager.CreateAsync(role);
+//    }
+//}
 
 async Task CreateUser(UserManager<User> userManager, string name, string surname, string phone_number, string email, string password, string roleName)
 {

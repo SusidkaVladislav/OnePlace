@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnePlace.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using OnePlace.BLL.Services;
+using Serilog;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.BLL
 {
@@ -14,11 +11,19 @@ namespace OnePlace.BLL
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
+            //var ss = Configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .WriteTo.Console()
+                .CreateLogger();
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<IDeliveryService, IDeliveryService>();
-            services.AddScoped<IProductService, IProductService>();
-            services.AddScoped<IOrderService, IOrderService>();
-            services.AddScoped<ICategoryService, ICategoryService>();
+           
+            services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
         }
     }
 }

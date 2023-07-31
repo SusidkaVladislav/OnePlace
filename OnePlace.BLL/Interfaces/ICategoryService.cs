@@ -1,20 +1,18 @@
-﻿using OnePlace.BOL.CategoryPayload;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OnePlace.BOL.CategoryDTO;
+using OnePlace.BOL.CategoryPayload;
 
 namespace OnePlace.BLL.Interfaces
 {
     public interface ICategoryService
     {
-        List<CategoryToReturnPayload> GetCategories();
-        CategoryToReturnPayload GetCategory(int id);
+        Task<List<CategoryDetails>> GetCategories();
+      
+        Task<CategoryDetails> GetCategory(int id);
         
-        // maybe here better is to return boolean
-        void AddSubcategory(int parentId, CategoryCreatePayload childCategory);
-
-
+        Task<int> AddSubcategory(int parentId, CategoryCreatePayload childCategory);
+       
+        Task<int> UpdateCategory(CategoryPayload category);
+        
+        Task<int> DeleteCategory(int id);
     }
 }

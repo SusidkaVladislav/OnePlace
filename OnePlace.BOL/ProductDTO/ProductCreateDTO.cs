@@ -1,13 +1,11 @@
-﻿
-using OnePlace.BOL.DescriptionDTO;
-using OnePlace.BOL.DetailDTO;
+﻿using OnePlace.BOL.DescriptionDTO;
 
 namespace OnePlace.BOL.ProductDTO
 {
     public class ProductCreateDTO
     {
-        public string Name { get; set; } = string.Empty;
-        public string Code { get; set; } = string.Empty;
+        public string Code { get; set; } 
+        public string Name { get; set; } 
         public float Price { get; set; }
         public int? ManufacturerCountryId { get; set; }
         public int? ManufacturerId { get; set; }
@@ -15,9 +13,9 @@ namespace OnePlace.BOL.ProductDTO
         public int? ColorId { get; set; }
         public int? GenderId { get; set; }
         public int CategoryId { get; set; }
-        public HashSet<ProductDescription> Descriptions { get; set; }
-        public HashSet<string> Pictures { get; set; }
-        public string Description { get; set; } = string.Empty;
+        public List<ProductDescription> Descriptions { get; set; }
+        public List<string> Pictures { get; set; }
+        public string Description { get; set; }
         public bool IsInBestProducts { get; set; } = false;
     }
 }

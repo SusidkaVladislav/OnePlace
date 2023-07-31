@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnePlace.BOL.DeliveryPayload
 {
@@ -11,6 +6,17 @@ namespace OnePlace.BOL.DeliveryPayload
     {
         [Required]
         public string Name { get; set; }
+        
+        [DataType(DataType.Url)]
         public string Picture { get; set; }
+        
+        [Required]
+        public string Type { get; set; }
+        
+        [Required]
+        public string City { get; set; }
+        
+        [Required] 
+        public string Department { get; set; }
     }
 }

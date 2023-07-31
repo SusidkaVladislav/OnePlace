@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OnePlace.BOL.DeliveryDTO
+﻿namespace OnePlace.BOL.DeliveryDTO
 {
-    internal class DeliveryDTO
+    public class DeliveryDTO
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int PictureId { get; set; }
     }
 }

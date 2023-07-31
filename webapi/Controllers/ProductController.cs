@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OnePlace.BLL.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BOL.ProductPayload;
-using System.ComponentModel.DataAnnotations;
 
 namespace webapi.Controllers
 {
@@ -11,8 +9,8 @@ namespace webapi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService _productService;
-        public ProductController(ProductService productService)
+        private readonly IProductService _productService;
+        public ProductController(IProductService productService)
         {
             _productService = productService;
         }
@@ -20,37 +18,22 @@ namespace webapi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProduct(int id)
         {
-            try
-            {
-                var result = await _productService.GetProduct(id);
-                return Ok(result);    
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _productService.GetProduct(id);
+            return Ok(result);
         }
 
         [HttpPost("search")]
         public async Task<IActionResult> GetFilteredProducts([FromBody] ProductSearchParams filter)
         {
-            try
-            {
-                var result = await _productService.FilterProduct(filter);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _productService.FilterProduct(filter);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct(ProductCreatePayload product, int categoryId)
+        public async Task<IActionResult> AddProduct(ProductCreatePayload product)
         {
-            var result = await _productService.AddProduct(product, categoryId);
+            var result = await _productService.AddProduct(product);
             return Ok(result);
-         
         }
 
         [HttpPut]

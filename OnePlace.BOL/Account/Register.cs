@@ -1,40 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnePlace.DAL.Entities.ViewModels
 {
-    public class RegisterViewModel
+    public class Register
     {
         [Required]
-        [Display(Name = "User Name")]
+        [Display(Name = "Ім'я")]
         public string Name { get; set; }
         [Required]
-        [Display(Name = "User Lastname")]
+        [Display(Name = "Прізвище")]
         public string Surname { get; set; }
 
         [Required]
         [DataType(DataType.PhoneNumber)]
-        [Display(Name = "Phone")]
+        [Display(Name = "Номер телефону")]
         public string Phone_number { get; set; }
 
         [Required]
-        [Display(Name = "Email")]
+        [Display(Name = "улуктронна адреса")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
         [Required]
-        [Compare("Password", ErrorMessage = "Passwords are not confirmed")]
+        [Compare("Password", ErrorMessage = "Паролі не співпадають")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Підтвердіть пароль")]
         public string PasswordConfirm { get; set; }
     }
 }

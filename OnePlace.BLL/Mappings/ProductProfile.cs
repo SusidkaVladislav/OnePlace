@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OnePlace.BOL.Description;
+using OnePlace.BOL.ProductDTO;
+using OnePlace.BOL.ProductPayload;
+using OnePlace.DAL.Entities;
+
 
 namespace OnePlace.BLL.Mappings
 {
@@ -11,7 +11,19 @@ namespace OnePlace.BLL.Mappings
     {
         public ProductProfile()
         {
+            CreateMap<ProductPayload, ProductDTO>();
             
+            CreateMap<ProductDTO, Product>(MemberList.None);
+
+            CreateMap<Product, ProductDetails>();
+            
+            CreateMap<ProductCreatePayload, ProductCreateDTO>();
+
+            CreateMap<ProductCreateDTO, Product>();
+
+            CreateMap<ProductDescription, ProductDescriptionDetails>(MemberList.Destination);
+
+            CreateMap<Product, ProductDetails>(MemberList.Source);
         }
     }
 }

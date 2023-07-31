@@ -5,6 +5,10 @@ using OnePlace.DAL.Entities.ViewModels;
 
 namespace webapi.Controllers
 {
+    /// <summary>
+    ///[Route("api/[controller]")]
+    /// </summary>
+    //[ApiController]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -22,7 +26,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(Register model)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +66,7 @@ namespace webapi.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl)
+        public async Task<IActionResult> Login(Login model, string? returnUrl)
         {
             ViewData["ReturnUrl"] = returnUrl;
             returnUrl = returnUrl ?? Url.Content("~/Admin/Index");
@@ -80,8 +84,7 @@ namespace webapi.Controllers
                     }
                     else
                     {
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
-
+                        return null;
                     }
                 }
                 else
@@ -98,18 +101,6 @@ namespace webapi.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
         }
     }
 }

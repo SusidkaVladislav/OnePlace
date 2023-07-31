@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OnePlace.BOL.DescriptionDTO;
 
 namespace OnePlace.BOL.ProductPayload
 {
     public class ProductPayload
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string Code { get; set; }
         public float Price { get; set; }
         public int? ManufacturerCountryId { get; set; }
         public int? ManufacturerId { get; set; }
@@ -18,7 +14,9 @@ namespace OnePlace.BOL.ProductPayload
         public int? ColorId { get; set; }
         public int? GenderId { get; set; }
         public int CategoryId { get; set; }
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; }
         public bool IsInBestProducts { get; set; }
+        public List<ProductDescription>? Descriptions { get; set; }
+        public List<string>? Pictures { get; set; }
     }
 }

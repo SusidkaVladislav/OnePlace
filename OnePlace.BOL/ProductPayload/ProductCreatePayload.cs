@@ -7,16 +7,16 @@ namespace OnePlace.BOL.ProductPayload
 {
     public class ProductCreatePayload
     {
-        [Required(ErrorMessage = "Enter name of the product")]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Product name must have at least 2 characters")]
+        [Required]
+        [StringLength(100, MinimumLength = 2)]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Enter code of the product")]
-        [RegularExpression(@"^[0-9]*${12}", ErrorMessage = "Product code has to contain only numbers")]
+        [Required]
+        [RegularExpression(@"^[0-9]*${12}")]
         public string Code { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Enter price of the product")]
-        [RegularExpression(@"^[0-9]*$", ErrorMessage = "")]
+        [Required]
+        [RegularExpression(@"^[0-9]*$")]
         [DataType(DataType.Currency)]
         public float Price { get; set; }
 
@@ -27,21 +27,27 @@ namespace OnePlace.BOL.ProductPayload
         public int? ManufacturerId { get; set; }
 
         [RegularExpression(@"^[0-9]*$")]
-        //[NotMapped]
         public int? MaterialId { get; set; }
+       
         [RegularExpression(@"^[0-9]*$")]
         public int? ColorId { get; set; }
+        
         [RegularExpression(@"^[0-9]*$")]
         public int? GenderId { get; set; }
-        [Required(ErrorMessage = "Category is necessary")]
+       
+        [Required]
         [RegularExpression(@"^[0-9]*$")]
         [NotNull]
         public int CategoryId { get; set; }
-        [Required(ErrorMessage = "Enter porduct description")]
-        [StringLength(2000, MinimumLength = 50, ErrorMessage = "Product description must have at least 50 characters")]
+        
+        [Required]
+        [StringLength(2000, MinimumLength = 50)]
         public string Description { get; set; } = string.Empty;
+        
         public bool IsInBestProducts { get; set; } = false;
-        public HashSet<ProductDescription>? Descriptions { get; set; }
-        public HashSet<string>? Pictures { get; set; }
+        
+        public List<ProductDescription>? Descriptions { get; set; }
+       
+        public List<string>? Pictures { get; set; }
     }
 }

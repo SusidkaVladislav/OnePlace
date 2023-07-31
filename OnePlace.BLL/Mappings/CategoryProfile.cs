@@ -2,11 +2,6 @@
 using OnePlace.BOL.CategoryDTO;
 using OnePlace.BOL.CategoryPayload;
 using OnePlace.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.BLL.Mappings
 {
@@ -15,11 +10,21 @@ namespace OnePlace.BLL.Mappings
         public CategoryProfile()
         {
             CreateMap<CategoryPayload, CategoryDTO>();
-            CreateMap<CategoryDTO, Category>();
-            CreateMap<Category, CategoryDTO>();
-            CreateMap<CategoryDTO, CategoryPayload>();
+            
+            CreateMap<CategoryDTO, Category>(MemberList.Destination)
+                .ForMember(d=>d.ParentCategoryId, p=>p.MapFrom(s=>s.ParentId));
+
+            CreateMap<Category, CategoryDetails>(MemberList.Source)
+                .ForMember(d=>d.ParentId, p=>p.MapFrom(s=>s.ParentCategoryId));
+
             CreateMap<CategoryCreatePayload, CategoryCreateDTO>();
-            CreateMap<CategoryCreateDTO, Category>(MemberList.Source);
+
+            CreateMap<CategoryCreateDTO, Category>(MemberList.Source)
+                .ForMember(d=>d.ParentCategoryId, p=>p.MapFrom(s=>s.ParentId));
+
+
+            // MemberList.Source -- Обов'язково всі поля мають бути з джерела
+            // MemberList.Destination -- Обов'язково всі поля мають бути з класа до якого відбувається приведення
         }
     }
 }
