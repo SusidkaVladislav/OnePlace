@@ -41,9 +41,9 @@ namespace OnePlace.DAL.Repositories
             return db.Colors.FirstOrDefault(o => o.Id == id);
         }
 
-        public IEnumerable<Color> GetAll()
+        public async Task<List<Color>> GetAll()
         {
-            return db.Colors;
+            return await db.Colors.ToListAsync();
         }
 
         public void Update(Color item)

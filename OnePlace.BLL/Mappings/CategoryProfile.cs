@@ -9,7 +9,7 @@ namespace OnePlace.BLL.Mappings
     {
         public CategoryProfile()
         {
-            CreateMap<CategoryPayload, CategoryDTO>();
+            CreateMap<CategoryPayload, CategoryDTO>(MemberList.None);
             
             CreateMap<CategoryDTO, Category>(MemberList.Destination)
                 .ForMember(d=>d.ParentCategoryId, p=>p.MapFrom(s=>s.ParentId));

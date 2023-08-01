@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnePlace.BLL.Interfaces;
+using OnePlace.BLL.Mappings;
 using OnePlace.BLL.Services;
+using OnePlace.DAL.Interfaces;
+using OnePlace.DAL.Repositories;
 using Serilog;
 using System.Reflection;
 
@@ -17,13 +21,25 @@ namespace OnePlace.BLL
                 .WriteTo.Console()
                 .CreateLogger();
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-           
+            //MapperConfiguration config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile(new CategoryProfile());  //mapping between Web and Business layer objects
+            //    //cfg.AddProfile(new BLProfile());  // mapping between Business and DB layer objects
+            //});
+
+            //services.AddAutoMapper(cfg => config.CreateMapper());
+
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddAutoMapper(typeof(CategoryProfile));
+
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

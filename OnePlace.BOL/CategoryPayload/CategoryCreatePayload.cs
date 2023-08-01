@@ -10,7 +10,7 @@ namespace OnePlace.BOL.CategoryPayload
         [MinLength(2)]
         [DataType(DataType.Text)]
         [DisplayName("Назва")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public int? ParentId { get; set; }
     }
 }

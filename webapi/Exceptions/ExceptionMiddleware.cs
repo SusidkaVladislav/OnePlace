@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Exceptions.Handlers;
 
+
 namespace webapi.Exceptions
 {
     public class ExceptionMiddleware

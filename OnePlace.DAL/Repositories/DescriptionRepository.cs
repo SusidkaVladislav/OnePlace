@@ -41,9 +41,9 @@ namespace OnePlace.DAL.Repositories
             return db.Descriptions.Find(id);
         }
 
-        public IEnumerable<Description> GetAll()
+        public async Task<List<Description>> GetAll()
         {
-            return db.Descriptions;
+            return await db.Descriptions.ToListAsync();
         }
 
         public void Update(Description item)

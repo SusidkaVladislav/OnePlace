@@ -5,14 +5,14 @@ namespace OnePlace.BLL.Interfaces
 {
     public interface ICategoryService
     {
-        Task<List<CategoryDetails>> GetCategories();
+        Task<List<CategoryDetails>> GetAll();
       
-        Task<CategoryDetails> GetCategory(int id);
+        Task<CategoryDetails> Get(int id);
         
-        Task<int> AddSubcategory(int parentId, CategoryCreatePayload childCategory);
+        Task Add(CategoryCreatePayload childCategory);
        
-        Task<int> UpdateCategory(CategoryPayload category);
+        Task<int> Update(CategoryPayload category);
         
-        Task<int> DeleteCategory(int id);
+        Task<int> Delete(int id);
     }
 }

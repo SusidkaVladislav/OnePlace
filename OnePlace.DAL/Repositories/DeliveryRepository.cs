@@ -41,9 +41,9 @@ namespace OnePlace.DAL.Repositories
             return db.Deliveries.Find(id);
         }
 
-        public IEnumerable<Delivery> GetAll()
+        public async Task<List<Delivery>> GetAll()
         {
-            return db.Deliveries.Include(o => o.Picture);
+            return await db.Deliveries.Include(o => o.Picture).ToListAsync();
         }
 
         public void Update(Delivery item)

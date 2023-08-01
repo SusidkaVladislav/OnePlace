@@ -1,5 +1,8 @@
-﻿namespace OnePlace.DAL.Entities
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace OnePlace.DAL.Entities
 {
+    [PrimaryKey(nameof(OrderId), nameof(ProductId))]
     public class OrderProduct
     {
         public int OrderId { get; set; }

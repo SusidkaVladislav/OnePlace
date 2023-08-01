@@ -1,10 +1,8 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace OnePlace.DAL.Repositories
 {
@@ -39,9 +37,9 @@ namespace OnePlace.DAL.Repositories
             return db.Categories.Find(id);
         }
 
-        public IEnumerable<Category> GetAll()
+        public async Task<List<Category>> GetAll()
         {
-            return db.Categories;
+            return await db.Categories.ToListAsync();
         }
 
         public void Update(Category item)

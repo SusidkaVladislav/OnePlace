@@ -41,9 +41,9 @@ namespace OnePlace.DAL.Repositories
             return db.Genders.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
         }
 
-        public IEnumerable<Gender> GetAll()
+        public async Task<List<Gender>> GetAll()
         {
-            return db.Genders.Include(o => o.Products);
+            return await db.Genders.Include(o => o.Products).ToListAsync();
         }
 
         public void Update(Gender item)
