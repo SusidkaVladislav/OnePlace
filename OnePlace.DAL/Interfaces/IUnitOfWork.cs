@@ -9,26 +9,27 @@ namespace OnePlace.DAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Category> Categories {  get; }
-        IRepository<Color> Colors {  get; }
-        IRepository<Delivery> Deliveries {  get; }
-        IRepository<Description> Descriptions {  get; }
-        IRepository<Gender> Genders {  get; }
-        IRepository<LikedProduct> LikedProducts {  get; }
-        IRepository<ManufactureCountry> ManufactureCountries {  get; }
-        IRepository<Manufacturer> Manufacturers {  get; }
-        IRepository<Material> Materials {  get; }
-        IRepository<Order> Orders {  get; }
-        IRepository<OrderProduct> OrderProducts {  get; }
-        IRepository<Picture> Pictures {  get; }
-        IRepository<Product> Products {  get; }
-        IRepository<ProductDescription> ProductDescriptions {  get; }
-        IRepository<ProductPicture> ProductPictures {  get; }
-        IRepository<Review> Reviews {  get; }
-        IRepository<Sale> Sales {  get; }
-        IRepository<User> Users {  get; }
-        IRepository<Warehouse> Warehouses {  get; }
-        IRepository<WarehouseProduct> WarehouseProducts {  get; }
+        IRepository<Category, int> Categories {  get; }
+        IRepository<Color, int> Colors {  get; }
+        IRepository<Delivery, int> Deliveries {  get; }
+        IRepository<Description, int> Descriptions {  get; }
+        IRepository<Gender, int> Genders {  get; }
+        IRepository<LikedProduct, CompositeKey> LikedProducts {  get; }
+        IRepository<ManufactureCountry, int> ManufactureCountries {  get; }
+        IRepository<Manufacturer, int> Manufacturers {  get; }
+        IRepository<Material, int> Materials {  get; }
+        IRepository<Order, int> Orders {  get; }
+        IRepository<OrderProduct, CompositeKey> OrderProducts {  get; }
+        IRepository<Picture, int> Pictures {  get; }
+        IRepository<Product, int> Products {  get; }
+        IRepository<ProductDescription, CompositeKey> ProductDescriptions {  get; }
+        IRepository<ProductPicture, CompositeKey> ProductPictures {  get; }
+        IRepository<Review, int> Reviews {  get; }
+        IRepository<Sale, int> Sales {  get; }
+        IRepository<User, int> Users {  get; }
+        IRepository<Warehouse, int> Warehouses {  get; }
+        IRepository<WarehouseProduct, CompositeKey> WarehouseProducts {  get; }
+        IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
         void Save();
     }
 }

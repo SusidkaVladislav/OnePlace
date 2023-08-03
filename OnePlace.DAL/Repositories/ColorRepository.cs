@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ColorReository : IRepository<Color>
+    public class ColorReository : IRepository<Color, int>
     {
         private AppDbContext db;
         public ColorReository(AppDbContext context)
@@ -33,12 +33,12 @@ namespace OnePlace.DAL.Repositories
 
         public IEnumerable<Color> Find(Func<Color, bool> predicate)
         {
-            return db.Colors.Where(predicate).ToList();
+            return db.Colors.Include(o => o.Products).Where(predicate).ToList();
         }
 
         public Color Get(int id)
         {
-            return db.Colors.FirstOrDefault(o => o.Id == id);
+            return db.Colors.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
         }
 
         public async Task<List<Color>> GetAll()

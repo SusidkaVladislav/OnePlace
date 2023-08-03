@@ -26,10 +26,31 @@ namespace OnePlace.DAL.EF
         public DbSet<User> Users { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<LikedProduct>()
+                .HasKey(x => new { x.UserId, x.ProductId });
+
+            builder.Entity<OrderProduct>()
+                .HasKey(x => new { x.OrderId, x.ProductId });
+
+            builder.Entity<ProductDescription>()
+                .HasKey(x => new { x.ProductId, x.DescriptionId });
+
+            builder.Entity<ProductPicture>()
+                .HasKey(x => new { x.PictureId, x.ProductId });
+
+            builder.Entity<WarehouseProduct>()
+                .HasKey(x => new { x.WarehouseId, x.ProductId });
+
+            builder.Entity<ShoppingCart>()
+                .HasKey(x => new { x.ProductId, x.UserId });
         }
     }
 }
