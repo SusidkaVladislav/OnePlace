@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OnePlace.DAL.Entities;
 using OnePlace.DAL.Entities.ViewModels;
+using OnePlace.DAL.Entities;
 
 namespace webapi.Controllers
 {
-    /// <summary>
-    ///[Route("api/[controller]")]
-    /// </summary>
-    //[ApiController]
-    public class AccountController : Controller
+    [Route("api/[controller]")]
+    [ApiController]5
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -19,80 +18,68 @@ namespace webapi.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Register(Register model)
+        public async Task<IActionResult> Register(Register register)
         {
             if (ModelState.IsValid)
             {
                 User user = new User
                 {
-                    Name = model.Name,
-                    Surname = model.Surname,
-                    PhoneNumber = model.Phone_number,
-                    Email = model.Email,
-                    UserName = model.Email
+                    Name = register.Name,
+                    Surname = register.Surname,
+                    PhoneNumber = register.Phone_number,
+                    Email = register.Email,
+                    UserName = register.Email
                 };
                 // add  user
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, register.Password);
+
                 if (result.Succeeded)
                 {
                     // coockies
                     await _signInManager.SignInAsync(user, false);
                     await _userManager.AddToRoleAsync(user, "user");
-                    return RedirectToAction("Index", "Home");
+                    return Ok(result);
                 }
                 else
                 {
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        //ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
+                return BadRequest();
             }
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
+            return BadRequest();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Login model, string? returnUrl)
+        public async Task<IActionResult> Login(Login login, string? returnUrl)
         {
-            ViewData["ReturnUrl"] = returnUrl;
             returnUrl = returnUrl ?? Url.Content("~/Admin/Index");
-
 
             if (ModelState.IsValid)
             {
                 var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    await _signInManager.PasswordSignInAsync(login.Email, login.Password, login.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
-                        return Redirect(returnUrl);
+
                     }
                     else
                     {
-                        return null;
+
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    //ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 }
             }
-            return View(model);
+            return Ok();
         }
 
         [HttpPost]
@@ -100,7 +87,7 @@ namespace webapi.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return Ok();
         }
     }
 }
