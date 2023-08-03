@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class DeliveryRepository : IRepository<Delivery>
+    public class DeliveryRepository : IRepository<Delivery, int>
     {
         private AppDbContext db;
         public DeliveryRepository(AppDbContext context)
@@ -24,7 +24,7 @@ namespace OnePlace.DAL.Repositories
 
         public void Delete(int id)
         {
-            Delivery delivery = db.Deliveries.Find(id);
+            Delivery delivery = db.Deliveries.FirstOrDefault(o => o.Id == id);
             if (delivery != null)
             {
                 db.Deliveries.Remove(delivery);
@@ -38,7 +38,7 @@ namespace OnePlace.DAL.Repositories
 
         public Delivery Get(int id)
         {
-            return db.Deliveries.Find(id);
+            return db.Deliveries.Include(o => o.Picture).FirstOrDefault(o => o.Id == id);
         }
 
         public IEnumerable<Delivery> GetAll()

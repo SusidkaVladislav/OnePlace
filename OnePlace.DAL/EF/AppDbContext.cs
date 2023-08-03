@@ -17,7 +17,7 @@ namespace OnePlace.DAL.EF
         public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Description> Descriptions { get; set; }
         public DbSet<Gender> Genders { get; set; }
-        public DbSet<LikedProduct> likedProducts { get; set; }
+        public DbSet<LikedProduct> LikedProducts { get; set; }
         public DbSet<ManufactureCountry> ManufactureCountries { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Material> Materials { get; set; }
@@ -31,10 +31,31 @@ namespace OnePlace.DAL.EF
         public DbSet<User> Users { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<LikedProduct>()
+                .HasKey(x => new { x.UserId, x.ProductId });
+
+            builder.Entity<OrderProduct>()
+                .HasKey(x => new { x.OrderId, x.ProductId });
+
+            builder.Entity<ProductDescription>()
+                .HasKey(x => new { x.ProductId, x.DescriptionId });
+
+            builder.Entity<ProductPicture>()
+                .HasKey(x => new { x.PictureId, x.ProductId });
+
+            builder.Entity<WarehouseProduct>()
+                .HasKey(x => new { x.WarehouseId, x.ProductId });
+
+            builder.Entity<ShoppingCart>()
+                .HasKey(x => new { x.ProductId, x.UserId });
         }
     }
 }

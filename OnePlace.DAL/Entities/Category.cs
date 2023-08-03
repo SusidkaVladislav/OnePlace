@@ -15,5 +15,6 @@ namespace OnePlace.DAL.Entities
         public Category ParentCategory { get; set; }
         public ICollection<Category> ChildCategories { get; set; }
         public ICollection<Product> Products { get; set; }
+        public ICollection<Description> Descriptions { get; set; }
     }
 }

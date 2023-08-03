@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class GenderRepository : IRepository<Gender>
+    public class GenderRepository : IRepository<Gender, int>
     {
         private AppDbContext db;
         public GenderRepository(AppDbContext context)
@@ -43,7 +43,7 @@ namespace OnePlace.DAL.Repositories
 
         public IEnumerable<Gender> GetAll()
         {
-            return db.Genders.Include(o => o.Products);
+            return db.Genders;
         }
 
         public void Update(Gender item)

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class DescriptionRepository : IRepository<Description>
+    public class DescriptionRepository : IRepository<Description, int>
     {
         private AppDbContext db;
         public DescriptionRepository(AppDbContext context)
@@ -24,7 +24,7 @@ namespace OnePlace.DAL.Repositories
 
         public void Delete(int id)
         {
-            Description description = db.Descriptions.Find(id);
+            Description description = db.Descriptions.FirstOrDefault(o => o.Id == id);
             if (description != null)
             {
                 db.Descriptions.Remove(description);
@@ -38,7 +38,7 @@ namespace OnePlace.DAL.Repositories
 
         public Description Get(int id)
         {
-            return db.Descriptions.Find(id);
+            return db.Descriptions.FirstOrDefault(o => o.Id == id);
         }
 
         public IEnumerable<Description> GetAll()

@@ -22,7 +22,7 @@ namespace OnePlace.DAL.Repositories
 
         public void Delete(int id)
         {
-            Category category = db.Categories.Find(id);
+            Category category = db.Categories.FirstOrDefault(o => o.Id == id);
             if(category != null)
             {
                 db.Categories.Remove(category);
@@ -31,12 +31,20 @@ namespace OnePlace.DAL.Repositories
 
         public IEnumerable<Category> Find(Func<Category, bool> predicate)
         {
-            return db.Categories.Where(predicate).ToList();
+            return db.Categories
+                .Include(o=>o.Descriptions)
+                .Include(o=>o.Products)
+                .Include(o => o.ChildCategories)
+                .Where(predicate).ToList();
         }
 
         public Category Get(int id)
         {
-            return db.Categories.Find(id);
+            return db.Categories
+                .Include(o => o.Descriptions)
+                .Include(o => o.Products)
+                .Include(o => o.ChildCategories)
+                .FirstOrDefault(o => o.Id == id);
         }
 
         public IEnumerable<Category> GetAll()
