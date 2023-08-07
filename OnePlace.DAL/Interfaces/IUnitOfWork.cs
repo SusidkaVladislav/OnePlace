@@ -1,9 +1,4 @@
 ﻿using OnePlace.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Interfaces
 {
@@ -30,6 +25,6 @@ namespace OnePlace.DAL.Interfaces
         IRepository<Warehouse, int> Warehouses {  get; }
         IRepository<WarehouseProduct, CompositeKey> WarehouseProducts {  get; }
         IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

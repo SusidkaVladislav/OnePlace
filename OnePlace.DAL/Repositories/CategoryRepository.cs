@@ -6,53 +6,59 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class CategoryRepository : IRepository<Category>
+    public class CategoryRepository : IRepository<Category, int>
     {
         private AppDbContext db;
         public CategoryRepository(AppDbContext context)
         {
             this.db = context;
         }
-        public void Create(Category item)
+
+        public void Create(Category category)
         {
-            db.Categories.Add(item);
+            db.Categories.Add(category);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Category category = db.Categories.FirstOrDefault(o => o.Id == id);
-            if(category != null)
+            Category category = await db.Categories.FirstOrDefaultAsync(o => o.Id == id);
+            if (category != null)
             {
                 db.Categories.Remove(category);
             }
         }
 
-        public IEnumerable<Category> Find(Func<Category, bool> predicate)
+        public async Task<IEnumerable<Category>> FindAsync(Func<Category, bool> predicate)
         {
-            return db.Categories
-                .Include(o=>o.Descriptions)
-                .Include(o=>o.Products)
-                .Include(o => o.ChildCategories)
-                .Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Category Get(int id)
+        private Task<List<Category>> GetListAsync(Func<Category, bool> predicate)
         {
-            return db.Categories
+            return Task.Run(() => db.Categories
                 .Include(o => o.Descriptions)
                 .Include(o => o.Products)
                 .Include(o => o.ChildCategories)
-                .FirstOrDefault(o => o.Id == id);
+                .Where(predicate).ToList());
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<Category> GetAsync(int id)
+        {
+            return await db.Categories
+                .Include(o => o.Descriptions)
+                .Include(o => o.Products)
+                .Include(o => o.ChildCategories)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
+        public void Update(Category category)
+        {
+            db.Entry(category).State = (EntityState)EntityState.Modified;
+        }
+
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await db.Categories.ToListAsync();
-        }
-
-        public void Update(Category item)
-        {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Manufacturer item)
+        public void Create(Manufacturer manufacturer)
         {
-            db.Manufacturers.Add(item);
+            db.Manufacturers.Add(manufacturer);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Manufacturer manufacturer = db.Manufacturers.FirstOrDefault(o => o.Id == id);
+            Manufacturer manufacturer = await db.Manufacturers.FirstOrDefaultAsync(o => o.Id == id);
             if (manufacturer != null)
             {
                 db.Manufacturers.Remove(manufacturer);
             }
         }
 
-        public IEnumerable<Manufacturer> Find(Func<Manufacturer, bool> predicate)
+        public async Task<IEnumerable<Manufacturer>> FindAsync(Func<Manufacturer, bool> predicate)
         {
-            return db.Manufacturers.Include(o => o.Products).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Manufacturer Get(int id)
+        private Task<List<Manufacturer>> GetListAsync(Func<Manufacturer, bool> predicate)
         {
-            return db.Manufacturers.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Manufacturers.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public IEnumerable<Manufacturer> GetAll()
+        public async Task<Manufacturer> GetAsync(int id)
         {
-            return db.Manufacturers;
+            return await db.Manufacturers.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Manufacturer item)
+        public async Task<IEnumerable<Manufacturer>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Manufacturers.ToListAsync();
+        }
+
+        public void Update(Manufacturer manufacturer)
+        { 
+            db.Entry(manufacturer).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

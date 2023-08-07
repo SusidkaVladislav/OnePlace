@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Warehouse item)
+        public void Create(Warehouse warehouse)
         {
-            db.Warehouses.Add(item);
+            db.Warehouses.Add(warehouse);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Warehouse warehouse = db.Warehouses.FirstOrDefault(o => o.Id == id);
+            Warehouse warehouse = await db.Warehouses.FirstOrDefaultAsync(o => o.Id == id);
             if (warehouse != null)
             {
                 db.Warehouses.Remove(warehouse);
             }
         }
 
-        public IEnumerable<Warehouse> Find(Func<Warehouse, bool> predicate)
+        public async Task<IEnumerable<Warehouse>> FindAsync(Func<Warehouse, bool> predicate)
         {
-            return db.Warehouses.Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Warehouse Get(int id)
+        private Task<List<Warehouse>> GetListAsync(Func<Warehouse, bool> predicate)
         {
-            return db.Warehouses.FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Warehouses.Where(predicate).ToList());
         }
 
-        public IEnumerable<Warehouse> GetAll()
+        public async Task<Warehouse> GetAsync(int id)
         {
-            return db.Warehouses;
+            return await db.Warehouses.FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Warehouse item)
+        public async Task<IEnumerable<Warehouse>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Warehouses.ToListAsync();
+        }
+
+        public void Update(Warehouse warehouse)
+        {
+            db.Entry(warehouse).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

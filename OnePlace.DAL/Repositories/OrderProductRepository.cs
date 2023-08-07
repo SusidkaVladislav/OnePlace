@@ -1,11 +1,6 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
@@ -17,38 +12,44 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(OrderProduct item)
+        public void Create(OrderProduct orderProduct)
         {
-            db.OrderProducts.Add(item);
+            db.OrderProducts.Add(orderProduct);
         }
 
-        public void Delete(CompositeKey key)
+        public async Task DeleteAsync(CompositeKey key)
         {
-            OrderProduct orderProduct = db.OrderProducts.FirstOrDefault(o => o.OrderId == key.Column1 && o.ProductId == key.Column2);
+            OrderProduct orderProduct = await db.OrderProducts.FirstOrDefaultAsync(o => o.OrderId == key.Column1 
+            && o.ProductId == key.Column2);
             if (orderProduct != null)
             {
                 db.OrderProducts.Remove(orderProduct);
             }
         }
 
-        public IEnumerable<OrderProduct> Find(Func<OrderProduct, bool> predicate)
+        public async Task<IEnumerable<OrderProduct>> FindAsync(Func<OrderProduct, bool> predicate)
         {
-            return db.OrderProducts.Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public OrderProduct Get(CompositeKey key)
+        private Task<List<OrderProduct>> GetListAsync(Func<OrderProduct, bool> predicate)
         {
-            return db.OrderProducts.FirstOrDefault(o => o.OrderId == key.Column1 && o.ProductId == key.Column2);
+            return Task.Run(() => db.OrderProducts.Where(predicate).ToList());
         }
 
-        public IEnumerable<OrderProduct> GetAll()
+        public async Task<OrderProduct> GetAsync(CompositeKey key)
         {
-            return db.OrderProducts;
+            return await db.OrderProducts.FirstOrDefaultAsync(o => o.OrderId == key.Column1 && o.ProductId == key.Column2);
         }
 
-        public void Update(OrderProduct item)
+        public async Task<IEnumerable<OrderProduct>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.OrderProducts.ToListAsync();
+        }
+
+        public void Update(OrderProduct orderProduct)
+        {
+            db.Entry(orderProduct).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

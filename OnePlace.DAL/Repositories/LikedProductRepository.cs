@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,50 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(LikedProduct item)
+
+        public void Create(LikedProduct likedProduct)
         {
-            db.LikedProducts.Add(item);
+            db.LikedProducts.Add(likedProduct);
         }
 
-        public void Delete(CompositeKey key)
+        public async Task DeleteAsync(CompositeKey key)
         {
-            LikedProduct likedProduct = db.LikedProducts.FirstOrDefault(o => o.UserId == key.Column1 && o.ProductId == key.Column2);
+            LikedProduct likedProduct = await db.LikedProducts.FirstOrDefaultAsync(o => o.UserId == key.Column1 && 
+            o.ProductId == key.Column2);
             if (likedProduct != null)
             {
                 db.LikedProducts.Remove(likedProduct);
             }
         }
 
-        public IEnumerable<LikedProduct> Find(Func<LikedProduct, bool> predicate)
+        public async Task<IEnumerable<LikedProduct>> FindAsync(Func<LikedProduct, bool> predicate)
         {
-            return db.LikedProducts.Include(o => o.User).Include(o=>o.Product).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public LikedProduct Get(CompositeKey key)
+        private Task<List<LikedProduct>> GetListAsync(Func<LikedProduct, bool> predicate)
         {
-            return db.LikedProducts.Include(o => o.User).Include(o => o.Product).FirstOrDefault(o => o.UserId == key.Column1 && o.ProductId == key.Column2);
+            return Task.Run(() => db.LikedProducts.Include(o => o.User)
+            .Include(o => o.Product)
+            .Where(predicate)
+            .ToList());
         }
 
-        public IEnumerable<LikedProduct> GetAll()
+        public async Task<LikedProduct> GetAsync(CompositeKey key)
         {
-            return db.LikedProducts;
+            return await db.LikedProducts.Include(o => o.User)
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(o => o.UserId == key.Column1 && o.ProductId == key.Column2);
         }
 
-        public void Update(LikedProduct item)
+        public async Task<IEnumerable<LikedProduct>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.LikedProducts.ToListAsync();
+        }
+
+        public void Update(LikedProduct likedProduct)
+        {
+            db.Entry(likedProduct).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

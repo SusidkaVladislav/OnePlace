@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Material item)
+        public void Create(Material material)
         {
-            db.Materials.Add(item);
+            db.Materials.Add(material);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Material material = db.Materials.FirstOrDefault(o => o.Id == id);
+            Material material = await db.Materials.FirstOrDefaultAsync(o => o.Id == id);
             if (material != null)
             {
                 db.Materials.Remove(material);
             }
         }
 
-        public IEnumerable<Material> Find(Func<Material, bool> predicate)
+        public async Task<IEnumerable<Material>> FindAsync(Func<Material, bool> predicate)
         {
-            return db.Materials.Include(o => o.Products).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Material Get(int id)
+        private Task<List<Material>> GetListAsync(Func<Material, bool> predicate)
         {
-            return db.Materials.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Materials.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public IEnumerable<Material> GetAll()
+        public async Task<Material> GetAsync(int id)
         {
-            return db.Materials;
+            return await db.Materials.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Material item)
+        public async Task<IEnumerable<Material>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Materials.ToListAsync();
+        }
+
+        public void Update(Material material)
+        {
+            db.Entry(material).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

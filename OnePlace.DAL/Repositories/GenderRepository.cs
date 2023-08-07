@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Gender item)
+        public void Create(Gender gender)
         {
-            db.Genders.Add(item);
+            db.Genders.Add(gender);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Gender gender = db.Genders.FirstOrDefault(o => o.Id == id);
+            Gender gender = await db.Genders.FirstOrDefaultAsync(o => o.Id == id);
             if (gender != null)
             {
                 db.Genders.Remove(gender);
             }
         }
 
-        public IEnumerable<Gender> Find(Func<Gender, bool> predicate)
+        public async Task<IEnumerable<Gender>> FindAsync(Func<Gender, bool> predicate)
         {
-            return db.Genders.Include(o => o.Products).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Gender Get(int id)
+        private Task<List<Gender>> GetListAsync(Func<Gender, bool> predicate)
         {
-            return db.Genders.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Genders.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public async Task<List<Gender>> GetAll()
+        public async Task<Gender> GetAsync(int id)
         {
-            return db.Genders;
+            return await db.Genders.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Gender item)
+        public async Task<IEnumerable<Gender>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Genders.ToListAsync();
+        }
+
+        public void Update(Gender gender)
+        {
+            db.Entry(gender).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

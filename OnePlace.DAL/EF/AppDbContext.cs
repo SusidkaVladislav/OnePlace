@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.Entities;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace OnePlace.DAL.EF
 {
@@ -34,6 +35,7 @@ namespace OnePlace.DAL.EF
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
             builder.Entity<LikedProduct>()
                 .HasKey(x => new { x.UserId, x.ProductId });
 
@@ -51,6 +53,7 @@ namespace OnePlace.DAL.EF
 
             builder.Entity<ShoppingCart>()
                 .HasKey(x => new { x.ProductId, x.UserId });
+
         }
     }
 }

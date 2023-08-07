@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Order item)
+        public void Create(Order order)
         {
-            db.Orders.Add(item);
+            db.Orders.Add(order);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Order order = db.Orders.FirstOrDefault(o => o.Id == id);
+            Order order = await db.Orders.FirstOrDefaultAsync(o => o.Id == id);
             if (order != null)
             {
                 db.Orders.Remove(order);
             }
         }
 
-        public IEnumerable<Order> Find(Func<Order, bool> predicate)
+        public async Task<IEnumerable<Order>> FindAsync(Func<Order, bool> predicate)
         {
-            return db.Orders.Include(o => o.Delivery).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Order Get(int id)
+        private Task<List<Order>> GetListAsync(Func<Order, bool> predicate)
         {
-            return db.Orders.Include(o => o.Delivery).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Orders.Include(o => o.Delivery).Where(predicate).ToList());
         }
 
-        public IEnumerable<Order> GetAll()
+        public async Task<Order> GetAsync(int id)
         {
-            return db.Orders;
+            return await db.Orders.Include(o => o.Delivery).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Order item)
+        public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Orders.ToListAsync();
+        }
+
+        public void Update(Order order)
+        {
+            db.Entry(order).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

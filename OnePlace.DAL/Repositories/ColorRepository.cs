@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create (Color item)
+        public void Create (Color color)
         {
-            db.Colors.Add(item);
+            db.Colors.Add(color);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Color color = db.Colors.FirstOrDefault(o => o.Id == id);
+            Color color = await db.Colors.FirstOrDefaultAsync(o => o.Id == id);
             if (color != null)
             {
                 db.Colors.Remove(color);
             }
         }
 
-        public IEnumerable<Color> Find(Func<Color, bool> predicate)
+        public async Task<IEnumerable<Color>> FindAsync(Func<Color, bool> predicate)
         {
-            return db.Colors.Include(o => o.Products).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Color Get(int id)
+        private Task<List<Color>> GetListAsync(Func<Color, bool> predicate)
         {
-            return db.Colors.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Colors.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public async Task<List<Color>> GetAll()
+        public async Task<Color> GetAsync(int id)
+        {
+            return await db.Colors.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task<IEnumerable<Color>> GetAllAsync()
         {
             return await db.Colors.ToListAsync();
         }
 
-        public void Update(Color item)
+        public void Update(Color color)
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            db.Entry(color).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

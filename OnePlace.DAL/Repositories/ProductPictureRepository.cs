@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,46 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(ProductPicture item)
+        public void Create(ProductPicture productPicture)
         {
-            db.ProductPictures.Add(item);
+            db.ProductPictures.Add(productPicture);
         }
 
-        public void Delete(CompositeKey key)
+        public async Task DeleteAsync(CompositeKey key)
         {
-            ProductPicture productPicture = db.ProductPictures.FirstOrDefault(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
+            ProductPicture productPicture = await db.ProductPictures
+                .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
             if (productPicture != null)
             {
                 db.ProductPictures.Remove(productPicture);
             }
         }
 
-        public IEnumerable<ProductPicture> Find(Func<ProductPicture, bool> predicate)
+        public async Task<IEnumerable<ProductPicture>> FindAsync(Func<ProductPicture, bool> predicate)
         {
-            return db.ProductPictures.Include(o => o.Picture).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public ProductPicture Get(CompositeKey key)
+        private Task<List<ProductPicture>> GetListAsync(Func<ProductPicture, bool> predicate)
         {
-            return db.ProductPictures.Include(o => o.Picture).FirstOrDefault(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
+            return Task.Run(() => db.ProductPictures.Include(o => o.Picture).Where(predicate).ToList());
         }
 
-        public IEnumerable<ProductPicture> GetAll()
+        public async Task<ProductPicture> GetAsync(CompositeKey key)
         {
-            return db.ProductPictures;
+            return await db.ProductPictures
+                .Include(o => o.Picture)
+                .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
         }
 
-        public void Update(ProductPicture item)
+        public async Task<IEnumerable<ProductPicture>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.ProductPictures.ToListAsync();
+        }
+
+        public void Update(ProductPicture productPicture)
+        {
+            db.Entry(productPicture).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

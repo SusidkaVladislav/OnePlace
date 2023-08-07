@@ -14,7 +14,7 @@ namespace OnePlace.DAL.Entities.ViewModels
         [Required]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Номер телефону")]
-        public string Phone_number { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required]
         [Display(Name = "улуктронна адреса")]

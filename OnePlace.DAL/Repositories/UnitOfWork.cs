@@ -1,13 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Data.Entity.Core.Objects.DataClasses;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -15,44 +9,46 @@ namespace OnePlace.DAL.Repositories
     {
         private AppDbContext _appDbContext;
 
-        public IRepository<Category> Categories { get; private set; }
-        public IRepository<Color> Colors { get; private set; }
+        public IRepository<Category, int> Categories { get; private set; }
+        public IRepository<Color, int> Colors { get; private set; }
 
-        public IRepository<Delivery> Deliveries { get; private set; }
+        public IRepository<Delivery, int> Deliveries { get; private set; }
 
-        public IRepository<Description> Descriptions { get; private set; }
+        public IRepository<Description, int> Descriptions { get; private set; }
 
-        public IRepository<Gender> Genders { get; private set; }
+        public IRepository<Gender, int> Genders { get; private set; }
 
-        public IRepository<LikedProduct> LikedProducts { get; private set; }
+        public IRepository<LikedProduct, CompositeKey> LikedProducts { get; private set; }
 
-        public IRepository<ManufactureCountry> ManufactureCountries { get; private set; }
+        public IRepository<ManufactureCountry, int> ManufactureCountries { get; private set; }
 
-        public IRepository<Manufacturer> Manufacturers { get; private set; }
+        public IRepository<Manufacturer, int> Manufacturers { get; private set; }
 
-        public IRepository<Material> Materials { get; private set; }
+        public IRepository<Material, int> Materials { get; private set; }
 
-        public IRepository<Order> Orders { get; private set; }
+        public IRepository<Order, int> Orders { get; private set; }
 
-        public IRepository<OrderProduct> OrderProducts { get; private set; }
+        public IRepository<OrderProduct, CompositeKey> OrderProducts { get; private set; }
 
-        public IRepository<Picture> Pictures { get; private set; }
+        public IRepository<Picture, int> Pictures { get; private set; }
 
-        public IRepository<Product> Products { get; private set; }
+        public IRepository<Product, int> Products { get; private set; }
 
-        public IRepository<ProductDescription> ProductDescriptions { get; private set; }
+        public IRepository<ProductDescription, CompositeKey> ProductDescriptions { get; private set; }
 
-        public IRepository<ProductPicture> ProductPictures { get; private set; }
+        public IRepository<ProductPicture, CompositeKey> ProductPictures { get; private set; }
 
-        public IRepository<Review> Reviews { get; private set; }
+        public IRepository<Review, int> Reviews { get; private set; }
 
-        public IRepository<Sale> Sales { get; private set; }
+        public IRepository<Sale, int> Sales { get; private set; }
 
-        public IRepository<User> Users { get; private set; }
+        public IRepository<User, int> Users { get; private set; }
 
-        public IRepository<Warehouse> Warehouses { get; private set; }
+        public IRepository<Warehouse, int> Warehouses { get; private set; }
 
-        public IRepository<WarehouseProduct> WarehouseProducts { get; private set; }
+        public IRepository<WarehouseProduct, CompositeKey> WarehouseProducts { get; private set; }
+
+        public IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; private set; }
 
         public UnitOfWork(AppDbContext appDbContext)
         {
@@ -62,16 +58,33 @@ namespace OnePlace.DAL.Repositories
             Deliveries = new DeliveryRepository(_appDbContext);
             Descriptions = new DescriptionRepository(_appDbContext);
             Genders = new GenderRepository(_appDbContext);
+            LikedProducts = new LikedProductRepository(_appDbContext);
+            ManufactureCountries = new ManufactureCountryRepository(_appDbContext);
+            Manufacturers = new ManufacturerRepository(_appDbContext);
+            Materials = new MaterialRepository(_appDbContext);
+            Orders = new OrderRepository(_appDbContext);
+            OrderProducts = new OrderProductRepository(_appDbContext);
+            Pictures = new PictureRepository(_appDbContext);
+            Products = new ProductRepository(_appDbContext);
+            ProductDescriptions = new ProductDescriptionRepository(_appDbContext);
+            ProductPictures = new ProductPictureRepository(_appDbContext);
+            Reviews = new ReviewRepository(_appDbContext);
+            Sales = new SaleRepository(_appDbContext);
+            Users = new UserRepository(_appDbContext);
+            Warehouses = new WarehouseRepository(_appDbContext);
+            WarehouseProducts = new WarehouseProductRepository(_appDbContext);
+            ShoppingCarts = new ShoppingCartRepository(_appDbContext);
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            _appDbContext.Dispose();
+            await _appDbContext.DisposeAsync();
         }
 
-        public void Save()
+
+        public async Task SaveAsync()
         {
-            _appDbContext.SaveChanges();
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

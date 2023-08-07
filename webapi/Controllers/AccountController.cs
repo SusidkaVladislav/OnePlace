@@ -6,8 +6,8 @@ using OnePlace.DAL.Entities;
 
 namespace webapi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]5
+    //[Route("api/[controller]")]
+    //[ApiController]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -27,7 +27,7 @@ namespace webapi.Controllers
                 {
                     Name = register.Name,
                     Surname = register.Surname,
-                    PhoneNumber = register.Phone_number,
+                    PhoneNumber = register.PhoneNumber,
                     Email = register.Email,
                     UserName = register.Email
                 };

@@ -8,11 +8,11 @@ namespace OnePlace.DAL.Interfaces
 {
     public interface IRepository<T, TKey> where T : class
     {
-        IEnumerable<T> GetAll();
-        T Get(TKey key);
-        IEnumerable<T> Find(Func<T, Boolean> predicate);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetAsync(TKey key);
+        Task<IEnumerable<T>> FindAsync(Func<T, Boolean> predicate);
         void Create(T item);
         void Update(T item);
-        void Delete(TKey key);
+        Task DeleteAsync(TKey key);
     }
 }

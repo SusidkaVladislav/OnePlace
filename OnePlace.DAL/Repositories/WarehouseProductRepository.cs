@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,46 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(WarehouseProduct item)
+        public void Create(WarehouseProduct warehouseProduct)
         {
-            db.WarehouseProducts.Add(item);
+            db.WarehouseProducts.Add(warehouseProduct);
         }
 
-        public void Delete(CompositeKey key)
+        public async Task DeleteAsync(CompositeKey key)
         {
-            WarehouseProduct warehouseProduct = db.WarehouseProducts.FirstOrDefault(o => o.WarehouseId == key.Column1 && o.ProductId == key.Column2);
+            WarehouseProduct warehouseProduct = await db.WarehouseProducts
+                .FirstOrDefaultAsync(o => o.WarehouseId == key.Column1 && o.ProductId == key.Column2);
             if (warehouseProduct != null)
             {
                 db.WarehouseProducts.Remove(warehouseProduct);
             }
         }
 
-        public IEnumerable<WarehouseProduct> Find(Func<WarehouseProduct, bool> predicate)
+        public async Task<IEnumerable<WarehouseProduct>> FindAsync(Func<WarehouseProduct, bool> predicate)
         {
-            return db.WarehouseProducts.Include(o => o.Warehouse).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public WarehouseProduct Get(CompositeKey key)
+        private Task<List<WarehouseProduct>> GetListAsync(Func<WarehouseProduct, bool> predicate)
         {
-            return db.WarehouseProducts.Include(o => o.Warehouse).FirstOrDefault(o => o.WarehouseId == key.Column1 && o.ProductId == key.Column2);
+            return Task.Run(() => db.WarehouseProducts.Include(o => o.Warehouse).Where(predicate).ToList());
         }
 
-        public IEnumerable<WarehouseProduct> GetAll()
+        public async Task<WarehouseProduct> GetAsync(CompositeKey key)
         {
-            return db.WarehouseProducts;
+            return await db.WarehouseProducts.
+                Include(o => o.Warehouse).
+                FirstOrDefaultAsync(o => o.WarehouseId == key.Column1 && o.ProductId == key.Column2);
         }
 
-        public void Update(WarehouseProduct item)
+        public async Task<IEnumerable<WarehouseProduct>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.WarehouseProducts.ToListAsync();
+        }
+
+        public void Update(WarehouseProduct warehouseProduct)
+        {
+            db.Entry(warehouseProduct).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Picture item)
+        public void Create(Picture picture)
         {
-            db.Pictures.Add(item);
+            db.Pictures.Add(picture);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Picture picture = db.Pictures.FirstOrDefault(o => o.Id == id);
+            Picture picture = await db.Pictures.FirstOrDefaultAsync(o => o.Id == id);
             if (picture != null)
             {
                 db.Pictures.Remove(picture);
             }
         }
 
-        public IEnumerable<Picture> Find(Func<Picture, bool> predicate)
+        public async Task<IEnumerable<Picture>> FindAsync(Func<Picture, bool> predicate)
         {
-            return db.Pictures.Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Picture Get(int id)
+        private Task<List<Picture>> GetListAsync(Func<Picture, bool> predicate)
         {
-            return db.Pictures.FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Pictures.Where(predicate).ToList());
         }
 
-        public IEnumerable<Picture> GetAll()
+        public async Task<Picture> GetAsync(int id)
         {
-            return db.Pictures;
+            return await db.Pictures.FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Picture item)
+        public async Task<IEnumerable<Picture>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Pictures.ToListAsync();
+        }
+
+        public void Update(Picture picture)
+        {
+            db.Entry(picture).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

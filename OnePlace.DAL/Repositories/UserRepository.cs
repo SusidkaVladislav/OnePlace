@@ -17,48 +17,54 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(User item)
+        public void Create(User user)
         {
-            db.Users.Add(item);
+            db.Users.Add(user);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            User user = db.Users.FirstOrDefault(o => Convert.ToInt32(o.Id) == id);
+            User user = await db.Users
+                .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
             if (user != null)
             {
                 db.Users.Remove(user);
             }
         }
 
-        public IEnumerable<User> Find(Func<User, bool> predicate)
+        public async Task<IEnumerable<User>> FindAsync(Func<User, bool> predicate)
         {
-            return db.Users
+            return await GetListAsync(predicate);
+        }
+
+        private Task<List<User>> GetListAsync(Func<User, bool> predicate)
+        {
+            return Task.Run(() => db.Users
                 .Include(o => o.Orders)
                 .Include(o => o.Reviews)
                 .Include(o => o.LikedProducts)
                 .Include(o => o.ShoppingCarts)
-                .Where(predicate).ToList();
+                .Where(predicate).ToList());
         }
 
-        public User Get(int id)
+        public async Task<User> GetAsync(int id)
         {
-            return db.Users
+            return await db.Users
                 .Include(o => o.Orders)
                 .Include(o => o.Reviews)
                 .Include(o => o.LikedProducts)
                 .Include(o => o.ShoppingCarts)
-                .FirstOrDefault(o => Convert.ToInt32(o.Id) == id);
+                .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return db.Users;
+            return await db.Users.ToListAsync();
         }
 
-        public void Update(User item)
+        public void Update(User user)
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            db.Entry(user).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

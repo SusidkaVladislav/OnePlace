@@ -2,7 +2,7 @@
 
 namespace OnePlace.DAL.Entities
 {
-    [PrimaryKey(nameof(ProductId), nameof(PictureId))]
+    //[PrimaryKey(nameof(ProductId), nameof(PictureId))]
     public class ProductPicture
     {
         public int ProductId { get; set; }

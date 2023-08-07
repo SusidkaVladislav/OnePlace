@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,46 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(ProductDescription item)
+        public void Create(ProductDescription productDescription)
         {
-            db.ProductDescriptions.Add(item);
+            db.ProductDescriptions.Add(productDescription);
         }
 
-        public void Delete(CompositeKey key)
+        public async Task DeleteAsync(CompositeKey key)
         {
-            ProductDescription productDescription = db.ProductDescriptions.FirstOrDefault(o => o.DescriptionId == key.Column1 && o.ProductId == key.Column2);
+            ProductDescription productDescription = await db.ProductDescriptions.FirstOrDefaultAsync(
+                o => o.DescriptionId == key.Column1 && o.ProductId == key.Column2);
             if (productDescription != null)
             {
                 db.ProductDescriptions.Remove(productDescription);
             }
         }
 
-        public IEnumerable<ProductDescription> Find(Func<ProductDescription, bool> predicate)
+        public async Task<IEnumerable<ProductDescription>> FindAsync(Func<ProductDescription, bool> predicate)
         {
-            return db.ProductDescriptions.Include(o => o.Description).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public ProductDescription Get(CompositeKey key)
+        private Task<List<ProductDescription>> GetListAsync(Func<ProductDescription, bool> predicate)
         {
-            return db.ProductDescriptions.Include(o => o.Description).FirstOrDefault(o => o.DescriptionId == key.Column1 && o.ProductId == key.Column2);
+            return Task.Run(() => db.ProductDescriptions.Include(o => o.Description).Where(predicate).ToList());
         }
 
-        public IEnumerable<ProductDescription> GetAll()
+        public async Task<ProductDescription> GetAsync(CompositeKey key)
         {
-            return db.ProductDescriptions;
+            return await db.ProductDescriptions
+                .Include(o => o.Description)
+                .FirstOrDefaultAsync(o => o.DescriptionId == key.Column1 && o.ProductId == key.Column2);
         }
 
-        public void Update(ProductDescription item)
+        public async Task<IEnumerable<ProductDescription>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.ProductDescriptions.ToListAsync();
+        }
+
+        public void Update(ProductDescription productDescription)
+        {
+            db.Entry(productDescription).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

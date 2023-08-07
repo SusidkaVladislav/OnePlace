@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,45 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(ManufactureCountry item)
+        public void Create(ManufactureCountry manufactureCountry)
         {
-            db.ManufactureCountries.Add(item);
+            db.ManufactureCountries.Add(manufactureCountry);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            ManufactureCountry manufactureCountry = db.ManufactureCountries.FirstOrDefault(o => o.Id == id);
+            ManufactureCountry manufactureCountry = await db.ManufactureCountries.FirstOrDefaultAsync(o => o.Id == id);
             if (manufactureCountry != null)
             {
                 db.ManufactureCountries.Remove(manufactureCountry);
             }
         }
 
-        public IEnumerable<ManufactureCountry> Find(Func<ManufactureCountry, bool> predicate)
+        public async Task<IEnumerable<ManufactureCountry>> FindAsync(Func<ManufactureCountry, bool> predicate)
         {
-            return db.ManufactureCountries.Include(o => o.Products).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public ManufactureCountry Get(int id)
+        private Task<List<ManufactureCountry>> GetListAsync(Func<ManufactureCountry, bool> predicate)
         {
-            return db.ManufactureCountries.Include(o => o.Products).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.ManufactureCountries.Include(o => o.Products)
+            .Where(predicate)
+            .ToList());
         }
 
-        public IEnumerable<ManufactureCountry> GetAll()
+        public async Task<ManufactureCountry> GetAsync(int id)
         {
-            return db.ManufactureCountries;
+            return await db.ManufactureCountries.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(ManufactureCountry item)
+        public async Task<IEnumerable<ManufactureCountry>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.ManufactureCountries.ToListAsync();
+        }
+
+        public void Update(ManufactureCountry manufactureCountry)
+        {
+            db.Entry(manufactureCountry).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

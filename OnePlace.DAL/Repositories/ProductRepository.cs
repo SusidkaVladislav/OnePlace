@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,24 +12,29 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Product item)
+        public void Create(Product product)
         {
-            db.Products.Add(item);
+            db.Products.Add(product);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Product product = db.Products.FirstOrDefault(o => o.Id == id);
+            Product product = await db.Products.FirstOrDefaultAsync(o => o.Id == id);
             if (product != null)
             {
                 db.Products.Remove(product);
             }
         }
 
-        public IEnumerable<Product> Find(Func<Product, bool> predicate)
+        public async Task<IEnumerable<Product>> FindAsync(Func<Product, bool> predicate)
         {
-            return db.Products
-                .Include(o => o.ManufactureCountry)
+            return await GetListAsync(predicate);
+        }
+
+        private Task<List<Product>> GetListAsync(Func<Product, bool> predicate)
+        {
+            return Task.Run(() => db.Products
+                .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
                 .Include(o => o.Material)
                 .Include(o => o.Color)
@@ -43,13 +43,13 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
                 .Include(o => o.ProductPictures)
-                .Where(predicate).ToList();
+                .Where(predicate).ToList());
         }
 
-        public Product Get(int id)
+        public async Task<Product> GetAsync(int id)
         {
-            return db.Products
-                .Include(o => o.ManufactureCountry)
+            return await db.Products
+                .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
                 .Include(o => o.Material)
                 .Include(o => o.Color)
@@ -58,17 +58,17 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
                 .Include(o => o.ProductPictures)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public IEnumerable<Product> GetAll()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return db.Products.Include(o => o.ProductPictures);
+            return await db.Products.Include(o => o.ProductPictures).ToListAsync();
         }
 
-        public void Update(Product item)
+        public void Update(Product product)
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            db.Entry(product).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

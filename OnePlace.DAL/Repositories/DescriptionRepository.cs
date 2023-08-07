@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,43 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Description item)
+        public void Create(Description description)
         {
-            db.Descriptions.Add(item);
+            db.Descriptions.Add(description);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Description description = db.Descriptions.FirstOrDefault(o => o.Id == id);
+            Description description = await db.Descriptions.FirstOrDefaultAsync(o => o.Id == id);
             if (description != null)
             {
                 db.Descriptions.Remove(description);
             }
         }
 
-        public IEnumerable<Description> Find(Func<Description, bool> predicate)
+        public async Task<IEnumerable<Description>> FindAsync(Func<Description, bool> predicate)
         {
-            return db.Descriptions.Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Description Get(int id)
+        private Task<List<Description>> GetListAsync(Func<Description, bool> predicate)
         {
-            return db.Descriptions.FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Descriptions.Where(predicate).ToList());
         }
 
-        public async Task<List<Description>> GetAll()
+        public async Task<Description> GetAsync(int id)
+        {
+            return await db.Descriptions.FirstOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task<IEnumerable<Description>> GetAllAsync()
         {
             return await db.Descriptions.ToListAsync();
         }
 
-        public void Update(Description item)
+        public void Update(Description description)
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            db.Entry(description).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

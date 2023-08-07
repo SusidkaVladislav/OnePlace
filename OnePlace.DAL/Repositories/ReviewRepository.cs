@@ -1,12 +1,7 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Repositories
 {
@@ -17,38 +12,45 @@ namespace OnePlace.DAL.Repositories
         {
             this.db = context;
         }
-        public void Create(Review item)
+        public void Create(Review review)
         {
-            db.Reviews.Add(item);
+            db.Reviews.Add(review);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Review review = db.Reviews.FirstOrDefault(o => o.Id == id);
+            Review review = await db.Reviews.FirstOrDefaultAsync(o => o.Id == id);
             if (review != null)
             {
                 db.Reviews.Remove(review);
             }
         }
 
-        public IEnumerable<Review> Find(Func<Review, bool> predicate)
+        public async Task<IEnumerable<Review>> FindAsync(Func<Review, bool> predicate)
         {
-            return db.Reviews.Include(o => o.User).Where(predicate).ToList();
+            return await GetListAsync(predicate);
         }
 
-        public Review Get(int id)
+        private Task<List<Review>> GetListAsync(Func<Review, bool> predicate)
         {
-            return db.Reviews.Include(o => o.User).FirstOrDefault(o => o.Id == id);
+            return Task.Run(() => db.Reviews.Include(o => o.User).Where(predicate).ToList());
         }
 
-        public IEnumerable<Review> GetAll()
+        public async Task<Review> GetAsync(int id)
         {
-            return db.Reviews.Include(o => o.User);
+            return await db.Reviews
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public void Update(Review item)
+        public async Task<IEnumerable<Review>> GetAllAsync()
         {
-            db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return await db.Reviews.Include(o => o.User).ToListAsync();
+        }
+
+        public void Update(Review review)
+        {
+            db.Entry(review).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }
