@@ -1,7 +1,8 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
+//using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Repositories
 {

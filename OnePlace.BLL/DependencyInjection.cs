@@ -32,6 +32,7 @@ namespace OnePlace.BLL
             //services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddAutoMapper(typeof(CategoryProfile));
+            services.AddAutoMapper(typeof(ProductProfile));
 
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IProductService, ProductService>();

@@ -45,7 +45,7 @@ namespace OnePlace.BLL.Utilities
         /// <summary>
         /// Набір характеристик за яими фільтрується продукт
         /// </summary>
-        public HashSet<ProductDescription> Descriptions { get; set; }
+        public HashSet<ProductDescriptionDTO> Descriptions { get; set; }
 
         /// <summary>
         /// Продукти зі знижкою

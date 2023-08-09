@@ -1,4 +1,5 @@
 ﻿using OnePlace.BOL.DescriptionDTO;
+using OnePlace.BOL.Picture;
 
 namespace OnePlace.BOL.ProductPayload
 {
@@ -16,7 +17,7 @@ namespace OnePlace.BOL.ProductPayload
         public int CategoryId { get; set; }
         public string Description { get; set; }
         public bool IsInBestProducts { get; set; }
-        public List<ProductDescription>? Descriptions { get; set; }
-        public List<string>? Pictures { get; set; }
+        public List<ProductDescriptionDTO>? Descriptions { get; set; }
+        public List<ProductPictureDTO>? Pictures { get; set; }
     }
 }
