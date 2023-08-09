@@ -20,7 +20,7 @@ namespace OnePlace.DAL.Entities.ViewModels
         [Required]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Phone")]
-        public string Phone_number { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required]
         [Display(Name = "Email")]
