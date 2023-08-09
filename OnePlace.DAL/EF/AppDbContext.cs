@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace OnePlace.DAL.EF
 {
-    public class AppDbContext : IdentityDbContext<User>
+    public class AppDbContext : IdentityDbContext<User, Role, int>
     {
+        private string connectionString;
 
         public System.Data.Entity.DbSet<Order> Orders { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -19,5 +20,9 @@ namespace OnePlace.DAL.EF
             Database.EnsureCreated();
         }
 
+        public AppDbContext(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
     }
 }

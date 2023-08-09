@@ -1,28 +1,26 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Entities.ViewModels;
+using System.Net;
+using System.Text.Json;
 
 namespace webapi.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseApiController
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        [HttpPost("register")]
+        public void  Register([FromBody] RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -30,85 +28,89 @@ namespace webapi.Controllers
                 {
                     Name = model.Name,
                     Surname = model.Surname,
-                    PhoneNumber = model.Phone_number,
+                    PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
                     UserName = model.Email
                 };
                 // add  user
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                var result = _userManager.CreateAsync(user, model.Password);
+                if (result.IsCompletedSuccessfully)
                 {
                     // coockies
-                    await _signInManager.SignInAsync(user, false);
-                    await _userManager.AddToRoleAsync(user, "user");
-                    return RedirectToAction("Index", "Home");
+                    _signInManager.SignInAsync(user, false);
+                    _userManager.AddToRoleAsync(user, "user");
+
+                    var response = new
+                    {
+                        success = true,
+                        data = user
+                    };
+                    Response.ContentType = "application/json";
+                    Response.WriteAsync(JsonSerializer.Serialize(response));
                 }
                 else
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    //foreach (var error in result.Errors)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, error.Description);
+                    //}
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.WriteAsync("Response is failed");
                 }
-            }
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            returnUrl = returnUrl ?? Url.Content("~/Admin/Index");
-
-
-            if (ModelState.IsValid)
-            {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
-
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                }
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.WriteAsync("Invalid input");
+            }
+        }
+
+        [HttpPost("login")]
+        public void LoginByEmail([FromBody] LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userManager.FindByEmailAsync(model.Email).Result;
+                if (user != null)
+                {
+                    var result = _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false).Result;
+                    if (result.Succeeded)
+                    {
+                        var userData = new User
+                        {
+                            Id = user.Id,
+                            Name = user.Name,
+                            Surname = user.Surname,
+                            PhoneNumber = user.PhoneNumber,
+                            Email = user.Email,
+                            PasswordHash = user.PasswordHash
+                        };
+
+                        var response = new
+                        {
+                            success = true,
+                            data = userData
+                        };
+
+                        Response.ContentType = "application/json";
+                        Response.WriteAsync(JsonSerializer.Serialize(response));
+                    }
+                    else
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        Response.WriteAsync("Login failed");
+                    }
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.WriteAsync("User not found");
+                }
+            }
+            else
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.WriteAsync("Invalid input");
             }
         }
     }
