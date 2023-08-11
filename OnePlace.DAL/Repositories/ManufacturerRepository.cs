@@ -1,23 +1,16 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ManufacturerRepository : IRepository<Manufacturer, int>
+    public class ManufacturerRepository : RepositoryBase<Manufacturer, int>
     {
-        private AppDbContext db;
-        public ManufacturerRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Manufacturer manufacturer)
-        {
-            db.Manufacturers.Add(manufacturer);
-        }
 
-        public async Task DeleteAsync(int id)
+        public ManufacturerRepository(AppDbContext context): base(context) { }
+
+
+        public override async Task DeleteAsync(int id)
         {
             Manufacturer manufacturer = await db.Manufacturers.FirstOrDefaultAsync(o => o.Id == id);
             if (manufacturer != null)
@@ -26,7 +19,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Manufacturer>> FindAsync(Func<Manufacturer, bool> predicate)
+        public override async Task<IEnumerable<Manufacturer>> FindAsync(Func<Manufacturer, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,19 +29,9 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Manufacturers.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public async Task<Manufacturer> GetAsync(int id)
+        public override async Task<Manufacturer> GetAsync(int id)
         {
             return await db.Manufacturers.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
-        }
-
-        public async Task<IEnumerable<Manufacturer>> GetAllAsync()
-        {
-            return await db.Manufacturers.ToListAsync();
-        }
-
-        public void Update(Manufacturer manufacturer)
-        { 
-            db.Entry(manufacturer).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

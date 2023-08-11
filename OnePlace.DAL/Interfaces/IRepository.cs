@@ -1,4 +1,7 @@
-﻿using System;
+﻿using OnePlace.DAL.Entities;
+using OnePlace.DAL.Models;
+using OnePlace.DAL.SearchParams;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +17,6 @@ namespace OnePlace.DAL.Interfaces
         void Create(T item);
         void Update(T item);
         Task DeleteAsync(TKey key);
+        Task<PaginatedList<T>> Filter<S>(S searchParamsModel) where S : BaseSearchParams;
     }
 }

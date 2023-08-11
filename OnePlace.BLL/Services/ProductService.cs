@@ -2,16 +2,22 @@
 using Microsoft.Extensions.Logging;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
+using OnePlace.BLL.Validators;
 using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.ProductPayload;
+using OnePlace.BOL.Sale;
+using OnePlace.BOL.Warehouse;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 
 namespace OnePlace.BLL.Services
 {
+    /// <summary>
+    /// Сервіс для роботи з продуктами
+    /// </summary>
     public class ProductService : IProductService
     {
         private readonly IMapper _mapper;
@@ -30,9 +36,12 @@ namespace OnePlace.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<List<ProductDetails>> FilterProduct(ProductSearchParams filters)
+        public async Task<PaginatedList<ProductDetails>> FilterProduct(ProductSearchParams filters)
         {
-            throw new ArgumentNullException();
+            var searchParams = _mapper.Map<DAL.SearchParams.ProductSearchParams>(filters);
+            var products = await _unitOfWork.Products.Filter(searchParams);
+            var result = _mapper.Map<PaginatedList<ProductDetails>>(products); 
+            return result;
         }
 
         public async Task<int> AddProduct(ProductCreatePayload product)
@@ -46,12 +55,22 @@ namespace OnePlace.BLL.Services
 
             #region Валідація всіх полів
             #region Category
+
+            CategoryValidation categoryValidation = new CategoryValidation(_unitOfWork);
+            
             if (productDTO.CategoryId <= 0)
                 throw new ArgumentNullException(nameof(product) + " no categiry ID");
+            
             //Перевірити чи є категорія за вказаним id
-            var category = await _unitOfWork.Categories.GetAsync(productDTO.CategoryId);
-            if (category == null)
+            if (!await categoryValidation.Exists(productDTO.CategoryId))
                 throw new ArgumentNullException(nameof(product) + " invalid category ID");
+
+            //Продукт не можна вставляти в ту категорію, яка має вже підкатегорії
+            
+            if(await categoryValidation.HasSubCategory(productDTO.CategoryId))
+                throw new BusinessException(nameof(Category) + " в цю категорію не можна добавляти продукти," +
+                    "тому що йя категорія містить підкатегорії");
+
             #endregion
             #region Manufacturer country
             if (productDTO.ManufacturerCountryId <= 0)
@@ -87,6 +106,18 @@ namespace OnePlace.BLL.Services
             var gender = await _unitOfWork.Genders.GetAsync(productDTO.GenderId ?? default(int));
             if (gender == null)
                 throw new ArgumentNullException(nameof(product) + " invalid gender ID");
+            #endregion
+            #region Sale
+
+            if(productDTO.Sale != null)
+            {
+                if (DateTime.Compare(productDTO.Sale.StartDate, productDTO.Sale.EndDate) >= 0)
+                    throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
+                if (productDTO.Sale.DiscountPercent > 100 || productDTO.Sale.DiscountPercent < 0)
+                    throw new BusinessException("некоректний відсоток знижки");
+            }
+            
+
             #endregion
             #endregion
 
@@ -152,9 +183,12 @@ namespace OnePlace.BLL.Services
                 if (existedDescriptions.Count() == 0)
                 {
                     //Створення нової характеристики
-                    Description newDescription = new Description();
-                    newDescription.Name = description.Name;
-                    newDescription.CategoryId = productDTO.CategoryId;
+                    Description newDescription = new Description 
+                    {
+                        Name = description.Name,
+                        CategoryId = productDTO.CategoryId
+                    };
+                 
 
                     //Збереження в БД
                     _unitOfWork.Descriptions.Create(newDescription);
@@ -184,16 +218,74 @@ namespace OnePlace.BLL.Services
             newProduct.ProductDescriptions = productDescriptions;
             #endregion
 
+            
+
             //Добавлення нового продукту в БД
             _unitOfWork.Products.Create(newProduct);
             await _unitOfWork.SaveAsync();
+            #region Робота з локацією продукта
+
+            IEnumerable<Warehouse> warehouse = await _unitOfWork.Warehouses.FindAsync(w => w.Location == productDTO.Warehouse.Location);
+            WarehouseProduct warehouseProduct = new WarehouseProduct();
+            if (warehouse.Count() == 0) // Якщо такої локації ще немає
+                                        //Створення нової локації і прив'язка до неї продукта
+            {
+                Warehouse newWarehouse = new Warehouse();
+                newWarehouse.Location = productDTO.Warehouse.Location;
+                
+                _unitOfWork.Warehouses.Create(newWarehouse);
+                await _unitOfWork.SaveAsync();
+               
+                warehouseProduct.WarehouseId = newWarehouse.Id;
+            }
+            else
+                warehouseProduct.WarehouseId = warehouse.First().Id;
+
+            warehouseProduct.ProductId = newProduct.Id;
+            warehouseProduct.Quantity = productDTO.Warehouse.Quantity;
+            _unitOfWork.WarehouseProducts.Create(warehouseProduct);
+
+            await _unitOfWork.SaveAsync();
+            #endregion
+
+            #region Робота зі знижкою
+
+            Sale sale = new Sale();
+            sale.StartDate = productDTO.Sale.StartDate;
+            sale.EndDate = productDTO.Sale.EndDate;
+            sale.DiscountPercent = productDTO.Sale.DiscountPercent;
+            sale.ProductId = newProduct.Id;
+
+            _unitOfWork.Sales.Create(sale);
+            await _unitOfWork.SaveAsync();
+            #endregion
 
             return newProduct.Id;
         }
 
         public async Task<int> DeleteProduct(int productId)
         {
-            throw new NotImplementedException();
+            if(productId <= 0) 
+                throw new ArgumentNullException(nameof(productId) + " некоректний ID");
+
+            var product = await _unitOfWork.Products.GetAsync(productId);
+
+            if (product == null)
+                throw new NotFoundException(nameof(product) + " немає такого продукту");
+
+            //Спочатку йде видалення записів з таблички ProductDescriptions
+            foreach (var item in product.ProductDescriptions)
+            {
+                CompositeKey key = new CompositeKey();
+                key.Column1 = item.DescriptionId;
+                key.Column2 = item.ProductId;
+                await _unitOfWork.ProductDescriptions.DeleteAsync(key);
+            }
+
+
+            await _unitOfWork.Products.DeleteAsync(productId);
+            await _unitOfWork.SaveAsync();
+            return product.Id;
         }
 
         public async Task<ProductDetails> GetProduct(int productId)
@@ -210,19 +302,58 @@ namespace OnePlace.BLL.Services
 
             ProductDetails details = _mapper.Map<ProductDetails>(product);
 
+            #region Descriptions
+            //Підтягуються характеристики товару
             for (int i = 0; i < details.Descriptions.Count; i++)
             {
                 var desc = await _unitOfWork.Descriptions.GetAsync(
                     product.ProductDescriptions.ElementAt(i).DescriptionId);
                 details.Descriptions[i].Name = desc.Name;
+                details.Descriptions[i].Id = desc.Id;
             }
-
+            #endregion
+            #region Pictures
+            //Підтягуютсья фотографії товару
             for (int i = 0; i < details.Pictures.Count; i++)
             {
                 var pict = await _unitOfWork.Pictures.GetAsync(
                     product.ProductPictures.ElementAt(i).PictureId);
                 details.Pictures[i].Address = pict.Address;
+                details.Pictures[i].Id = pict.Id;
             }
+            #endregion
+            #region Warehouse
+            //Підтягується локація товару, та кількість в наявності 
+            IEnumerable<WarehouseProduct> warehouseProduct = await _unitOfWork.WarehouseProducts
+                .FindAsync(wp=>wp.ProductId== productId);
+            if(warehouseProduct.Count()>0)
+            {
+                Warehouse warehouse = await _unitOfWork.Warehouses.GetAsync(warehouseProduct.First().WarehouseId);
+
+                WarehouseDetails warehouseDetails = new WarehouseDetails();
+                warehouseDetails.Location = warehouse.Location;
+                warehouseDetails.Quantity = warehouseProduct.First().Quantity;
+                warehouseDetails.Id = warehouseProduct.First().WarehouseId;
+                details.Warehouse = warehouseDetails;
+            }
+            #endregion
+            #region Sale
+            //Підтягується знижка
+            Sale sale = (await _unitOfWork.Sales
+                .FindAsync(s => s.ProductId == productId) as List<Sale>).FirstOrDefault();
+
+            if (sale != null)
+            {
+                SaleDetails saleDetails = new SaleDetails();
+
+                saleDetails.StartDate = sale.StartDate;
+                saleDetails.EndDate = sale.EndDate;
+                saleDetails.DiscountPercent = sale.DiscountPercent;
+                saleDetails.Id = sale.Id;
+
+                details.Sale = saleDetails;
+            }
+            #endregion
 
             return details;
 
@@ -232,8 +363,96 @@ namespace OnePlace.BLL.Services
             //throw new NotImplementedException();
         }
 
-        public async Task<int> UpdateProduct(ProductPayload product)
+        public async Task<int> UpdateProduct(ProductPayload productPayload)
         {
+            ProductDTO productDTO = _mapper.Map<ProductDTO>(productPayload);
+
+            if (productDTO == null)
+                throw new NotFoundException(nameof(ProductDTO) + " null");
+
+
+            #region Category
+
+            if (productDTO.CategoryId <= 0)
+                throw new NotFoundException(nameof(Category) + " неіснуюча категорія");
+
+            CategoryValidation categoryValidation = new CategoryValidation(_unitOfWork);
+            
+            if (!await categoryValidation.Exists(productDTO.CategoryId))
+                throw new NotFoundException(nameof(Category) + " неіснуюча категорія");
+
+            if(await categoryValidation.HasSubCategory(productDTO.CategoryId))
+                throw new BusinessException(nameof(Category) + " в цю категорію не можна добавляти продукти," +
+                   "тому що йя категорія містить підкатегорії");
+
+            #endregion
+
+            #region Validation
+            #region Manufacturer country
+            if (productDTO.ManufacturerCountryId <= 0)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer country ID");
+            var country = await _unitOfWork.ManufactureCountries.GetAsync(productDTO.ManufacturerCountryId ?? default(int));
+            if (country == null)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer country ID");
+            #endregion
+            #region Manufacturer
+            if (productDTO.ManufacturerId <= 0)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer ID");
+            var manufacturer = await _unitOfWork.Manufacturers.GetAsync(productDTO.ManufacturerId ?? default(int));
+            if (manufacturer == null)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer ID");
+            #endregion
+            #region Material
+            if (productDTO.MaterialId <= 0)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid material ID");
+            var material = await _unitOfWork.Materials.GetAsync(productDTO.MaterialId ?? default(int));
+            if (material == null)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid material ID");
+            #endregion
+            #region Color
+            if (productDTO.ColorId <= 0)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid color ID");
+            var color = await _unitOfWork.Colors.GetAsync(productDTO.ColorId ?? default(int));
+            if (color == null)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid color ID");
+            #endregion
+            #region Gender
+            if (productDTO.GenderId <= 0)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid gender ID");
+            var gender = await _unitOfWork.Genders.GetAsync(productDTO.GenderId ?? default(int));
+            if (gender == null)
+                throw new ArgumentNullException(nameof(productDTO) + " invalid gender ID");
+            #endregion
+            #endregion
+
+            #region Sale
+
+            if (productDTO.Sale != null)
+            {
+                if (DateTime.Compare(productDTO.Sale.StartDate, productDTO.Sale.EndDate) >= 0)
+                    throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
+                if (productDTO.Sale.DiscountPercent > 100 || productDTO.Sale.DiscountPercent < 0)
+                    throw new BusinessException("некоректний відсоток знижки");
+            }
+
+
+            #endregion
+
+
+            Product product = _mapper.Map<Product>(productDTO);
+
+
+            
+
+
+
+
+
+
+
+            _unitOfWork.Products.Update(product);
+            await _unitOfWork.SaveAsync();
+
             throw new NotImplementedException();
         }
     }

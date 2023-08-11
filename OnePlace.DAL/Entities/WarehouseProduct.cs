@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace OnePlace.DAL.Entities
+﻿namespace OnePlace.DAL.Entities
 {
     //[PrimaryKey(nameof(WarehouseId), nameof(ProductId))]
     public class WarehouseProduct

@@ -1,23 +1,14 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class MaterialRepository : IRepository<Material, int>
+    public class MaterialRepository : RepositoryBase<Material, int>
     {
-        private AppDbContext db;
-        public MaterialRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Material material)
-        {
-            db.Materials.Add(material);
-        }
+        public MaterialRepository(AppDbContext context): base(context) { }
 
-        public async Task DeleteAsync(int id)
+        public override async Task DeleteAsync(int id)
         {
             Material material = await db.Materials.FirstOrDefaultAsync(o => o.Id == id);
             if (material != null)
@@ -26,7 +17,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Material>> FindAsync(Func<Material, bool> predicate)
+        public override async Task<IEnumerable<Material>> FindAsync(Func<Material, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,19 +27,9 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Materials.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public async Task<Material> GetAsync(int id)
+        public override async Task<Material> GetAsync(int id)
         {
             return await db.Materials.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
-        }
-
-        public async Task<IEnumerable<Material>> GetAllAsync()
-        {
-            return await db.Materials.ToListAsync();
-        }
-
-        public void Update(Material material)
-        {
-            db.Entry(material).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

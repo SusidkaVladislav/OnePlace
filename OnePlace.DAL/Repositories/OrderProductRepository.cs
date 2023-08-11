@@ -1,23 +1,15 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class OrderProductRepository : IRepository<OrderProduct, CompositeKey>
+    public class OrderProductRepository : RepositoryBase<OrderProduct, CompositeKey>
     {
-        private AppDbContext db;
-        public OrderProductRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(OrderProduct orderProduct)
-        {
-            db.OrderProducts.Add(orderProduct);
-        }
+        public OrderProductRepository(AppDbContext context): base(context) { }
 
-        public async Task DeleteAsync(CompositeKey key)
+
+        public override async Task DeleteAsync(CompositeKey key)
         {
             OrderProduct orderProduct = await db.OrderProducts.FirstOrDefaultAsync(o => o.OrderId == key.Column1 
             && o.ProductId == key.Column2);
@@ -27,7 +19,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<OrderProduct>> FindAsync(Func<OrderProduct, bool> predicate)
+        public override async Task<IEnumerable<OrderProduct>> FindAsync(Func<OrderProduct, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -37,19 +29,9 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.OrderProducts.Where(predicate).ToList());
         }
 
-        public async Task<OrderProduct> GetAsync(CompositeKey key)
+        public override async Task<OrderProduct> GetAsync(CompositeKey key)
         {
             return await db.OrderProducts.FirstOrDefaultAsync(o => o.OrderId == key.Column1 && o.ProductId == key.Column2);
-        }
-
-        public async Task<IEnumerable<OrderProduct>> GetAllAsync()
-        {
-            return await db.OrderProducts.ToListAsync();
-        }
-
-        public void Update(OrderProduct orderProduct)
-        {
-            db.Entry(orderProduct).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

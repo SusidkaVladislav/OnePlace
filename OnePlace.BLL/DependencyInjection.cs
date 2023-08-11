@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Mappings;
@@ -7,7 +6,6 @@ using OnePlace.BLL.Services;
 using OnePlace.DAL.Interfaces;
 using OnePlace.DAL.Repositories;
 using Serilog;
-using System.Reflection;
 
 namespace OnePlace.BLL
 {

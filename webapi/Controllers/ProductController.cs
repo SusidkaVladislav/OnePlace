@@ -22,8 +22,8 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> GetFilteredProducts([FromBody] ProductSearchParams filter)
+        [HttpGet("search")]
+        public async Task<IActionResult> GetFilteredProducts([FromQuery] ProductSearchParams filter)
         {
             var result = await _productService.FilterProduct(filter);
             return Ok(result);

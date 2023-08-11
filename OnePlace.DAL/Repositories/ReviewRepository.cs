@@ -1,23 +1,16 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ReviewRepository : IRepository<Review, int>
+    public class ReviewRepository : RepositoryBase<Review, int>
     {
-        private AppDbContext db;
-        public ReviewRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Review review)
-        {
-            db.Reviews.Add(review);
-        }
+        public ReviewRepository(AppDbContext context): base(context) { }    
 
-        public async Task DeleteAsync(int id)
+
+        public override async Task DeleteAsync(int id)
         {
             Review review = await db.Reviews.FirstOrDefaultAsync(o => o.Id == id);
             if (review != null)
@@ -26,7 +19,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Review>> FindAsync(Func<Review, bool> predicate)
+        public override async Task<IEnumerable<Review>> FindAsync(Func<Review, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,21 +29,16 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Reviews.Include(o => o.User).Where(predicate).ToList());
         }
 
-        public async Task<Review> GetAsync(int id)
+        public override async Task<Review> GetAsync(int id)
         {
             return await db.Reviews
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<Review>> GetAllAsync()
+        public override async Task<IEnumerable<Review>> GetAllAsync()
         {
             return await db.Reviews.Include(o => o.User).ToListAsync();
-        }
-
-        public void Update(Review review)
-        {
-            db.Entry(review).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

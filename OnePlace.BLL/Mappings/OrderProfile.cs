@@ -5,6 +5,9 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.BLL.Mappings
 {
+    /// <summary>
+    /// Order map profile
+    /// </summary>
     public class OrderProfile: Profile
     {
         public OrderProfile()

@@ -5,6 +5,9 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.BLL.Mappings
 {
+    /// <summary>
+    /// Category map profile
+    /// </summary>
     public class CategoryProfile: Profile
     {
         public CategoryProfile()

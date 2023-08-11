@@ -1,4 +1,6 @@
-﻿namespace OnePlace.BOL.DescriptionDTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OnePlace.BOL.DescriptionDTO
 {
     public class ProductDescriptionDTO
     {

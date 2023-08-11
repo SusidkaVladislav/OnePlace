@@ -1,23 +1,16 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ShoppingCartRepository : IRepository<ShoppingCart, CompositeKey>
+    public class ShoppingCartRepository : RepositoryBase<ShoppingCart, CompositeKey>
     {
-        private AppDbContext db;
-        public ShoppingCartRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(ShoppingCart cart)
-        {
-            db.ShoppingCarts.Add(cart);
-        }
+        public ShoppingCartRepository(AppDbContext context): base(context) { }  
 
-        public async Task DeleteAsync(CompositeKey key)
+
+        public override async Task DeleteAsync(CompositeKey key)
         {
             ShoppingCart shoppingCart = await db.ShoppingCarts
                 .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.UserId == key.Column2);
@@ -27,7 +20,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<ShoppingCart>> FindAsync(Func<ShoppingCart, bool> predicate)
+        public override async Task<IEnumerable<ShoppingCart>> FindAsync(Func<ShoppingCart, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -37,21 +30,11 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.ShoppingCarts.Include(o => o.Product).Where(predicate).ToList());
         }
 
-        public async Task<ShoppingCart> GetAsync(CompositeKey key)
+        public override async Task<ShoppingCart> GetAsync(CompositeKey key)
         {
             return await db.ShoppingCarts
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.UserId == key.Column2);
-        }
-
-        public async Task<IEnumerable<ShoppingCart>> GetAllAsync()
-        {
-            return await db.ShoppingCarts.ToListAsync();
-        }
-
-        public void Update(ShoppingCart cart)
-        {
-            db.Entry(cart).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

@@ -8,6 +8,9 @@ using OnePlace.DAL.Interfaces;
 
 namespace OnePlace.BLL.Services
 {
+    /// <summary>
+    /// Сервіс для роботи з категоріями
+    /// </summary>
     public class CategoryService : ICategoryService
     {
         private readonly IMapper _mapper;
@@ -40,6 +43,12 @@ namespace OnePlace.BLL.Services
                     throw new NotFoundException(nameof(CategoryCreateDTO) + " неіснуюча батьківська категорія");
             if (categoryDTO.ParentId <= 0)
                 categoryDTO.ParentId = null;
+
+            //Перевірка чи батьківська категорія не містить продуктів. Якщо місить, то значить що вона є кінцевою категорієї
+            //і добавити в неї нову пуд-категорію неможна
+            IEnumerable<Product> products = await _unitOfWork.Products.FindAsync(p=>p.Category.Id == categoryDTO.ParentId);
+            if(products.Count() > 0)
+                throw new BusinessException(nameof(CategoryCreateDTO) + " дана категорія не може містити під-категорій");
 
             //Приведення до типу категорії Entity
             Category category = _mapper.Map<Category>(categoryDTO);

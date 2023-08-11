@@ -1,23 +1,14 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class DeliveryRepository : IRepository<Delivery, int>
+    public class DeliveryRepository: RepositoryBase<Delivery, int>
     {
-        private AppDbContext db;
-        public DeliveryRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Delivery delivery)
-        {
-            db.Deliveries.Add(delivery);
-        }
+        public DeliveryRepository(AppDbContext context): base(context) { }  
 
-        public async Task DeleteAsync(int id)
+        public override async Task DeleteAsync(int id)
         {
             Delivery delivery = await db.Deliveries.FirstOrDefaultAsync(o => o.Id == id);
             if (delivery != null)
@@ -26,7 +17,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Delivery>> FindAsync(Func<Delivery, bool> predicate)
+        public override async Task<IEnumerable<Delivery>> FindAsync(Func<Delivery, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,19 +27,14 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Deliveries.Include(o => o.Picture).Where(predicate).ToList());
         }
 
-        public async Task<Delivery> GetAsync(int id)
+        public override async Task<Delivery> GetAsync(int id)
         {
             return await db.Deliveries.Include(o => o.Picture).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<Delivery>> GetAllAsync()
+        public override async Task<IEnumerable<Delivery>> GetAllAsync()
         {
             return await db.Deliveries.Include(o => o.Picture).ToListAsync();
-        }
-
-        public void Update(Delivery delivery)
-        {
-            db.Entry(delivery).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

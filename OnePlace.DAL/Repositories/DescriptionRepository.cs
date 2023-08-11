@@ -1,23 +1,13 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-//using System.Data.Entity;
-using Microsoft.EntityFrameworkCore;
 namespace OnePlace.DAL.Repositories
 {
-    public class DescriptionRepository : IRepository<Description, int>
+    public class DescriptionRepository : RepositoryBase<Description, int>
     {
-        private AppDbContext db;
-        public DescriptionRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Description description)
-        {
-            db.Descriptions.Add(description);
-        }
+        public DescriptionRepository(AppDbContext context): base(context) { }
 
-        public async Task DeleteAsync(int id)
+        public override async Task DeleteAsync(int id)
         {
             Description description = await db.Descriptions.FirstOrDefaultAsync(o => o.Id == id);
             if (description != null)
@@ -26,7 +16,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Description>> FindAsync(Func<Description, bool> predicate)
+        public override async Task<IEnumerable<Description>> FindAsync(Func<Description, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,19 +26,9 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Descriptions.Where(predicate).ToList());
         }
 
-        public async Task<Description> GetAsync(int id)
+        public override async Task<Description> GetAsync(int id)
         {
             return await db.Descriptions.FirstOrDefaultAsync(o => o.Id == id);
-        }
-
-        public async Task<IEnumerable<Description>> GetAllAsync()
-        {
-            return await db.Descriptions.ToListAsync();
-        }
-
-        public void Update(Description description)
-        {
-            db.Entry(description).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

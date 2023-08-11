@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.Sale;
+using OnePlace.BOL.Warehouse;
 
 namespace OnePlace.BOL.ProductPayload
 {
@@ -35,7 +37,10 @@ namespace OnePlace.BOL.ProductPayload
         
         [RegularExpression(@"^[0-9]*$")]
         public int? GenderId { get; set; }
-       
+
+        [Required]
+        public WarehouseDTO Warehouse { get; set; }
+
         [Required]
         [RegularExpression(@"^[0-9]*$")]
         [NotNull]
@@ -44,9 +49,11 @@ namespace OnePlace.BOL.ProductPayload
         [Required]
         [StringLength(2000, MinimumLength = 50)]
         public string Description { get; set; }
-        
+
+        public SaleDTO Sale { get; set; }
+
         public bool IsInBestProducts { get; set; } = false;
-        
+
         public List<ProductDescriptionDTO>? Descriptions { get; set; }
        
         public List<ProductPictureDTO>? Pictures { get; set; }

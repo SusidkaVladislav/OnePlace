@@ -1,23 +1,15 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
-using System.Data.Entity;
+using OnePlace.DAL.Models;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class GenderRepository : IRepository<Gender, int>
+    public class GenderRepository :RepositoryBase<Gender, int>
     {
-        private AppDbContext db;
-        public GenderRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(Gender gender)
-        {
-            db.Genders.Add(gender);
-        }
-
-        public async Task DeleteAsync(int id)
+        public GenderRepository(AppDbContext context) : base(context) { }
+        
+        public override async Task DeleteAsync(int id)
         {
             Gender gender = await db.Genders.FirstOrDefaultAsync(o => o.Id == id);
             if (gender != null)
@@ -26,7 +18,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<Gender>> FindAsync(Func<Gender, bool> predicate)
+        public override async Task<IEnumerable<Gender>> FindAsync(Func<Gender, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -36,19 +28,14 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Genders.Include(o => o.Products).Where(predicate).ToList());
         }
 
-        public async Task<Gender> GetAsync(int id)
+        public override async Task<Gender> GetAsync(int id)
         {
             return await db.Genders.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<Gender>> GetAllAsync()
+        public override Task<PaginatedList<Gender>> Filter<S>(S searchParamsModel)
         {
-            return await db.Genders.ToListAsync();
-        }
-
-        public void Update(Gender gender)
-        {
-            db.Entry(gender).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            return base.Filter(searchParamsModel);
         }
     }
 }

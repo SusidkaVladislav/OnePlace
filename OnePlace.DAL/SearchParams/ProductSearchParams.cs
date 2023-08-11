@@ -1,7 +1,4 @@
-﻿using OnePlace.BOL.Description;
-using OnePlace.BOL.DescriptionDTO;
-
-namespace OnePlace.BLL.Utilities
+﻿namespace OnePlace.DAL.SearchParams
 {
     /// <summary>
     /// Параметри пошуку продукту
@@ -17,7 +14,7 @@ namespace OnePlace.BLL.Utilities
         /// Максимальна ціна продукту
         /// </summary>
         public float? MaxPrice { get; set; }
-        
+
         /// <summary>
         /// Стать 
         /// </summary>
@@ -57,6 +54,5 @@ namespace OnePlace.BLL.Utilities
         /// Продукти що розміщені за певною локацією
         /// </summary>
         public HashSet<string>? Locations { get; set; }
-
     }
 }

@@ -1,28 +1,16 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class UserRepository : IRepository<User, int>
+    public class UserRepository : RepositoryBase<User, int>
     {
-        private AppDbContext db;
-        public UserRepository(AppDbContext context)
-        {
-            this.db = context;
-        }
-        public void Create(User user)
-        {
-            db.Users.Add(user);
-        }
+        public UserRepository(AppDbContext context): base(context) { }
 
-        public async Task DeleteAsync(int id)
+
+        public override async Task DeleteAsync(int id)
         {
             User user = await db.Users
                 .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
@@ -32,7 +20,7 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<User>> FindAsync(Func<User, bool> predicate)
+        public override async Task<IEnumerable<User>> FindAsync(Func<User, bool> predicate)
         {
             return await GetListAsync(predicate);
         }
@@ -47,7 +35,7 @@ namespace OnePlace.DAL.Repositories
                 .Where(predicate).ToList());
         }
 
-        public async Task<User> GetAsync(int id)
+        public override async Task<User> GetAsync(int id)
         {
             return await db.Users
                 .Include(o => o.Orders)
@@ -55,16 +43,6 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.LikedProducts)
                 .Include(o => o.ShoppingCarts)
                 .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
-        }
-
-        public async Task<IEnumerable<User>> GetAllAsync()
-        {
-            return await db.Users.ToListAsync();
-        }
-
-        public void Update(User user)
-        {
-            db.Entry(user).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
         }
     }
 }

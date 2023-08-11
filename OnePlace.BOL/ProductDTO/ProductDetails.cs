@@ -1,6 +1,8 @@
 ﻿using OnePlace.BOL.CategoryDTO;
 using OnePlace.BOL.Description;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.Sale;
+using OnePlace.BOL.Warehouse;
 
 namespace OnePlace.BOL.ProductDTO
 {
@@ -24,7 +26,9 @@ namespace OnePlace.BOL.ProductDTO
         public int CategoryId { get; set; }
         public CategoryDetails Category { get; set; }
         public bool IsInBestProducts { get; set; }
+        public WarehouseDetails Warehouse { get; set; }
+        public SaleDetails Sale { get; set; }
         public List<ProductDescriptionDetails> Descriptions { get; set; }
-        public List<ProductPictureDTO> Pictures { get; set; }
+        public List<ProductPictureDetails> Pictures { get; set; }
     }
 }
