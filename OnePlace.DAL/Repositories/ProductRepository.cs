@@ -1,18 +1,21 @@
-﻿using OnePlace.DAL.EF;
-using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
+﻿using LinqKit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using OnePlace.DAL.SearchParams;
-using LinqKit;
+using OnePlace.DAL.EF;
+using OnePlace.DAL.Entities;
 using OnePlace.DAL.Models;
+using OnePlace.DAL.SearchParams;
 
 namespace OnePlace.DAL.Repositories
 {
     public class ProductRepository : RepositoryBase<Product, int>
     {
-        public ProductRepository(AppDbContext context): base(context) { }
-
+        public ProductRepository(AppDbContext context, UserManager<User> userManager) : base(context, userManager) { }
+        
+        /// <summary>
+        /// Кількість товарів які повертаються на клієнт
+        /// </summary>
+        private const int LIMIT = 20;
 
         public override async Task DeleteAsync(int id)
         {
@@ -48,86 +51,122 @@ namespace OnePlace.DAL.Repositories
         {
             var searchParams = searchParamsModel as ProductSearchParams;
 
-            IQueryable<Product> query = db.Products.AsNoTracking();
-            var predicate = PredicateBuilder.New<Product>();
-            
-            if(searchParams.Colors.Any()) 
+            //Фільтруються тільки продукти певної (поточної) категорії
+            try
             {
-                predicate = predicate.And(p => searchParams.Colors.Contains(p.ColorId ?? default(int)));
-            }
-            if (searchParams.MaxPrice.HasValue)
-            {
-                predicate = predicate.And(p => p.Price <= (decimal)searchParams.MaxPrice.Value);
-            }
-            if (searchParams.MinPrice.HasValue)
-            {
-                predicate = predicate.And(p=> p.Price >= (decimal)searchParams.MinPrice.Value);
-            }
-            if (searchParams.Genders.Any())
-            {
-                predicate = predicate.And(p=> searchParams.Genders.Contains(p.GenderId ?? default(int)));
-            }
-            if (searchParams.ManufacturerCountries.Any())
-            {
-                predicate = predicate.And(p=>searchParams.ManufacturerCountries.Contains(p.ManufacturerCountryId ?? default(int)));
-            }
-            if (searchParams.Manufacturers.Any())
-            {
-                predicate = predicate.And(p => searchParams.Manufacturers.Contains(p.ManufacturerId ?? default(int)));
-            }
-            if(searchParams.Category.HasValue)
-            {
-                predicate = predicate.And(p => p.CategoryId == searchParams.Category);
-            }
-            //if (searchParams.Descriptions.Any())
-            //{
-            //    foreach (var description in searchParams.Descriptions)
-            //    {
-            //        predicate.And(p => p.ProductDescriptions)
-            //    }
-            //}
-            if(searchParams.WithDiscount.Equals(true))
-            {
-                IQueryable<int> productsWithSales = db.Sales.Select(s => s.ProductId);//.Skip(searchParams.Page.Value).Take(searchParams.Limit.Value);
-                var l = await productsWithSales.ToListAsync();
-                predicate = predicate.And(p => l.Contains(p.Id));
-            }
-            if (searchParams.WithDiscount.Equals(false))
-            {
+                IQueryable<Product> query = db.Products.Where(p => p.CategoryId == searchParams.Category).AsNoTracking();
 
+                var predicate = PredicateBuilder.New<Product>(true);
+
+                //ФІльтрація за кольорами
+                if (searchParams.Colors.Any())
+                {
+                    predicate = predicate.And(p => searchParams.Colors.Contains(p.ColorId ?? default(int)));
+                }
+
+                //Максимальна допустима ціна товару
+                if (searchParams.MaxPrice.HasValue)
+                {
+                    predicate = predicate.And(p => p.Price <= (decimal)searchParams.MaxPrice.Value);
+                }
+
+                //Мінімальна допустима ціна товару
+                if (searchParams.MinPrice.HasValue)
+                {
+                    predicate = predicate.And(p => p.Price >= (decimal)searchParams.MinPrice.Value);
+                }
+
+                //Фільтрація за статтю
+                if (searchParams.Genders.Any())
+                {
+                    predicate = predicate.And(p => searchParams.Genders.Contains(p.GenderId ?? default(int)));
+                }
+
+                //Фільтрація за країною виробника
+                if (searchParams.ManufacturerCountries.Any())
+                {
+                    predicate = predicate.And(p => searchParams.ManufacturerCountries.Contains(p.ManufacturerCountryId ?? default(int)));
+                }
+
+                //Фільтрація за виробником
+                if (searchParams.Manufacturers.Any())
+                {
+                    predicate = predicate.And(p => searchParams.Manufacturers.Contains(p.ManufacturerId ?? default(int)));
+                }
+
+                //Фільтрація за набором динамічних характеристик
+                if (searchParams.Descriptions.Any())
+                {
+                    foreach (var description in searchParams.Descriptions)
+                    {
+                        int descId = await db.Descriptions.Where(d => d.Name == description.Name
+                            && d.CategoryId == searchParams.Category)
+                           .Select(d => d.Id).FirstOrDefaultAsync();
+
+                        predicate.And(p => description.Abouts.Contains(db.ProductDescriptions.Where(pd => pd.DescriptionId == descId
+                        && pd.ProductId == p.Id).Select(pd => pd.About).FirstOrDefault()));
+                    }
+                }
+
+                //Тільки продукти зі знижкою
+                if (searchParams.WithDiscount.Equals(true))
+                {
+                    IQueryable<int> productsWithSales = db.Sales.Select(s => s.ProductId);//.Skip(searchParams.Page.Value).Take(searchParams.Limit.Value);
+                    var sales = await productsWithSales.ToListAsync();
+                    predicate = predicate.And(p => sales.Contains(p.Id));
+                }
+
+                //Тільки продукти без знижки
+                if (searchParams.WithDiscount.Equals(false))
+                {
+                    IQueryable<int> productsWithoutSales = db.Sales.Select(s => s.ProductId);//.Skip(searchParams.Page.Value).Take(searchParams.Limit.Value);
+                    var sales = await productsWithoutSales.ToListAsync();
+                    predicate = predicate.And(p => !sales.Contains(p.Id));
+                }
+
+                //Фільтрація за містами
+                if (searchParams.Locations.Any())
+                {
+                    List<int> locations = db.Warehouses.Where(w => searchParams.Locations.Contains(w.Location))
+                        .Select(w => w.Id).ToList();
+
+                    predicate = predicate.And(p => db.WarehouseProducts
+                     .Where(wp => locations.Contains(wp.WarehouseId) && p.Id == wp.ProductId).Any());
+                }
+
+                //Сторінка (пагінація)
+                if (searchParams.Page.HasValue)
+                {
+                    query = query.Skip((searchParams.Page.Value - 1) * LIMIT);
+                }
+
+                //Ліміт продуктів для повернення
+                query = query.Take(LIMIT);
+
+                query = query.Include(o => o.ProductPictures);
+
+                //Виконання предикату
+                query = query.Where(predicate);
+
+                //Всіх продуктів для повернення
+                var totalCount = await query.CountAsync();
+
+                //Перетворення query в список
+                var products = await query.ToListAsync();
+
+                //Формування пагінованого списку
+                PaginatedList<Product> paginatedList = new PaginatedList<Product>
+                {
+                    Items = products,
+                    Total = totalCount
+                };
+
+                return paginatedList;
             }
-
-            query = query.Include(o => o.ManufacturerCountry)
-                .Include(o => o.Manufacturer)
-                .Include(o => o.Material)
-                .Include(o => o.Color)
-                .Include(o => o.Gender)
-                .Include(o => o.Category)
-                .Include(o => o.Reviews)
-                .Include(o => o.ProductDescriptions)
-                .Include(o => o.ProductPictures);
-
-            query = query.Where(predicate);
-
-            var totalCount = await query.CountAsync();
-            //if (searchParams.Page.HasValue)
-            //{
-            //    query = query.Skip(searchParams.Page.Value);
-            //}
-            //if (searchParams.Limit.HasValue)
-            //{
-            //    query = query.Take(searchParams.Limit.Value);
-            //}
-
-            var products = await query.ToListAsync();
-
-            PaginatedList<Product> paginatedList = new PaginatedList<Product>
+            catch(ArgumentNullException ex)
             {
-                Items = products,
-                Total = totalCount
-            };
-
-            return paginatedList;
+                throw new ArgumentNullException(nameof(searchParamsModel) + " null категорія");
+            }
         }
 
         public override async Task<Product> GetAsync(int id)

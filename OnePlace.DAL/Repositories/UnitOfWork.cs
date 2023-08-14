@@ -1,4 +1,5 @@
-﻿using OnePlace.DAL.EF;
+﻿using Microsoft.AspNetCore.Identity;
+using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 
@@ -32,30 +33,30 @@ namespace OnePlace.DAL.Repositories
         public IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; private set; }
         #endregion
 
-        public UnitOfWork(AppDbContext appDbContext)
+        public UnitOfWork(AppDbContext appDbContext, UserManager<User> userManager)
         {
             _appDbContext = appDbContext;
-            Categories = new CategoryRepository(_appDbContext);
-            Colors = new ColorReository(_appDbContext);
-            Deliveries = new DeliveryRepository(_appDbContext);
-            Descriptions = new DescriptionRepository(_appDbContext);
-            Genders = new GenderRepository(_appDbContext);
-            LikedProducts = new LikedProductRepository(_appDbContext);
-            ManufactureCountries = new ManufactureCountryRepository(_appDbContext);
-            Manufacturers = new ManufacturerRepository(_appDbContext);
-            Materials = new MaterialRepository(_appDbContext);
-            Orders = new OrderRepository(_appDbContext);
-            OrderProducts = new OrderProductRepository(_appDbContext);
-            Pictures = new PictureRepository(_appDbContext);
-            Products = new ProductRepository(_appDbContext);
-            ProductDescriptions = new ProductDescriptionRepository(_appDbContext);
-            ProductPictures = new ProductPictureRepository(_appDbContext);
-            Reviews = new ReviewRepository(_appDbContext);
-            Sales = new SaleRepository(_appDbContext);
-            Users = new UserRepository(_appDbContext);
-            Warehouses = new WarehouseRepository(_appDbContext);
-            WarehouseProducts = new WarehouseProductRepository(_appDbContext);
-            ShoppingCarts = new ShoppingCartRepository(_appDbContext);
+            Categories = new CategoryRepository(_appDbContext, userManager);
+            Colors = new ColorReository(_appDbContext, userManager);
+            Deliveries = new DeliveryRepository(_appDbContext, userManager);
+            Descriptions = new DescriptionRepository(_appDbContext, userManager);
+            Genders = new GenderRepository(_appDbContext, userManager);
+            LikedProducts = new LikedProductRepository(_appDbContext, userManager);
+            ManufactureCountries = new ManufactureCountryRepository(_appDbContext, userManager);
+            Manufacturers = new ManufacturerRepository(_appDbContext, userManager);
+            Materials = new MaterialRepository(_appDbContext, userManager);
+            Orders = new OrderRepository(_appDbContext, userManager);
+            OrderProducts = new OrderProductRepository(_appDbContext, userManager);
+            Pictures = new PictureRepository(_appDbContext, userManager);
+            Products = new ProductRepository(_appDbContext, userManager);
+            ProductDescriptions = new ProductDescriptionRepository(_appDbContext, userManager);
+            ProductPictures = new ProductPictureRepository(_appDbContext, userManager);
+            Reviews = new ReviewRepository(_appDbContext, userManager);
+            Sales = new SaleRepository(_appDbContext, userManager);
+            Users = new UserRepository(_appDbContext, userManager);
+            Warehouses = new WarehouseRepository(_appDbContext, userManager);
+            WarehouseProducts = new WarehouseProductRepository(_appDbContext, userManager);
+            ShoppingCarts = new ShoppingCartRepository(_appDbContext, userManager);
         }
 
         public async void Dispose()

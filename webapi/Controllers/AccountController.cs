@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OnePlace.DAL.Entities.ViewModels;
 using OnePlace.DAL.Entities;
+using OnePlace.DAL.Entities.ViewModels;
 
 namespace webapi.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
+    [Route("api/[controller]")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -18,11 +17,11 @@ namespace webapi.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(Register register)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 User user = new User
                 {
                     Name = register.Name,
@@ -49,41 +48,44 @@ namespace webapi.Controllers
                     }
                 }
                 return BadRequest();
-            }
-            return BadRequest();
+           // }
+            //return BadRequest();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost("login")]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(Login login, string? returnUrl)
         {
-            returnUrl = returnUrl ?? Url.Content("~/Admin/Index");
+            //returnUrl = returnUrl ?? Url.Content("~/Admin/Index");
+            //if (ModelState.IsValid)
+            // {
 
-            if (ModelState.IsValid)
-            {
-                var result =
+            //Тут поки що просто тестовий код без валідації
+
+            var result =
                     await _signInManager.PasswordSignInAsync(login.Email, login.Password, login.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
 
-                    }
-                    else
-                    {
+            //     if (result.Succeeded)
+            //     {
+            //         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            //         {
 
-                    }
-                }
-                else
-                {
-                    //ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                }
-            }
+            //         }
+            //         else
+            //         {
+
+            //         }
+            //     }
+            //     else
+            //     {
+            //         //ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            //     }
+            //// }
             return Ok();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost("logout")]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

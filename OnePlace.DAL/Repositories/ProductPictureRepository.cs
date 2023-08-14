@@ -3,11 +3,14 @@ using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 namespace OnePlace.DAL.Repositories
 {
     public class ProductPictureRepository : RepositoryBase<ProductPicture, CompositeKey>
     {
-        public ProductPictureRepository(AppDbContext context): base(context) { }
+        public ProductPictureRepository(AppDbContext context, 
+            UserManager<User> userManager): base(context, userManager) { }
 
 
         public override async Task DeleteAsync(CompositeKey key)

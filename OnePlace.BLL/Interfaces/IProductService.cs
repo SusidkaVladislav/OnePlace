@@ -18,7 +18,7 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        Task<PaginatedList<ProductDetails>> FilterProduct(ProductSearchParams filters);
+        Task<PaginatedList<ProductListModel>> FilterProduct(ProductSearchParams filters);
 
         /// <summary>
         /// Створити новий товар

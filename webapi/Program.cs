@@ -22,6 +22,7 @@ builder.Services.AddIdentity<User, Role>()
 
 var serviceProvider = builder.Services.BuildServiceProvider();
 
+
 using (var scope = serviceProvider.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
@@ -31,6 +32,7 @@ using (var scope = serviceProvider.CreateScope())
     await roleManager.CreateAsync(new Role("user"));
     await roleManager.CreateAsync(new Role("company"));
     await CreateUser(userManager, "admin", "admin", "0111111111", "admin@gmail.com", "Qwerty+1", "admin");
+    await CreateUser(userManager, "user", "user", "0222222222", "user@gmail.com", "Qwerty+2", "user");
 }
 
 async Task CreateUser(UserManager<User> userManager, string name, string surname, string phone_number, string email, string password, string roleName)
@@ -60,7 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

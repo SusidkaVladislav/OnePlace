@@ -1,11 +1,14 @@
 ﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 namespace OnePlace.DAL.Repositories
 {
     public class ProductDescriptionRepository : RepositoryBase<ProductDescription, CompositeKey>
     {
-        public ProductDescriptionRepository(AppDbContext context): base(context) { }
+        public ProductDescriptionRepository(AppDbContext context, 
+            UserManager<User> userManager): base(context, userManager) { }
 
 
         public override async Task DeleteAsync(CompositeKey key)

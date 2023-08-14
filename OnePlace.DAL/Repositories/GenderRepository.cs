@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Models;
@@ -7,7 +8,7 @@ namespace OnePlace.DAL.Repositories
 {
     public class GenderRepository :RepositoryBase<Gender, int>
     {
-        public GenderRepository(AppDbContext context) : base(context) { }
+        public GenderRepository(AppDbContext context, UserManager<User> userManager) : base(context, userManager) { }
         
         public override async Task DeleteAsync(int id)
         {

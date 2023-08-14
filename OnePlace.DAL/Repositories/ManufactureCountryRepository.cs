@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 
@@ -6,7 +7,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class ManufactureCountryRepository : RepositoryBase<ManufactureCountry, int>
     {
-        public ManufactureCountryRepository(AppDbContext context): base(context) { }    
+        public ManufactureCountryRepository(AppDbContext context
+            , UserManager<User> userManager) : base(context, userManager) { }    
 
 
         public override async Task DeleteAsync(int id)

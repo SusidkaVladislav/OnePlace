@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 
@@ -7,7 +8,8 @@ namespace OnePlace.DAL.Repositories
     public class ManufacturerRepository : RepositoryBase<Manufacturer, int>
     {
 
-        public ManufacturerRepository(AppDbContext context): base(context) { }
+        public ManufacturerRepository(AppDbContext context, 
+            UserManager<User> userManager): base(context, userManager) { }
 
 
         public override async Task DeleteAsync(int id)

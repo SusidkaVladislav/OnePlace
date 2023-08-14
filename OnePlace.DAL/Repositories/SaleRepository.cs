@@ -1,13 +1,14 @@
-﻿using OnePlace.DAL.EF;
-using OnePlace.DAL.Entities;
-using OnePlace.DAL.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.EF;
+using OnePlace.DAL.Entities;
 
 namespace OnePlace.DAL.Repositories
 {
     public class SaleRepository : RepositoryBase<Sale, int>
     {
-        public SaleRepository(AppDbContext context): base(context) { }
+        public SaleRepository(AppDbContext context, 
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(int id)

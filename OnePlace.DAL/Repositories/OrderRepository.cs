@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 
@@ -6,7 +7,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class OrderRepository : RepositoryBase<Order, int>
     {
-        public OrderRepository(AppDbContext context): base(context) { }
+        public OrderRepository(AppDbContext context, 
+            UserManager<User> userManager): base(context, userManager) { }
 
         
 

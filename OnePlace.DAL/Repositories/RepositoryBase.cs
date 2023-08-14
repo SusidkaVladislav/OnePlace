@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
+using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 using OnePlace.DAL.Models;
 using OnePlace.DAL.SearchParams;
@@ -10,9 +12,11 @@ namespace OnePlace.DAL.Repositories
     {
 
         protected AppDbContext db;
-        public RepositoryBase(AppDbContext context)
+        protected readonly UserManager<User> _userManager;
+        public RepositoryBase(AppDbContext context, UserManager<User> userManager)
         {
-            this.db = context;
+            db = context;
+            _userManager = userManager;
         }
 
         public void Create(T item)

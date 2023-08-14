@@ -1,5 +1,5 @@
-﻿using OnePlace.BOL.Description;
-using OnePlace.BOL.DescriptionDTO;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnePlace.BOL.Description;
 
 namespace OnePlace.BLL.Utilities
 {
@@ -11,52 +11,50 @@ namespace OnePlace.BLL.Utilities
         /// <summary>
         /// Мінімальа ціна продукту
         /// </summary>
-        public float? MinPrice { get; set; }
+        public float? MinPrice { get; set; } = null;
 
         /// <summary>
         /// Максимальна ціна продукту
         /// </summary>
-        public float? MaxPrice { get; set; }
-        
+        public float? MaxPrice { get; set; } = null;
+
         /// <summary>
         /// Стать 
         /// </summary>
-        public HashSet<int>? Genders { get; set; }
+        public HashSet<int>? Genders { get; set; } = null;
 
         /// <summary>
         /// Кольори товару
         /// </summary>
-        public HashSet<int>? Colors { get; set; }
+        public HashSet<int>? Colors { get; set; } = null;
 
         /// <summary>
         /// Країна виробника
         /// </summary>
-        public HashSet<int>? ManufacturerCountries { get; set; }
+        public HashSet<int>? ManufacturerCountries { get; set; } = null;
 
         /// <summary>
         /// Виробник
         /// </summary>
-        public HashSet<int>? Manufacturers { get; set; }
+        public HashSet<int>? Manufacturers { get; set; } = null;
 
         /// <summary>
         /// Категорія
         /// </summary>
-        public int? Category { get; set; }
+        public int Category { get; set; }
 
-        /// <summary>
-        /// Набір характеристик за яими фільтрується продукт
-        /// </summary>
-        public HashSet<ProductDescriptionSearchParams>? Descriptions { get; set; }
+
+        public List<ProductDescriptionSearchParams>? Descriptions { get; set; } = null;
 
         /// <summary>
         /// Продукти зі знижкою
         /// </summary>
-        public bool? WithDiscount { get; set; }
+        public bool? WithDiscount { get; set; } = null;
 
         /// <summary>
         /// Продукти що розміщені за певною локацією
         /// </summary>
-        public HashSet<string>? Locations { get; set; }
+        public HashSet<string>? Locations { get; set; } = null;
 
     }
 }
