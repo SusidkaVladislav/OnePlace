@@ -9,28 +9,28 @@ namespace OnePlace.BLL.Interfaces
         /// Повертає всі категорії
         /// </summary>
         /// <returns></returns>
-        Task<List<CategoryDetails>> GetAll();
+        Task<List<PureCategory>> GetCategories();
       
         /// <summary>
         /// Повертає одну категорію за ідентифікатором
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<CategoryDetails> Get(int id);
+        Task<CategoryDetails> GetCategory(int id);
         
         /// <summary>
         /// Створити нову категорію
         /// </summary>
         /// <param name="childCategory"></param>
         /// <returns></returns>
-        Task Add(CategoryCreatePayload category);
+        Task<int> Add(CategoryCreatePayload category);
        
         /// <summary>
         /// Редагувати категорію
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        Task<int> Update(CategoryPayload category);
+        Task<int> Update(CategorUpdatePayload category);
         
         /// <summary>
         /// Видалити категорію

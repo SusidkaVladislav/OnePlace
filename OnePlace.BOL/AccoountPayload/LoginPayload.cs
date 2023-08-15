@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnePlace.DAL.Entities.ViewModels
+namespace OnePlace.BOL.AccoountPayload
 {
-    public class Login
+    public class LoginPayload
     {
         [Required]
+        [DataType(DataType.EmailAddress)]
         [Display(Name = "Електронна адреса")]
         public string Email { get; set; }
 

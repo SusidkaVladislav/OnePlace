@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
-using OnePlace.BLL.Services;
 using OnePlace.BOL.CategoryPayload;
 
 namespace webapi.Controllers
@@ -16,24 +16,40 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(CategoryCreatePayload category)
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateCategory(CategoryCreatePayload category)
         {
-            await _categoryService.Add(category);
-            return Ok();
+            var result = await _categoryService.Add(category);
+            return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategory()
+        public async Task<IActionResult> GetCategories()
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetCategories();
+            return Ok(result);
+        }
+
+        [HttpGet("category/{id}")]
+        public async Task<IActionResult> GetCategory(int id)
+        {
+            var result = await _categoryService.GetCategory(id);
             return Ok(result);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            var res = await _categoryService.Delete(id);
-            return Ok(res);
+            var result = await _categoryService.Delete(id);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(CategorUpdatePayload categorUpdate)
+        {
+            var result = await _categoryService.Update(categorUpdate);
+            return Ok(result);
         }
     }
 }

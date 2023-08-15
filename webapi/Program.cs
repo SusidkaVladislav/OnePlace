@@ -10,9 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
-
+builder.Services.AddDbContext<AppDbContext>(options => 
+{
+    options.UseSqlServer(connectionString);
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -21,7 +23,6 @@ builder.Services.AddIdentity<User, Role>()
     //Add services to the container.
 
 var serviceProvider = builder.Services.BuildServiceProvider();
-
 
 using (var scope = serviceProvider.CreateScope())
 {
@@ -62,11 +63,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
-//Обробка виключних ситіацій в контролерах
+//Обробка виключних ситуацій в контролерах
 app.UseException();
 app.Run();

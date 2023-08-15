@@ -31,13 +31,13 @@ namespace OnePlace.BLL
 
             services.AddAutoMapper(typeof(CategoryProfile));
             services.AddAutoMapper(typeof(ProductProfile));
+            services.AddAutoMapper(typeof(AccountProfile));
 
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IUserProfileService, UserProfileService>();
-
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
