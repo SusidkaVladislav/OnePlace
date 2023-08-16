@@ -40,7 +40,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(ProductPayload product)
+        public async Task<IActionResult> UpdateProduct(ProductUpdatePayload product)
         {
             var result = await _productService.UpdateProduct(product);
             return Ok(result);

@@ -15,11 +15,16 @@ namespace OnePlace.BLL.Validators
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Validate(ProductCreateDTO productDTO)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productDTO"></param>
+        /// <returns></returns>
+        public async Task Validate(BaseProduct productDTO)
         {
 
             //Валідація категорії
-           await CategoryValid(productDTO.CategoryId);
+            await CategoryValid(productDTO.CategoryId);
 
             //Валідація країни-виробника
             await ManufacturerCountryValid(productDTO.ManufacturerCountryId);
@@ -35,11 +40,15 @@ namespace OnePlace.BLL.Validators
 
             //Валідація за статтю
             await GenderValid(productDTO.GenderId);
-
-            //Валідація знижок
-            SaleValid(productDTO.Sale);
         }
 
+        /// <summary>
+        /// Category validate
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="BusinessException"></exception>
         public async Task CategoryValid(int categoryId)
         {
             CategoryValidation categoryValidation = new CategoryValidation(_unitOfWork);
@@ -113,6 +122,4 @@ namespace OnePlace.BLL.Validators
                 throw new BusinessException("некоректний відсоток знижки");
         }
     }
-
-
 }

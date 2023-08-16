@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BLL.Validators;
+using OnePlace.BOL.Description;
 using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Picture;
@@ -41,6 +42,12 @@ namespace OnePlace.BLL.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        /// <summary>
+        /// Фільтрувати продукти за переданими умовами
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessException"></exception>
         public async Task<PaginatedList<ProductListModel>> FilterProduct(ProductSearchParams filters)
         {
             if (filters.Category == 0)
@@ -103,10 +110,16 @@ namespace OnePlace.BLL.Services
             return result;
         }
 
+        /// <summary>
+        /// Створити новий продукт
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task<int> AddProduct(ProductCreatePayload product)
         {
 
-            if (product == null)
+            if (product is null)
                 throw new ArgumentNullException(nameof(product));
 
             //Тип-посередник
@@ -286,6 +299,13 @@ namespace OnePlace.BLL.Services
             return newProduct.Id;
         }
 
+        /// <summary>
+        /// Видалити продукт
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="NotFoundException"></exception>
         public async Task<int> DeleteProduct(int productId)
         {
             if (productId <= 0)
@@ -293,7 +313,7 @@ namespace OnePlace.BLL.Services
 
             var product = await _unitOfWork.Products.GetAsync(productId);
 
-            if (product == null)
+            if (product is null)
                 throw new NotFoundException(nameof(product) + " немає такого продукту");
 
             //Спочатку йде видалення записів з таблички ProductDescriptions
@@ -312,6 +332,13 @@ namespace OnePlace.BLL.Services
             return product.Id;
         }
 
+        /// <summary>
+        /// Отримати продукт за id
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="NotFoundException"></exception>
         public async Task<ProductDetails> GetProduct(int productId)
         {
             if (productId <= 0)
@@ -319,7 +346,7 @@ namespace OnePlace.BLL.Services
 
             var product = await _unitOfWork.Products.GetAsync(productId);
 
-            if (product == null)
+            if (product is null)
             {
                 throw new NotFoundException(nameof(product) + " No product with this ID!");
             }
@@ -382,102 +409,352 @@ namespace OnePlace.BLL.Services
             return details;
 
             //_logger.LogInformation("Створюємо продукт");
-            //throw new ValidationException(nameof(ProductDTO.CategoryId), "Товари з росії заборонені", "Ця категорія ще не доступна");
+            //throw new ValidationException(nameof(ProductUpdateDTO.CategoryId), "Товари з росії заборонені", "Ця категорія ще не доступна");
             //throw new NotFoundException(productId, nameof(ProductDetails));
             //throw new NotImplementedException();
         }
 
-        public async Task<int> UpdateProduct(ProductPayload productPayload)
+
+        public async Task<int> UpdateProduct(ProductUpdatePayload productPayload)
         {
-            ProductDTO productDTO = _mapper.Map<ProductDTO>(productPayload);
+            if (productPayload is null) throw new ArgumentNullException(nameof(productPayload) + " is null"); 
 
-            if (productDTO == null)
-                throw new NotFoundException(nameof(ProductDTO) + " null");
+            ProductUpdateDTO updatedProduct = _mapper.Map<ProductUpdateDTO>(productPayload);
 
+            if (updatedProduct is null)
+                throw new NotFoundException(nameof(ProductUpdateDTO) + " null");
 
-            #region Category
+            Product productToUpdate = _unitOfWork.Products.FindAsync(p => p.Id == updatedProduct.Id).Result.FirstOrDefault();
 
-            if (productDTO.CategoryId <= 0)
-                throw new NotFoundException(nameof(Category) + " неіснуюча категорія");
+            //Якщо такого продукту взагалі не існує
+            if (productToUpdate is null) throw new NotFoundException(nameof(ProductUpdateDTO) + " not exists!");
 
-            CategoryValidation categoryValidation = new CategoryValidation(_unitOfWork);
-
-            if (!await categoryValidation.Exists(productDTO.CategoryId))
-                throw new NotFoundException(nameof(Category) + " неіснуюча категорія");
-
-            if (await categoryValidation.HasSubCategory(productDTO.CategoryId))
-                throw new BusinessException(nameof(Category) + " в цю категорію не можна добавляти продукти," +
-                   "тому що йя категорія містить підкатегорії");
-
-            #endregion
+            if (updatedProduct.CategoryId != productToUpdate.CategoryId)
+                throw new BusinessException(nameof(Category) + " категорію міняти не можна");
 
             #region Validation
+
+            ProductValidation validation = new ProductValidation(_unitOfWork);
+
+            //Валідація всього продукту
+            //Якщо тут не викинеться виключення, значить все добре
+            //try
+            //{
+            //    await validation.Validate(updatedProduct);
+            //}
+            //catch (ArgumentNullException ex)
+            //{
+            //    throw ex;
+            //}
+            //catch (BusinessException ex)
+            //{
+            //    throw ex;
+            //}
+
+            if (updatedProduct.Code.Length < 4)
+                throw new BusinessException(nameof(updatedProduct.Code) + " minimum length is 4");
+            productToUpdate.Code = updatedProduct.Code;
+            productToUpdate.Name = updatedProduct.Name;
+
+            if (updatedProduct.Price <= 0)
+                throw new BusinessException(nameof(updatedProduct.Price) + " can`t be negative or 0");
+            productToUpdate.Price = updatedProduct.Price;
+
+            productToUpdate.Description = updatedProduct.Description;
+
             #region Manufacturer country
-            if (productDTO.ManufacturerCountryId <= 0)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer country ID");
-            var country = await _unitOfWork.ManufactureCountries.GetAsync(productDTO.ManufacturerCountryId ?? default(int));
-            if (country == null)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer country ID");
+            if (updatedProduct.ManufacturerCountryId <= 0)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid manufacturer country ID");
+            var country = await _unitOfWork.ManufactureCountries.GetAsync(updatedProduct.ManufacturerCountryId);
+            if (country is null)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid manufacturer country ID");
+            productToUpdate.ManufacturerCountryId = country.Id;
             #endregion
             #region Manufacturer
-            if (productDTO.ManufacturerId <= 0)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer ID");
-            var manufacturer = await _unitOfWork.Manufacturers.GetAsync(productDTO.ManufacturerId ?? default(int));
-            if (manufacturer == null)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid manufacturer ID");
+            if (updatedProduct.ManufacturerId <= 0)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid manufacturer ID");
+            var manufacturer = await _unitOfWork.Manufacturers.GetAsync(updatedProduct.ManufacturerId);
+            if (manufacturer is null)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid manufacturer ID");
+            productToUpdate.ManufacturerId = manufacturer.Id;
             #endregion
             #region Material
-            if (productDTO.MaterialId <= 0)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid material ID");
-            var material = await _unitOfWork.Materials.GetAsync(productDTO.MaterialId ?? default(int));
-            if (material == null)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid material ID");
+            if (updatedProduct.MaterialId <= 0)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid material ID");
+            var material = await _unitOfWork.Materials.GetAsync(updatedProduct.MaterialId);
+            if (material is null)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid material ID");
+            productToUpdate.MaterialId = material.Id;
             #endregion
             #region Color
-            if (productDTO.ColorId <= 0)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid color ID");
-            var color = await _unitOfWork.Colors.GetAsync(productDTO.ColorId ?? default(int));
-            if (color == null)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid color ID");
+            if (updatedProduct.ColorId <= 0)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid color ID");
+            var color = await _unitOfWork.Colors.GetAsync(updatedProduct.ColorId);
+            if (color is null)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid color ID");
+            productToUpdate.ColorId = color.Id;
             #endregion
             #region Gender
-            if (productDTO.GenderId <= 0)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid gender ID");
-            var gender = await _unitOfWork.Genders.GetAsync(productDTO.GenderId ?? default(int));
-            if (gender == null)
-                throw new ArgumentNullException(nameof(productDTO) + " invalid gender ID");
+            if (updatedProduct.GenderId <= 0)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid gender ID");
+            var gender = await _unitOfWork.Genders.GetAsync(updatedProduct.GenderId);
+            if (gender is null)
+                throw new ArgumentNullException(nameof(updatedProduct) + " invalid gender ID");
+            productToUpdate.GenderId = gender.Id;
             #endregion
             #endregion
 
-            #region Sale
+            productToUpdate.IsInBestProducts = updatedProduct.IsInBestProducts;
 
-            if (productDTO.Sale != null)
+            #region Sale validation
+            if (updatedProduct.Sale != null)
             {
-                if (DateTime.Compare(productDTO.Sale.StartDate, productDTO.Sale.EndDate) >= 0)
+                if (DateTime.Compare(updatedProduct.Sale.StartDate, updatedProduct.Sale.EndDate) >= 0)
                     throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
-                if (productDTO.Sale.DiscountPercent > 100 || productDTO.Sale.DiscountPercent < 0)
+                if (updatedProduct.Sale.DiscountPercent > 100 || updatedProduct.Sale.DiscountPercent < 0)
                     throw new BusinessException("некоректний відсоток знижки");
             }
+            #endregion
 
+            #region Photos
+            //Якщо у відредагованого товару немає фотографій
+            if (updatedProduct.Pictures.Count == 0)
+                throw new BusinessException(nameof(updatedProduct.Pictures) + " add photos");
+
+            //Всі фотографії які відносяться до зміненого товару
+            List<Picture> updatedPictures = new List<Picture>();
+            foreach (ProductPictureDetails picture in updatedProduct.Pictures)
+            {
+                Picture updatePicture = _unitOfWork.Pictures.FindAsync(p=>p.Id == picture.Id)
+                    .Result.FirstOrDefault();
+                if(updatePicture != null)
+                {
+                    if(updatePicture.Address != picture.Address)
+                    {
+                        updatePicture.Address = picture.Address;
+                        _unitOfWork.Pictures.Update(updatePicture);
+                    }
+                }
+                else
+                {
+                    updatePicture = new Picture
+                    {
+                        Address = picture.Address
+                    };
+                    _unitOfWork.Pictures.Create(updatePicture);
+                }
+                updatedPictures.Add(updatePicture);
+            }
+            #endregion
+
+            #region Descriptions
+            List<Description> updatedDescriptions = new List<Description>();
+            if (updatedProduct.Descriptions != null && updatedProduct.Descriptions.Count > 0)
+            {
+                foreach (ProductDescriptionDetails description in updatedProduct.Descriptions)
+                {
+                    Description updateDescription = _unitOfWork.Descriptions
+                        .FindAsync(d => d.CategoryId == productToUpdate.CategoryId &&
+                        d.Name.Trim().ToLower() == description.Name.Trim().ToLower())
+                        .Result.FirstOrDefault();
+
+                    if(updateDescription is null) 
+                    {
+                        updateDescription = new Description
+                        {
+                            CategoryId = productToUpdate.CategoryId,
+                            Name = description.Name
+                        };
+                        _unitOfWork.Descriptions.Create(updateDescription);
+                    }
+
+                    updatedDescriptions.Add(updateDescription);
+                }
+            }
+            else //Повидаляти всі описи 
+            {
+                var productDescriptionsToDelete = await _unitOfWork.ProductDescriptions.FindAsync(pd => pd.ProductId == productToUpdate.Id);
+                foreach (var productDescription in productDescriptionsToDelete)
+                {
+                    await _unitOfWork.ProductDescriptions.DeleteAsync(new CompositeKey
+                    {
+                        Column1 = productDescription.DescriptionId,
+                        Column2 = productDescription.ProductId
+                    });
+                }
+            }
 
             #endregion
 
+            _unitOfWork.Products.Update(productToUpdate);
 
-            Product product = _mapper.Map<Product>(productDTO);
+            #region Sale
+            Sale sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == productToUpdate.Id).Result.FirstOrDefault();
+            //Якщо у відредагованому товарі присутня знижка
+            if (updatedProduct.Sale != null)
+            {
+                if (sale is null) //Якщо знижки на цей товар ще не було, то створити
+                {
+                    sale = new Sale
+                    {
+                        ProductId = productToUpdate.Id,
+                        StartDate = updatedProduct.Sale.StartDate,
+                        EndDate = updatedProduct.Sale.EndDate,
+                        DiscountPercent = updatedProduct.Sale.DiscountPercent
+                    };
+                    _unitOfWork.Sales.Create(sale);
+                }
+                else //Якщо знижка вже існувала раніше, то просто оновити запис
+                {
+                    sale.StartDate = updatedProduct.Sale.StartDate;
+                    sale.EndDate = updatedProduct.Sale.EndDate;
+                    sale.DiscountPercent = updatedProduct.Sale.DiscountPercent;
+                    _unitOfWork.Sales.Update(sale);
+                }
+            }
+            else //Якщо відредагований продукт не має знижки, а до редагування мав її, то тепер ту знижку треба видалити
+            {
+                if (sale != null)
+                    await _unitOfWork.Sales.DeleteAsync(sale.Id);
+            }
+            #endregion
 
+            #region Warehouse
+            //Якщо не вказана локація продукту
+            if (updatedProduct.Warehouse is null) throw new BusinessException(nameof(updatedProduct.Warehouse) +
+                " is null");
 
+            Warehouse warehouse = _unitOfWork.Warehouses.FindAsync(w => w.Location == updatedProduct.Warehouse.Location)
+                .Result.FirstOrDefault();
+            if (warehouse is null)
+            {
+                //Створення нової локації
+                warehouse = new Warehouse
+                {
+                    Location = updatedProduct.Warehouse.Location
+                };
+                _unitOfWork.Warehouses.Create(warehouse);
+            }
+            #endregion
 
-
-
-
-
-
-
-
-            _unitOfWork.Products.Update(product);
             await _unitOfWork.SaveAsync();
 
-            throw new NotImplementedException();
+            #region ProductPictures
+            //Вигружаю всі старі фотографії які відносяться до товару
+            var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp=>pp.ProductId == productToUpdate.Id);
+            //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
+            foreach (var picture in oldProductPictures)
+            {
+                if (!updatedPictures.Select(p => p.Id)
+                    .Contains(picture.PictureId))
+                {
+                    await _unitOfWork.ProductPictures.DeleteAsync(new CompositeKey
+                    {
+                        Column1 = picture.ProductId,
+                        Column2 = picture.PictureId
+                    });
+                    await _unitOfWork.Pictures.DeleteAsync(picture.PictureId);
+                }    
+            }
+
+            //Додавання нових фотографій, або редагування старих, які не були видалені
+            for (int i = 0; i < updatedPictures.Count; i++)
+            {
+                ProductPicture productPicture = new ProductPicture
+                {
+                    PictureId = updatedPictures[i].Id,
+                    ProductId = productToUpdate.Id,
+                    IsTitle = updatedProduct.Pictures[i].IsTitle
+                };
+                
+                var productPictureToUpdate = await _unitOfWork.ProductPictures.GetAsync(new CompositeKey
+                {
+                    Column1 = productPicture.ProductId,
+                    Column2 = productPicture.PictureId
+                });
+
+                if(productPictureToUpdate is null)
+                    _unitOfWork.ProductPictures.Create(productPicture);
+                else
+                    _unitOfWork.ProductPictures.Update(productPicture);
+            }
+            #endregion
+
+            #region ProductDescriptions
+
+            if(updatedDescriptions.Count > 0)
+            {
+                //Всі старі описи які відносяться до товару
+                var oldProductDescriptions = await _unitOfWork.ProductDescriptions.FindAsync(
+                    pd => pd.ProductId == productToUpdate.Id
+                    );
+
+                foreach (var productDescription in oldProductDescriptions)
+                {
+                    if(!updatedDescriptions.Select(ud=>ud.Id)
+                        .Contains(productDescription.DescriptionId))
+                    {
+                        await _unitOfWork.ProductDescriptions.DeleteAsync(new CompositeKey 
+                        {
+                            Column1 = productDescription.DescriptionId,
+                            Column2 = productDescription.ProductId
+                        });;   
+                        
+                        //Видалення опису, якщо його він не використовуєтсья жодним товаром
+                        //if(_unitOfWork.ProductDescriptions.FindAsync(pd => pd.DescriptionId
+                        //    == productDescription.DescriptionId).Result.FirstOrDefault() == null)
+                        //{
+                        //    await _unitOfWork.Descriptions.DeleteAsync(productDescription.DescriptionId);
+                        //}
+                    }
+                }
+
+                for (int i = 0; i < updatedDescriptions.Count; i++)
+                {
+                    ProductDescription productDescription = new ProductDescription
+                    {
+                        DescriptionId = updatedDescriptions[i].Id,
+                        About = updatedProduct.Descriptions[i].About,
+                        ProductId = productToUpdate.Id
+                    };
+
+                    var productDescriptionToUpdate = await _unitOfWork.ProductDescriptions.GetAsync(
+                        new CompositeKey
+                        {
+                            Column1 = productDescription.DescriptionId,
+                            Column2 = productDescription.ProductId
+                        });
+                    if (productDescriptionToUpdate is null)
+                        _unitOfWork.ProductDescriptions.Create(productDescription);
+                    else
+                        _unitOfWork.ProductDescriptions.Update(productDescription);
+                }
+            }
+            #endregion
+
+            #region WarehouseProduct
+
+            var productWarehouseToDelete = _unitOfWork.WarehouseProducts.FindAsync(w => w.ProductId == productToUpdate.Id)
+                .Result.FirstOrDefault();
+
+            if (productWarehouseToDelete != null)
+                await _unitOfWork.WarehouseProducts.DeleteAsync(new CompositeKey
+                {
+                    Column1 = productWarehouseToDelete.WarehouseId,
+                    Column2 = productToUpdate.Id
+                });
+
+                _unitOfWork.WarehouseProducts.Create(new WarehouseProduct
+                {
+                    ProductId = productToUpdate.Id,
+                    WarehouseId = warehouse.Id,
+                    Quantity = updatedProduct.Warehouse.Quantity
+                });
+            #endregion 
+
+            await _unitOfWork.SaveAsync();
+
+            return productToUpdate.Id;
         }
     }
 }

@@ -17,14 +17,13 @@ namespace OnePlace.BLL.Mappings
         /// </summary>
         public ProductProfile()
         {
-            CreateMap<ProductPayload, ProductDTO>(MemberList.None);
-            CreateMap<ProductDTO, Product>();
+            CreateMap<ProductUpdatePayload, ProductUpdateDTO>(MemberList.None);
+            CreateMap<ProductUpdateDTO, Product>();
             CreateMap<ProductCreatePayload, ProductCreateDTO>();
             CreateMap<ProductCreateDTO, Product>(MemberList.None);
             CreateMap<ProductDescription, ProductDescriptionDetails>(MemberList.Destination);
 
             CreateMap <Product, ProductDetails>()
-               .ForMember(dest => dest.Price, opt => opt.MapFrom(src => (float)src.Price))
                .ForMember(dest => dest.Descriptions, opt => opt.MapFrom(src => src.ProductDescriptions))
                .ForMember(dest => dest.Pictures, opt => opt.MapFrom(src => src.ProductPictures));
 

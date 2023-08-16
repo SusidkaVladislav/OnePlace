@@ -32,7 +32,7 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        Task<int> UpdateProduct(ProductPayload product);
+        Task<int> UpdateProduct(ProductUpdatePayload product);
 
         /// <summary>
         /// Видалити товар
