@@ -143,6 +143,14 @@ namespace OnePlace.BLL.Services
             return details;
         }   
 
+        /// <summary>
+        /// Редагування назви категорії
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="BusinessException"></exception>
         public async Task<int> Update(CategorUpdatePayload category)
         {
             CategoryUpdateDTO categoryUpdate = _mapper.Map<CategoryUpdateDTO>(category);
@@ -161,7 +169,11 @@ namespace OnePlace.BLL.Services
             if (categories.Any())
                 throw new BusinessException(nameof(CategoryCreateDTO) + " категорія з такою назвою вже існує");
 
-            Category updateCategory = _mapper.Map<Category>(categoryUpdate);
+            Category updateCategory = await _unitOfWork.Categories.GetAsync(categoryUpdate.Id);
+            if (updateCategory == null)
+                throw new ArgumentNullException(nameof(Category) + " category doesn't exist");
+
+            updateCategory.Name = categoryUpdate.Name.ToLower().Trim();
 
             _unitOfWork.Categories.Update(updateCategory);
             await _unitOfWork.SaveAsync();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL.CategoryPayload;
 
@@ -23,6 +22,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
+        //Повертає самі верхні категорії
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
@@ -30,6 +30,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
+        //Повертає категорію за id, та всіх її безпосередніх sub-categories
         [HttpGet("category/{id}")]
         public async Task<IActionResult> GetCategory(int id)
         {
