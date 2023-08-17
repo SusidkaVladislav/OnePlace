@@ -15,7 +15,7 @@ namespace OnePlace.DAL.Repositories
         /// <summary>
         /// Кількість товарів які повертаються на клієнт
         /// </summary>
-        private const int LIMIT = 20;
+        private const int LIMIT = 5;
 
         public override async Task DeleteAsync(int id)
         {
@@ -54,6 +54,9 @@ namespace OnePlace.DAL.Repositories
             //Фільтруються тільки продукти певної (поточної) категорії
             try
             {
+                if (searchParams.Page <= 0 || searchParams.Page is null)
+                    searchParams.Page = 1;
+
                 IQueryable<Product> query = db.Products.Where(p => p.CategoryId == searchParams.Category).AsNoTracking();
 
                 var predicate = PredicateBuilder.New<Product>(true);
@@ -67,13 +70,13 @@ namespace OnePlace.DAL.Repositories
                 //Максимальна допустима ціна товару
                 if (searchParams.MaxPrice.HasValue)
                 {
-                    predicate = predicate.And(p => p.Price <= (decimal)searchParams.MaxPrice.Value);
+                    predicate = predicate.And(p => p.Price <= searchParams.MaxPrice.Value);
                 }
 
                 //Мінімальна допустима ціна товару
                 if (searchParams.MinPrice.HasValue)
                 {
-                    predicate = predicate.And(p => p.Price >= (decimal)searchParams.MinPrice.Value);
+                    predicate = predicate.And(p => p.Price >= searchParams.MinPrice.Value);
                 }
 
                 //Фільтрація за статтю
@@ -134,19 +137,21 @@ namespace OnePlace.DAL.Repositories
                      .Where(wp => locations.Contains(wp.WarehouseId) && p.Id == wp.ProductId).Any());
                 }
 
-                //Сторінка (пагінація)
-                if (searchParams.Page.HasValue)
-                {
-                    query = query.Skip((searchParams.Page.Value - 1) * LIMIT);
-                }
+                ////Сторінка (пагінація)
+                //if (searchParams.Page.HasValue)
+                //{
+                //    query = query.Skip((searchParams.Page.Value - 1) * LIMIT);
+                //}
 
-                //Ліміт продуктів для повернення
-                query = query.Take(LIMIT);
+                ////Ліміт продуктів для повернення
+                //query = query.Take(LIMIT);
+
 
                 query = query.Include(o => o.ProductPictures);
 
                 //Виконання предикату
-                query = query.Where(predicate);
+                query = query.Where(predicate).Skip((searchParams.Page.Value - 1) * LIMIT)
+                    .Take(LIMIT);
 
                 //Всіх продуктів для повернення
                 var totalCount = await query.CountAsync();

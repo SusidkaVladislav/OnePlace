@@ -11,12 +11,12 @@ namespace OnePlace.BLL.Utilities
         /// <summary>
         /// Мінімальа ціна продукту
         /// </summary>
-        public float? MinPrice { get; set; } = null;
+        public decimal? MinPrice { get; set; } = null;
 
         /// <summary>
         /// Максимальна ціна продукту
         /// </summary>
-        public float? MaxPrice { get; set; } = null;
+        public decimal? MaxPrice { get; set; } = null;
 
         /// <summary>
         /// Стать 

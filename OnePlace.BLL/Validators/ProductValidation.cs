@@ -1,4 +1,5 @@
 ﻿using OnePlace.BOL.Exceptions;
+using OnePlace.BOL.Picture;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.Sale;
 using OnePlace.DAL.Entities;
@@ -27,19 +28,23 @@ namespace OnePlace.BLL.Validators
             await CategoryValid(productDTO.CategoryId);
 
             //Валідація країни-виробника
-            await ManufacturerCountryValid(productDTO.ManufacturerCountryId);
+            await ManufacturerCountryValidAsync(productDTO.ManufacturerCountryId);
 
             //Валідація по виробнику
-            await ManufacturerValid(productDTO.ManufacturerId);
+            await ManufacturerValidAsync(productDTO.ManufacturerId);
 
             //Валідація по матеріалі
-            await MaterialValid(productDTO.MaterialId);
+            await MaterialValidAsync(productDTO.MaterialId);
 
             //Валідація по кольорах
-            await ColorValid(productDTO.ColorId);
+            await ColorValidAsync(productDTO.ColorId);
 
             //Валідація за статтю
-            await GenderValid(productDTO.GenderId);
+            await GenderValidAsync(productDTO.GenderId);
+
+            CodeValid(productDTO.Code);
+
+            PriceValid(productDTO.Price);
         }
 
         /// <summary>
@@ -67,59 +72,95 @@ namespace OnePlace.BLL.Validators
                     "тому що йя категорія містить підкатегорії");
         }
 
-        public async Task ManufacturerCountryValid(int? manufacturerCountryId)
+        public async Task<int> ManufacturerCountryValidAsync(int manufacturerCountryId)
         {
             if (manufacturerCountryId <= 0)
                 throw new ArgumentNullException(nameof(Product) + " invalid manufacturer country ID");
-            var country = await _unitOfWork.ManufactureCountries.GetAsync(manufacturerCountryId ?? default(int));
-            if (country == null)
+            var country = await _unitOfWork.ManufactureCountries.GetAsync(manufacturerCountryId);
+            if (country is null)
                 throw new ArgumentNullException(nameof(Product) + " invalid manufacturer country ID");
+
+            return country.Id;
         }
 
-        public async Task ManufacturerValid(int? manufacturerId)
+        public async Task<int> ManufacturerValidAsync(int manufacturerId)
         {
             if (manufacturerId <= 0)
                 throw new ArgumentNullException(nameof(Product) + " invalid manufacturer ID");
-            var manufacturer = await _unitOfWork.Manufacturers.GetAsync(manufacturerId ?? default(int));
-            if (manufacturer == null)
+            var manufacturer = await _unitOfWork.Manufacturers.GetAsync(manufacturerId);
+            if (manufacturer is null)
                 throw new ArgumentNullException(nameof(Product) + " invalid manufacturer ID");
+
+            return manufacturer.Id;
         }
 
-        public async Task MaterialValid(int? materialId)
+        public async Task<int> MaterialValidAsync(int materialId)
         {
             if (materialId <= 0)
                 throw new ArgumentNullException(nameof(Product) + " invalid material ID");
-            var material = await _unitOfWork.Materials.GetAsync(materialId ?? default(int));
-            if (material == null)
+            var material = await _unitOfWork.Materials.GetAsync(materialId);
+            if (material is null)
                 throw new ArgumentNullException(nameof(Product) + " invalid material ID");
+        
+            return material.Id;
         }
 
-        public async Task ColorValid(int? colorId)
+        public async Task<int> ColorValidAsync(int colorId)
         {
             if (colorId <= 0)
                 throw new ArgumentNullException(nameof(Product) + " invalid color ID");
-            var color = await _unitOfWork.Colors.GetAsync(colorId ?? default(int));
-            if (color == null)
+            var color = await _unitOfWork.Colors.GetAsync(colorId);
+            if (color is null)
                 throw new ArgumentNullException(nameof(Product) + " invalid color ID");
+        
+            return color.Id;
         }
 
-        public async Task GenderValid(int? genderId)
+        public async Task<int> GenderValidAsync(int genderId)
         {
             if (genderId <= 0)
                 throw new ArgumentNullException(nameof(Product) + " invalid gender ID");
-            var gender = await _unitOfWork.Genders.GetAsync(genderId ?? default(int));
-            if (gender == null)
+            var gender = await _unitOfWork.Genders.GetAsync(genderId);
+            if (gender is null)
                 throw new ArgumentNullException(nameof(Product) + " invalid gender ID");
+        
+            return gender.Id;
         }
 
-        public void SaleValid(SaleDTO sale)
+        public void CodeValid(string code)
         {
-            if (sale == null)
-                throw new ArgumentNullException(nameof(Sale));
-            if (DateTime.Compare(sale.StartDate, sale.EndDate) >= 0)
-                throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
-            if (sale.DiscountPercent > 100 || sale.DiscountPercent < 0)
-                throw new BusinessException("некоректний відсоток знижки");
+            if (code.Length < 4)
+                throw new BusinessException(nameof(code) + " minimum length is 4");
+        }
+
+        public void PriceValid(decimal price)
+        {
+            if (price <= 0)
+                throw new BusinessException(nameof(price) + " can`t be negative or 0");
+        }
+
+        public void SaleValid(SaleDTO? sale)
+        {
+            if (sale != null)
+            {
+                if (DateTime.Compare(sale.StartDate, DateTime.UtcNow) < 0
+                    || DateTime.Compare(sale.EndDate, DateTime.UtcNow) < 0)
+                    throw new BusinessException("Дата початку та кінця акції не може бути раніша за сьогоднішню");
+                if (DateTime.Compare(sale.StartDate, sale.EndDate) >= 0)
+                    throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
+                if (sale.DiscountPercent > 100 || sale.DiscountPercent < 0)
+                    throw new BusinessException("некоректний відсоток знижки");
+            }
+        }
+
+        public void PictureValid(List<ProductPictureDTO> productPicture)
+        {
+            if (productPicture.Count == 0)
+                throw new ArgumentNullException(nameof(Picture) + " no pictures");
+            if (productPicture.Where(p => p.IsTitle == true).Count() == 0)
+                throw new BusinessException("no title picture");
+            if (productPicture.Where(p => p.IsTitle == true).Count() >= 2)
+                throw new BusinessException("more than one title pictures");
         }
     }
 }

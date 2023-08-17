@@ -9,5 +9,6 @@
         public string Location { get; set; }
         public decimal Price { get; set; }
         public bool IsInCart { get; set; }
+        public int DiscountPercent { get; set; }
     }
 }
