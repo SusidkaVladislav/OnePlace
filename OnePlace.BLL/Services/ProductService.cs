@@ -43,7 +43,7 @@ namespace OnePlace.BLL.Services
         }
 
         /// <summary>
-        /// Фільтрувати продукти за переданими умовами
+        /// Фільтрувати товари за переданими умовами
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
@@ -127,7 +127,7 @@ namespace OnePlace.BLL.Services
         }
 
         /// <summary>
-        /// Створити новий продукт
+        /// Додати новий товар
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
@@ -311,7 +311,7 @@ namespace OnePlace.BLL.Services
         }
 
         /// <summary>
-        /// Видалити продукт
+        /// Видалити товар
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
@@ -345,13 +345,25 @@ namespace OnePlace.BLL.Services
                 }
             }
 
+            //Вигружаю всі старі фотографії які відносяться до товару
+            var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.Id);
+            //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
+            foreach (int pictureId in oldProductPictures.Select(p=>p.PictureId))
+            {
+                await _unitOfWork.Pictures.DeleteAsync(pictureId);
+
+            }
+
             await _unitOfWork.Products.DeleteAsync(productId);
             await _unitOfWork.SaveAsync();
+
+            await DeleteUnusedDescriptions(product.CategoryId);
+
             return product.Id;
         }
 
         /// <summary>
-        /// Отримати продукт за id
+        /// Отримати товар за id
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
@@ -433,14 +445,16 @@ namespace OnePlace.BLL.Services
             #endregion
 
             return details;
-
-            //_logger.LogInformation("Створюємо продукт");
-            //throw new ValidationException(nameof(ProductUpdateDTO.CategoryId), "Товари з росії заборонені", "Ця категорія ще не доступна");
-            //throw new NotFoundException(productId, nameof(ProductDetails));
-            //throw new NotImplementedException();
         }
 
-
+        /// <summary>
+        /// Редагування товару
+        /// </summary>
+        /// <param name="productPayload"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="BusinessException"></exception>
         public async Task<int> UpdateProduct(ProductUpdatePayload productPayload)
         {
             if (productPayload is null) throw new ArgumentNullException(nameof(productPayload) + " is null");
@@ -732,26 +746,7 @@ namespace OnePlace.BLL.Services
                         _unitOfWork.ProductDescriptions.Update(productDescription);
                 }
             }
-            else // test
-            {
-                var oldProductDescriptions = await _unitOfWork.ProductDescriptions.FindAsync(
-                    pd => pd.ProductId == productToUpdate.Id
-                    );
-
-                foreach (var productDescription in oldProductDescriptions)
-                {
-                    if (!updatedDescriptions.Select(ud => ud.Id)
-                        .Contains(productDescription.DescriptionId))
-                    {
-                        //Видалення опису, якщо його він не використовуєтсья жодним товаром
-                        if (_unitOfWork.ProductDescriptions.FindAsync(pd => pd.DescriptionId
-                            == productDescription.DescriptionId).Result.Count() == 0)
-                        {
-                            await _unitOfWork.Descriptions.DeleteAsync(productDescription.DescriptionId);
-                        }
-                    }
-                }
-            }
+           
             #endregion
 
             #region WarehouseProduct
@@ -760,7 +755,7 @@ namespace OnePlace.BLL.Services
             var productWarehouseToDelete = _unitOfWork.WarehouseProducts.FindAsync(w => w.ProductId == productToUpdate.Id)
                 .Result.FirstOrDefault();
 
-            ///Видалити стару локацію
+            //Видалити стару локацію
             if (productWarehouseToDelete != null)
                 await _unitOfWork.WarehouseProducts.DeleteAsync(new CompositeKey
                 {
@@ -779,7 +774,28 @@ namespace OnePlace.BLL.Services
 
             await _unitOfWork.SaveAsync();
 
+            await DeleteUnusedDescriptions(productToUpdate.CategoryId);
+
             return productToUpdate.Id;
         }
-    }
+
+        private async Task DeleteUnusedDescriptions(int categoryId)
+        {
+            //Всі характеристики з переданої категорії
+            var descroptions = await _unitOfWork.Descriptions.FindAsync(d=>d.CategoryId == categoryId);
+
+            var isUsed = 0;
+            foreach (var description in descroptions)
+            {
+                isUsed = _unitOfWork.ProductDescriptions
+                    .FindAsync(pd => pd.DescriptionId == description.Id).Result.Count();
+            
+                if(isUsed == 0)
+                {
+                    await _unitOfWork.Descriptions.DeleteAsync(description.Id);
+                }
+            }
+            await _unitOfWork.SaveAsync();
+        }
+    }   
 }

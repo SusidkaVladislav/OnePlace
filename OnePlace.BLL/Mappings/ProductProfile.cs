@@ -45,10 +45,6 @@ namespace OnePlace.BLL.Mappings
             CreateMap<DAL.SearchParams.ProductDescriptionSearchParams, ProductDescriptionSearchParams>().ReverseMap();
 
             CreateMap<DAL.Models.PaginatedList<Product>, PaginatedList<ProductDetails>>();
-
-            //CreateMap<BaseSearchParams, DAL.SearchParams.BaseSearchParams>()
-              //  .Include<ProductSearchParams, DAL.SearchParams.ProductSearchParams>();
-            
         }
     }
 }

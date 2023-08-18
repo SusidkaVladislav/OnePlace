@@ -14,10 +14,10 @@ namespace OnePlace.BLL
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
             //var ss = Configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .WriteTo.Console()
-                .CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //    .ReadFrom.Configuration(Configuration)
+            //    .WriteTo.Console()
+            //    .CreateLogger();
 
             //MapperConfiguration config = new MapperConfiguration(cfg =>
             //{

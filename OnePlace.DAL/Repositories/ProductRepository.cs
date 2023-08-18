@@ -137,16 +137,6 @@ namespace OnePlace.DAL.Repositories
                      .Where(wp => locations.Contains(wp.WarehouseId) && p.Id == wp.ProductId).Any());
                 }
 
-                ////Сторінка (пагінація)
-                //if (searchParams.Page.HasValue)
-                //{
-                //    query = query.Skip((searchParams.Page.Value - 1) * LIMIT);
-                //}
-
-                ////Ліміт продуктів для повернення
-                //query = query.Take(LIMIT);
-
-
                 query = query.Include(o => o.ProductPictures);
 
                 //Виконання предикату
