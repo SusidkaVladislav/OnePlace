@@ -23,5 +23,6 @@
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<ProductDescription> ProductDescriptions { get; set; } = new List<ProductDescription>();
         public ICollection<ProductPicture> ProductPictures { get; set; } = new List<ProductPicture>();
+
     }
 }

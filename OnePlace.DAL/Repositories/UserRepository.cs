@@ -34,6 +34,7 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.LikedProducts)
                 .Include(o => o.ShoppingCarts)
+                .Include(o => o.Messages)
                 .Where(predicate).ToList());
         }
 
@@ -44,6 +45,7 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.LikedProducts)
                 .Include(o => o.ShoppingCarts)
+                .Include(o => o.Messages)
                 .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
         }
     }
