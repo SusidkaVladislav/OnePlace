@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Entities
 {
-    internal class Message
+    public class Message
     {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string MessageText { get; set; }
+        public DateTime Date { get; set; }
     }
 }
