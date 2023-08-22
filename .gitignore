@@ -399,3 +399,5 @@ FodyWeavers.xsd
 *.sln.iml
 /.vs/OnePlace/DesignTimeBuild/.dtbcache.v2
 /.vs/OnePlace/v17/.futdcache.v2
+/.vs/OnePlace/DesignTimeBuild/.dtbcache.v2
+/.vs/OnePlace/v17/.futdcache.v2
