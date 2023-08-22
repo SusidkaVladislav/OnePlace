@@ -12,7 +12,7 @@ namespace OnePlace.DAL.Repositories
         #region IRepositories
         public IRepository<Category, int> Categories { get; private set; }
         public IRepository<Color, int> Colors { get; private set; }
-        public IRepository<Delivery, int> Deliveries { get; private set; }
+        //public IRepository<Delivery, int> Deliveries { get; private set; }
         public IRepository<Description, int> Descriptions { get; private set; }
         public IRepository<Gender, int> Genders { get; private set; }
         public IRepository<LikedProduct, CompositeKey> LikedProducts { get; private set; }
@@ -38,7 +38,7 @@ namespace OnePlace.DAL.Repositories
             _appDbContext = appDbContext;
             Categories = new CategoryRepository(_appDbContext, userManager);
             Colors = new ColorReository(_appDbContext, userManager);
-            Deliveries = new DeliveryRepository(_appDbContext, userManager);
+            //Deliveries = new DeliveryRepository(_appDbContext, userManager);
             Descriptions = new DescriptionRepository(_appDbContext, userManager);
             Genders = new GenderRepository(_appDbContext, userManager);
             LikedProducts = new LikedProductRepository(_appDbContext, userManager);

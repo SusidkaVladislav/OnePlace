@@ -6,7 +6,7 @@ namespace OnePlace.DAL.Interfaces
     {
         IRepository<Category, int> Categories {  get; }
         IRepository<Color, int> Colors {  get; }
-        IRepository<Delivery, int> Deliveries {  get; }
+        //IRepository<Delivery, int> Deliveries {  get; }
         IRepository<Description, int> Descriptions {  get; }
         IRepository<Gender, int> Genders {  get; }
         IRepository<LikedProduct, CompositeKey> LikedProducts {  get; }

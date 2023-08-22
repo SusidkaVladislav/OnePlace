@@ -15,7 +15,7 @@ namespace OnePlace.DAL.Repositories
         /// <summary>
         /// Кількість товарів які повертаються на клієнт
         /// </summary>
-        private const int LIMIT = 5;
+        private const int LIMIT = 30;
 
         public override async Task DeleteAsync(int id)
         {

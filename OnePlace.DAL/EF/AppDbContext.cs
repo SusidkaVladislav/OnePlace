@@ -10,7 +10,7 @@ namespace OnePlace.DAL.EF
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Color> Colors { get; set; }
-        public DbSet<Delivery> Deliveries { get; set; }
+        //public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Description> Descriptions { get; set; }
         public DbSet<Gender> Genders { get; set; }
         public DbSet<LikedProduct> LikedProducts { get; set; }
@@ -28,6 +28,7 @@ namespace OnePlace.DAL.EF
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
@@ -53,7 +54,6 @@ namespace OnePlace.DAL.EF
 
             builder.Entity<ShoppingCart>()
                 .HasKey(x => new { x.ProductId, x.UserId });
-
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace OnePlace.BOL.Enums
 {
-    public enum OrderState
+    public enum OrderStates
     {
         Existing,
         Registered,

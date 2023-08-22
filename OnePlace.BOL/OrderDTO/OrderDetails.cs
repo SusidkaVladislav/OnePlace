@@ -20,7 +20,7 @@ namespace OnePlace.BOL.OrderDTO
         
         public string Comment { get; set; }
         
-        public OrderState State { get; set; }
+        public OrderStates State { get; set; }
         
         public DateTime Date { get; set; }
     }

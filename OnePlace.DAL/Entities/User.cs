@@ -7,6 +7,8 @@ namespace OnePlace.DAL.Entities
         public string? Name { get; set; }
         public string? Surname { get; set; }
 
+        public string? Photo { get; set; }
+
         public ICollection<Order> Orders { get; } = new List<Order>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<LikedProduct> LikedProducts { get; set; } = new List<LikedProduct>();
