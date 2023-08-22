@@ -25,6 +25,7 @@ namespace OnePlace.DAL.Interfaces
         IRepository<Warehouse, int> Warehouses {  get; }
         IRepository<WarehouseProduct, CompositeKey> WarehouseProducts {  get; }
         IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
+        IRepository<Message, int> Messages { get; }
         Task SaveAsync();
     }
 }
