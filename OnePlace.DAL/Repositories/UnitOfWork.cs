@@ -21,7 +21,7 @@ namespace OnePlace.DAL.Repositories
         public IRepository<Material, int> Materials { get; private set; }
         public IRepository<Order, int> Orders { get; private set; }
         public IRepository<OrderProduct, CompositeKey> OrderProducts { get; private set; }
-        public IRepository<Picture, int> Pictures { get; private set; }
+        //public IRepository<Picture, int> Pictures { get; private set; }
         public IRepository<Product, int> Products { get; private set; }
         public IRepository<ProductDescription, CompositeKey> ProductDescriptions { get; private set; }
         public IRepository<ProductPicture, CompositeKey> ProductPictures { get; private set; }
@@ -31,6 +31,7 @@ namespace OnePlace.DAL.Repositories
         public IRepository<Warehouse, int> Warehouses { get; private set; }
         public IRepository<WarehouseProduct, CompositeKey> WarehouseProducts { get; private set; }
         public IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; private set; }
+        public IRepository<Message, int> Messages { get; private set; }
         #endregion
 
         public UnitOfWork(AppDbContext appDbContext, UserManager<User> userManager)
@@ -47,7 +48,7 @@ namespace OnePlace.DAL.Repositories
             Materials = new MaterialRepository(_appDbContext, userManager);
             Orders = new OrderRepository(_appDbContext, userManager);
             OrderProducts = new OrderProductRepository(_appDbContext, userManager);
-            Pictures = new PictureRepository(_appDbContext, userManager);
+            //Pictures = new PictureRepository(_appDbContext, userManager);
             Products = new ProductRepository(_appDbContext, userManager);
             ProductDescriptions = new ProductDescriptionRepository(_appDbContext, userManager);
             ProductPictures = new ProductPictureRepository(_appDbContext, userManager);
@@ -63,7 +64,6 @@ namespace OnePlace.DAL.Repositories
         {
             await _appDbContext.DisposeAsync();
         }
-
 
         public async Task SaveAsync()
         {

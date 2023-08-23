@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL.CategoryPayload;
 
@@ -15,7 +16,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCategory(CategoryCreatePayload category)
         {
             var result = await _categoryService.Add(category);
@@ -39,7 +40,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var result = await _categoryService.Delete(id);
@@ -47,6 +48,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateCategory(CategorUpdatePayload categorUpdate)
         {
             var result = await _categoryService.Update(categorUpdate);

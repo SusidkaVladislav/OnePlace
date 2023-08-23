@@ -155,12 +155,12 @@ namespace OnePlace.BLL.Validators
 
         public void PictureValid(List<ProductPictureDTO> productPicture)
         {
-            if (productPicture.Count == 0)
+            /*if (productPicture.Count == 0)
                 throw new ArgumentNullException(nameof(Picture) + " no pictures");
             if (productPicture.Where(p => p.IsTitle == true).Count() == 0)
                 throw new BusinessException("no title picture");
             if (productPicture.Where(p => p.IsTitle == true).Count() >= 2)
-                throw new BusinessException("more than one title pictures");
+                throw new BusinessException("more than one title pictures");*/
         }
     }
 }

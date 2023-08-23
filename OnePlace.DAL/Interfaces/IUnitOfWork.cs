@@ -15,7 +15,7 @@ namespace OnePlace.DAL.Interfaces
         IRepository<Material, int> Materials {  get; }
         IRepository<Order, int> Orders {  get; }
         IRepository<OrderProduct, CompositeKey> OrderProducts {  get; }
-        IRepository<Picture, int> Pictures {  get; }
+        //IRepository<Picture, int> Pictures {  get; }
         IRepository<Product, int> Products {  get; }
         IRepository<ProductDescription, CompositeKey> ProductDescriptions {  get; }
         IRepository<ProductPicture, CompositeKey> ProductPictures {  get; }

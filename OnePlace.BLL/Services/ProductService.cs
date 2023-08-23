@@ -72,11 +72,11 @@ namespace OnePlace.BLL.Services
                 };
 
                 //Головна фотографія
-                var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                /*var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
                 .Where(p => p.IsTitle == true && p.ProductId == product.Id)
                     .Select(p => p.PictureId).FirstOrDefault());
 
-                productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();*/
 
                 //Місто в якому знаходиться товар
                 var locations = await _unitOfWork.Warehouses.FindAsync
@@ -166,20 +166,20 @@ namespace OnePlace.BLL.Services
 
             #region Робота з фотографіями
 
-            List<ProductPictureDTO> productPictureDTOs = productDTO.Pictures;
+            /*List<ProductPictureDTO> productPictureDTOs = productDTO.Pictures;
             List<int> picturesIds = new List<int>();
 
             foreach (ProductPictureDTO picture in productPictureDTOs)
             {
-                    Picture newPicture = new Picture()
-                    {
-                        Address = picture.Address
-                    };
+                Picture newPicture = new Picture()
+                {
+                    Address = picture.Address
+                };
 
-                    _unitOfWork.Pictures.Create(newPicture);
-                    await _unitOfWork.SaveAsync();
+                _unitOfWork.Pictures.Create(newPicture);
+                await _unitOfWork.SaveAsync();
 
-                    picturesIds.Add(newPicture.Id);
+                picturesIds.Add(newPicture.Id);
             }
 
             ICollection<ProductPicture> productPictures = new List<ProductPicture>();
@@ -196,7 +196,7 @@ namespace OnePlace.BLL.Services
                 productPictures.Add(picture);
             }
 
-            newProduct.ProductPictures = productPictures;
+            newProduct.ProductPictures = productPictures;*/
 
             #endregion
 
@@ -348,11 +348,11 @@ namespace OnePlace.BLL.Services
             //Вигружаю всі старі фотографії які відносяться до товару
             var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.Id);
             //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
-            foreach (int pictureId in oldProductPictures.Select(p=>p.PictureId))
+            /*foreach (int pictureId in oldProductPictures.Select(p=>p.PictureId))
             {
                 await _unitOfWork.Pictures.DeleteAsync(pictureId);
 
-            }
+            }*/
 
             await _unitOfWork.Products.DeleteAsync(productId);
             await _unitOfWork.SaveAsync();
@@ -395,13 +395,13 @@ namespace OnePlace.BLL.Services
             #endregion
             #region Pictures
             //Підтягуютсья фотографії товару
-            for (int i = 0; i < details.Pictures.Count; i++)
+            /*for (int i = 0; i < details.Pictures.Count; i++)
             {
                 var pict = await _unitOfWork.Pictures.GetAsync(
                     product.ProductPictures.ElementAt(i).PictureId);
                 details.Pictures[i].Address = pict.Address;
                 details.Pictures[i].Id = pict.Id;
-            }
+            }*/
             #endregion
             #region Warehouse
             //Підтягується локація товару, та кількість в наявності 
@@ -519,12 +519,12 @@ namespace OnePlace.BLL.Services
 
             #region Picures validation
 
-            if (updatedProduct.Pictures.Count == 0)
+            /*if (updatedProduct.Pictures.Count == 0)
                 throw new ArgumentNullException(nameof(Picture) + " no pictures");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() == 0)
                 throw new BusinessException("no title picture");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() >= 2)
-                throw new BusinessException("more than one title pictures");
+                throw new BusinessException("more than one title pictures");*/
 
             #endregion
 
@@ -536,7 +536,7 @@ namespace OnePlace.BLL.Services
             //Всі фотографії які відносяться до зміненого товару
 
             //Треба тут поковирятись, бо щось тут не все чисто
-            List<Picture> updatedPictures = new List<Picture>();
+            /*List<Picture> updatedPictures = new List<Picture>();
             foreach (ProductPictureDetails picture in updatedProduct.Pictures)
             {
                 //Ті фото які віддносяться суто до цього товару
@@ -560,7 +560,7 @@ namespace OnePlace.BLL.Services
                     _unitOfWork.Pictures.Create(updatePicture);
                 }
                 updatedPictures.Add(updatePicture);
-            }
+            }*/
             #endregion
 
             #region Descriptions
@@ -657,7 +657,7 @@ namespace OnePlace.BLL.Services
 
             #region ProductPictures
             //Вигружаю всі старі фотографії які відносяться до товару
-            var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == productToUpdate.Id);
+            /*var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == productToUpdate.Id);
             //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
             foreach (var picture in oldProductPictures)
             {
@@ -693,7 +693,7 @@ namespace OnePlace.BLL.Services
                     _unitOfWork.ProductPictures.Create(productPicture);
                 else
                     _unitOfWork.ProductPictures.Update(productPicture);
-            }
+            }*/
             #endregion
 
             #region ProductDescriptions

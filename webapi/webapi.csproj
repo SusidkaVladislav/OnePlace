@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OnePlace.BLL\OnePlace.BLL.csproj" />
+    <ProjectReference Include="..\OnePlace.BOL\OnePlace.BOL.csproj" />
     <ProjectReference Include="..\OnePlace.DAL\OnePlace.DAL.csproj" />
   </ItemGroup>
 

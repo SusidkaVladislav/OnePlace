@@ -15,12 +15,12 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task DeleteAsync(CompositeKey key)
         {
-            ProductPicture productPicture = await db.ProductPictures
+            /*ProductPicture productPicture = await db.ProductPictures
                 .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
             if (productPicture != null)
             {
                 db.ProductPictures.Remove(productPicture);
-            }
+            }*/
         }
 
         public override async Task<IEnumerable<ProductPicture>> FindAsync(Func<ProductPicture, bool> predicate)
@@ -30,14 +30,14 @@ namespace OnePlace.DAL.Repositories
 
         private Task<List<ProductPicture>> GetListAsync(Func<ProductPicture, bool> predicate)
         {
-            return Task.Run(() => db.ProductPictures.Include(o => o.Picture).Where(predicate).ToList());
+            return Task.Run(() => db.ProductPictures/*.Include(o => o.Picture)*/.Where(predicate).ToList());
         }
 
         public override async Task<ProductPicture> GetAsync(CompositeKey key)
         {
             return await db.ProductPictures
-                .Include(o => o.Picture)
-                .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
+                //.Include(o => o.Picture)
+                .FirstOrDefaultAsync(o => o.ProductId == key.Column1 /*&& o.PictureId == key.Column2*/);
         }
     }
 }
