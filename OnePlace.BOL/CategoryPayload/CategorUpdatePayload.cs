@@ -14,6 +14,7 @@ namespace OnePlace.BOL.CategoryPayload
         public string Name { get; set; }
 
         [Required]
+        [DataType(DataType.Text)]
         public string PictureAddress { get; set; }
     }
 }

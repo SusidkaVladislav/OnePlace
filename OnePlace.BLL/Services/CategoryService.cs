@@ -67,12 +67,20 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException(nameof(CategoryCreateDTO) + " в категорію з id={" + categoryDTO.ParentId + "} " +
                     " не можна добавляти під-категорії");
 
+            //Зберегти фотографію 
+            Picture picture = new Picture
+            {
+                Address= categoryDTO.PictureAddress
+            };
+            _unitOfWork.Pictures.Create(picture);
+            await _unitOfWork.SaveAsync();
+
             //Приведення до типу категорії Entity
             Category category = _mapper.Map<Category>(categoryDTO);
+            category.PictureId = picture.Id;
 
             _unitOfWork.Categories.Create(category);
             
-            //Асинхронне збереження
             await _unitOfWork.SaveAsync();
 
             return category.Id;
@@ -92,6 +100,7 @@ namespace OnePlace.BLL.Services
             if (int.IsNegative(id) || id == 0)
                 throw new ArgumentException(nameof(id) + " id can't be negative or 0");
             var category = await _unitOfWork.Categories.GetAsync(id);
+            
             if (category == null)
                 throw new NotFoundException(nameof(CategoryCreateDTO) + " неіснуюча категорія");
             
@@ -100,15 +109,9 @@ namespace OnePlace.BLL.Services
             if(category.Products.Count() > 0)
                 throw new BusinessException("Категорію неможливо видалити, бо вона містить продукти");
 
+            await _unitOfWork.Pictures.DeleteAsync(category.PictureId);
             await _unitOfWork.Categories.DeleteAsync(id);
-            try
-            {
-                await _unitOfWork.SaveAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            await _unitOfWork.SaveAsync();
 
             return id;
         }
@@ -162,6 +165,9 @@ namespace OnePlace.BLL.Services
 
             if(categoryUpdate == null) throw new ArgumentNullException(nameof(categoryUpdate) + " null");
 
+            if (!await validation.Exists(category.Id))
+                throw new BusinessException(nameof(Category) + " not exists");
+
             if (categoryUpdate.Name.Length < 2)
                 throw new ArgumentException(nameof(categoryUpdate.Name) + " minimum length of category name is 2");
 
@@ -171,11 +177,27 @@ namespace OnePlace.BLL.Services
             if (string.IsNullOrEmpty(categoryUpdate.PictureAddress))
                 throw new ArgumentException("некоректне фото категорії");
 
-            //Назви категорій мають бути унікальними (перевіряєтсья чи є вже категорія з потрібним іменем)  
-            if (!await validation.IsUnique(categoryUpdate.Name))
-                throw new BusinessException(nameof(CategoryCreateDTO) + " категорія з такою назвою вже існує");
+            Category updateCategory = await _unitOfWork.Categories.GetAsync(categoryUpdate.Id);
 
-            Category updateCategory = _mapper.Map<Category>(categoryUpdate);
+            updateCategory.Name = categoryUpdate.Name;
+
+            #region Update category picture
+            Picture picture = _unitOfWork.Pictures.FindAsync(p => p.Id == updateCategory.PictureId)
+                .Result.FirstOrDefault();
+            
+            if(picture != null)
+            {
+                picture.Address = categoryUpdate.PictureAddress;
+                _unitOfWork.Pictures.Update(picture);
+            }
+            else
+            {
+                _unitOfWork.Pictures.Create(picture = new Picture
+                {
+                    Address= categoryUpdate.PictureAddress
+                });
+            }
+            #endregion
 
             _unitOfWork.Categories.Update(updateCategory);
             await _unitOfWork.SaveAsync();

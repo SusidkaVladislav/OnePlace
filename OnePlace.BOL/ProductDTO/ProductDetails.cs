@@ -2,7 +2,7 @@
 using OnePlace.BOL.Description;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.Sale;
-using OnePlace.BOL.Warehouse;
+
 
 namespace OnePlace.BOL.ProductDTO
 {
@@ -17,16 +17,9 @@ namespace OnePlace.BOL.ProductDTO
         public ManufacturerCountryDTO? ManufacturerCountry { get; set; }
         public int? ManufacturerId { get; set; }
         public ManufacturerDTO? Manufacturer { get; set; }
-        public int? MaterialId { get; set; }
-        public MaterialDTO? Material { get; set; }
-        public int? ColorId { get; set; }
-        public ColorDTO? Color { get; set; }
-        public int? GenderId { get; set; }
-        public GenderDTO? Gender { get; set; }
         public int CategoryId { get; set; }
         public CategoryDetails Category { get; set; }
         public bool IsInBestProducts { get; set; }
-        public WarehouseDetails Warehouse { get; set; }
         public SaleDetails Sale { get; set; }
         public List<ProductDescriptionDetails> Descriptions { get; set; }
         public List<ProductPictureDetails> Pictures { get; set; }

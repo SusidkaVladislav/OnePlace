@@ -12,7 +12,6 @@ using OnePlace.BOL.Picture;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.ProductPayload;
 using OnePlace.BOL.Sale;
-using OnePlace.BOL.Warehouse;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 
@@ -481,7 +480,7 @@ namespace OnePlace.BLL.Services
             try
             {
                 validation.CodeValid(updatedProduct.Code);
-                validation.PriceValid(updatedProduct.Price);
+               // validation.PriceValid(updatedProduct.Price);
 
                 var countryId = await validation.ManufacturerCountryValidAsync(updatedProduct.ManufacturerCountryId);
                 productToUpdate.ManufacturerCountryId = countryId;
@@ -489,14 +488,14 @@ namespace OnePlace.BLL.Services
                 var manufacturerId = await validation.ManufacturerValidAsync(updatedProduct.ManufacturerId);
                 productToUpdate.ManufacturerId = manufacturerId;
 
-                var materialId = await validation.MaterialValidAsync(updatedProduct.MaterialId);
-                productToUpdate.MaterialId = materialId;
+                //var materialId = await validation.MaterialValidAsync(updatedProduct.MaterialId);
+                //productToUpdate.MaterialId = materialId;
 
                 //var colorId = await validation.ColorValidAsync(updatedProduct.ColorId);
                 //productToUpdate.ColorId = colorId;
 
-                var genderId = await validation.GenderValidAsync(updatedProduct.GenderId);
-                productToUpdate.GenderId = genderId;
+                //var genderId = await validation.GenderValidAsync(updatedProduct.GenderId);
+                //productToUpdate.GenderId = genderId;
 
                 validation.SaleValid(updatedProduct.Sale);
             }

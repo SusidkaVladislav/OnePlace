@@ -1,7 +1,6 @@
 ﻿using OnePlace.BOL.Description;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.Sale;
-using OnePlace.BOL.Warehouse;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -57,8 +56,8 @@ namespace OnePlace.BOL.ProductPayload
 
         public bool IsInBestProducts { get; set; }
 
-        [Required]
-        public WarehouseDetails Warehouse { get; set; }
+        //[Required]
+        //public WarehouseDetails Warehouse { get; set; }
         
         public SaleDetails? Sale { get; set; }
         

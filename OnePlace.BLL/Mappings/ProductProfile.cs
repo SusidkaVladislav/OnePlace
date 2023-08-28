@@ -17,9 +17,15 @@ namespace OnePlace.BLL.Mappings
         /// </summary>
         public ProductProfile()
         {
+            CreateMap<ProductCreatePayload, ProductCreateDTO>();
+
+
+
             CreateMap<ProductUpdatePayload, ProductUpdateDTO>(MemberList.None);
             CreateMap<ProductUpdateDTO, Product>();
-            CreateMap<ProductCreatePayload, ProductCreateDTO>();
+
+           
+
             CreateMap<ProductCreateDTO, Product>(MemberList.None);
             CreateMap<ProductDescription, ProductDescriptionDetails>(MemberList.Destination);
 
@@ -29,9 +35,7 @@ namespace OnePlace.BLL.Mappings
 
             CreateMap<ManufactureCountry, ManufacturerCountryDTO>(MemberList.Destination);
             CreateMap<Manufacturer, ManufacturerDTO>(MemberList.Destination);
-            CreateMap<Material, MaterialDTO>(MemberList.Destination);
             CreateMap<Color, ColorDTO>(MemberList.Destination);
-            CreateMap<Gender, GenderDTO>(MemberList.Destination);
             CreateMap<ProductPicture, ProductPictureDTO>(MemberList.Destination);
             CreateMap<ProductPicture, ProductPictureDetails>(MemberList.Destination);
 

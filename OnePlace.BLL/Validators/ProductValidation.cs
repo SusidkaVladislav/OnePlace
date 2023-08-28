@@ -34,17 +34,17 @@ namespace OnePlace.BLL.Validators
             await ManufacturerValidAsync(productDTO.ManufacturerId);
 
             //Валідація по матеріалі
-            await MaterialValidAsync(productDTO.MaterialId);
+            //await MaterialValidAsync(productDTO.MaterialId);
 
             //Валідація по кольорах
-            await ColorValidAsync(productDTO.ColorId);
+            //await ColorValidAsync(productDTO.ColorId);
 
             //Валідація за статтю
-            await GenderValidAsync(productDTO.GenderId);
+            //await GenderValidAsync(productDTO.GenderId);
 
             CodeValid(productDTO.Code);
 
-            PriceValid(productDTO.Price);
+            //PriceValid(productDTO.Price);
         }
 
         /// <summary>
@@ -94,16 +94,6 @@ namespace OnePlace.BLL.Validators
             return manufacturer.Id;
         }
 
-        public async Task<int> MaterialValidAsync(int materialId)
-        {
-            if (materialId <= 0)
-                throw new ArgumentNullException(nameof(Product) + " invalid material ID");
-            var material = await _unitOfWork.Materials.GetAsync(materialId);
-            if (material is null)
-                throw new ArgumentNullException(nameof(Product) + " invalid material ID");
-        
-            return material.Id;
-        }
 
         public async Task<int> ColorValidAsync(int colorId)
         {
@@ -114,17 +104,6 @@ namespace OnePlace.BLL.Validators
                 throw new ArgumentNullException(nameof(Product) + " invalid color ID");
         
             return color.Id;
-        }
-
-        public async Task<int> GenderValidAsync(int genderId)
-        {
-            if (genderId <= 0)
-                throw new ArgumentNullException(nameof(Product) + " invalid gender ID");
-            var gender = await _unitOfWork.Genders.GetAsync(genderId);
-            if (gender is null)
-                throw new ArgumentNullException(nameof(Product) + " invalid gender ID");
-        
-            return gender.Id;
         }
 
         public void CodeValid(string code)

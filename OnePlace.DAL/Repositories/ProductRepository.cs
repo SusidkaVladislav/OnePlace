@@ -37,9 +37,6 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.Products
                 .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
-                .Include(o => o.Material)
-                //.Include(o => o.Color)
-                .Include(o => o.Gender)
                 .Include(o => o.Category)
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
@@ -80,10 +77,10 @@ namespace OnePlace.DAL.Repositories
                 //}
 
                 //Фільтрація за статтю
-                if (searchParams.Genders.Any())
-                {
-                    predicate = predicate.And(p => searchParams.Genders.Contains(p.GenderId ?? default(int)));
-                }
+                //if (searchParams.Genders.Any())
+                //{
+                //    predicate = predicate.And(p => searchParams.Genders.Contains(p.GenderId ?? default(int)));
+                //}
 
                 //Фільтрація за країною виробника
                 if (searchParams.ManufacturerCountries.Any())
@@ -169,9 +166,6 @@ namespace OnePlace.DAL.Repositories
             return await db.Products
                 .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
-                .Include(o => o.Material)
-                //.Include(o => o.Color)
-                .Include(o => o.Gender)
                 .Include(o => o.Category)
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
