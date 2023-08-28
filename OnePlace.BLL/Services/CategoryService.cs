@@ -147,7 +147,7 @@ namespace OnePlace.BLL.Services
         }   
 
         /// <summary>
-        /// Редагування назви категорії
+        /// Редагування назви та фотографії категорії
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
