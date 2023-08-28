@@ -20,12 +20,13 @@ namespace OnePlace.DAL.EF
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductDescription> ProductDescriptions { get; set; }
         public DbSet<ProductPicture> ProductPictures { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ReviewReply> ReviewReplies { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+       
+
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
@@ -49,8 +50,8 @@ namespace OnePlace.DAL.EF
             builder.Entity<ProductPicture>()
                 .HasKey(x => new { x.PictureAddress, x.ProductId });
 
-            builder.Entity<WarehouseProduct>()
-                .HasKey(x => new { x.WarehouseId, x.ProductId });
+            builder.Entity<ProductColor>()
+                 .HasKey(x => new { x.ProductId, x.ColorId });
 
             builder.Entity<ShoppingCart>()
                 .HasKey(x => new { x.ProductId, x.UserId });

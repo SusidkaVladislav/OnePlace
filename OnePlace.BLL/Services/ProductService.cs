@@ -68,7 +68,7 @@ namespace OnePlace.BLL.Services
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    Price = product.Price
+                    //Price = product.Price
                 };
 
                 //Головна фотографія
@@ -79,11 +79,11 @@ namespace OnePlace.BLL.Services
                 productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();*/
 
                 //Місто в якому знаходиться товар
-                var locations = await _unitOfWork.Warehouses.FindAsync
-                     (w => w.Id == _unitOfWork.WarehouseProducts
-                     .FindAsync(pw => pw.ProductId == product.Id).Result.FirstOrDefault().WarehouseId);
+                //var locations = await _unitOfWork.Warehouses.FindAsync
+                //     (w => w.Id == _unitOfWork.WarehouseProducts
+                //     .FindAsync(pw => pw.ProductId == product.Id).Result.FirstOrDefault().WarehouseId);
 
-                productListModel.Location = locations.Select(pw => pw.Location).FirstOrDefault();
+                //productListModel.Location = locations.Select(pw => pw.Location).FirstOrDefault();
 
                 //Чи є цей товар в улуюблених товарах користувача
                 var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
@@ -260,33 +260,33 @@ namespace OnePlace.BLL.Services
 
             #region Робота з локацією продукта
 
-            IEnumerable<Warehouse> warehouse = await _unitOfWork.Warehouses
-                .FindAsync(w => w.Location.ToLower()
-                .Trim() == productDTO.Warehouse.Location.ToLower().Trim());
+            //IEnumerable<Warehouse> warehouse = await _unitOfWork.Warehouses
+            //    .FindAsync(w => w.Location.ToLower()
+            //    .Trim() == productDTO.Warehouse.Location.ToLower().Trim());
 
-            WarehouseProduct warehouseProduct = new WarehouseProduct();
+            //WarehouseProduct warehouseProduct = new WarehouseProduct();
 
-            if (warehouse.Count() == 0) // Якщо такої локації ще немає
-                                        //Створення нової локації і прив'язка до неї продукта
-            {
-                Warehouse newWarehouse = new Warehouse()
-                {
-                    Location = productDTO.Warehouse.Location
-                };
+            //if (warehouse.Count() == 0) // Якщо такої локації ще немає
+            //                            //Створення нової локації і прив'язка до неї продукта
+            //{
+            //    Warehouse newWarehouse = new Warehouse()
+            //    {
+            //        Location = productDTO.Warehouse.Location
+            //    };
 
-                _unitOfWork.Warehouses.Create(newWarehouse);
-                await _unitOfWork.SaveAsync();
+            //    _unitOfWork.Warehouses.Create(newWarehouse);
+            //    await _unitOfWork.SaveAsync();
 
-                warehouseProduct.WarehouseId = newWarehouse.Id;
-            }
-            else
-                warehouseProduct.WarehouseId = warehouse.First().Id;
+            //    warehouseProduct.WarehouseId = newWarehouse.Id;
+            //}
+            //else
+            //    warehouseProduct.WarehouseId = warehouse.First().Id;
 
-            warehouseProduct.ProductId = newProduct.Id;
-            warehouseProduct.Quantity = productDTO.Warehouse.Quantity;
-            _unitOfWork.WarehouseProducts.Create(warehouseProduct);
+            //warehouseProduct.ProductId = newProduct.Id;
+            //warehouseProduct.Quantity = productDTO.Warehouse.Quantity;
+            //_unitOfWork.WarehouseProducts.Create(warehouseProduct);
 
-            await _unitOfWork.SaveAsync();
+            //await _unitOfWork.SaveAsync();
             #endregion
 
             #region Робота зі знижкою
@@ -405,19 +405,19 @@ namespace OnePlace.BLL.Services
             #endregion
             #region Warehouse
             //Підтягується локація товару, та кількість в наявності 
-            IEnumerable<WarehouseProduct> warehouseProduct = await _unitOfWork.WarehouseProducts
-                .FindAsync(wp => wp.ProductId == productId);
-            if (warehouseProduct.Count() > 0)
-            {
-                Warehouse warehouse = await _unitOfWork.Warehouses.GetAsync(warehouseProduct.First().WarehouseId);
+            //IEnumerable<WarehouseProduct> warehouseProduct = await _unitOfWork.WarehouseProducts
+            //    .FindAsync(wp => wp.ProductId == productId);
+            //if (warehouseProduct.Count() > 0)
+            //{
+            //    Warehouse warehouse = await _unitOfWork.Warehouses.GetAsync(warehouseProduct.First().WarehouseId);
 
-                details.Warehouse = new WarehouseDetails
-                {
-                    Location = warehouse.Location,
-                    Quantity = warehouseProduct.First().Quantity,
-                    Id = warehouseProduct.First().WarehouseId
-                };
-            }
+            //    details.Warehouse = new WarehouseDetails
+            //    {
+            //        Location = warehouse.Location,
+            //        Quantity = warehouseProduct.First().Quantity,
+            //        Id = warehouseProduct.First().WarehouseId
+            //    };
+            //}
             #endregion
             #region Sale
             //Підтягується знижка
@@ -492,8 +492,8 @@ namespace OnePlace.BLL.Services
                 var materialId = await validation.MaterialValidAsync(updatedProduct.MaterialId);
                 productToUpdate.MaterialId = materialId;
 
-                var colorId = await validation.ColorValidAsync(updatedProduct.ColorId);
-                productToUpdate.ColorId = colorId;
+                //var colorId = await validation.ColorValidAsync(updatedProduct.ColorId);
+                //productToUpdate.ColorId = colorId;
 
                 var genderId = await validation.GenderValidAsync(updatedProduct.GenderId);
                 productToUpdate.GenderId = genderId;
@@ -513,7 +513,7 @@ namespace OnePlace.BLL.Services
 
             productToUpdate.Code = updatedProduct.Code;
             productToUpdate.Name = updatedProduct.Name;
-            productToUpdate.Price = updatedProduct.Price;
+            //productToUpdate.Price = updatedProduct.Price;
             productToUpdate.Description = updatedProduct.Description;
             productToUpdate.IsInBestProducts = updatedProduct.IsInBestProducts;
 
@@ -637,20 +637,20 @@ namespace OnePlace.BLL.Services
 
             #region Warehouse
             //Якщо не вказана локація продукту
-            if (updatedProduct.Warehouse is null) throw new BusinessException(nameof(updatedProduct.Warehouse) +
-                " is null");
+            //if (updatedProduct.Warehouse is null) throw new BusinessException(nameof(updatedProduct.Warehouse) +
+            //    " is null");
 
-            Warehouse warehouse = _unitOfWork.Warehouses.FindAsync(w => w.Location == updatedProduct.Warehouse.Location)
-                .Result.FirstOrDefault();
-            if (warehouse is null)
-            {
-                //Створення нової локації
-                warehouse = new Warehouse
-                {
-                    Location = updatedProduct.Warehouse.Location
-                };
-                _unitOfWork.Warehouses.Create(warehouse);
-            }
+            //Warehouse warehouse = _unitOfWork.Warehouses.FindAsync(w => w.Location == updatedProduct.Warehouse.Location)
+            //    .Result.FirstOrDefault();
+            //if (warehouse is null)
+            //{
+            //    //Створення нової локації
+            //    warehouse = new Warehouse
+            //    {
+            //        Location = updatedProduct.Warehouse.Location
+            //    };
+            //    _unitOfWork.Warehouses.Create(warehouse);
+            //}
             #endregion
 
             await _unitOfWork.SaveAsync();
@@ -752,24 +752,24 @@ namespace OnePlace.BLL.Services
             #region WarehouseProduct
 
             //Старий запис про локацію товару та його кількість
-            var productWarehouseToDelete = _unitOfWork.WarehouseProducts.FindAsync(w => w.ProductId == productToUpdate.Id)
-                .Result.FirstOrDefault();
+            //var productWarehouseToDelete = _unitOfWork.WarehouseProducts.FindAsync(w => w.ProductId == productToUpdate.Id)
+            //    .Result.FirstOrDefault();
 
-            //Видалити стару локацію
-            if (productWarehouseToDelete != null)
-                await _unitOfWork.WarehouseProducts.DeleteAsync(new CompositeKey
-                {
-                    Column1 = productWarehouseToDelete.WarehouseId,
-                    Column2 = productToUpdate.Id
-                });
+            ////Видалити стару локацію
+            //if (productWarehouseToDelete != null)
+            //    await _unitOfWork.WarehouseProducts.DeleteAsync(new CompositeKey
+            //    {
+            //        Column1 = productWarehouseToDelete.WarehouseId,
+            //        Column2 = productToUpdate.Id
+            //    });
 
-            //Створити нову локацію
-            _unitOfWork.WarehouseProducts.Create(new WarehouseProduct
-            {
-                ProductId = productToUpdate.Id,
-                WarehouseId = warehouse.Id,
-                Quantity = updatedProduct.Warehouse.Quantity
-            });
+            ////Створити нову локацію
+            //_unitOfWork.WarehouseProducts.Create(new WarehouseProduct
+            //{
+            //    ProductId = productToUpdate.Id,
+            //    WarehouseId = warehouse.Id,
+            //    Quantity = updatedProduct.Warehouse.Quantity
+            //});
             #endregion 
 
             await _unitOfWork.SaveAsync();

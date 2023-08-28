@@ -62,28 +62,28 @@ namespace OnePlace.BLL.Services
             var isProduct = await _unitOfWork.Products.FindAsync(p => p.Id == createOrderDTO.ProductId);
 
             //Перевірка чи існує товар з переданим Id 
-            if (isProduct.Any())
-            {
-                var wareHouse = await _unitOfWork.WarehouseProducts
-                    .FindAsync(w => w.ProductId == isProduct.First().Id);
+            //if (isProduct.Any())
+            //{
+            //    var wareHouse = await _unitOfWork.WarehouseProducts
+            //        .FindAsync(w => w.ProductId == isProduct.First().Id);
 
-                //Перевірка чи достатня кількість товару на складі
-                if (wareHouse.Any())
-                {
-                    if(wareHouse.First().Quantity == 0) 
-                        throw new BusinessException("товару немає в наявності");
-                    if (wareHouse.First().Quantity < createOrderDTO.QuantityOfProducts)
-                        createOrderDTO.QuantityOfProducts = wareHouse.First().Quantity;
+            //    //Перевірка чи достатня кількість товару на складі
+            //    if (wareHouse.Any())
+            //    {
+            //        if(wareHouse.First().Quantity == 0) 
+            //            throw new BusinessException("товару немає в наявності");
+            //        if (wareHouse.First().Quantity < createOrderDTO.QuantityOfProducts)
+            //            createOrderDTO.QuantityOfProducts = wareHouse.First().Quantity;
 
-                    wareHouse.First().Quantity -= createOrderDTO.QuantityOfProducts;
+            //        wareHouse.First().Quantity -= createOrderDTO.QuantityOfProducts;
 
-                    _unitOfWork.WarehouseProducts.Update(wareHouse.First());
-                }
-                else
-                    new ArgumentNullException("warehouse null");
-            }
-            else
-                throw new ArgumentNullException(nameof(Product) + " is null");
+            //        //_unitOfWork.WarehouseProducts.Update(wareHouse.First());
+            //    }
+            //    else
+            //        new ArgumentNullException("warehouse null");
+            //}
+            //else
+            //    throw new ArgumentNullException(nameof(Product) + " is null");
 
             //Поточний користувач
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);

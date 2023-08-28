@@ -6,7 +6,6 @@ namespace OnePlace.DAL.Interfaces
     {
         IRepository<Category, int> Categories {  get; }
         IRepository<Color, int> Colors {  get; }
-        //IRepository<Delivery, int> Deliveries {  get; }
         IRepository<Description, int> Descriptions {  get; }
         IRepository<Gender, int> Genders {  get; }
         IRepository<LikedProduct, CompositeKey> LikedProducts {  get; }
@@ -15,15 +14,13 @@ namespace OnePlace.DAL.Interfaces
         IRepository<Material, int> Materials {  get; }
         IRepository<Order, int> Orders {  get; }
         IRepository<OrderProduct, CompositeKey> OrderProducts {  get; }
-        //IRepository<Picture, int> Pictures {  get; }
         IRepository<Product, int> Products {  get; }
         IRepository<ProductDescription, CompositeKey> ProductDescriptions {  get; }
+        IRepository<ProductColor, CompositeKey> ProductColors { get; }
         IRepository<ProductPicture, CompositeKey> ProductPictures {  get; }
         IRepository<Review, int> Reviews {  get; }
         IRepository<Sale, int> Sales {  get; }
         IRepository<User, int> Users {  get; }
-        IRepository<Warehouse, int> Warehouses {  get; }
-        IRepository<WarehouseProduct, CompositeKey> WarehouseProducts {  get; }
         IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
         IRepository<Message, int> Messages { get; }
         Task SaveAsync();

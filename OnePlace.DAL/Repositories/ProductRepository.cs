@@ -38,7 +38,7 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
                 .Include(o => o.Material)
-                .Include(o => o.Color)
+                //.Include(o => o.Color)
                 .Include(o => o.Gender)
                 .Include(o => o.Category)
                 .Include(o => o.Reviews)
@@ -62,22 +62,22 @@ namespace OnePlace.DAL.Repositories
                 var predicate = PredicateBuilder.New<Product>(true);
 
                 //ФІльтрація за кольорами
-                if (searchParams.Colors.Any())
-                {
-                    predicate = predicate.And(p => searchParams.Colors.Contains(p.ColorId ?? default(int)));
-                }
+                //if (searchParams.Colors.Any())
+                //{
+                //    predicate = predicate.And(p => searchParams.Colors.Contains(p.ColorId ?? default(int)));
+                //}
 
                 //Максимальна допустима ціна товару
-                if (searchParams.MaxPrice.HasValue)
-                {
-                    predicate = predicate.And(p => p.Price <= searchParams.MaxPrice.Value);
-                }
+                //if (searchParams.MaxPrice.HasValue)
+                //{
+                //    predicate = predicate.And(p => p.Price <= searchParams.MaxPrice.Value);
+                //}
 
-                //Мінімальна допустима ціна товару
-                if (searchParams.MinPrice.HasValue)
-                {
-                    predicate = predicate.And(p => p.Price >= searchParams.MinPrice.Value);
-                }
+                ////Мінімальна допустима ціна товару
+                //if (searchParams.MinPrice.HasValue)
+                //{
+                //    predicate = predicate.And(p => p.Price >= searchParams.MinPrice.Value);
+                //}
 
                 //Фільтрація за статтю
                 if (searchParams.Genders.Any())
@@ -128,14 +128,14 @@ namespace OnePlace.DAL.Repositories
                 }
 
                 //Фільтрація за містами
-                if (searchParams.Locations.Any())
-                {
-                    List<int> locations = db.Warehouses.Where(w => searchParams.Locations.Contains(w.Location))
-                        .Select(w => w.Id).ToList();
+                //if (searchParams.Locations.Any())
+                //{
+                //    List<int> locations = db.Warehouses.Where(w => searchParams.Locations.Contains(w.Location))
+                //        .Select(w => w.Id).ToList();
 
-                    predicate = predicate.And(p => db.WarehouseProducts
-                     .Where(wp => locations.Contains(wp.WarehouseId) && p.Id == wp.ProductId).Any());
-                }
+                //    predicate = predicate.And(p => db.WarehouseProducts
+                //     .Where(wp => locations.Contains(wp.WarehouseId) && p.Id == wp.ProductId).Any());
+                //}
 
                 query = query.Include(o => o.ProductPictures);
 
@@ -170,7 +170,7 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.ManufacturerCountry)
                 .Include(o => o.Manufacturer)
                 .Include(o => o.Material)
-                .Include(o => o.Color)
+                //.Include(o => o.Color)
                 .Include(o => o.Gender)
                 .Include(o => o.Category)
                 .Include(o => o.Reviews)

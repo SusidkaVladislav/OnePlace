@@ -28,8 +28,7 @@ namespace OnePlace.DAL.Repositories
         public IRepository<Review, int> Reviews { get; private set; }
         public IRepository<Sale, int> Sales { get; private set; }
         public IRepository<User, int> Users { get; private set; }
-        public IRepository<Warehouse, int> Warehouses { get; private set; }
-        public IRepository<WarehouseProduct, CompositeKey> WarehouseProducts { get; private set; }
+        public IRepository<ProductColor, CompositeKey> ProductColors { get; private set; } 
         public IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; private set; }
         public IRepository<Message, int> Messages { get; private set; }
         #endregion
@@ -55,8 +54,9 @@ namespace OnePlace.DAL.Repositories
             Reviews = new ReviewRepository(_appDbContext, userManager);
             Sales = new SaleRepository(_appDbContext, userManager);
             Users = new UserRepository(_appDbContext, userManager);
-            Warehouses = new WarehouseRepository(_appDbContext, userManager);
-            WarehouseProducts = new WarehouseProductRepository(_appDbContext, userManager);
+            //Warehouses = new WarehouseRepository(_appDbContext, userManager);
+            //WarehouseProducts = new WarehouseProductRepository(_appDbContext, userManager);
+            ProductColors = new ProductColorRepository(_appDbContext, userManager);
             ShoppingCarts = new ShoppingCartRepository(_appDbContext, userManager);
         }
 

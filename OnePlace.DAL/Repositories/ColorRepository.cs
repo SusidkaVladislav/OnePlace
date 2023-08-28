@@ -25,12 +25,14 @@ namespace OnePlace.DAL.Repositories
 
         private Task<List<Color>> GetListAsync(Func<Color, bool> predicate)
         {
-            return Task.Run(() => db.Colors.Include(o => o.Products).Where(predicate).ToList());
+            throw new NotImplementedException();
+            //return Task.Run(() => db.Colors.Include(o => o.Products).Where(predicate).ToList());
         }
 
         public override async Task<Color> GetAsync(int id)
         {
-            return await db.Colors.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
+            throw new NotImplementedException();
+            //return await db.Colors.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
         }
     }
 }
