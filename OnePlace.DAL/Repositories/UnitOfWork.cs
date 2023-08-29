@@ -28,6 +28,8 @@ namespace OnePlace.DAL.Repositories
         public IRepository<ProductColor, CompositeKey> ProductColors { get; private set; } 
         public IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; private set; }
         public IRepository<Message, int> Messages { get; private set; }
+        public IRepository<ReviewReply, int> ReviewReplies { get; private set; }
+        public IRepository<CreditCard, int> CreditCards { get; private set; }
         #endregion
 
         public UnitOfWork(AppDbContext appDbContext, UserManager<User> userManager)
@@ -50,6 +52,9 @@ namespace OnePlace.DAL.Repositories
             Users = new UserRepository(_appDbContext, userManager);
             ProductColors = new ProductColorRepository(_appDbContext, userManager);
             ShoppingCarts = new ShoppingCartRepository(_appDbContext, userManager);
+            Messages = new MessageRepository(_appDbContext, userManager);
+            ReviewReplies = new ReviewReplyRepository(_appDbContext, userManager);
+            CreditCards = new CreditCardRepository(_appDbContext, userManager);
         }
 
         public async void Dispose()

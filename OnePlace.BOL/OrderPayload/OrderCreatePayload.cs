@@ -13,9 +13,9 @@ namespace OnePlace.BOL.OrderPayload
 
         public string? Comment { get; set; }
 
-        [Required]
-        [DataType(DataType.Text)]
-        public DeliveryCompanies ServiceName { get; set; }
+        //[Required]
+        //[DataType(DataType.Text)]
+        //public DeliveryCompanies ServiceName { get; set; }
 
         [Required]
         [DataType(DataType.Text)]

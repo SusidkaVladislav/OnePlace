@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Entities
 {
+    [PrimaryKey("ReviewId")]
     public class ReviewReply
     {
         public int ReviewId { get; set; }
+        public Review Review { get; set; }
         public string Comment { get; set; }
         public DateTime Date { get; set; }
     }

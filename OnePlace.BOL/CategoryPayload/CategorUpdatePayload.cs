@@ -6,6 +6,7 @@ namespace OnePlace.BOL.CategoryPayload
     public class CategorUpdatePayload
     {
         public int Id { get; set; }
+
         [Required]
         [MaxLength(100)]
         [MinLength(2)]

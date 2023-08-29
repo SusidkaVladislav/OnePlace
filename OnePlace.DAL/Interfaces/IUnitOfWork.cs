@@ -22,6 +22,9 @@ namespace OnePlace.DAL.Interfaces
         IRepository<User, int> Users {  get; }
         IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
         IRepository<Message, int> Messages { get; }
+        IRepository<ReviewReply, int> ReviewReplies { get; }
+        IRepository<CreditCard, int> CreditCards { get; }
+
         Task SaveAsync();
     }
 }
