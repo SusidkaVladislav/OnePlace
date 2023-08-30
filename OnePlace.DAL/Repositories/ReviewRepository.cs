@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ReviewRepository : RepositoryBase<Review, int>
+    public class ReviewRepository: RepositoryBase<Review, int>
     {
         public ReviewRepository(AppDbContext context, 
             UserManager<User> userManager) : base(context, userManager) { }    

@@ -17,7 +17,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin, user")]
+       // [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {
             var result = await _productService.GetProduct(id);
@@ -25,7 +25,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("search")]
-        [Authorize(Roles = "admin, user")]
+        //[Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetFilteredProducts([FromBody] ProductSearchParams filter)
         {
             var result = await _productService.FilterProduct(filter);

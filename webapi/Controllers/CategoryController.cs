@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL.CategoryPayload;
 
@@ -47,6 +48,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateCategory(CategorUpdatePayload categorUpdate)
         {
             var result = await _categoryService.Update(categorUpdate);

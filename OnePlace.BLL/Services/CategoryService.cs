@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnePlace.BLL.Interfaces;
+using OnePlace.BLL.Validators;
 using OnePlace.BOL.CategoryDTO;
 using OnePlace.BOL.CategoryPayload;
 using OnePlace.BOL.Exceptions;
@@ -33,6 +34,8 @@ namespace OnePlace.BLL.Services
         {
             CategoryCreateDTO categoryDTO = _mapper.Map<CategoryCreateDTO>(categoryPayload);
 
+            CategoryValidation validation = new CategoryValidation(_unitOfWork);
+
             if (categoryDTO == null)
                 throw new NotFoundException(nameof(CategoryCreateDTO) + " переданий об'єкт рівний null");
 
@@ -41,35 +44,43 @@ namespace OnePlace.BLL.Services
 
             categoryDTO.Name = categoryDTO.Name.ToLower().Trim();
 
-            //Підтягуються всі категорії з вказаним іменем
-            var categories = await _unitOfWork.Categories
-                .FindAsync(c => c.Name == categoryDTO.Name);
+            //Перевірка фотографії категорії
+            if (string.IsNullOrEmpty(categoryDTO.PictureAddress))
+                throw new ArgumentException("некоректне фото категорії");
 
             //Назви категорій мають бути унікальними (перевіряєтсья чи є вже категорія з потрібним іменем)  
-            if (categories.Any()) 
+            if (!await validation.IsUnique(categoryDTO.Name)) 
                 throw new BusinessException(nameof(CategoryCreateDTO) + " категорія з такою назвою вже існує");
             
             //Перевірка на наявність батьківської категорії
-            if (categoryDTO.ParentId != null && categoryDTO.ParentId > 0)
-                if (await _unitOfWork.Categories.GetAsync(categoryDTO.ParentId ?? default(int)) == null)
-                    throw new NotFoundException(nameof(CategoryCreateDTO) + " неіснуюча батьківська категорія");
-            
+            if(!await validation.IsCorrectParentCategory(categoryDTO.ParentId))
+                throw new NotFoundException(nameof(CategoryCreateDTO) + " неіснуюча батьківська категорія");
+
             if (categoryDTO.ParentId <= 0)
                 categoryDTO.ParentId = null;
 
             //Перевірка чи батьківська категорія не містить продуктів. Якщо місить, то значить що вона є кінцевою категорієї
             //і добавити в неї нову пуд-категорію неможна
-            IEnumerable<Product> products = await _unitOfWork.Products.FindAsync(p=>p.Category.Id == categoryDTO.ParentId);
-            if(products.Count() > 0)
+            //IEnumerable<Product> products = await _unitOfWork.Products.FindAsync(p=>p.Category.Id == categoryDTO.ParentId);
+            //if(products.Count() > 0)
+            if(await validation.IsFinalCategory(categoryDTO.ParentId))
                 throw new BusinessException(nameof(CategoryCreateDTO) + " в категорію з id={" + categoryDTO.ParentId + "} " +
                     " не можна добавляти під-категорії");
 
+            //Зберегти фотографію 
+            Picture picture = new Picture
+            {
+                Address= categoryDTO.PictureAddress
+            };
+            _unitOfWork.Pictures.Create(picture);
+            await _unitOfWork.SaveAsync();
+
             //Приведення до типу категорії Entity
             Category category = _mapper.Map<Category>(categoryDTO);
+            category.PictureId = picture.Id;
 
             _unitOfWork.Categories.Create(category);
             
-            //Асинхронне збереження
             await _unitOfWork.SaveAsync();
 
             return category.Id;
@@ -89,6 +100,7 @@ namespace OnePlace.BLL.Services
             if (int.IsNegative(id) || id == 0)
                 throw new ArgumentException(nameof(id) + " id can't be negative or 0");
             var category = await _unitOfWork.Categories.GetAsync(id);
+            
             if (category == null)
                 throw new NotFoundException(nameof(CategoryCreateDTO) + " неіснуюча категорія");
             
@@ -97,15 +109,9 @@ namespace OnePlace.BLL.Services
             if(category.Products.Count() > 0)
                 throw new BusinessException("Категорію неможливо видалити, бо вона містить продукти");
 
+            await _unitOfWork.Pictures.DeleteAsync(category.PictureId);
             await _unitOfWork.Categories.DeleteAsync(id);
-            try
-            {
-                await _unitOfWork.SaveAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            await _unitOfWork.SaveAsync();
 
             return id;
         }
@@ -144,7 +150,7 @@ namespace OnePlace.BLL.Services
         }   
 
         /// <summary>
-        /// Редагування назви категорії
+        /// Редагування назви та фотографії категорії
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
@@ -155,25 +161,43 @@ namespace OnePlace.BLL.Services
         {
             CategoryUpdateDTO categoryUpdate = _mapper.Map<CategoryUpdateDTO>(category);
 
+            CategoryValidation validation = new CategoryValidation(_unitOfWork);
+
             if(categoryUpdate == null) throw new ArgumentNullException(nameof(categoryUpdate) + " null");
+
+            if (!await validation.Exists(category.Id))
+                throw new BusinessException(nameof(Category) + " not exists");
 
             if (categoryUpdate.Name.Length < 2)
                 throw new ArgumentException(nameof(categoryUpdate.Name) + " minimum length of category name is 2");
 
             categoryUpdate.Name = categoryUpdate.Name.ToLower().Trim();
-
-            var categories = await _unitOfWork.Categories
-              .FindAsync(c => c.Name == categoryUpdate.Name);
-
-            //Назви категорій мають бути унікальними (перевіряєтсья чи є вже категорія з потрібним іменем)  
-            if (categories.Any())
-                throw new BusinessException(nameof(CategoryCreateDTO) + " категорія з такою назвою вже існує");
+            
+            //Перевірка фотографії категорії
+            if (string.IsNullOrEmpty(categoryUpdate.PictureAddress))
+                throw new ArgumentException("некоректне фото категорії");
 
             Category updateCategory = await _unitOfWork.Categories.GetAsync(categoryUpdate.Id);
-            if (updateCategory == null)
-                throw new ArgumentNullException(nameof(Category) + " category doesn't exist");
 
-            updateCategory.Name = categoryUpdate.Name.ToLower().Trim();
+            updateCategory.Name = categoryUpdate.Name;
+
+            #region Update category picture
+            Picture picture = _unitOfWork.Pictures.FindAsync(p => p.Id == updateCategory.PictureId)
+                .Result.FirstOrDefault();
+            
+            if(picture != null)
+            {
+                picture.Address = categoryUpdate.PictureAddress;
+                _unitOfWork.Pictures.Update(picture);
+            }
+            else
+            {
+                _unitOfWork.Pictures.Create(picture = new Picture
+                {
+                    Address= categoryUpdate.PictureAddress
+                });
+            }
+            #endregion
 
             _unitOfWork.Categories.Update(updateCategory);
             await _unitOfWork.SaveAsync();

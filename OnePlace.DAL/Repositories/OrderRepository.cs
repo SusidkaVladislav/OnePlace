@@ -28,12 +28,12 @@ namespace OnePlace.DAL.Repositories
 
         private Task<List<Order>> GetListAsync(Func<Order, bool> predicate)
         {
-            return Task.Run(() => db.Orders.Include(o => o.Delivery).Where(predicate).ToList());
+            return Task.Run(() => db.Orders/*.Include(o => o.Delivery)*/.Where(predicate).ToList());
         }
 
         public override async Task<Order> GetAsync(int id)
         {
-            return await db.Orders.Include(o => o.Delivery).FirstOrDefaultAsync(o => o.Id == id);
+            return await db.Orders/*.Include(o => o.Delivery)*/.FirstOrDefaultAsync(o => o.Id == id);
         }
     }
 }

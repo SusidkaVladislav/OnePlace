@@ -20,6 +20,6 @@ namespace OnePlace.BLL.Utilities
         /// <summary>
         /// Фільтрування за станом замовлення
         /// </summary>
-        public OrderState? State { get; set; }
+        public OrderStates? State { get; set; }
     }
 }

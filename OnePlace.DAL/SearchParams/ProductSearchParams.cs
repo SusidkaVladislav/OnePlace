@@ -16,11 +16,6 @@
         public decimal? MaxPrice { get; set; } = null;
 
         /// <summary>
-        /// Стать 
-        /// </summary>
-        public HashSet<int>? Genders { get; set; } = null;
-
-        /// <summary>
         /// Кольори товару
         /// </summary>
         public HashSet<int>? Colors { get; set; } = null;
@@ -48,9 +43,5 @@
         /// </summary>
         public bool? WithDiscount { get; set; } = null;
 
-        /// <summary>
-        /// Продукти що розміщені за певною локацією
-        /// </summary>
-        public HashSet<string>? Locations { get; set; } = null;
     }
 }

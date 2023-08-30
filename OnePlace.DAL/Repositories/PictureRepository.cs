@@ -1,14 +1,15 @@
-﻿using OnePlace.DAL.EF;
-using OnePlace.DAL.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using OnePlace.DAL.EF;
+using OnePlace.DAL.Entities;
+using System.Runtime.CompilerServices;
 
 namespace OnePlace.DAL.Repositories
 {
     public class PictureRepository : RepositoryBase<Picture, int>
     {
         public PictureRepository(AppDbContext context, 
-            UserManager<User> userManager): base(context, userManager) { }
+            UserManager<User> userManager) : base(context, userManager){}
 
 
         public override async Task DeleteAsync(int id)
@@ -32,7 +33,7 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task<Picture> GetAsync(int id)
         {
-            return await db.Pictures.FirstOrDefaultAsync(o => o.Id == id);
+            return await db.Pictures.FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }

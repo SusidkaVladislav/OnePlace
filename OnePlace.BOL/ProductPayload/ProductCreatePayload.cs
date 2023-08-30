@@ -1,7 +1,7 @@
 ﻿using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.Sale;
-using OnePlace.BOL.Warehouse;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -19,31 +19,11 @@ namespace OnePlace.BOL.ProductPayload
 
         [Required]
         [RegularExpression(@"^[0-9]*$")]
-        [DataType(DataType.Currency)]
-        public decimal Price { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[0-9]*$")]
         public int ManufacturerCountryId { get; set; }
 
         [Required]
         [RegularExpression(@"^[0-9]*$")]
         public int ManufacturerId { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[0-9]*$")]
-        public int MaterialId { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[0-9]*$")]
-        public int ColorId { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[0-9]*$")]
-        public int GenderId { get; set; }
-
-        [Required]
-        public WarehouseDTO Warehouse { get; set; }
 
         [Required]
         [RegularExpression(@"^[0-9]*$")]
@@ -62,5 +42,8 @@ namespace OnePlace.BOL.ProductPayload
 
         [Required]
         public List<ProductPictureDTO> Pictures { get; set; }
+        
+        [Required]
+        public List<ProductColorPayload> ProductColors { get; set; }
     }
 }

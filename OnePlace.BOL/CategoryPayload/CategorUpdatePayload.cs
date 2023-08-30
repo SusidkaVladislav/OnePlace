@@ -6,11 +6,16 @@ namespace OnePlace.BOL.CategoryPayload
     public class CategorUpdatePayload
     {
         public int Id { get; set; }
+
         [Required]
         [MaxLength(100)]
         [MinLength(2)]
         [DataType(DataType.Text)]
         [DisplayName("Назва")]
         public string Name { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        public string PictureAddress { get; set; }
     }
 }

@@ -21,8 +21,6 @@ namespace OnePlace.BLL.Mappings
             CreateMap<OrderCreatePayload, OrderCreateDTO>();
             
             CreateMap<OrderCreateDTO, Order>(MemberList.Source);
-
-
         }
     }
 }

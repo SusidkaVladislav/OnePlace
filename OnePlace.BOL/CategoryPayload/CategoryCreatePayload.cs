@@ -11,6 +11,11 @@ namespace OnePlace.BOL.CategoryPayload
         [DataType(DataType.Text)]
         [DisplayName("Назва")]
         public string Name { get; set; }
+        
+        [Required]
+        [DataType(DataType.Text)]
+        public string PictureAddress { get; set; }
+        
         public int? ParentId { get; set; }
     }
 }

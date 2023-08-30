@@ -10,24 +10,24 @@ namespace OnePlace.DAL.EF
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Color> Colors { get; set; }
-        public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Description> Descriptions { get; set; }
-        public DbSet<Gender> Genders { get; set; }
         public DbSet<LikedProduct> LikedProducts { get; set; }
         public DbSet<ManufactureCountry> ManufactureCountries { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
-        public DbSet<Material> Materials { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
-        public DbSet<Picture> Pictures { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
         public DbSet<ProductDescription> ProductDescriptions { get; set; }
         public DbSet<ProductPicture> ProductPictures { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<ReviewReply> ReviewReplies { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<CreditCard> CreditCards { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
@@ -46,14 +46,16 @@ namespace OnePlace.DAL.EF
                 .HasKey(x => new { x.ProductId, x.DescriptionId });
 
             builder.Entity<ProductPicture>()
-                .HasKey(x => new { x.PictureId, x.ProductId });
+                .HasKey(x => new { x.ProductId, x.PictureId });
 
-            builder.Entity<WarehouseProduct>()
-                .HasKey(x => new { x.WarehouseId, x.ProductId });
+            builder.Entity<ProductColor>()
+                 .HasKey(x => new { x.ProductId, x.ColorId });
 
             builder.Entity<ShoppingCart>()
                 .HasKey(x => new { x.ProductId, x.UserId });
 
+            builder.Entity<ReviewReply>()
+                .HasKey(x => x.ReviewId);
         }
     }
 }
