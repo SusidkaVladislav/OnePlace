@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
+using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BLL.Validators;
+using OnePlace.BOL;
 using OnePlace.BOL.Description;
 using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.ProductPayload;
 using OnePlace.BOL.Sale;
@@ -66,23 +69,19 @@ namespace OnePlace.BLL.Services
                 ProductListModel productListModel = new ProductListModel
                 {
                     Id = product.Id,
-                    Name = product.Name,
-                    //Price = product.Price
+                    Name = product.Name
                 };
 
+                productListModel.Price = product.ProductColors.First().Price;
+
                 //Головна фотографія
-                /*var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
                 .Where(p => p.IsTitle == true && p.ProductId == product.Id)
                     .Select(p => p.PictureId).FirstOrDefault());
 
-                productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();*/
+                productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
 
-                //Місто в якому знаходиться товар
-                //var locations = await _unitOfWork.Warehouses.FindAsync
-                //     (w => w.Id == _unitOfWork.WarehouseProducts
-                //     .FindAsync(pw => pw.ProductId == product.Id).Result.FirstOrDefault().WarehouseId);
-
-                //productListModel.Location = locations.Select(pw => pw.Location).FirstOrDefault();
+               
 
                 //Чи є цей товар в улуюблених товарах користувача
                 var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
@@ -100,7 +99,7 @@ namespace OnePlace.BLL.Services
                 if (sale.Any())
                 {
                     //Видалити якщо час знижки закінчився
-                    if (sale.First().EndDate <= DateTime.UtcNow)
+                    if (sale.First().EndDate.Date <= DateTime.UtcNow.Date)
                     {
                         await _unitOfWork.Sales.DeleteAsync(sale.First().Id);
                         await _unitOfWork.SaveAsync();
@@ -148,8 +147,13 @@ namespace OnePlace.BLL.Services
             try
             {
                 await validation.Validate(productDTO);
+                //Код має бути унікальним
+                if (_unitOfWork.Products.FindAsync(p => p.Code == productDTO.Code).Result.Any())
+                    throw new BusinessException(nameof(productDTO.Code) + " code must be unique");
+                await validation.CategoryValid(productDTO.CategoryId);
                 validation.SaleValid(productDTO.Sale);
                 validation.PictureValid(productDTO.Pictures);
+                await validation.ProductColorsValid(productDTO.ProductColors);
             }
             catch (ArgumentNullException ex)
             {
@@ -165,7 +169,7 @@ namespace OnePlace.BLL.Services
 
             #region Робота з фотографіями
 
-            /*List<ProductPictureDTO> productPictureDTOs = productDTO.Pictures;
+            List<ProductPictureDTO> productPictureDTOs = productDTO.Pictures;
             List<int> picturesIds = new List<int>();
 
             foreach (ProductPictureDTO picture in productPictureDTOs)
@@ -195,7 +199,7 @@ namespace OnePlace.BLL.Services
                 productPictures.Add(picture);
             }
 
-            newProduct.ProductPictures = productPictures;*/
+            newProduct.ProductPictures = productPictures;
 
             #endregion
 
@@ -257,37 +261,6 @@ namespace OnePlace.BLL.Services
             _unitOfWork.Products.Create(newProduct);
             await _unitOfWork.SaveAsync();
 
-            #region Робота з локацією продукта
-
-            //IEnumerable<Warehouse> warehouse = await _unitOfWork.Warehouses
-            //    .FindAsync(w => w.Location.ToLower()
-            //    .Trim() == productDTO.Warehouse.Location.ToLower().Trim());
-
-            //WarehouseProduct warehouseProduct = new WarehouseProduct();
-
-            //if (warehouse.Count() == 0) // Якщо такої локації ще немає
-            //                            //Створення нової локації і прив'язка до неї продукта
-            //{
-            //    Warehouse newWarehouse = new Warehouse()
-            //    {
-            //        Location = productDTO.Warehouse.Location
-            //    };
-
-            //    _unitOfWork.Warehouses.Create(newWarehouse);
-            //    await _unitOfWork.SaveAsync();
-
-            //    warehouseProduct.WarehouseId = newWarehouse.Id;
-            //}
-            //else
-            //    warehouseProduct.WarehouseId = warehouse.First().Id;
-
-            //warehouseProduct.ProductId = newProduct.Id;
-            //warehouseProduct.Quantity = productDTO.Warehouse.Quantity;
-            //_unitOfWork.WarehouseProducts.Create(warehouseProduct);
-
-            //await _unitOfWork.SaveAsync();
-            #endregion
-
             #region Робота зі знижкою
 
             if (productDTO.Sale != null)
@@ -301,9 +274,8 @@ namespace OnePlace.BLL.Services
                 };
 
                 _unitOfWork.Sales.Create(sale);
+                await _unitOfWork.SaveAsync();
             }
-
-            await _unitOfWork.SaveAsync();
             #endregion
 
             return newProduct.Id;
@@ -347,11 +319,16 @@ namespace OnePlace.BLL.Services
             //Вигружаю всі старі фотографії які відносяться до товару
             var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.Id);
             //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
-            /*foreach (int pictureId in oldProductPictures.Select(p=>p.PictureId))
+            foreach (int pictureId in oldProductPictures.Select(p => p.PictureId))
             {
                 await _unitOfWork.Pictures.DeleteAsync(pictureId);
 
-            }*/
+                await _unitOfWork.ProductPictures.DeleteAsync(new CompositeKey
+                {
+                    Column1 = productId,
+                    Column2 = pictureId
+                });
+            }
 
             await _unitOfWork.Products.DeleteAsync(productId);
             await _unitOfWork.SaveAsync();
@@ -394,29 +371,13 @@ namespace OnePlace.BLL.Services
             #endregion
             #region Pictures
             //Підтягуютсья фотографії товару
-            /*for (int i = 0; i < details.Pictures.Count; i++)
+            for (int i = 0; i < details.Pictures.Count; i++)
             {
                 var pict = await _unitOfWork.Pictures.GetAsync(
                     product.ProductPictures.ElementAt(i).PictureId);
                 details.Pictures[i].Address = pict.Address;
                 details.Pictures[i].Id = pict.Id;
-            }*/
-            #endregion
-            #region Warehouse
-            //Підтягується локація товару, та кількість в наявності 
-            //IEnumerable<WarehouseProduct> warehouseProduct = await _unitOfWork.WarehouseProducts
-            //    .FindAsync(wp => wp.ProductId == productId);
-            //if (warehouseProduct.Count() > 0)
-            //{
-            //    Warehouse warehouse = await _unitOfWork.Warehouses.GetAsync(warehouseProduct.First().WarehouseId);
-
-            //    details.Warehouse = new WarehouseDetails
-            //    {
-            //        Location = warehouse.Location,
-            //        Quantity = warehouseProduct.First().Quantity,
-            //        Id = warehouseProduct.First().WarehouseId
-            //    };
-            //}
+            }
             #endregion
             #region Sale
             //Підтягується знижка
@@ -426,7 +387,7 @@ namespace OnePlace.BLL.Services
             if (sale != null)
             {
                 //Видалити якщо час знижки закінчився
-                if (sale.EndDate <= DateTime.UtcNow)
+                if (sale.EndDate.Date < DateTime.UtcNow.Date)
                 {
                     await _unitOfWork.Sales.DeleteAsync(sale.Id);
                     await _unitOfWork.SaveAsync();
@@ -441,6 +402,17 @@ namespace OnePlace.BLL.Services
                    };
             }
 
+            #endregion
+            #region Colors
+
+            for (int i = 0; i < details.ProductColors.Count(); i++)
+            {
+                var color = _unitOfWork
+                    .Colors.FindAsync(c => c.Id == details.ProductColors[i].ColorId).Result.FirstOrDefault();
+
+                details.ProductColors[i].Color = _mapper.Map<ColorDTO>(color);
+            }
+            
             #endregion
 
             return details;
@@ -466,12 +438,8 @@ namespace OnePlace.BLL.Services
             Product productToUpdate = _unitOfWork.Products.FindAsync(p => p.Id == updatedProduct.Id).Result.FirstOrDefault();
 
             #region Validation
-
             //Якщо такого продукту взагалі не існує
             if (productToUpdate is null) throw new NotFoundException(nameof(ProductUpdateDTO) + " not exists!");
-
-            if (updatedProduct.CategoryId != productToUpdate.CategoryId)
-                throw new BusinessException(nameof(Category) + " категорію міняти не можна");
 
             ProductValidation validation = new ProductValidation(_unitOfWork);
 
@@ -480,22 +448,15 @@ namespace OnePlace.BLL.Services
             try
             {
                 validation.CodeValid(updatedProduct.Code);
-               // validation.PriceValid(updatedProduct.Price);
+                
+               await validation
+                    .ProductColorsValid(updatedProduct.ColorDetails);
 
                 var countryId = await validation.ManufacturerCountryValidAsync(updatedProduct.ManufacturerCountryId);
                 productToUpdate.ManufacturerCountryId = countryId;
 
                 var manufacturerId = await validation.ManufacturerValidAsync(updatedProduct.ManufacturerId);
                 productToUpdate.ManufacturerId = manufacturerId;
-
-                //var materialId = await validation.MaterialValidAsync(updatedProduct.MaterialId);
-                //productToUpdate.MaterialId = materialId;
-
-                //var colorId = await validation.ColorValidAsync(updatedProduct.ColorId);
-                //productToUpdate.ColorId = colorId;
-
-                //var genderId = await validation.GenderValidAsync(updatedProduct.GenderId);
-                //productToUpdate.GenderId = genderId;
 
                 validation.SaleValid(updatedProduct.Sale);
             }
@@ -512,18 +473,33 @@ namespace OnePlace.BLL.Services
 
             productToUpdate.Code = updatedProduct.Code;
             productToUpdate.Name = updatedProduct.Name;
-            //productToUpdate.Price = updatedProduct.Price;
             productToUpdate.Description = updatedProduct.Description;
             productToUpdate.IsInBestProducts = updatedProduct.IsInBestProducts;
 
+            #region ProductColor
+            List<ProductColor> colorList = new List<ProductColor>();
+
+            foreach (var productColor in updatedProduct.ColorDetails)
+            {
+                colorList.Add(new ProductColor
+                {
+                    ProductId = updatedProduct.Id,
+                    Price = productColor.Price,
+                    Quantity= productColor.Quantity,
+                    ColorId = productColor.ColorId
+                });
+            }
+            productToUpdate.ProductColors = colorList;
+            #endregion
+
             #region Picures validation
 
-            /*if (updatedProduct.Pictures.Count == 0)
+            if (updatedProduct.Pictures.Count == 0)
                 throw new ArgumentNullException(nameof(Picture) + " no pictures");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() == 0)
                 throw new BusinessException("no title picture");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() >= 2)
-                throw new BusinessException("more than one title pictures");*/
+                throw new BusinessException("more than one title pictures");
 
             #endregion
 
@@ -533,16 +509,14 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException(nameof(updatedProduct.Pictures) + " add photos");
 
             //Всі фотографії які відносяться до зміненого товару
-
-            //Треба тут поковирятись, бо щось тут не все чисто
-            /*List<Picture> updatedPictures = new List<Picture>();
+            List<Picture> updatedPictures = new List<Picture>();
             foreach (ProductPictureDetails picture in updatedProduct.Pictures)
             {
                 //Ті фото які віддносяться суто до цього товару
                 Picture updatePicture = _unitOfWork.Pictures.FindAsync(p => p.Id == picture.Id)
                     .Result.FirstOrDefault();
 
-                if (updatePicture != null) 
+                if (updatePicture != null)
                 {
                     if (updatePicture.Address != picture.Address)
                     {
@@ -559,7 +533,7 @@ namespace OnePlace.BLL.Services
                     _unitOfWork.Pictures.Create(updatePicture);
                 }
                 updatedPictures.Add(updatePicture);
-            }*/
+            }
             #endregion
 
             #region Descriptions
@@ -634,29 +608,11 @@ namespace OnePlace.BLL.Services
             }
             #endregion
 
-            #region Warehouse
-            //Якщо не вказана локація продукту
-            //if (updatedProduct.Warehouse is null) throw new BusinessException(nameof(updatedProduct.Warehouse) +
-            //    " is null");
-
-            //Warehouse warehouse = _unitOfWork.Warehouses.FindAsync(w => w.Location == updatedProduct.Warehouse.Location)
-            //    .Result.FirstOrDefault();
-            //if (warehouse is null)
-            //{
-            //    //Створення нової локації
-            //    warehouse = new Warehouse
-            //    {
-            //        Location = updatedProduct.Warehouse.Location
-            //    };
-            //    _unitOfWork.Warehouses.Create(warehouse);
-            //}
-            #endregion
-
             await _unitOfWork.SaveAsync();
 
             #region ProductPictures
             //Вигружаю всі старі фотографії які відносяться до товару
-            /*var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == productToUpdate.Id);
+            var oldProductPictures = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == productToUpdate.Id);
             //Всі фотографії, які більше не відносяться до даного товару, видаляютсья
             foreach (var picture in oldProductPictures)
             {
@@ -692,7 +648,7 @@ namespace OnePlace.BLL.Services
                     _unitOfWork.ProductPictures.Create(productPicture);
                 else
                     _unitOfWork.ProductPictures.Update(productPicture);
-            }*/
+            }
             #endregion
 
             #region ProductDescriptions
@@ -745,32 +701,40 @@ namespace OnePlace.BLL.Services
                         _unitOfWork.ProductDescriptions.Update(productDescription);
                 }
             }
-           
+
             #endregion
 
-            #region WarehouseProduct
+            #region ProductColors
+            //Ключі до потрібних кольорів
+            List<int> colorIds = productToUpdate.ProductColors.Select(c => c.ColorId).ToList();
 
-            //Старий запис про локацію товару та його кількість
-            //var productWarehouseToDelete = _unitOfWork.WarehouseProducts.FindAsync(w => w.ProductId == productToUpdate.Id)
-            //    .Result.FirstOrDefault();
+            List<ProductColor> productColorsForDelete = _unitOfWork.ProductColors
+                .FindAsync(pc => pc.ProductId == productToUpdate.Id 
+                && !colorIds.Contains(pc.ColorId)).Result.ToList();
 
-            ////Видалити стару локацію
-            //if (productWarehouseToDelete != null)
-            //    await _unitOfWork.WarehouseProducts.DeleteAsync(new CompositeKey
-            //    {
-            //        Column1 = productWarehouseToDelete.WarehouseId,
-            //        Column2 = productToUpdate.Id
-            //    });
+            foreach (ProductColor colorDelete in productColorsForDelete)
+            {
+                await _unitOfWork.ProductColors.DeleteAsync(new CompositeKey
+                {
+                    Column1 = colorDelete.ProductId,
+                    Column2 = colorDelete.ColorId
+                });
+            }
+            await _unitOfWork.SaveAsync();
+            foreach (ProductColor productColor in productToUpdate.ProductColors)
+            {
+                if(await _unitOfWork.ProductColors
+                    .GetAsync(new CompositeKey
+                    {
+                        Column1 = updatedProduct.Id,
+                        Column2 = productColor.ColorId
+                    }) is null)
+                    _unitOfWork.ProductColors.Create(productColor);
+                else
+                    _unitOfWork.ProductColors.Update(productColor);
+            }
 
-            ////Створити нову локацію
-            //_unitOfWork.WarehouseProducts.Create(new WarehouseProduct
-            //{
-            //    ProductId = productToUpdate.Id,
-            //    WarehouseId = warehouse.Id,
-            //    Quantity = updatedProduct.Warehouse.Quantity
-            //});
-            #endregion 
-
+            #endregion
             await _unitOfWork.SaveAsync();
 
             await DeleteUnusedDescriptions(productToUpdate.CategoryId);

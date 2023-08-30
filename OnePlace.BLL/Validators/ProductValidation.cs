@@ -1,5 +1,6 @@
 ﻿using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.Sale;
 using OnePlace.DAL.Entities;
@@ -23,28 +24,13 @@ namespace OnePlace.BLL.Validators
         /// <returns></returns>
         public async Task Validate(BaseProduct productDTO)
         {
-
-            //Валідація категорії
-            await CategoryValid(productDTO.CategoryId);
-
             //Валідація країни-виробника
             await ManufacturerCountryValidAsync(productDTO.ManufacturerCountryId);
 
             //Валідація по виробнику
             await ManufacturerValidAsync(productDTO.ManufacturerId);
 
-            //Валідація по матеріалі
-            //await MaterialValidAsync(productDTO.MaterialId);
-
-            //Валідація по кольорах
-            //await ColorValidAsync(productDTO.ColorId);
-
-            //Валідація за статтю
-            //await GenderValidAsync(productDTO.GenderId);
-
             CodeValid(productDTO.Code);
-
-            //PriceValid(productDTO.Price);
         }
 
         /// <summary>
@@ -94,6 +80,32 @@ namespace OnePlace.BLL.Validators
             return manufacturer.Id;
         }
 
+        public async Task ProductColorsValid(List<ProductColorDTO> productColors)
+        {
+            //ProductColorDTO
+            if (!productColors.Any()) 
+                throw new ArgumentNullException("color is necessary");
+            
+
+            foreach (var productColor in productColors)
+            {
+                //Перевірка на унікальність кольорів
+                if (productColors.Select(c => c.ColorId)
+                    .Where(x => x == productColor.ColorId).Count() > 1)
+                    throw new BusinessException("multiple identical colors");
+                
+                //Валідація самого кольору
+                await ColorValidAsync(productColor.ColorId);
+                
+                //Валідація ціни
+                PriceValid(productColor.Price);
+                
+                //Валідація кількості товару
+                if (productColor.Quantity < 0)
+                    throw new BusinessException("quantity can`t be less then zero");
+            
+            }
+        }
 
         public async Task<int> ColorValidAsync(int colorId)
         {
@@ -106,7 +118,7 @@ namespace OnePlace.BLL.Validators
             return color.Id;
         }
 
-        public void CodeValid(string code)
+        public async void CodeValid(string code)
         {
             if (code.Length < 4)
                 throw new BusinessException(nameof(code) + " minimum length is 4");
@@ -122,10 +134,10 @@ namespace OnePlace.BLL.Validators
         {
             if (sale != null)
             {
-                if (DateTime.Compare(sale.StartDate, DateTime.UtcNow) < 0
-                    || DateTime.Compare(sale.EndDate, DateTime.UtcNow) < 0)
+                if (DateTime.Compare(sale.StartDate.Date, DateTime.UtcNow.Date) < 0
+                    || DateTime.Compare(sale.EndDate.Date, DateTime.UtcNow.Date) < 0)
                     throw new BusinessException("Дата початку та кінця акції не може бути раніша за сьогоднішню");
-                if (DateTime.Compare(sale.StartDate, sale.EndDate) >= 0)
+                if (DateTime.Compare(sale.StartDate.Date, sale.EndDate.Date) >= 0)
                     throw new BusinessException(nameof(DateTime) + " дата закінчення акції не може бути меншою ніж дата початку");
                 if (sale.DiscountPercent > 100 || sale.DiscountPercent < 0)
                     throw new BusinessException("некоректний відсоток знижки");
@@ -134,12 +146,12 @@ namespace OnePlace.BLL.Validators
 
         public void PictureValid(List<ProductPictureDTO> productPicture)
         {
-            /*if (productPicture.Count == 0)
+            if (productPicture.Count == 0)
                 throw new ArgumentNullException(nameof(Picture) + " no pictures");
             if (productPicture.Where(p => p.IsTitle == true).Count() == 0)
                 throw new BusinessException("no title picture");
             if (productPicture.Where(p => p.IsTitle == true).Count() >= 2)
-                throw new BusinessException("more than one title pictures");*/
+                throw new BusinessException("more than one title pictures");
         }
     }
 }

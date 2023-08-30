@@ -1,5 +1,6 @@
 ﻿using OnePlace.BOL.Description;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.Sale;
 
 
@@ -11,5 +12,6 @@ namespace OnePlace.BOL.ProductDTO
         public SaleDetails? Sale { get; set; }
         public List<ProductDescriptionDetails>? Descriptions { get; set; }
         public List<ProductPictureDetails> Pictures { get; set; }
+        public List<ProductColorDTO> ColorDetails { get; set; }
     }
 }

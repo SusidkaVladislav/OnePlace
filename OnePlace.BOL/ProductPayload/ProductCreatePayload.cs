@@ -1,5 +1,6 @@
 ﻿using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.Sale;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;

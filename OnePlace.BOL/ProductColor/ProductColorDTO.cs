@@ -1,4 +1,4 @@
-﻿namespace OnePlace.BOL.ProductDTO
+﻿namespace OnePlace.BOL.ProductColor
 {
     public class ProductColorDTO
     {

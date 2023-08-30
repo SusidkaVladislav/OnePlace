@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnePlace.BOL.ProductPayload
+namespace OnePlace.BOL.ProductColor
 {
     public class ProductColorPayload
     {
