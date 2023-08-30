@@ -1,12 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState,useEffect, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
+import './ReviewStyle.css';
 import SearchIcon from './svg/SearchIcon';
 import BellIcon from './svg/BellIcon';
 import CustomPagination from './CustomPagination';
-import data from './data/mock-data.json';
+// import data from './data/mock-data.json';
 import BackIcon from './svg/BackIcon';
 import RemoveIcon from './svg/RemoveIcon';
+
+let reviews=[
+  {id:11,title:"Monitor black 1245",rate:4,review:"Присутній явний брак у звучанні, відчутний тріск, який не залежить від пристрою програвання. Потрібна заміна.",date:"28.02.2023 20:22",image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
+  {id:21,title:"Headfones black 3245",rate:3,review:"Відсутні будь-які дефекти",date:"15.06.2023 10:22",image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
+  {id:31,title:"Bluetooth speaker olive 3578",rate:5,review:"Відсутні будь-які дефекти",date:"10.10.2023 15:22",image:"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"}
+];
 
 let PageSize = 12;
 const ItemUser =({size})=>{
@@ -18,11 +25,11 @@ const ItemUser =({size})=>{
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [selectedRadio, setSelectedRadio] = useState('Last_Name'); // Default to the first radio
+  const [selectedRadio, setSelectedRadio] = useState('surname'); // Default to the first radio
   const [clickedUser, setClickedUser] = useState(null);
   const [isUserDivVisible, setIsUserDivVisible] = useState(false);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
-  const [isPleaseWaitVisible, setIsPleaseWaitVisible] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const handleIconHover = () => {
     setIsHovered(true);
@@ -52,13 +59,13 @@ const ItemUser =({size})=>{
   };
 
   const handleRowClick = (userId) => {
-    const user = data.find((user) => user.id === userId);
+    const user = users.find((user) => user.id === userId);
     setClickedUser(user);
     setIsUserDivVisible(true);
   };
 
   const handleChecked = (userId) => {
-    const user = data.find((user) => user.id === userId);
+    //const user = users.find((user) => user.id === userId);
     
 
   };
@@ -81,35 +88,47 @@ const ItemUser =({size})=>{
   const handleConfirmDelete = () => {
     // Perform the delete operation here
     setIsConfirmDialogVisible(false);
-    setIsPleaseWaitVisible(true); // Show "Please wait" window
-    setTimeout(() => {
+    
       setClickedUser(null);
       setIsUserDivVisible(false);
-    }, 3000); // 5000 milliseconds = 5 seconds
   };
 
   const handleCancelDelete = () => {
     setIsConfirmDialogVisible(false);
   };
 
-  const filteredTableData = data.filter((user) => {
+
+
+  const filteredTableData = users.filter((user) => {
     const searchData = inputValue.toLowerCase();
-    const userFieldValue = user[selectedRadio.toLowerCase()].toLowerCase();
+    const userFieldValue = user[selectedRadio]?.toLowerCase()||'';
     return userFieldValue.includes(searchData);
   });
 
   const filteredAndPaginatedData = useMemo(() => {
     const searchData = inputValue.toLowerCase();
-    const filteredData = data.filter((user) => {
-      const userFieldValue = user[selectedRadio.toLowerCase()].toLowerCase();
+    const filteredData = users.filter((user) => {
+      const userFieldValue = user[selectedRadio]?.toLowerCase()||'';
       return userFieldValue.includes(searchData);
     });
 
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
     return filteredData.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage, inputValue, selectedRadio]);
+  }, [currentPage, inputValue, selectedRadio,users]);
   
+
+  useEffect(() => {
+    fetch('https://localhost:44394/api/Admin/GetUsers')
+        .then(response => response.json())
+        .then(data => {
+            setUsers(data);
+        })
+        .catch(error => {
+            console.error('Error fetching user list:', error);
+        });
+  }, []);
+  //console.log(users)
 
 
   return (
@@ -122,31 +141,37 @@ const ItemUser =({size})=>{
                 onMouseLeave={handleIconLeave}
               > <SearchIcon />
             </div>
-            <input
-                className={`search-field ${isFocused ? 'focused' : ''}`}
-                type="text"
-                placeholder="Search..."
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                onChange={handleInputChange}
-                value={inputValue}/>
-            <div className='radio-group'>
-                <input type="radio" name="searching" value="Last_Name" id="last_name" checked={selectedRadio === 'Last_Name'}
-                onChange={handleRadioChange} />
-                <label htmlFor="last_name">Прізвище</label>
-                <input type="radio" name="searching" value="First_Name" id="first_name" onChange={handleRadioChange} />
-                <label htmlFor="first_name">Ім'я</label>
-                <input type="radio" name="searching" value="Phone" id="phone" onChange={handleRadioChange} />
-                <label htmlFor="phone">Телефон</label>
-                <input type="radio" name="searching" value="Email" id="email" onChange={handleRadioChange} />
-                <label htmlFor="email">E-mail</label>
+            <div className='search-radio-div'>
+              <input
+                  className={`search-field ${isFocused ? 'focused' : ''}`}
+                  type="text"
+                  placeholder="Search..."
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  onChange={handleInputChange}
+                  value={inputValue}/>
+              <div className='radio-group'>
+                  <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
+                  onChange={handleRadioChange} />
+                  <label htmlFor="last_name">Прізвище</label>
+                  <input type="radio" name="searching" value="name" id="name" 
+                  onChange={handleRadioChange} />
+                  <label htmlFor="first_name">Ім'я</label>
+                  <input type="radio" name="searching" value="phoneNumber" id="phoneNumber" 
+                  onChange={handleRadioChange} />
+                  <label htmlFor="phone">Телефон</label>
+                  <input type="radio" name="searching" value="email" id="email" 
+                  onChange={handleRadioChange} />
+                  <label htmlFor="email">E-mail</label>
+              </div>
+
             </div>
           </div>
           <div className='user-bell-icon'>
               <BellIcon/>
           </div>
           <div className='user-count'>
-              <label>({data.length}) користувачів</label>
+              <label>({users.length}) користувачів</label>
           </div>
           <div className='user-body' >
               <div className='user-table'>
@@ -160,12 +185,12 @@ const ItemUser =({size})=>{
                       <div className='c7-h'> <input type="checkbox" onChange={handleCheckedAll} /></div>
                 </div>
                 {filteredAndPaginatedData.map((user,index)=>(   
-                    <div className='div-row'>
-                      <div key={user.id} className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
+                    <div className='div-row' key={user.id}>
+                      <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
                           onClick={() => handleRowClick(user.id)}>
-                        <div className='c1'>{user.first_name}</div>
-                        <div className='c2'>{user.last_name}</div>
-                        <div className='c3'>{user.phone}</div>
+                        <div className='c1'>{user.name}</div>
+                        <div className='c2'>{user.surname}</div>
+                        <div className='c3'>{user.phoneNumber}</div>
                         <div className='c4'>{user.email}</div>
                         <div className='c5'></div>
                         <div className='c6'></div>
@@ -181,7 +206,7 @@ const ItemUser =({size})=>{
                 <CustomPagination
                 className="pagination-bar"
                 currentPage={currentPage}
-                totalCount={inputValue!==''?filteredTableData.length:data.length}
+                totalCount={inputValue!==''?filteredTableData.length:users.length}
                 pageSize={PageSize}
                 onPageChange={page => setCurrentPage(page)}/>
           </div>
@@ -190,7 +215,7 @@ const ItemUser =({size})=>{
           <div className='back-div'>
             <div className='user-img'></div>
               {clickedUser !==null ? (
-                <label className='user-name'>{clickedUser.first_name} {clickedUser.last_name}
+                <label className='user-name'>{clickedUser.name} {clickedUser.surname}
                 <label className='remove-button' onClick={handleRemoveButtonClick}> <RemoveIcon/></label></label>
               ) : (<label className='user-name'>No User Selected</label>)}
             <label className='back-button' onClick={handleBackToMain} > <BackIcon/></label>
@@ -200,19 +225,19 @@ const ItemUser =({size})=>{
               <div className='surname-div'>
                 <label className='surname-label-one'>Прізвище</label>
                 <div className='surname-label'>
-                  <label>{clickedUser !==null ? clickedUser.last_name : 'NotFound'}</label>
+                  <label>{clickedUser !==null ? clickedUser.surname : 'NotFound'}</label>
                 </div>
               </div>
               <div className='name-div'>
                 <label className='name-label-one'>Ім'я</label>
                 <div className='name-label'>
-                  <label>{clickedUser !==null ? clickedUser.first_name : 'NotFound'}</label>
+                  <label>{clickedUser !==null ? clickedUser.name : 'NotFound'}</label>
                 </div>
               </div>
               <div className='phone-div'>
                 <label className='phone-label-one'>Номер телефону</label>
                 <div className='phone-label'>
-                  <label>{clickedUser !==null ? clickedUser.phone : 'NotFound'}</label>
+                  <label>{clickedUser !==null ? clickedUser.phoneNumber : 'NotFound'}</label>
                 </div>
               </div>
               <div className='email-div'>
@@ -230,7 +255,36 @@ const ItemUser =({size})=>{
           </div>
           <div className='review-div'>
             <div className='review-label'>
-              <label>Відгуки </label><label className='review-count' onClick={handleReviewCount(3)}> 12</label>
+                <label>Відгуки </label><label className='review-count' onClick={handleReviewCount(3)}> {reviews.length}</label>
+            </div>
+            <div className='review-body'>
+              {reviews.map((review)=>(   
+                  <div className='review-row' key={review.id}>
+                    <div className="review-header">
+                      <img src={review.image} alt={review.title} className='review-img' width={50} height={50}></img>
+                      <div className='review-title'><label>{review.title}</label></div>
+                    </div>
+                    <div className='star-rating'>
+                      
+                    </div>
+                    <div className='review-review'>
+                      <label>
+                        {review.review}
+                      </label>
+                    </div>
+                    <div className='review-date'>
+                      <label>
+                        {review.date}
+                      </label>
+                    </div>
+                    <div className='review-bottom-line'>
+                    </div>
+                  </div>
+                  
+                ))
+              }
+
+
             </div>
           </div>
             {isConfirmDialogVisible && (
@@ -239,15 +293,6 @@ const ItemUser =({size})=>{
                   <p>Ви впевнені,що бажаєте видалити запис?</p>
                   <label className='confirm-buttom' onClick={handleConfirmDelete}>Так</label>
                   <label className='confirm-buttom' onClick={handleCancelDelete}>Ні</label>
-                </div>
-              </div>
-            )}
-
-            {isPleaseWaitVisible && (
-              <div className='modal-backdrop'>
-                <div className='please-wait-dialog'>
-                  <p>Please wait...</p>
-                  {/* You can add an animation or loading indicator here */}
                 </div>
               </div>
             )}

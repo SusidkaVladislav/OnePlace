@@ -1,0 +1,71 @@
+.user-dropdown-header
+{
+    cursor: pointer;
+    width: 130px;
+    height: 36px;
+    margin-top: 0px;
+    margin-left:10px;
+    border-radius: 10px;
+    gap: 5px;
+    background: rgba(10, 61, 88, 1);
+    color: rgba(246, 246, 246, 1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+    padding-top: 6px;
+    display: block;
+    margin-right: -35px;
+}
+.user-dropdown-list {
+    margin-top: 8px;
+    left: 0;
+    background-color: rgba(246, 246, 246, 1);
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 120px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+.user-dropdown-item{
+    padding: 9px;
+    width: 100px;
+    color: rgba(10, 61, 88, 1);
+    font-family: 'Montserrat Alternates';
+    font-size: 15px;
+    text-align: left;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    border-top: 1px solid #ccc;
+    margin-left: 10px;
+
+}
+.user-dropdown-item:hover{
+    font-size: 17px;
+    color: rgba(10, 61, 88, 1);
+
+}
+.user-dropdown-item label{
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+.user-main-arrow-down
+{
+    margin-left: 15px;
+    margin-right: -15px;
+}
+.user-main-select-item
+{
+    width: 60px;
+}

@@ -43,6 +43,24 @@
     border-radius: 12px;
     background: rgba(233, 236, 236, 1);
 }
+.search-radio-div
+{
+    display: block;
+}
+
+.radio-group input[type=radio]{
+    margin-left: 20px;
+}
+.radio-group label{
+    
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+}
 
 .user-bell-icon
 {
@@ -352,36 +370,6 @@
     margin-top: 20px;
 
 
-}
-.review-div{
-    margin-top: 50px;
-    background-color: antiquewhite;
-    width: 480px;
-    height: 250px;
-
-}
-.review-label
-{
-    width: 75px;
-    height: 23px;
-    top: 555px;
-    left: 396px;
-    font-family: 'Montserrat Alternates';
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 23px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: rgba(10, 61, 88, 1);
-    display: flex;
-
-}
-.review-label label{
-    padding-right: 12px;
-}
-.review-count
-{
-    cursor: pointer;
 }
 .order-div{
     margin-left: 100px;
