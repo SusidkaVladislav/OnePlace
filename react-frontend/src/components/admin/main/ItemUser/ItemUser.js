@@ -85,12 +85,34 @@ const ItemUser =({size})=>{
     setIsConfirmDialogVisible(true);
   };
 
-  const handleConfirmDelete = () => {
-    // Perform the delete operation here
-    setIsConfirmDialogVisible(false);
-    
-      setClickedUser(null);
-      setIsUserDivVisible(false);
+  const handleConfirmDelete = async () => {
+
+    if(clickedUser?.id!==0)
+    {
+      const response = await fetch(`https://localhost:44394/api/Admin/${clickedUser?.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setIsConfirmDialogVisible(false);
+        setClickedUser(null);
+        setIsUserDivVisible(false);
+        
+        fetch('https://localhost:44394/api/Admin/getUsers')
+        .then(response => response.json())
+        .then(data => {
+            setUsers(data);
+        })
+        .catch(error => {
+            console.error('Error fetching user list:', error);
+        });
+      } 
+      else {
+        console.error('Failed to delete user');
+      }
+    }
+
+
+
   };
 
   const handleCancelDelete = () => {
@@ -119,7 +141,7 @@ const ItemUser =({size})=>{
   
 
   useEffect(() => {
-    fetch('https://localhost:44394/api/Admin/GetUsers')
+    fetch('https://localhost:44394/api/Admin/getUsers')
         .then(response => response.json())
         .then(data => {
             setUsers(data);
@@ -141,32 +163,34 @@ const ItemUser =({size})=>{
                 onMouseLeave={handleIconLeave}
               > <SearchIcon />
             </div>
-            <div className='search-radio-div'>
+            <div className='search-field-div'>
               <input
                   className={`search-field ${isFocused ? 'focused' : ''}`}
                   type="text"
                   placeholder="Search..."
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
+                  onClick={() => setIsFocused(true)}
                   onChange={handleInputChange}
                   value={inputValue}/>
-              <div className='radio-group'>
-                  <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
-                  onChange={handleRadioChange} />
-                  <label htmlFor="last_name">Прізвище</label>
-                  <input type="radio" name="searching" value="name" id="name" 
-                  onChange={handleRadioChange} />
-                  <label htmlFor="first_name">Ім'я</label>
-                  <input type="radio" name="searching" value="phoneNumber" id="phoneNumber" 
-                  onChange={handleRadioChange} />
-                  <label htmlFor="phone">Телефон</label>
-                  <input type="radio" name="searching" value="email" id="email" 
-                  onChange={handleRadioChange} />
-                  <label htmlFor="email">E-mail</label>
-              </div>
-
             </div>
           </div>
+              <div className='search-radio-div'>
+                  <div className='radio-group'>
+                      <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
+                      onChange={handleRadioChange} />
+                      <label htmlFor="last_name">Прізвище</label>
+                      <input type="radio" name="searching" value="name" id="name" 
+                      onChange={handleRadioChange} />
+                      <label htmlFor="first_name">Ім'я</label>
+                      <input type="radio" name="searching" value="phoneNumber" id="phoneNumber" 
+                      onChange={handleRadioChange} />
+                      <label htmlFor="phone">Телефон</label>
+                      <input type="radio" name="searching" value="email" id="email" 
+                      onChange={handleRadioChange} />
+                      <label htmlFor="email">E-mail</label>
+                  </div>
+              </div>
           <div className='user-bell-icon'>
               <BellIcon/>
           </div>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "./AdminLoginStyle.css";
 import OnePlaceIcon from "../Login/svg/OnePlaceIcon";   
 import ErrorIcon from '../Login/svg/ErrorIcon';
@@ -21,7 +21,6 @@ const AdminLogin=()=> {
 
     const [EmailBorderColor, setEmailBorderColor] = useState('');
     const [PasswordBorderColor, setPasswordBorderColor] = useState('');
-    const [loginResult, setLoginResult] = useState([]);
     
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -48,7 +47,6 @@ const AdminLogin=()=> {
         });
         if (response.ok) {
             const result = await response.json();
-            setLoginResult(result.data);
 
             setPasswordErrorIcon(false);
             setEmailErrorIcon(false);

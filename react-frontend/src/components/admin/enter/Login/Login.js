@@ -18,7 +18,6 @@ const Login= ()=> {
     const [PswrdErrorIcon, setPswrdErrorIcon] = useState(false);
     const [EmailBorderColor, setEmailBorderColor] = useState('');
     const [PswrdBorderColor, setPswrdBorderColor] = useState('');
-    const [loginResult, setLoginResult] = useState([]);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -46,7 +45,6 @@ const Login= ()=> {
         });
         if (response.ok) {
             const result = await response.json();
-            setLoginResult(result.data);
 
             setPswrdErrorIcon(false);
             setEmailErrorIcon(false);

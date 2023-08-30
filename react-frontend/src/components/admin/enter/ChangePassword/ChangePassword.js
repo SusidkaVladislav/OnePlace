@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "./ChangePasswordStyle.css";
 import OnePlaceIcon from "../Login/svg/OnePlaceIcon";   
 import ErrorIcon from '../Login/svg/ErrorIcon';
@@ -48,7 +48,6 @@ const ChangePassword=()=> {
 
     const handleConfirm = (event) => {
         event.preventDefault();
-        let isCorrect = true;
         if(email.length===0)
         {
             setErrorMessageEmail('Введіть електронну пошту');
@@ -86,7 +85,6 @@ const ChangePassword=()=> {
             setErrorMessagePasswordConfirm('Паролі не співпадають');
             setPasswordConfirmErrorIcon(true);
             setPasswordConfirmBorderColor('red');
-            isCorrect = false; // Update isCorrect flag
         } else {
             setErrorMessagePasswordConfirm('');
             setPasswordConfirmErrorIcon(false);

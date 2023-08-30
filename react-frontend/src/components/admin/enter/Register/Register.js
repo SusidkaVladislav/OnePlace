@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
+//import { Scrollbars } from 'react-custom-scrollbars';
 import './RegisterStyle.css';
 import CrossIcon from '../Login/svg/CrossIcon';
 import ErrorIcon from '../Login/svg/ErrorIcon';
@@ -11,6 +11,7 @@ import VerticalLine from '../Login/svg/VerticalLine';
 import GoogleIcon from '../Login/svg/GoogleIcon';
 import FacebookIcon from '../Login/svg/FacebookIcon';
 
+/*
 const renderThumb = ({ style, ...props }) => {
   const thumbStyle = {
     borderRadius: 6,
@@ -25,7 +26,7 @@ const CustomScrollbars = props => (
     renderThumbVertical={renderThumb}
     {...props}
   />
-);
+);*/
 
 const Register=()=> {
   const MIN_PASSWORD_LENGTH = 8;
@@ -293,7 +294,6 @@ const Register=()=> {
                     {isOpen && (
                       
                         <div className="code-dropdown-list">
-                          <CustomScrollbars style={{ width: '107px', height: '200px' }}>
                             {countryData.map((item, index) => (
                             <label
                               key={index}
@@ -302,7 +302,8 @@ const Register=()=> {
                               {item.isoCode} {item.dialCode} 
                             </label>
                           ))}
-                      </CustomScrollbars>
+                          {/* <CustomScrollbars style={{ width: '107px', height: '200px' }}>
+                      </CustomScrollbars> */}
                         </div>
                     )}
                 </div>
