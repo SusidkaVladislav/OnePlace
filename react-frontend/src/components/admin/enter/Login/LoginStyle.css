@@ -1,0 +1,262 @@
+.enter-body
+{
+    width: auto;
+    height: 685px;
+    top: 40px;
+    left: 57px;
+    padding: 50px 70px 50px 70px;
+    border-radius: 10px;
+    gap: 10px;
+    background: rgba(246, 246, 246, 1);
+    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+    text-align: center;
+
+}
+.enter-body-cart{
+    width: 640px;
+    height: 405px;
+    gap: 24px;
+    text-align: center;
+    margin-left: 350px;
+    margin-top: 100px;
+    padding: 10px;
+    border: 2px solid  rgba(218, 141, 51, 1);
+    border-radius: 20px;
+
+}
+.enter-body-head{
+    width: 610px;
+    height: 46px;
+    gap: 520px;
+    display:flex;
+    
+}
+.enter-body-foot
+{
+    width: 593px;
+    height: 311px;
+    gap: 78px;
+    display: flex;
+
+}
+.enter-body-head-text
+{
+    width: 54px;
+    height: 31px;
+    font-family: 'Montserrat Alternates';
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 31px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+
+}
+.enter-body-head-btn
+{
+    width: 36px;
+    height: 36px;
+    padding: 10.5px;
+
+}
+.cross-button
+{
+    background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.cross-button svg {
+    width: 24px;
+    height: 24px;
+    fill: #000; /* Adjust the color as needed */
+  }
+
+  .enter-body-foot-left
+  {
+    width: 309px;
+    height: 311px;
+    gap: 39px;
+
+  }
+  .text-left-post, .text-left-pswrd
+  {
+    width: 163px;
+    height: 18px;
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+
+  }
+  .text-left-forgot{
+    width: 121px;
+    height: 18px;
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(10, 61, 88, 1);
+    text-decoration: none;
+
+  }
+  .left-post,.left-pswrd{
+    display:grid;
+  }
+
+  /* .left-post input, .left-pswrd input{
+    width: 5px;
+    height: 26px;
+    padding: 11px 284px 11px 20px;
+    border-radius: 12px;
+    background: rgba(233, 236, 236, 1);
+
+  } */
+
+  .input-left-post, .input-left-pswrd{
+    width: 310px;
+    height: 46px;
+    padding: 11px 4px 11px 20px;
+    border: 0.5px solid;
+    border-radius: 12px;
+    background: rgba(233, 236, 236, 1);
+  }
+
+  .eye-button
+  {
+    width: 36px;
+    height: 36px;
+    gap: 154px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    margin-left:265px;
+    margin-top: 25px;
+    border: none;
+  }
+  .div-enter-button
+  {
+    width: 309px;
+    height: 97px;
+    gap: 22px;
+  }
+  .enter-button{
+    width: 309px;
+    height: 52px;
+    padding: 13px 50px 13px 50px;
+    border-radius: 12px;
+    gap: 10px;
+    background: rgba(218, 141, 51, 1);  
+    animation-duration: 0ms;
+    cursor: pointer;
+    margin-top: 10px;
+
+  }
+  .div-register-button
+  {
+    text-align: center;
+  }
+  .register-button{
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+
+  }
+  /*----------------------------------------------*/
+  .enter-body-foot-right
+  {
+    width: 206px;
+    height: 204px;
+    padding: 33px 0px 33px 0px;
+    gap: 38px;
+
+  }
+  .text-right-enter
+  {
+    width: 200px;
+    height: 21px;
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+
+  }
+  .icons-right-enter
+  {
+    width: 206px;
+    height: 79px;
+    gap: 33px;
+    display: flex;
+    text-align: center;
+    margin-top: 20px;
+
+  }
+
+  .google-right-enter, .facebook-right-enter{
+    display:grid;
+  }
+
+  
+  .label-google, .label-facebook
+  {
+    width: 51px;
+    height: 18px;
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    margin-top: 10px;
+    margin-left: 10px;
+    color: rgba(71, 25, 21, 1);
+
+  }
+  .google-button, .facebook-button
+  {
+    border: none;
+    cursor: pointer;
+  }
+
+  /*----------------------------------------------------------------------*/
+
+  .error-message {
+    color: red;
+    margin-top: 5px;
+  }
+
+  .error-icon-pswrd{
+    position: absolute;
+    margin-left:240px;
+    margin-top: 28px;
+
+  }
+  .error-icon-email{
+    position: absolute;
+    margin-left:272px;
+    margin-top: 30px;
+
+  }
+  .error-email, .error-pswrd{
+    height: 25px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .vertical-line
+  {
+    position: absolute;
+    margin-left:355px;
+  }
+
