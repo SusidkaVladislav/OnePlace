@@ -20,7 +20,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("register")]
-        public void  Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -32,36 +32,29 @@ namespace webapi.Controllers
                     Email = model.Email,
                     UserName = model.Email
                 };
-                // add  user
-                var result = _userManager.CreateAsync(user, model.Password);
-                if (result.IsCompletedSuccessfully)
-                {
-                    // coockies
-                    _signInManager.SignInAsync(user, false);
-                    _userManager.AddToRoleAsync(user, "user");
 
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _userManager.AddToRoleAsync(user, "user");
                     var response = new
                     {
                         success = true,
                         data = user
                     };
-                    Response.ContentType = "application/json";
-                    Response.WriteAsync(JsonSerializer.Serialize(response));
+                    return Ok(response);
                 }
                 else
                 {
-                    //foreach (var error in result.Errors)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, error.Description);
-                    //}
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    Response.WriteAsync("Response is failed");
+                    Response.StatusCode = 301;
+                    return Content("Registration failed");
                 }
             }
             else
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                Response.WriteAsync("Invalid input");
+                Response.StatusCode = 311;
+                return Content("Invalid input");
             }
         }
 
@@ -76,34 +69,41 @@ namespace webapi.Controllers
                     var result = _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false).Result;
                     if (result.Succeeded)
                     {
-                        var userData = new User
+                        var role = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                        if(role=="admin")
                         {
-                            Id = user.Id,
-                            Name = user.Name,
-                            Surname = user.Surname,
-                            PhoneNumber = user.PhoneNumber,
-                            Email = user.Email,
-                            PasswordHash = user.PasswordHash
-                        };
-
-                        var response = new
+                            var userData = new User
+                            {
+                                Id = user.Id,
+                                Name = user.Name,
+                                Surname = user.Surname,
+                                PhoneNumber = user.PhoneNumber,
+                                Email = user.Email,
+                                PasswordHash = user.PasswordHash
+                            };
+                            var response = new
+                            {
+                                success = true,
+                                data = userData
+                            };
+                            Response.ContentType = "application/json";
+                            Response.WriteAsync(JsonSerializer.Serialize(response));
+                        }
+                        else
                         {
-                            success = true,
-                            data = userData
-                        };
-
-                        Response.ContentType = "application/json";
-                        Response.WriteAsync(JsonSerializer.Serialize(response));
+                            Response.StatusCode = 421;
+                            Response.WriteAsync("Access only for admins");
+                        }
                     }
                     else
                     {
-                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        Response.WriteAsync("Login failed");
+                        Response.StatusCode = 411;
+                        Response.WriteAsync("Password failed");
                     }
                 }
                 else
                 {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusCode = 401;
                     Response.WriteAsync("User not found");
                 }
             }

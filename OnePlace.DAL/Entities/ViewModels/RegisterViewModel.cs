@@ -31,10 +31,5 @@ namespace OnePlace.DAL.Entities.ViewModels
         [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords are not confirmed")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        public string PasswordConfirm { get; set; }
     }
 }

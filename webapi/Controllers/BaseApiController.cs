@@ -2,11 +2,9 @@
 
 namespace webapi.Controllers
 {
-    public class BaseApiController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BaseApiController : ControllerBase
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
     }
 }

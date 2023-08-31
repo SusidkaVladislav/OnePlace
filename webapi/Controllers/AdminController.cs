@@ -13,11 +13,33 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Route("GetUsers")]
+        [Route("getUsers")]
         public IEnumerable<User> GetUsers()
         {
             var allUsers = _userManager.Users.ToList();
             return allUsers;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+
         }
     }
 }
