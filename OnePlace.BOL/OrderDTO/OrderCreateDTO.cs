@@ -1,27 +1,26 @@
 ﻿using OnePlace.BOL.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace OnePlace.BOL.OrderDTO
 {
     public class OrderCreateDTO
     {
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
-        public int ProductId { get; set; }
+        public string PhoneNumber { get; set; }
+
+        public string Name { get; set; }
+
+        public string Surname { get; set; }
+
+        List<ProductOrderModelDTO> Products { get; set; }
 
         public string? Comment { get; set; }
 
         public DeliveryCompanies ServiceName { get; set; }
 
-        [DataType(DataType.Text)]
         public string City { get; set; }
 
-        //public string CityRef { get; set; }
-
         public DeliveryMethods DeliveryMethod { get; set; }
-
-        public int QuantityOfProducts { get; set; }
-
 
         public string? Street { get; set; }
 

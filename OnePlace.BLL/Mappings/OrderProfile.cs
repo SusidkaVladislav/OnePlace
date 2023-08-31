@@ -12,13 +12,20 @@ namespace OnePlace.BLL.Mappings
     {
         public OrderProfile()
         {
+            #region Create
+
+            CreateMap<OrderCreatePayload, OrderCreateDTO>();
+            CreateMap<ProductOrderModelPayload, ProductOrderModelDTO>();
+
+            #endregion
+
             CreateMap<OrderPayload, OrderDTO>();
 
             CreateMap<OrderDTO, Order>();
 
             CreateMap<Order, OrderDetails>(MemberList.Source);
             
-            CreateMap<OrderCreatePayload, OrderCreateDTO>();
+            
             
             CreateMap<OrderCreateDTO, Order>(MemberList.Source);
         }

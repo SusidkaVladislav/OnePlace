@@ -4,7 +4,6 @@
     {
         Department,
         Postomat,
-        Courier,
-        SelfDelivery
+        Courier
     }
 }

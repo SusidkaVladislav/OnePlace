@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.Entities;
-//using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace OnePlace.DAL.EF
 {
     public class AppDbContext : IdentityDbContext<User, Role, int>
     {
+        #region DbSets
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Color> Colors { get; set; }
@@ -27,12 +27,14 @@ namespace OnePlace.DAL.EF
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
+        #endregion
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -40,7 +42,7 @@ namespace OnePlace.DAL.EF
                 .HasKey(x => new { x.UserId, x.ProductId });
 
             builder.Entity<OrderProduct>()
-                .HasKey(x => new { x.OrderId, x.ProductId });
+                .HasKey(x => new { x.OrderId, x.ProductId, x.ColorId });
 
             builder.Entity<ProductDescription>()
                 .HasKey(x => new { x.ProductId, x.DescriptionId });
@@ -52,7 +54,7 @@ namespace OnePlace.DAL.EF
                  .HasKey(x => new { x.ProductId, x.ColorId });
 
             builder.Entity<ShoppingCart>()
-                .HasKey(x => new { x.ProductId, x.UserId });
+                .HasKey(x => new { x.ProductId, x.UserId, x.ColorId });
 
             builder.Entity<ReviewReply>()
                 .HasKey(x => x.ReviewId);

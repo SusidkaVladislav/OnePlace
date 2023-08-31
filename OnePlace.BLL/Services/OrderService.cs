@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Primitives;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BOL.Enums;
@@ -59,7 +58,7 @@ namespace OnePlace.BLL.Services
                         throw new ArgumentException("не всі дані по доставці передані");
 
 
-            var isProduct = await _unitOfWork.Products.FindAsync(p => p.Id == createOrderDTO.ProductId);
+            //var isProduct = await _unitOfWork.Products.FindAsync(p => p.Id == createOrderDTO.ProductId);
 
             //Перевірка чи існує товар з переданим Id 
             //if (isProduct.Any())
@@ -115,21 +114,22 @@ namespace OnePlace.BLL.Services
                  SessionId = "from stripe session"
             };
 
+
             //Створення замовлення
             _unitOfWork.Orders.Create(order);
-
             await _unitOfWork.SaveAsync();
 
-            OrderProduct orderProduct = new OrderProduct
-            {
-                OrderId = order.Id,
-                ProductId = createOrderDTO.ProductId,
-                Quantity = createOrderDTO.QuantityOfProducts
-            };
+            //OrderProduct orderProduct = new OrderProduct
+            //{
+            //    OrderId = order.Id,
+            //    ProductId = createOrderDTO.ProductId,
+            //    Quantity = createOrderDTO.QuantityOfProducts
+            //};
 
             //Додати замовлення в БД
-            _unitOfWork.OrderProducts.Create(orderProduct);
-            await _unitOfWork.SaveAsync();
+            //_unitOfWork.OrderProducts.Create(orderProduct);
+            //await _unitOfWork.SaveAsync();
+            //_unitOfWork.Dispose();
 
             return order.Id;
             /*if (createOrderDTO.ServiceName.Equals(DeliveryCompanies.NowaPoshta))
@@ -158,10 +158,11 @@ namespace OnePlace.BLL.Services
 
         }
 
+        //Формування інформації про доставку
         private string ExtractDeliveryInfo(OrderCreateDTO orderCreateDTO)
         {
-            if (orderCreateDTO.DeliveryMethod.Equals(DeliveryMethods.SelfDelivery))
-                return DeliveryMethods.SelfDelivery.ToString();
+            //if (orderCreateDTO.DeliveryMethod.Equals(DeliveryMethods.SelfDelivery))
+            //    return DeliveryMethods.SelfDelivery.ToString();
 
             StringBuilder deliveryInfo = new StringBuilder();
 
