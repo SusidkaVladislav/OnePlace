@@ -113,5 +113,39 @@ namespace webapi.Controllers
                 Response.WriteAsync("Invalid input");
             }
         }
+
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok("Операція успішна");
+                    }
+                    else
+                    {
+                        return StatusCode(440, "Зміна паролю відмінена");
+                    }
+                }
+                else
+                {
+                    return StatusCode(441, "Користувача не знайдено");
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid input"); // Use BadRequest to indicate a bad request with a message
+            }
+        }
+
+
     }
 }
