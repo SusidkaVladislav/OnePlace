@@ -1,32 +1,15 @@
 import React, { useState } from 'react';
-//import { Scrollbars } from 'react-custom-scrollbars';
 import './RegisterStyle.css';
 import CrossIcon from '../Login/svg/CrossIcon';
 import ErrorIcon from '../Login/svg/ErrorIcon';
 import NotEyeIcon from '../Login/svg/NotEyeIcon';
 import EyeIcon from '../Login/svg/EyeIcon';
 import countryData from './PhoneCodes.json';
-import ArrowDownDark from '../Login/svg/ArrowDownDark';
+//import ArrowDownDark from '../Login/svg/ArrowDownDark';
 import VerticalLine from '../Login/svg/VerticalLine';
 import GoogleIcon from '../Login/svg/GoogleIcon';
 import FacebookIcon from '../Login/svg/FacebookIcon';
 
-/*
-const renderThumb = ({ style, ...props }) => {
-  const thumbStyle = {
-    borderRadius: 6,
-    backgroundColor: 'rgba(35, 49, 86, 0.8)'
-  };
-  return <div style={{ ...style, ...thumbStyle }} {...props} ></div>;
-};
-
-const CustomScrollbars = props => (
-  <Scrollbars
-    renderThumbHorizontal={renderThumb}
-    renderThumbVertical={renderThumb}
-    {...props}
-  />
-);*/
 
 const Register=()=> {
   const MIN_PASSWORD_LENGTH = 8;
@@ -282,7 +265,7 @@ const Register=()=> {
                       <div className= {`code-main-select-item ${isOpen ? 'open' : ''}`} onClick={handleToggleDropdown}>
                         <img src={selectedItem.flag} alt={selectedItem.name} width={32} height={32}></img>
                         <label>{selectedItem.dialCode}</label>
-                        <label className='code-main-arrow-down'><ArrowDownDark/></label>
+                        {/* <label className='code-main-arrow-down'><ArrowDownDark/></label> */}
                       </div>
                       <input className="input-right-phone" type="text" placeholder='000000000'
                         value={phoneNumber} 
@@ -291,9 +274,9 @@ const Register=()=> {
                         {PhoneErrorIcon && <label className='error-icon-phone'><ErrorIcon/></label>}
                     </div>
                   </div>
-                    {isOpen && (
+                    {/* {isOpen && (
                       
-                        <div className="code-dropdown-list">
+                        <div className="code-dropdown-list" id='scrollbar-style-1'>
                             {countryData.map((item, index) => (
                             <label
                               key={index}
@@ -302,10 +285,8 @@ const Register=()=> {
                               {item.isoCode} {item.dialCode} 
                             </label>
                           ))}
-                          {/* <CustomScrollbars style={{ width: '107px', height: '200px' }}>
-                      </CustomScrollbars> */}
                         </div>
-                    )}
+                    )} */}
                 </div>
                 <div className='error-email'>
                   {errorMessagePhone && <label className="error-message">{errorMessagePhone}</label>}
