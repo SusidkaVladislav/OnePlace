@@ -1,0 +1,231 @@
+.register-body
+{
+    width: 1,094px;
+    height: 685px;
+    left: 75px;
+    padding: 50px 70px 50px 70px;
+    border-radius: 10px;
+    gap: 10px;
+    background: rgba(246, 246, 246, 1);
+    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+
+}
+.register-div
+{
+    width: 954px;
+    height: 451px;
+    margin-left: 230px;
+    margin-top: 50px;
+}
+.register-label
+{
+    display: flex;
+}
+.register-label-h
+{
+    width: 920px;
+    height: 31px;
+    font-family: 'Montserrat Alternates';
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 31px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+
+}
+.register-body-h{
+    width: 954px;
+    height: 391px;
+    gap: 40px;
+    margin-top: 20px;
+
+}
+.register-body-left
+{
+    width: 668px;
+    height: 300px;
+    gap: 35px;
+    display: flex;
+
+}
+.code-country
+{
+    display:flex;
+}
+.code-dropdown-header
+{
+    width: 130px;
+    border-radius: 10px;
+    gap: 5px;
+    background: rgba(246, 246, 246, 1);
+    color: rgba(10, 61, 88, 1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+    display: flex;
+    border: 0.5px solid;
+}
+.code-main-select-item
+{
+    width: 50px;
+    margin-left: 10px;
+    display: flex;
+    margin-top: 7px;
+}
+.code-main-select-item label{
+    
+    width: 40px;
+    text-align: center;
+    padding-left: 10px;
+    padding-top: 6px;
+    margin-right: 10px;
+}
+.code-main-arrow-down
+{
+    cursor: pointer;
+    width: 20px;
+}
+.code-dropdown-list {
+    margin-top: 2px;
+    background-color: rgba(246, 246, 246, 1);
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 110px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    color: rgba(10, 61, 88, 1);
+    position: absolute;
+    margin-top: 67px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+.code-dropdown-item{
+    padding: 7px;
+    width: 80px;
+    color: rgba(10, 61, 88, 1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    text-align: left;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    border-top: 1px solid #ccc;
+    margin-left: 2px;
+
+}
+.code-dropdown-item:hover{
+    font-size: 16px;
+    color: rgba(10, 61, 88, 1);
+
+}
+.code-dropdown-item label{
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+.input-right-phone{
+    width: 175px;
+    height: 46px;
+    padding: 11px 4px 11px 20px;
+    border: 0.5px solid;
+    border-radius: 12px;
+    background: rgba(233, 236, 236, 1);
+    margin-left: 70px;
+}
+.check-register{
+    display: flex;
+}
+.check-register-input
+{
+    width: 50px;
+}
+.check-register input[type=checkbox]
+{
+    height: 20px;
+    width: 20px; 
+    margin-top: 30px;
+}
+.check-register label{
+    font-family: 'Montserrat Alternates';
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-right: 15px;
+}
+.register-button-two{
+    width: 309px;
+    height: 52px;
+    padding: 13px 50px 13px 50px;
+    border-radius: 12px;
+    gap: 10px;
+    background: rgba(218, 141, 51, 1);  
+    animation-duration: 0ms;
+    cursor: pointer;
+    margin-bottom: 10px;
+    color: rgba(233, 236, 236, 1);
+    font-family: "Montserrat Alternates";
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 26px;
+    letter-spacing: 0em;
+
+}
+.text-back-tologin{
+    cursor: pointer;
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 23px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(10, 61, 88, 1);
+    text-decoration: none;
+    height: 50px;
+
+}
+.div-register-button-two{
+    text-align: center;
+    width: 670PX;
+
+}
+.reg-vertical-line
+{
+    position: absolute;
+    margin-left:680px;
+}
+.enter-body-foot-right
+{
+    width: 206px;
+    height: 204px;
+    padding: 33px 0px 33px 25px;
+    gap: 38px;
+}
+.error-icon-phone
+{
+    position: absolute;
+    margin-left:272px;
+    margin-top: 12px;
+}
+.reg-error-message
+{
+    line-height: 14px;
+    color: red;
+    margin-top: 5px;
+    font-size: 12px;
+}
