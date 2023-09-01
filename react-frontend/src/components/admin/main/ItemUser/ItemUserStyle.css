@@ -391,9 +391,10 @@
 }
 .order-div{
     margin-left: 100px;
-    background-color: rgb(169, 190, 138);
     width: 500px;
     height: 280px;
+    padding: 10px;
+    margin-top: -10px;
 
 }
 

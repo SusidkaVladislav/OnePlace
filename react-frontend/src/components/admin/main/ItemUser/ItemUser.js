@@ -1,4 +1,5 @@
 import React, { useState,useEffect, useMemo } from 'react';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
 import './ReviewStyle.css';
@@ -8,11 +9,22 @@ import CustomPagination from './CustomPagination';
 // import data from './data/mock-data.json';
 import BackIcon from './svg/BackIcon';
 import RemoveIcon from './svg/RemoveIcon';
+import StarRating from './StarRating';
+import FluentArrowIcon from './svg/FluentArrowIcon';
+import ArrowDownDark from './svg/ArrowDownDark';
 
 let reviews=[
-  {id:11,title:"Monitor black 1245",rate:4,review:"Присутній явний брак у звучанні, відчутний тріск, який не залежить від пристрою програвання. Потрібна заміна.",date:"28.02.2023 20:22",image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
-  {id:21,title:"Headfones black 3245",rate:3,review:"Відсутні будь-які дефекти",date:"15.06.2023 10:22",image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
-  {id:31,title:"Bluetooth speaker olive 3578",rate:5,review:"Відсутні будь-які дефекти",date:"10.10.2023 15:22",image:"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"}
+  {id:11,title:"Monitor black ",code:1245,rate:4,review:"Присутній явний брак у звучанні, відчутний тріск, який не залежить від пристрою програвання. Потрібна заміна.",date:"28.02.2023 20:22",image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
+  {id:21,title:"Headfones black ",code:3245,rate:3,review:"Відсутні будь-які дефекти",date:"15.06.2023 10:22",image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
+  {id:31,title:"Bluetooth speaker olive ",code:3578,rate:5,review:"Відсутні будь-які дефекти",date:"10.10.2023 15:22",image:"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"}
+];
+let orders=[
+  {id:12,title:"Monitor black",code:1245,price:3600,image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
+  {id:22,title:"Headfones black",code:3245,price:5600,image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
+  {id:32,title:"Bluetooth speaker olive",code:3578,price:4600,image:"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"},
+  {id:42,title:"Apple Watch Series 8 GPS",code:640,price:17800,image:"https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/u/a/uaua_watchs8_gps_q422_41mm_midnight_aluminum_midnight_sport_band_pdp_image_position-1_1.jpg/w_600"},
+  {id:52,title:"Apple iPhone 14 128Gb Blue",code:2900,price:29000,image:"https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/u/a/uaua_iphone14_blue_pdp_image_position-1a_1.jpg/w_600"},
+  {id:62,title:"Apple iPad Air 10.9'' Purple",code:298,price:28700,image:"https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/e/5/e56u467.jpg/w_600"}
 ];
 
 let PageSize = 12;
@@ -30,6 +42,10 @@ const ItemUser =({size})=>{
   const [isUserDivVisible, setIsUserDivVisible] = useState(false);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
   const [users, setUsers] = useState([]);
+  const [count, setCount] = useState(0);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  
 
   const handleIconHover = () => {
     setIsHovered(true);
@@ -70,10 +86,11 @@ const ItemUser =({size})=>{
 
   };
   const handleCheckedAll=()=>{
-
+    setSelectAllChecked(!selectAllChecked);
   }
   const handleReviewCount=(userId)=>
   {
+
 
   }
   const handleBackToMain = () => {
@@ -96,7 +113,7 @@ const ItemUser =({size})=>{
         setIsConfirmDialogVisible(false);
         setClickedUser(null);
         setIsUserDivVisible(false);
-        
+
         fetch('https://localhost:44394/api/Admin/getUsers')
         .then(response => response.json())
         .then(data => {
@@ -110,13 +127,18 @@ const ItemUser =({size})=>{
         console.error('Failed to delete user');
       }
     }
-
-
-
   };
 
   const handleCancelDelete = () => {
     setIsConfirmDialogVisible(false);
+  };
+
+  const handleShowMessage = (review) => {
+    setSelectedReview(review);
+  };
+  const handleCloseMessage = () => {
+    setSelectedReview(null);
+    setCount(0);
   };
 
 
@@ -141,7 +163,7 @@ const ItemUser =({size})=>{
   
 
   useEffect(() => {
-    fetch('https://localhost:44394/api/Admin/getUsers')
+    fetch('https://localhost:7052/api/Admin/getUsers')
         .then(response => response.json())
         .then(data => {
             setUsers(data);
@@ -206,7 +228,7 @@ const ItemUser =({size})=>{
                       <div className='c4'>Email</div>
                       <div className='c5'>К-ть угод</div>
                       <div className='c6'>Всі</div>
-                      <div className='c7-h'> <input type="checkbox" onChange={handleCheckedAll} /></div>
+                      <div className='c7-h'> <input type="checkbox" onChange={handleCheckedAll} checked={selectAllChecked} /></div>
                 </div>
                 {filteredAndPaginatedData.map((user,index)=>(   
                     <div className='div-row' key={user.id}>
@@ -219,7 +241,7 @@ const ItemUser =({size})=>{
                         <div className='c5'></div>
                         <div className='c6'></div>
                       </div>
-                      <div className='c7'><input type="checkbox" id={user.id} onChange={handleChecked(user.id)} /></div>
+                      <div className='c7'><input type="checkbox" id={user.id} onChange={handleChecked(user.id)} checked={selectAllChecked} /></div>
                     </div>
                     
                   )
@@ -275,21 +297,50 @@ const ItemUser =({size})=>{
               <div className='order-label'>
                 <label>Замовлення </label>
               </div>
+              <div className='order-div-header'>
+                <label className='order-div-name'>Назва</label>
+                <label className='order-div-code'>Код</label>
+                <label className='order-div-price'>Ціна</label>
+              </div>
+              <div className='order-div-list' id='scrollbar-style-1'>
+                  {orders.map((order)=>(
+                    <div className='order-div-row' key={order.id}>
+                      <div className='order-div-name'>
+                        <label>{order.title}</label>
+                      </div>
+                      <div className='order-div-code'>
+                        <label>{order.code}</label>
+                      </div>
+                      <div className='order-div-price'>
+                        <label>{order.price}</label>
+                      </div>
+                      <div className='order-div-image'>
+                        <img src={order.image} alt={order.title} className='order-div-img' width={50} height={50}></img>
+                      </div>
+                    </div>
+
+                  ))}
+
+              </div>
             </div>
           </div>
           <div className='review-div'>
             <div className='review-label'>
                 <label>Відгуки </label><label className='review-count' onClick={handleReviewCount(3)}> {reviews.length}</label>
             </div>
-            <div className='review-body'>
+            <div className='review-body' id='scrollbar-style-1'>
               {reviews.map((review)=>(   
                   <div className='review-row' key={review.id}>
                     <div className="review-header">
                       <img src={review.image} alt={review.title} className='review-img' width={50} height={50}></img>
-                      <div className='review-title'><label>{review.title}</label></div>
+                      <div className='review-title'><label>{review.title}  {review.code}</label></div>
+                      <label className='review-fluent' onClick={() => handleShowMessage(review)}>
+                        <FluentArrowIcon />
+                      </label>
+
                     </div>
                     <div className='star-rating'>
-                      
+                      <StarRating filledStars={review.rate} />
                     </div>
                     <div className='review-review'>
                       <label>
@@ -307,10 +358,31 @@ const ItemUser =({size})=>{
                   
                 ))
               }
-
-
             </div>
           </div>
+          {selectedReview && (
+            <div className='review-message'>
+              <div>
+                <div className='review-message-label'>
+                  <img src={selectedReview.image} alt={selectedReview.title} className='review-img' width={50} height={50}></img>
+                  <div className='review-title'><label>{selectedReview.title}</label></div>
+                  <label className='textarea-count'>{count}/300</label>
+                </div>
+                <div className='review-message-input'>
+                  <textarea type='textarea' maxLength={300} onChange={e => setCount(e.target.value.length)}/>
+
+                </div>
+                <div className='review-message-send'>
+                  <label className='review-send'>Відповісти</label>
+
+                </div>
+              </div>
+              <div className='arrow-toLeft'>
+                <label className='code-main-arrow-down' onClick={handleCloseMessage}><ArrowDownDark /></label>
+              </div>
+                
+            </div>
+          )}
             {isConfirmDialogVisible && (
               <div className='modal-backdrop'>
                 <div className='confirm-dialog'>

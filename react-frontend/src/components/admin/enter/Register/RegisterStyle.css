@@ -103,7 +103,8 @@
     color: rgba(10, 61, 88, 1);
     position: absolute;
     margin-top: 67px;
-    overflow-y:hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 .code-dropdown-item{
     padding: 7px;
