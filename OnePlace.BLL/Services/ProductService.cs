@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,6 @@ using OnePlace.BOL.Description;
 using OnePlace.BOL.DescriptionDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Picture;
-using OnePlace.BOL.ProductColor;
 using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.ProductPayload;
 using OnePlace.BOL.Sale;
@@ -54,10 +52,12 @@ namespace OnePlace.BLL.Services
         {
             if (filters.Category == 0)
                 throw new BusinessException("Неіснуюча категорія");
+
             DAL.SearchParams.ProductSearchParams searchParams = _mapper.Map<DAL.SearchParams.ProductSearchParams>(filters);
+            
             var products = await _unitOfWork.Products.Filter(searchParams);
 
-            List<ProductListModel> productListModels = new List<ProductListModel>();
+            List<ProductListModel> productListModels = new List<ProductListModel>();    
 
             //Отримання користувача
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);

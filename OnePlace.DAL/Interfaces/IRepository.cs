@@ -1,11 +1,6 @@
-﻿using OnePlace.DAL.Entities;
+﻿using OnePlace.DAL.EF;
 using OnePlace.DAL.Models;
 using OnePlace.DAL.SearchParams;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnePlace.DAL.Interfaces
 {

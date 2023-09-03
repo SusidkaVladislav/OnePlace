@@ -1,4 +1,5 @@
 ﻿using OnePlace.BLL.Utilities;
+using OnePlace.BOL.Enums;
 using OnePlace.BOL.OrderDTO;
 using OnePlace.BOL.OrderPayload;
 
@@ -18,7 +19,7 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        Task<List<OrderDetails>> FilterProduct(OrderSearchParams filters);
+        Task<List<OrderListModel>> FilterOrders(OrderSearchParams filters);
 
         /// <summary>
         /// Створити замовлення
@@ -28,17 +29,25 @@ namespace OnePlace.BLL.Interfaces
         Task<int> CreateOrder(OrderCreatePayload order);
 
         /// <summary>
-        /// Редагувати замовлення
-        /// </summary>
-        /// <param name="order"></param>
-        /// <returns></returns>
-        Task<int> UpdateOrder(OrderPayload order);
-        
-        /// <summary>
-        /// Видалити замовлення
+        /// Змінити статус оплати (вручну)
         /// </summary>
         /// <param name="orderId"></param>
+        /// <param name="paymentStatus"></param>
         /// <returns></returns>
-        Task<int> DeleteOrder(int orderId);
+        Task<int> ChangePaymentStatus(int orderId, PaymentStatus paymentStatus);
+
+        /// <summary>
+        /// Змінити статус замовлення (вручну)
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="orderState"></param>
+        /// <returns></returns>
+        Task<int> ChangeOrderState(int orderId, OrderState orderState);
+
+        /// <summary>
+        /// Оплата карткою
+        /// </summary>
+        /// <returns></returns>
+        Task CardPay();
     }
 }

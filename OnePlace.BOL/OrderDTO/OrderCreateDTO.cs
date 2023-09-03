@@ -4,15 +4,13 @@ namespace OnePlace.BOL.OrderDTO
 {
     public class OrderCreateDTO
     {
-        public int? UserId { get; set; }
-
         public string PhoneNumber { get; set; }
 
         public string Name { get; set; }
 
         public string Surname { get; set; }
 
-        List<ProductOrderModelDTO> Products { get; set; }
+        public List<ProductOrderModelDTO> Products { get; set; }
 
         public string? Comment { get; set; }
 
@@ -21,6 +19,8 @@ namespace OnePlace.BOL.OrderDTO
         public string City { get; set; }
 
         public DeliveryMethods DeliveryMethod { get; set; }
+
+        public PaymentMethod PaymentMethod{ get; set; }
 
         public string? Street { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace webapi.Exceptions
 {
-    public static class ExceptionExtention
+    public static class ExceptionExtension
     {
         public static IApplicationBuilder UseException(this IApplicationBuilder builder)
         {

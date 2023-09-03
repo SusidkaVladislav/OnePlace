@@ -8,9 +8,8 @@ using OnePlace.DAL.SearchParams;
 
 namespace OnePlace.DAL.Repositories
 {
-    public abstract class RepositoryBase<T, TKey> : IRepository<T, TKey> where T : class //where TKey : struct
+    public abstract class RepositoryBase<T, TKey> : IRepository<T, TKey>, IAppDbContextProvider where T : class
     {
-
         protected AppDbContext db;
         protected readonly UserManager<User> _userManager;
         public RepositoryBase(AppDbContext context, UserManager<User> userManager)
@@ -52,6 +51,11 @@ namespace OnePlace.DAL.Repositories
         public void Update(T item)
         {
             db.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+        }
+
+        public AppDbContext GetDbContext()
+        {
+            return db;
         }
     }
 }

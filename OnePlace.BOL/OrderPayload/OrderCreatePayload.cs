@@ -5,9 +5,6 @@ namespace OnePlace.BOL.OrderPayload
 {
     public class OrderCreatePayload
     {
-        [RegularExpression(@"^[0-9]*$")]
-        public int? UserId { get; set; }
-
         [Required, DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
@@ -35,6 +32,9 @@ namespace OnePlace.BOL.OrderPayload
 
         [Required]
         public DeliveryMethods DeliveryMethod { get; set; }
+
+        [Required]
+        public PaymentMethod PaymentMethod { get; set; }
 
         [DataType(DataType.Text)]
         public string? Street { get; set; }

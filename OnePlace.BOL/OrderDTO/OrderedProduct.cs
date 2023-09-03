@@ -1,13 +1,9 @@
 ﻿namespace OnePlace.BOL.OrderDTO
 {
-    public class ProductOrderModelDTO
+    public class OrderedProduct
     {
-        public int ProductId { get; set; }
-
-        public int ColorId { get; set; }
-
+        public string Picture { get; set; }
         public int Quantity { get; set; }
-        
         public decimal Price { get; set; }
     }
 }

@@ -1,8 +1,12 @@
-﻿namespace OnePlace.BLL.Utilities
+﻿using OnePlace.DAL.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OnePlace.DAL.SearchParams
 {
-    /// <summary>
-    /// Параметри пошуку замовлення
-    /// </summary>
     public class OrderSearchParams: BaseSearchParams
     {
         /// <summary>
@@ -18,7 +22,7 @@
         /// <summary>
         /// Фільтрування за станом замовлення
         /// </summary>
-        public BOL.Enums.OrderState? State { get; set; } = null;
+        public OrderState? State { get; set; } = null;
 
         /// <summary>
         /// Фільтрування за ім'ям/прізвищем покупця
@@ -28,6 +32,6 @@
         /// <summary>
         /// Фільтрування за статусом оплати
         /// </summary>
-        public BOL.Enums.PaymentStatus? PaymentStatus { get; set; } = null;
+        public PaymentStatus? PaymentStatus { get; set; } = null;
     }
 }
