@@ -1,21 +1,4 @@
-.star-rating {
-    display: flex;
-    width: 50px;
-}
-  
-.star {
-    font-size: 24px;
-    margin-right: 5px; /* Space between stars */
-}
-  
-.star-label {
-    display: flex
-}
 
-.stars-input
-{
-    display: none;
-}
 
 .review-div{
     margin-top: 50px;
@@ -141,6 +124,8 @@
     color: rgba(108, 71, 68, 1);
     margin-top: 15px;
     margin-bottom: 20px;
+    overflow-y: auto;
+    scrollbar-width: thin;
 
 }
 .review-date
