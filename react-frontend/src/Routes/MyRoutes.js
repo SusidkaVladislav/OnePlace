@@ -22,8 +22,7 @@ class MyRoutes extends Component {
     return (
       <BrowserRouter>
         <Routes>
-            {this.state.shouldRedirect && <Route path="/admin/login" render={() => null} />}
-            <Route path="/" element={<Login/>}/>
+            <Route path="/" element={<AdminLogin/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/change-password" element={<ChangePassword/>}/>

@@ -1,4 +1,4 @@
-import './ReviewStyle.css';
+import './StarRatingStyle.css';
 import {FaStar} from 'react-icons/fa';
 
 

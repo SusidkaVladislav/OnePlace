@@ -26,6 +26,7 @@ const ChangePassword=()=> {
     const [EmailBorderColor, setEmailBorderColor] = useState('');
     const [PasswordBorderColor, setPasswordBorderColor] = useState('');
     const [PasswordConfirmBorderColor, setPasswordConfirmBorderColor] = useState('');
+    const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
     
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -46,8 +47,15 @@ const ChangePassword=()=> {
         setErrorMessagePasswordConfirm('');
     };
 
-    const handleConfirm = (event) => {
+    const handleConfirmAccess=()=>{
+        setIsConfirmDialogVisible(false);
+        window.location.href = `/login`;
+    }
+
+    const handleConfirm =async (event) => {
         event.preventDefault();
+        let isCorrect=0;
+
         if(email.length===0)
         {
             setErrorMessageEmail('Введіть електронну пошту');
@@ -58,6 +66,7 @@ const ChangePassword=()=> {
             setErrorMessageEmail('');
             setEmailErrorIcon(false);
             setEmailBorderColor('');
+            isCorrect++;
         }
 
         if(password.length===0)
@@ -79,6 +88,7 @@ const ChangePassword=()=> {
                 setErrorMessagePassword('');
                 setPasswordErrorIcon(false);
                 setPasswordBorderColor('');
+                isCorrect++;
             }
         }
         if (password !== passwordConfirm) {
@@ -89,6 +99,34 @@ const ChangePassword=()=> {
             setErrorMessagePasswordConfirm('');
             setPasswordConfirmErrorIcon(false);
             setPasswordConfirmBorderColor('');
+            isCorrect++;
+        }
+
+        if(isCorrect===3)
+        {
+            const response = await fetch("https://localhost:44394/api/Account/changePassword", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password}),
+            });
+            if (response.ok) {
+                setIsConfirmDialogVisible(true);
+            } else {
+                if(response.status===441)
+                {
+                    setErrorMessageEmail('Користувача не знайдено');
+                    setEmailErrorIcon(true);
+                    setEmailBorderColor('red');
+                }
+                if(response.status===440)
+                {
+                    setErrorMessageEmail('Зміна паролю неможлива');
+                    setEmailErrorIcon(true);
+                    setEmailBorderColor('red');
+                }
+            }
         }
 
     }
@@ -145,6 +183,14 @@ const ChangePassword=()=> {
                     </div>
                 </div>
             </div>
+            {isConfirmDialogVisible && (
+              <div className='modal-backdrop'>
+                <div className='confirm-dialog'>
+                  <p>Пароль успішно змінено, пройдіть авторизацію</p>
+                  <label className='confirm-buttom' onClick={handleConfirmAccess}>Ok</label>
+                </div>
+              </div>
+            )}
         </div>
     )
 

@@ -5,19 +5,16 @@ import './ItemUserStyle.css';
 import './ReviewStyle.css';
 import SearchIcon from './svg/SearchIcon';
 import BellIcon from './svg/BellIcon';
-import CustomPagination from './CustomPagination';
+import CustomPagination from '../Pagination/CustomPagination';
 // import data from './data/mock-data.json';
 import BackIcon from './svg/BackIcon';
 import RemoveIcon from './svg/RemoveIcon';
-import StarRating from './StarRating';
+import StarRating from '../StartRating/StarRating';
 import FluentArrowIcon from './svg/FluentArrowIcon';
 import ArrowDownDark from './svg/ArrowDownDark';
+import reviewData from '../ItemReview/reviews.json';
+import reviewReply from '../ItemReview/reviewReply.json'
 
-let reviews=[
-  {id:11,title:"Monitor black ",code:1245,rate:4,review:"Присутній явний брак у звучанні, відчутний тріск, який не залежить від пристрою програвання. Потрібна заміна.",date:"28.02.2023 20:22",image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
-  {id:21,title:"Headfones black ",code:3245,rate:3,review:"Відсутні будь-які дефекти",date:"15.06.2023 10:22",image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
-  {id:31,title:"Bluetooth speaker olive ",code:3578,rate:5,review:"Відсутні будь-які дефекти",date:"10.10.2023 15:22",image:"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"}
-];
 let orders=[
   {id:12,title:"Monitor black",code:1245,price:3600,image:"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"},
   {id:22,title:"Headfones black",code:3245,price:5600,image:"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"},
@@ -43,8 +40,9 @@ const ItemUser =({size})=>{
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
   const [users, setUsers] = useState([]);
   const [count, setCount] = useState(0);
+  const [countReviews, setCountReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [reviewsInit, setReviewsInit] = useState(reviewData);
   
 
   const handleIconHover = () => {
@@ -78,21 +76,11 @@ const ItemUser =({size})=>{
     const user = users.find((user) => user.id === userId);
     setClickedUser(user);
     setIsUserDivVisible(true);
+    const countOfReviews=reviewsInit.filter((review) =>review.user.id===userId);
+    console.log(countOfReviews);
+    setCountReviews(countOfReviews.length);
   };
 
-  const handleChecked = (userId) => {
-    //const user = users.find((user) => user.id === userId);
-    
-
-  };
-  const handleCheckedAll=()=>{
-    setSelectAllChecked(!selectAllChecked);
-  }
-  const handleReviewCount=(userId)=>
-  {
-
-
-  }
   const handleBackToMain = () => {
     setClickedUser(null);
     setIsUserDivVisible(false);
@@ -163,7 +151,7 @@ const ItemUser =({size})=>{
   
 
   useEffect(() => {
-    fetch('https://localhost:7052/api/Admin/getUsers')
+    fetch('https://localhost:44394/api/Admin/getUsers')
         .then(response => response.json())
         .then(data => {
             setUsers(data);
@@ -227,8 +215,6 @@ const ItemUser =({size})=>{
                       <div className='c3'>Номер телефону</div>
                       <div className='c4'>Email</div>
                       <div className='c5'>К-ть угод</div>
-                      <div className='c6'>Всі</div>
-                      <div className='c7-h'> <input type="checkbox" onChange={handleCheckedAll} checked={selectAllChecked} /></div>
                 </div>
                 {filteredAndPaginatedData.map((user,index)=>(   
                     <div className='div-row' key={user.id}>
@@ -239,9 +225,7 @@ const ItemUser =({size})=>{
                         <div className='c3'>{user.phoneNumber}</div>
                         <div className='c4'>{user.email}</div>
                         <div className='c5'></div>
-                        <div className='c6'></div>
                       </div>
-                      <div className='c7'><input type="checkbox" id={user.id} onChange={handleChecked(user.id)} checked={selectAllChecked} /></div>
                     </div>
                     
                   )
@@ -259,7 +243,9 @@ const ItemUser =({size})=>{
         </div>
         <div className='user-div' style={{ display: isUserDivVisible ? 'block' : 'none' }}>
           <div className='back-div'>
-            <div className='user-img'></div>
+            <div className='user-img'>
+              <img src="https://p.kindpng.com/picc/s/116-1169050_avatar-michael-jordan-jersey-clip-art-michael-jordan.png" alt=""/>
+            </div>
               {clickedUser !==null ? (
                 <label className='user-name'>{clickedUser.name} {clickedUser.surname}
                 <label className='remove-button' onClick={handleRemoveButtonClick}> <RemoveIcon/></label></label>
@@ -326,25 +312,26 @@ const ItemUser =({size})=>{
           </div>
           <div className='review-div'>
             <div className='review-label'>
-                <label>Відгуки </label><label className='review-count' onClick={handleReviewCount(3)}> {reviews.length}</label>
+                <label>Відгуки </label><label className='review-count'> {countReviews}</label>
             </div>
             <div className='review-body' id='scrollbar-style-1'>
-              {reviews.map((review)=>(   
+              
+              {reviewsInit.map((review)=>(
+                clickedUser !==null&&clickedUser.id===review.user.id?(  
                   <div className='review-row' key={review.id}>
                     <div className="review-header">
-                      <img src={review.image} alt={review.title} className='review-img' width={50} height={50}></img>
-                      <div className='review-title'><label>{review.title}  {review.code}</label></div>
+                      <img src={review.product.image} alt={review.product.name} className='review-img' width={50} height={50}></img>
+                      <div className='review-title'><label>{review.product.name}  {review.product.code}</label></div>
                       <label className='review-fluent' onClick={() => handleShowMessage(review)}>
                         <FluentArrowIcon />
                       </label>
-
                     </div>
                     <div className='star-rating'>
-                      <StarRating filledStars={review.rate} />
+                      <StarRating filledStars={review.number_of_stars} />
                     </div>
-                    <div className='review-review'>
+                    <div className='review-review' id='scrollbar-style-1'>
                       <label>
-                        {review.review}
+                        {review.comment}
                       </label>
                     </div>
                     <div className='review-date'>
@@ -354,10 +341,8 @@ const ItemUser =({size})=>{
                     </div>
                     <div className='review-bottom-line'>
                     </div>
-                  </div>
-                  
-                ))
-              }
+                  </div>):null
+                ))}
             </div>
           </div>
           {selectedReview && (

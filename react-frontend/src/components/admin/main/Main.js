@@ -16,6 +16,7 @@ import ItemMessage from './ItemMessage/ItemMessage';
 import ItemProduct from './ItemProduct/ItemProduct';
 import ItemCategory from './ItemCategory/ItemCategory';
 import ItemExit from './ItemExit/ItemExit';
+import ItemReview from './ItemReview/ItemReview';
 import ItemOrderIcon1 from './svg/ItemOrder/ItemOrderIcon1';
 import ItemOrderIcon2 from './svg/ItemOrder/ItemOrderIcon2';
 import ItemOrderIcon3 from './svg/ItemOrder/ItemOrderIcon3';
@@ -34,6 +35,7 @@ import ItemCategoryIcon3 from './svg/ItemCategory/ItemCategoryIcon3';
 import ItemExitIcon1 from './svg/ItemExit/ItemExitIcon1';
 import ItemExitIcon2 from './svg/ItemExit/ItemExitIcon2';
 import ItemExitIcon3 from './svg/ItemExit/ItemExitIcon3';
+import ItemReviewIcon1 from './svg/ItemReview/ItemReviewIcon1';
 import Header from '../Header';
 
 
@@ -218,6 +220,16 @@ class Main extends Component {
             <div className='menu-item-main'>
               <div className='item-main'></div>
               <li
+                className={hoveredIndex === 8 ? 'hovered' : ''}
+                onClick={() => this.handleClick(8)}
+                onMouseEnter={() => this.handleMouseEnter(8)}
+                onMouseLeave={this.handleMouseLeave}>
+                  {clickedIndex === 8 ? <ItemReviewIcon1 /> : (hoveredIndex === 8  ? <ItemReviewIcon1 /> : <ItemReviewIcon1 />)}
+              </li>
+            </div>
+            <div className='menu-item-main'>
+              <div className='item-main'></div>
+              <li
                 className={hoveredIndex === 7 ? 'hovered' : ''}
                 onClick={() => this.handleClick(7)}
                 onMouseEnter={() => this.handleMouseEnter(7)}
@@ -238,7 +250,8 @@ class Main extends Component {
           {isCount===5 &&<ItemProduct  size={divSize}/>}
           {isCount===6 &&<ItemCategory  size={divSize}/>}
           {isCount===7 &&<ItemExit  size={divSize}/>}
-          {isCount !== 0 && isCount !== 1 &&isCount !== 2 &&isCount !== 3 &&isCount !== 4 &&isCount !== 5 &&isCount !== 6 &&isCount !== 7 && <ItemMain size={divSize}/>}
+          {isCount===8 &&<ItemReview  size={divSize}/>}
+          {isCount !== 0 && isCount !== 1 &&isCount !== 2 &&isCount !== 3 &&isCount !== 4 &&isCount !== 5 &&isCount !== 6 &&isCount !== 7&&isCount !== 8 && <ItemMain size={divSize}/>}
 
           
         </div>
