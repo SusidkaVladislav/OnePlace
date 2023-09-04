@@ -26,7 +26,12 @@ using (var scope = serviceProvider.CreateScope())
     await roleManager.CreateAsync(new Role("admin"));
     await roleManager.CreateAsync(new Role("user"));
     await roleManager.CreateAsync(new Role("company"));
-    await CreateUser(userManager, "admin", "admin", "0111111111", "admin@gmail.com", "Qwerty+1", "admin");
+    await CreateUser(userManager, "admin", "admin", "+380-011111111", "admin@gmail.com", "Qwerty+1", "admin");
+    await CreateUser(userManager, "Jessika", "Kinkaid", "+380-771888628", "jkinkaid6@eventbrite.com", "Qwerty+1", "user");
+    await CreateUser(userManager, "Nick", "Moores", "+380-905406056", "nmooresw@privacy.gov.au", "Qwerty+1", "user");
+    await CreateUser(userManager, "Martyn", "Rickell", "+380-471332722", "mrickell18@google.com.hk", "Qwerty+1", "user");
+    await CreateUser(userManager, "Mariana", "Stranieri", "+380-156920503", "mstranieri27@xrea.com", "Qwerty+1", "user");
+    await CreateUser(userManager, "Forester", "Courteney", "+380-273236564", "fcourteney3f@purevolume.com", "Qwerty+1", "user");
 }
 
 async Task CreateUser(UserManager<User> userManager, string name, string surname, string phone_number, string email, string password, string roleName)
