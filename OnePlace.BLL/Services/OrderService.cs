@@ -101,7 +101,7 @@ namespace OnePlace.BLL.Services
             {
                 var sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == product.ProductId).Result.FirstOrDefault();
 
-                ProductColor productColor = await _unitOfWork.ProductColors.GetAsync(new CompositeKey
+                ProductColor productColor = await _unitOfWork.ProductColors.GetAsync(new Composite2Key
                 {
                     Column1 = product.ProductId,
                     Column2 = product.ColorId

@@ -7,20 +7,20 @@ namespace OnePlace.DAL.Interfaces
         IRepository<Category, int> Categories {  get; }
         IRepository<Color, int> Colors {  get; }
         IRepository<Description, int> Descriptions {  get; }
-        IRepository<LikedProduct, CompositeKey> LikedProducts {  get; }
+        IRepository<LikedProduct, Composite2Key> LikedProducts {  get; }
         IRepository<ManufactureCountry, int> ManufactureCountries {  get; }
         IRepository<Manufacturer, int> Manufacturers {  get; }
         IRepository<Order, int> Orders {  get; }
-        IRepository<OrderProduct, CompositeKey> OrderProducts {  get; }
+        IRepository<OrderProduct, Composite3Key> OrderProducts {  get; }
         IRepository<Product, int> Products {  get; }
-        IRepository<ProductDescription, CompositeKey> ProductDescriptions {  get; }
-        IRepository<ProductColor, CompositeKey> ProductColors { get; }
-        IRepository<ProductPicture, CompositeKey> ProductPictures {  get; }
+        IRepository<ProductDescription, Composite2Key> ProductDescriptions {  get; }
+        IRepository<ProductColor, Composite2Key> ProductColors { get; }
+        IRepository<ProductPicture, Composite2Key> ProductPictures {  get; }
         IRepository<Picture, int> Pictures { get; }
         IRepository<Review, int> Reviews {  get; }
         IRepository<Sale, int> Sales {  get; }
         IRepository<User, int> Users {  get; }
-        IRepository<ShoppingCart, CompositeKey> ShoppingCarts { get; }
+        IRepository<ShoppingCart, Composite3Key> ShoppingCarts { get; }
         IRepository<Message, int> Messages { get; }
         IRepository<ReviewReply, int> ReviewReplies { get; }
         IRepository<CreditCard, int> CreditCards { get; }

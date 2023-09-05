@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ProductPictureRepository : RepositoryBase<ProductPicture, CompositeKey>
+    public class ProductPictureRepository : RepositoryBase<ProductPicture, Composite2Key>
     {
         public ProductPictureRepository(AppDbContext context, 
             UserManager<User> userManager): base(context, userManager) { }
 
 
-        public override async Task DeleteAsync(CompositeKey key)
+        public override async Task DeleteAsync(Composite2Key key)
         {
             ProductPicture productPicture = await db.ProductPictures
                 .FirstOrDefaultAsync(o => o.ProductId == key.Column1 && o.PictureId == key.Column2);
@@ -31,7 +31,7 @@ namespace OnePlace.DAL.Repositories
             return Task.Run(() => db.ProductPictures.Include(o => o.Picture).Where(predicate).ToList());
         }
 
-        public override async Task<ProductPicture> GetAsync(CompositeKey key)
+        public override async Task<ProductPicture> GetAsync(Composite2Key key)
         {
             return await db.ProductPictures
                 .Include(o => o.Picture)

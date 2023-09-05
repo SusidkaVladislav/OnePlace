@@ -45,7 +45,7 @@ namespace OnePlace.DAL.EF
                 .HasKey(x => new { x.OrderId, x.ProductId, x.ColorId });
 
             builder.Entity<ProductDescription>()
-                .HasKey(x => new { x.ProductId, x.DescriptionId });
+                .HasKey(x => new { x.DescriptionId, x.ProductId });
 
             builder.Entity<ProductPicture>()
                 .HasKey(x => new { x.ProductId, x.PictureId });

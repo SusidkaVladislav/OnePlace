@@ -1,5 +1,6 @@
 ﻿namespace OnePlace.DAL.Entities
 {
+    //[PrimaryKey(nameof(ProductId), nameof(UserId), nameof(ColorId))]
     public class ShoppingCart
     {
         public int ProductId { get; set; }

@@ -301,7 +301,7 @@ namespace OnePlace.BLL.Services
             //Спочатку йде видалення записів з таблички ProductDescriptions
             foreach (var productDescription in product.ProductDescriptions)
             {
-                CompositeKey key = new CompositeKey
+                Composite2Key key = new Composite2Key
                 {
                     Column1 = productDescription.DescriptionId,
                     Column2 = productDescription.ProductId
@@ -323,7 +323,7 @@ namespace OnePlace.BLL.Services
             {
                 await _unitOfWork.Pictures.DeleteAsync(pictureId);
 
-                await _unitOfWork.ProductPictures.DeleteAsync(new CompositeKey
+                await _unitOfWork.ProductPictures.DeleteAsync(new Composite2Key
                 {
                     Column1 = productId,
                     Column2 = pictureId
@@ -565,7 +565,7 @@ namespace OnePlace.BLL.Services
                 var productDescriptionsToDelete = await _unitOfWork.ProductDescriptions.FindAsync(pd => pd.ProductId == productToUpdate.Id);
                 foreach (var productDescription in productDescriptionsToDelete)
                 {
-                    await _unitOfWork.ProductDescriptions.DeleteAsync(new CompositeKey
+                    await _unitOfWork.ProductDescriptions.DeleteAsync(new Composite2Key
                     {
                         Column1 = productDescription.DescriptionId,
                         Column2 = productDescription.ProductId
@@ -619,7 +619,7 @@ namespace OnePlace.BLL.Services
                 if (!updatedPictures.Select(p => p.Id)
                     .Contains(picture.PictureId))
                 {
-                    await _unitOfWork.ProductPictures.DeleteAsync(new CompositeKey
+                    await _unitOfWork.ProductPictures.DeleteAsync(new Composite2Key
                     {
                         Column1 = picture.ProductId,
                         Column2 = picture.PictureId
@@ -638,7 +638,7 @@ namespace OnePlace.BLL.Services
                     IsTitle = updatedProduct.Pictures[i].IsTitle
                 };
 
-                var productPictureToUpdate = await _unitOfWork.ProductPictures.GetAsync(new CompositeKey
+                var productPictureToUpdate = await _unitOfWork.ProductPictures.GetAsync(new Composite2Key
                 {
                     Column1 = productPicture.ProductId,
                     Column2 = productPicture.PictureId
@@ -665,7 +665,7 @@ namespace OnePlace.BLL.Services
                     if (!updatedDescriptions.Select(ud => ud.Id)
                         .Contains(productDescription.DescriptionId))
                     {
-                        await _unitOfWork.ProductDescriptions.DeleteAsync(new CompositeKey
+                        await _unitOfWork.ProductDescriptions.DeleteAsync(new Composite2Key
                         {
                             Column1 = productDescription.DescriptionId,
                             Column2 = productDescription.ProductId
@@ -690,7 +690,7 @@ namespace OnePlace.BLL.Services
                     };
 
                     var productDescriptionToUpdate = await _unitOfWork.ProductDescriptions.GetAsync(
-                        new CompositeKey
+                        new Composite2Key
                         {
                             Column1 = productDescription.DescriptionId,
                             Column2 = productDescription.ProductId
@@ -714,7 +714,7 @@ namespace OnePlace.BLL.Services
 
             foreach (ProductColor colorDelete in productColorsForDelete)
             {
-                await _unitOfWork.ProductColors.DeleteAsync(new CompositeKey
+                await _unitOfWork.ProductColors.DeleteAsync(new Composite2Key
                 {
                     Column1 = colorDelete.ProductId,
                     Column2 = colorDelete.ColorId
@@ -724,7 +724,7 @@ namespace OnePlace.BLL.Services
             foreach (ProductColor productColor in productToUpdate.ProductColors)
             {
                 if(await _unitOfWork.ProductColors
-                    .GetAsync(new CompositeKey
+                    .GetAsync(new Composite2Key
                     {
                         Column1 = updatedProduct.Id,
                         Column2 = productColor.ColorId
