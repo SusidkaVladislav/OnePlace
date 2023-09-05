@@ -38,7 +38,7 @@ const AdminLogin=()=> {
     const handleEnter =async (event) => {
         event.preventDefault();
 
-        const response = await fetch("https://localhost:44394/api/Account/login", {
+        const response = await fetch("https://localhost:7052/api/Account/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -54,7 +54,8 @@ const AdminLogin=()=> {
             setPasswordBorderColor('');
             setErrorMessageEmail('');
             setErrorMessagePassword('');
-            window.location.href = `/admin/main?email=${result.data.Email}&name=${result.data.Name}&surname=${result.data.Surname}`;
+            //?email=${result.data.Email}&name=${result.data.Name}&surname=${result.data.Surname}
+            window.location.href = `/admin/main`;
 
         }
         else{
