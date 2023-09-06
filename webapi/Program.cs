@@ -47,6 +47,16 @@ async Task CreateUser(UserManager<User> userManager, string name, string surname
     }
 }
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") // Add your frontend URL here
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -69,7 +79,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors();  
 //Обробка виключних ситуацій в контролерах
 app.UseException();
 app.Run();
