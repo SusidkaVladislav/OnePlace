@@ -28,14 +28,10 @@ const ItemReview =({size})=>{
     const [isHovered, setIsHovered] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const [selectedRadio, setSelectedRadio] = useState('surname'); // Default to the first radio
     const [clickedUser, setClickedUser] = useState(null);
     const [isUserDivVisible, setIsUserDivVisible] = useState(false);
-    //const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
     const [reviewsInit, setReviewsInit] = useState(reviewData);
     const [reviewsReply, setReviewsReply] = useState(reviewReply);
-    //const [count, setCount] = useState(0);
-    //const [selectedReview, setSelectedReview] = useState(null);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const sortedReviews = sortByIdSmallerToLarger(reviewsInit);
     const [checkedUsers, setCheckedUsers] = useState([]);
@@ -63,9 +59,6 @@ const ItemReview =({size})=>{
         setCurrentPage(1);
     };
     
-    const handleRadioChange = (event) => {
-        setSelectedRadio(event.target.value);
-    };
     
     const handleRowClick = (userId) => {
         const user = reviewsInit.find((user) => user.id === userId);
@@ -83,35 +76,54 @@ const ItemReview =({size})=>{
 
     const handleCheckedAll=()=>{
         const allIds = reviewsInit.map((user) => user.id);
-        if (selectAllChecked) {
-            setCheckedUsers([]); // Uncheck all checkboxes
-        } else {
-            setCheckedUsers(allIds); // Check all checkboxes
+        if (checkedUsers.length > 0) {
+            if (checkedUsers.length === allIds.length) {
+                setCheckedUsers([]);
+                setSelectAllChecked(false)
+            }
+            else{
+                const newCheckedUsers = [...new Set([...checkedUsers, ...allIds])]; // Combine and remove duplicates
+                setCheckedUsers(newCheckedUsers);
+                setSelectAllChecked(true);
+            }
         }
-        setSelectAllChecked(!selectAllChecked); 
+        else{
+            if (selectAllChecked) {
+                setCheckedUsers([]); // Uncheck all checkboxes
+                setSelectAllChecked(false)
+            } else {
+                setCheckedUsers(allIds); // Check all checkboxes
+                setSelectAllChecked(true)
+            }
+
+        }
         console.log(checkedUsers);
     }
     const handleBackToMain = () => {
         setClickedUser(null);
         setIsUserDivVisible(false);
     };
+    const handleDeleteReview=()=>
+    {
+        console.log(checkedUsers);
+    }
 
     const filteredTableData = reviewsInit.filter((review) => {
         const searchData = inputValue.toLowerCase();
-        const userFieldValue = review.user[selectedRadio]?.toLowerCase()||'';
+        const userFieldValue = (review.user.name + ' ' + review.user.surname).toLowerCase()||'';
         return userFieldValue.includes(searchData);
       });
     
     const filteredAndPaginatedData = useMemo(() => {
         const searchData = inputValue.toLowerCase();
         const filteredData = reviewsInit.filter((review) => {
-          const userFieldValue = review.user[selectedRadio]?.toLowerCase()||'';
+          const userFieldValue = (review.user.name + ' ' + review.user.surname).toLowerCase()||'';
           return userFieldValue.includes(searchData);
         });
         const firstPageIndex = (currentPage - 1) * PageSize;
         const lastPageIndex = firstPageIndex + PageSize;
         return filteredData.slice(firstPageIndex, lastPageIndex);
-    }, [currentPage, inputValue, selectedRadio,reviewsInit]);
+    }, [currentPage, inputValue,reviewsInit]);
       
 
     return (
@@ -137,16 +149,6 @@ const ItemReview =({size})=>{
                   value={inputValue}/>
             </div>
           </div>
-              <div className='search-radio-div'>
-                  <div className='radio-group'>
-                      <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
-                      onChange={handleRadioChange} />
-                      <label htmlFor="last_name">Прізвище</label>
-                      <input type="radio" name="searching" value="name" id="name" 
-                      onChange={handleRadioChange} />
-                      <label htmlFor="first_name">Ім'я</label>
-                  </div>
-              </div>
           <div className='user-bell-icon'>
               <BellIcon/>
           </div>
@@ -161,16 +163,8 @@ const ItemReview =({size})=>{
                         onChange={handleCheckedAll}
                         checked={selectAllChecked} />
                     </div>
-                    <label className={`r2-h ${selectAllChecked ? 'selected-all-label' : ''}`}>Всі</label>
-                    <label className={`r3-h ${selectAllChecked ? 'selected-all-label' : ''}`}>Видалити</label>
-                    <label className={`r4-h ${selectAllChecked ? 'selected-all-label' : ''}`}>Спам</label>
-                    {/* <div className='review-check-new'>
-                        <div className='r1-h'> 
-                            <input type="checkbox" 
-                            onChange={handleCheckedNew} />
-                        </div>
-                        <label>Показати нові</label>
-                    </div> */}
+                    <label className="r2-h">Всі</label>
+                    <label className="r3-h" onClick={handleDeleteReview}>Видалити</label>
                 </div>
                 {filteredAndPaginatedData.map((review,index)=>(   
                     <div className='review-div-row' key={review.id}>
@@ -259,26 +253,19 @@ const ItemReview =({size})=>{
                                     } 
                                 </div>
                                 {!reviewsReply.some((reply)=>reply.review_id===clickedUser.id) && (
-                                    <div key={clickedUser.id} className='msg-from-admin'>
+                                    <div key={clickedUser.id} className='review-msg-from-admin'>
                                         <input type="text" placeholder='Додайте коментар'/>
                                         <label><ComunicationIcon/></label>
                                     </div>
                                 )}
                             </div> 
                         </div>
-
-
                     ) : (<label className='review-list-title'>No Review Selected</label>)}
                    
                 </div>
-
-
             </div>
-
         </div>
-
-
-      </div>
+    </div>
     );
   
 };

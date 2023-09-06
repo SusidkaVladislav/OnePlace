@@ -43,6 +43,7 @@ const ItemUser =({size})=>{
   const [countReviews, setCountReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
   const [reviewsInit, setReviewsInit] = useState(reviewData);
+  const [reviewsReply, setReviewsReply] = useState(reviewReply);
   
 
   const handleIconHover = () => {
@@ -312,7 +313,7 @@ const ItemUser =({size})=>{
           </div>
           <div className='review-div'>
             <div className='review-label'>
-                <label>Відгуки </label><label className='review-count'> {countReviews}</label>
+                <label>Відгуки </label><label> {countReviews}</label>
             </div>
             <div className='review-body' id='scrollbar-style-1'>
               
@@ -322,9 +323,12 @@ const ItemUser =({size})=>{
                     <div className="review-header">
                       <img src={review.product.image} alt={review.product.name} className='review-img' width={50} height={50}></img>
                       <div className='review-title'><label>{review.product.name}  {review.product.code}</label></div>
-                      <label className='review-fluent' onClick={() => handleShowMessage(review)}>
-                        <FluentArrowIcon />
-                      </label>
+                      
+                      {!reviewsReply.some((reply) => reply.review_id === review.id) && (
+                          <label className='review-fluent' onClick={() => handleShowMessage(review)}>
+                            <FluentArrowIcon />
+                          </label>
+                      )}
                     </div>
                     <div className='star-rating'>
                       <StarRating filledStars={review.number_of_stars} />
@@ -339,34 +343,43 @@ const ItemUser =({size})=>{
                         {review.date}
                       </label>
                     </div>
-                    <div className='review-bottom-line'>
-                    </div>
+                    {reviewsReply.some((reply) => reply.review_id === review.id) && (
+                        <div className='msg-from-admin' id='scrollbar-style-1'>
+                          <label> {reviewsReply.find((reply) => reply.review_id === review.id).comment}</label>
+                        </div>
+                      )}
+
+                    <div className='review-bottom-line'></div>
                   </div>):null
                 ))}
             </div>
           </div>
           {selectedReview && (
-            <div className='review-message'>
-              <div>
-                <div className='review-message-label'>
-                  <img src={selectedReview.image} alt={selectedReview.title} className='review-img' width={50} height={50}></img>
-                  <div className='review-title'><label>{selectedReview.title}</label></div>
-                  <label className='textarea-count'>{count}/300</label>
-                </div>
-                <div className='review-message-input'>
-                  <textarea type='textarea' maxLength={300} onChange={e => setCount(e.target.value.length)}/>
-
-                </div>
-                <div className='review-message-send'>
-                  <label className='review-send'>Відповісти</label>
-
-                </div>
-              </div>
-              <div className='arrow-toLeft'>
-                <label className='code-main-arrow-down' onClick={handleCloseMessage}><ArrowDownDark /></label>
-              </div>
-                
-            </div>
+            reviewsReply.map((reply)=>(
+              reply.review_id===selectedReview.id ? (
+                  <div className='review-message' key={reply.review_id}>
+                    <div>
+                      <div className='review-message-label'>
+                        <img src={selectedReview.product.image} alt={selectedReview.product.name} className='review-img' width={50} height={50}></img>
+                        <div className='review-title'><label>{selectedReview.product.name}</label></div>
+                        <label className='textarea-count'>{count}/300</label>
+                      </div>
+                      <div className='review-message-input'>
+                        <textarea type='textarea' maxLength={300} onChange={e => setCount(e.target.value.length)}/>
+      
+                      </div>
+                      <div className='review-message-send'>
+                        <label className='review-send'>Відповісти</label>
+                      </div>
+                    </div>
+                    <div className='arrow-toLeft'>
+                      <label className='code-main-arrow-down' onClick={handleCloseMessage}><ArrowDownDark /></label>
+                    </div>
+                  </div>
+                  ):null
+              ))
+          
+            
           )}
             {isConfirmDialogVisible && (
               <div className='modal-backdrop'>
