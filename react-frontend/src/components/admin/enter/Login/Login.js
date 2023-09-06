@@ -36,7 +36,7 @@ const Login= ()=> {
     const handleEnter =async (event) => {
         event.preventDefault();
 
-        const response = await fetch("https://localhost:44394/api/Account/login", {
+        const response = await fetch("https://localhost:7052/api/Account/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

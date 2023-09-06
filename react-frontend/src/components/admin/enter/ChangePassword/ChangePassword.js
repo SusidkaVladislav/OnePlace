@@ -104,7 +104,7 @@ const ChangePassword=()=> {
 
         if(isCorrect===3)
         {
-            const response = await fetch("https://localhost:44394/api/Account/changePassword", {
+            const response = await fetch("https://localhost:7052/api/Account/changePassword", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

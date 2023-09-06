@@ -189,7 +189,7 @@ const Register=()=> {
       //window.location.href = `/login`;
       const fullPhoneNumber = `${selectedItem.dialCode}-${phoneNumber}`;
 
-      const response = await fetch("https://localhost:44394/api/Account/register", {
+      const response = await fetch("https://localhost:7052/api/Account/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
