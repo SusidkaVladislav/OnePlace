@@ -68,10 +68,6 @@
     padding-right: 12px;
 
 }
-.review-count
-{
-    cursor: pointer;
-}
 .review-row
 {
     display: block;
@@ -141,6 +137,24 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(71, 25, 21, 1);
+
+}
+.msg-from-admin
+{
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+    background-color: rgb(227, 230, 233);
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 10px;
+    margin-left: 60px;
+    overflow-y: auto;
+    scrollbar-width: thin;
 
 }
 .review-fluent
@@ -273,7 +287,6 @@
     padding-bottom: 15px;
     margin-right: 20px;
 
-
 }
 .order-div-row div{
     padding-top: 25px;
@@ -286,4 +299,3 @@
 {
     margin-top: -10px;
 }
-

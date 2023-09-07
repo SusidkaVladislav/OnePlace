@@ -1,12 +1,11 @@
 import React, { useState,useEffect, useMemo } from 'react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
 import './ReviewStyle.css';
 import SearchIcon from './svg/SearchIcon';
 import BellIcon from './svg/BellIcon';
 import CustomPagination from '../Pagination/CustomPagination';
-// import data from './data/mock-data.json';
+import data from './data/mock-data.json';
 import BackIcon from './svg/BackIcon';
 import RemoveIcon from './svg/RemoveIcon';
 import StarRating from '../StartRating/StarRating';
@@ -38,11 +37,12 @@ const ItemUser =({size})=>{
   const [clickedUser, setClickedUser] = useState(null);
   const [isUserDivVisible, setIsUserDivVisible] = useState(false);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(data);
   const [count, setCount] = useState(0);
   const [countReviews, setCountReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
   const [reviewsInit, setReviewsInit] = useState(reviewData);
+  const [reviewsReply, setReviewsReply] = useState(reviewReply);
   
 
   const handleIconHover = () => {
@@ -94,7 +94,7 @@ const ItemUser =({size})=>{
 
     if(clickedUser?.id!==0)
     {
-      const response = await fetch(`https://localhost:44394/api/Admin/${clickedUser?.id}`, {
+      const response = await fetch(`https://localhost:7052/api/Admin/${clickedUser?.id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
@@ -102,7 +102,7 @@ const ItemUser =({size})=>{
         setClickedUser(null);
         setIsUserDivVisible(false);
 
-        fetch('https://localhost:44394/api/Admin/getUsers')
+        fetch('https://localhost:7052/api/Admin/users')
         .then(response => response.json())
         .then(data => {
             setUsers(data);
@@ -150,16 +150,16 @@ const ItemUser =({size})=>{
   }, [currentPage, inputValue, selectedRadio,users]);
   
 
-  useEffect(() => {
-    fetch('https://localhost:44394/api/Admin/getUsers')
-        .then(response => response.json())
-        .then(data => {
-            setUsers(data);
-        })
-        .catch(error => {
-            console.error('Error fetching user list:', error);
-        });
-  }, []);
+  // useEffect(() => {
+  //   fetch('https://localhost:7052/api/Admin/users')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //           setUsers(data);
+  //       })
+  //       .catch(error => {
+  //           console.error('Error fetching user list:', error);
+  //       });
+  // }, []);
   //console.log(users)
 
 
@@ -322,9 +322,11 @@ const ItemUser =({size})=>{
                     <div className="review-header">
                       <img src={review.product.image} alt={review.product.name} className='review-img' width={50} height={50}></img>
                       <div className='review-title'><label>{review.product.name}  {review.product.code}</label></div>
-                      <label className='review-fluent' onClick={() => handleShowMessage(review)}>
-                        <FluentArrowIcon />
-                      </label>
+                      {!reviewsReply.some((reply) => reply.review_id === review.id) && (
+                          <label className='review-fluent' onClick={() => handleShowMessage(review)}>
+                            <FluentArrowIcon />
+                          </label>
+                      )}
                     </div>
                     <div className='star-rating'>
                       <StarRating filledStars={review.number_of_stars} />
@@ -339,6 +341,11 @@ const ItemUser =({size})=>{
                         {review.date}
                       </label>
                     </div>
+                    {reviewsReply.some((reply) => reply.review_id === review.id) && (
+                        <div className='msg-from-admin' id='scrollbar-style-1'>
+                          <label> {reviewsReply.find((reply) => reply.review_id === review.id).comment}</label>
+                        </div>
+                      )}
                     <div className='review-bottom-line'>
                     </div>
                   </div>):null
@@ -346,27 +353,28 @@ const ItemUser =({size})=>{
             </div>
           </div>
           {selectedReview && (
-            <div className='review-message'>
-              <div>
-                <div className='review-message-label'>
-                  <img src={selectedReview.image} alt={selectedReview.title} className='review-img' width={50} height={50}></img>
-                  <div className='review-title'><label>{selectedReview.title}</label></div>
-                  <label className='textarea-count'>{count}/300</label>
-                </div>
-                <div className='review-message-input'>
-                  <textarea type='textarea' maxLength={300} onChange={e => setCount(e.target.value.length)}/>
-
-                </div>
-                <div className='review-message-send'>
-                  <label className='review-send'>Відповісти</label>
-
-                </div>
+            !reviewsReply.some((reply) => reply.review_id === selectedReview.id) && (
+              <div className='review-message'>
+                    <div>
+                      <div className='review-message-label'>
+                        <img src={selectedReview.product.image} alt={selectedReview.product.name} className='review-img' width={50} height={50}></img>
+                        <div className='review-title'><label>{selectedReview.product.name}</label></div>
+                        <label className='textarea-count'>{count}/300</label>
+                      </div>
+                      <div className='review-message-input'>
+                        <textarea type='textarea' maxLength={300} onChange={e => setCount(e.target.value.length)}/>
+      
+                      </div>
+                      <div className='review-message-send'>
+                        <label className='review-send'>Відповісти</label>
+                      </div>
+                    </div>
+                    <div className='arrow-toLeft'>
+                      <label className='code-main-arrow-down' onClick={handleCloseMessage}><ArrowDownDark /></label>
+                    </div>
               </div>
-              <div className='arrow-toLeft'>
-                <label className='code-main-arrow-down' onClick={handleCloseMessage}><ArrowDownDark /></label>
-              </div>
-                
-            </div>
+            )
+            
           )}
             {isConfirmDialogVisible && (
               <div className='modal-backdrop'>

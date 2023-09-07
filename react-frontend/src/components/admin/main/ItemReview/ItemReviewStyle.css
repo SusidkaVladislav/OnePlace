@@ -35,20 +35,26 @@
     height: 20px;
     width: 20px;
 }
-.r2-h, .r3-h, .r4-h
+.r2-h
 {
     font-family: 'Montserrat Alternates';
-    font-size: 14px;
     font-weight: 500;
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
-    color: rgba(104, 135, 151, 1);
     margin-left: 20px;
+    font-size: 16px;
+    color: rgba(10, 61, 88, 1);
 
 }
-.selected-all-label
+.r3-h
 {
+    font-family: 'Montserrat Alternates';
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-left: 20px;
     font-size: 16px;
     color: rgba(10, 61, 88, 1);
     cursor: pointer;
@@ -299,13 +305,13 @@
     height: 50px;
 }
 
-.msg-from-admin
+.review-msg-from-admin
 {
     height: 66px;
     padding: 0px 0px 16px 0px;
     gap: 16px;
 }
-.msg-from-admin input[type=text]
+.review-msg-from-admin input[type=text]
 {
     width:900px;
     height: 34px;
