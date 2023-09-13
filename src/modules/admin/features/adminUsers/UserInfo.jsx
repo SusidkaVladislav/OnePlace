@@ -5,10 +5,8 @@ const UserInfo = () => {
     const params = useParams();
     const prodId = params.id;
 
-    alert (prodId)
-
     return (
-        <p>HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</p>
+        <h1>{prodId}</h1>
     )
 }
 

@@ -24,11 +24,8 @@ function App()
   return (
     <div className='body-div'>
 
-
       <Routes>
         <Route path="/" element={<OnePlaceMain />} />
-
-
 
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />
@@ -37,11 +34,12 @@ function App()
             <Route index element={<ItemMane />} />
             <Route path="sales" element={<ItemSale />} />
             <Route path="orders" element={<ItemOrder />} />
-            
-            <Route path="users" element={<ItemUser />}>
-              <Route path=":id" element={<UserInfo />} />
+
+            <Route path="users" >
+              <Route index element={<ItemUser />} />
+              <Route path="user/:id" element={<UserInfo />} />
             </Route>
-            
+
             <Route path="messages" element={<ItemMessage />} />
             <Route path="products" element={<ItemProduct />} />
             <Route path="categories" element={<ItemCategory />} />
@@ -51,16 +49,13 @@ function App()
           </Route>
         </Route>
 
-
-
       </Routes>
 
-
-
-
     </div>
-
   );
 }
 
 export default App;
+
+
+{/* <Route path="user/:id" element={<UserInfo />} /> */ }

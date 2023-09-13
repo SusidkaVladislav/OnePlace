@@ -40,9 +40,9 @@ const ItemUser = () =>
 
     const handleRowClick = (userId) =>
     {
-        navigate(`${userId}`)
+        navigate(`user/${userId}`)
         
-        //navigate('userDatails')
+       
         // const user = users.find((user) => user.id === userId);
         // setClickedUser(user);
         // setIsUserDivVisible(true);
@@ -91,7 +91,7 @@ const ItemUser = () =>
                         {filteredAndPaginatedData.map((user, index) => (
                             <div className='div-row' key={user.id}>
                                     <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
-                                    onClick={async event => { navigate(`${user.id}`); }}
+                                    onClick={async event => { navigate(`user/${user.id}`); }}
                                    >
                                     <div className='c1'>{user.name}</div>
                                     <div className='c2'>{user.surname}</div>
