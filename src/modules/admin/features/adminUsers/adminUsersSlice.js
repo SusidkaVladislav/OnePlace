@@ -26,35 +26,37 @@ const adminUsersSlice = createSlice({
     extraReducers(builder)
     {
         builder
-        .addCase(fetchUsers.pending, (state) =>
-        {
-            state.loading = "Loading...";
-        })
-        .addCase(fetchUsers.fulfilled, (state, {payload}) =>
-        {
-            state.users = payload;
+            .addCase(fetchUsers.pending, (state) =>
+            {
+                state.loading = "Loading...";
+            })
+            .addCase(fetchUsers.fulfilled, (state, { payload }) =>
+            {
+                state.users = payload;
 
-            state.commonUsersInfo = payload.map(({ id, name, surname, phoneNumber, email, orders }) => 
-                ({ id, name, surname, phoneNumber, email, orders }))
+                state.commonUsersInfo = payload.map(({ id, name, surname, phoneNumber, email, orders }) =>
+                    ({ id, name, surname, phoneNumber, email, orders }))
 
-            state.loading = null;
-        })
-        .addCase(fetchUsers.rejected, (state) =>
-        {
-            state.loading = null;
-        })
+                state.loading = null;
+            })
+            .addCase(fetchUsers.rejected, (state) =>
+            {
+                state.loading = null;
+            })
     }
 })
 
 
 export const getAllUsers = (state) => state.adminUsers.commonUsersInfo;
 
-export const getFilteredUsers = (state, inputValue) => 
-  state.adminUsers.commonUsersInfo.filter(user =>
-    [user.name, user.surname, user.email, user.phoneNumber].some(field =>
-      field.toLowerCase().includes(inputValue.toLowerCase())
-    )
-  );
+export const getFilteredUsers = (state, inputValue) =>
+    state.adminUsers.commonUsersInfo.filter(user =>
+        [user.name, user.surname, user.email, user.phoneNumber].some(field =>
+            field.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    );
 
+export const getUserById = (state, userId) =>
+    state.adminUsers.users.find(user => user.id === userId)
 
 export default adminUsersSlice.reducer

@@ -30,8 +30,8 @@ const ItemUser = () =>
         dispatch(fetchUsers())
     }, [])
 
-    // const [clickedUser, setClickedUser] = useState(null);
-    // const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+    //
+    // 
 
     // const [count, setCount] = useState(0);
     // const [countReviews, setCountReviews] = useState([]);
