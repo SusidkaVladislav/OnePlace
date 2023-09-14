@@ -185,22 +185,22 @@ const ItemUser =({size})=>{
                   value={inputValue}/>
             </div>
           </div>
-              <div className='search-radio-div'>
-                  <div className='radio-group'>
-                      <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
-                      onChange={handleRadioChange} />
-                      <label htmlFor="last_name">Прізвище</label>
-                      <input type="radio" name="searching" value="name" id="name" 
-                      onChange={handleRadioChange} />
-                      <label htmlFor="first_name">Ім'я</label>
-                      <input type="radio" name="searching" value="phoneNumber" id="phoneNumber" 
-                      onChange={handleRadioChange} />
-                      <label htmlFor="phone">Телефон</label>
-                      <input type="radio" name="searching" value="email" id="email" 
-                      onChange={handleRadioChange} />
-                      <label htmlFor="email">E-mail</label>
-                  </div>
-              </div>
+          <div className='search-radio-div'>
+            <div className='radio-group'>
+              <input type="radio" name="searching" value="surname" id="surname" checked={selectedRadio === 'surname'}
+              onChange={handleRadioChange} />
+              <label htmlFor="last_name">Прізвище</label>
+              <input type="radio" name="searching" value="name" id="name" 
+              onChange={handleRadioChange} />
+              <label htmlFor="first_name">Ім'я</label>
+              <input type="radio" name="searching" value="phoneNumber" id="phoneNumber" 
+              onChange={handleRadioChange} />
+              <label htmlFor="phone">Телефон</label>
+              <input type="radio" name="searching" value="email" id="email" 
+              onChange={handleRadioChange} />
+              <label htmlFor="email">E-mail</label>
+            </div>
+          </div>
           <div className='user-bell-icon'>
               <BellIcon/>
           </div>

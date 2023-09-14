@@ -36,6 +36,8 @@ import ItemExitIcon1 from './svg/ItemExit/ItemExitIcon1';
 import ItemExitIcon2 from './svg/ItemExit/ItemExitIcon2';
 import ItemExitIcon3 from './svg/ItemExit/ItemExitIcon3';
 import ItemReviewIcon1 from './svg/ItemReview/ItemReviewIcon1';
+import ItemReviewIcon2 from './svg/ItemReview/ItemReviewIcon2';
+import ItemReviewIcon3 from './svg/ItemReview/ItemReviewIcon3';
 import Header from '../Header';
 
 
@@ -224,7 +226,7 @@ class Main extends Component {
                 onClick={() => this.handleClick(8)}
                 onMouseEnter={() => this.handleMouseEnter(8)}
                 onMouseLeave={this.handleMouseLeave}>
-                  {clickedIndex === 8 ? <ItemReviewIcon1 /> : (hoveredIndex === 8  ? <ItemReviewIcon1 /> : <ItemReviewIcon1 />)}
+                  {clickedIndex === 8 ? <ItemReviewIcon3 /> : (hoveredIndex === 8  ? <ItemReviewIcon2 /> : <ItemReviewIcon1 />)}
               </li>
             </div>
             <div className='menu-item-main'>

@@ -149,9 +149,6 @@ const ItemReview =({size})=>{
                   value={inputValue}/>
             </div>
           </div>
-          <div className='user-bell-icon'>
-              <BellIcon/>
-          </div>
           <div className='user-count'>
               <label>({reviewsInit.length}) відгуки</label>
           </div>
@@ -175,7 +172,7 @@ const ItemReview =({size})=>{
                             checked={checkedUsers.includes(review.id)}
                             />
                         </div>
-                        <div className='r2'>
+                        <div className='r2'> 
                             <img src="https://p.kindpng.com/picc/s/116-1169050_avatar-michael-jordan-jersey-clip-art-michael-jordan.png" alt=""/>
                             {!reviewsReply.some((reply) => reply.review_id === review.id) && (
                                 <label key={review.id} className='review-elipse-icon'><ElipseIcon/></label>
