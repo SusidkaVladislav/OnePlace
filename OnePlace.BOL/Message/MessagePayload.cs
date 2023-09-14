@@ -25,5 +25,7 @@ namespace OnePlace.BOL.Message
         public string MessageText { get; set; }
         [Required]
         public DateTime Date { get; set; }
+        [Required]
+        public bool IsReplied { get; set; }
     }
 }
