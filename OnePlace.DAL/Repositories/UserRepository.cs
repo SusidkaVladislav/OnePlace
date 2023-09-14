@@ -48,5 +48,9 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Messages)
                 .FirstOrDefaultAsync(o => Convert.ToInt32(o.Id) == id);
         }
+        public override async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await db.Users.ToListAsync();
+        }
     }
 }

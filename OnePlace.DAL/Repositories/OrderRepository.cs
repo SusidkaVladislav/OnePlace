@@ -38,7 +38,10 @@ namespace OnePlace.DAL.Repositories
         public override async Task<Order> GetAsync(int id)
         {
 
-            return await db.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+            return await db.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderProducts)
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public override async Task<PaginatedList<Order>> Filter<S>(S searchParamsModel)
