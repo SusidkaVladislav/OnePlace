@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemMainStyle.css';
 import ArrowDown from '../../../svg/mainPageIcons/ArrowDown';
-import AdminSearch from '../../../features/search/adminSearch';
+import AdminSearch from '../../../../../services/search//adminSearch';
 
 const ItemMain = () =>
 {

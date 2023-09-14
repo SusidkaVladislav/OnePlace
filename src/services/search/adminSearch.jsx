@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import SearchIcon from '../../svg/mainPageIcons/SearchIcon';
+import SearchIcon from '../../modules/admin/svg/sharedIcons/SearchIcon';
+
+import './adminSearchStyle.css';
 
 const AdminSearch = props =>
 {
-
     const {
         onSearchChange
     } = props;
@@ -37,11 +38,7 @@ const AdminSearch = props =>
 
     const handleInputChange = (event) =>
     {
-
-        //тут потрібно щоб виконувався код з компонента який викликає пошук
         onSearchChange(event.target.value);
-        //setInputValue(event.target.value);
-        //setCurrentPage(1);
     };
 
     return (
@@ -61,7 +58,7 @@ const AdminSearch = props =>
                     onBlur={handleInputBlur}
                     onClick={() => setIsFocused(true)}
                     onChange={handleInputChange}
-                     />
+                />
             </div>
         </div>
     )

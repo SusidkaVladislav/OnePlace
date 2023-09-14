@@ -1,16 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+//#region Styles
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
+//#endregion
 
-import CustomPagination from '../../../features/pagination/CustomPagination';
+//#region  Services
+import CustomPagination from '../../../../../services/pagination/CustomPagination';
+import AdminSearch from '../../../../../services/search/adminSearch';
+//#endregion
 
+//#region Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUsers, getFilteredUsers } from '../../../features/adminUsers/adminUsersSlice';
+//#endregion
 
-import AdminSearch from '../../../features/search/adminSearch';
-
+//#region Router
 import { useNavigate } from "react-router-dom";
+//#endregion
 
 const PageSize = 10;
 
@@ -22,7 +29,7 @@ const ItemUser = () =>
     const [inputValue, setInputValue] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
-    const { loading, commonUsersInfo } = useSelector((state) => state.adminUsers)
+    const { loading, users } = useSelector((state) => state.adminUsers)
     const filteredData = useSelector(state => getFilteredUsers(state, inputValue));
 
     useEffect(() =>
@@ -30,33 +37,17 @@ const ItemUser = () =>
         dispatch(fetchUsers())
     }, [])
 
-    //
-    // 
-
     // const [count, setCount] = useState(0);
     // const [countReviews, setCountReviews] = useState([]);
     // const [selectedReview, setSelectedReview] = useState(null);
     //const [reviewsInit, setReviewsInit] = useState(reviewData);
-
-    const handleRowClick = (userId) =>
-    {
-        navigate(`user/${userId}`)
-        
-       
-        // const user = users.find((user) => user.id === userId);
-        // setClickedUser(user);
-        // setIsUserDivVisible(true);
-        //const countOfReviews=reviewsInit.filter((review) =>review.user.id===userId);
-        //console.log(countOfReviews);
-        //setCountReviews(countOfReviews.length);
-    };
 
     const filteredAndPaginatedData = useMemo(() =>
     {
         const firstPageIndex = (currentPage - 1) * PageSize;
         const lastPageIndex = firstPageIndex + PageSize;
         return filteredData.slice(firstPageIndex, lastPageIndex);
-    }, [currentPage, inputValue, commonUsersInfo]);
+    }, [currentPage, inputValue, users]);
 
 
     if (loading) return <p>Loading...</p>
@@ -90,18 +81,16 @@ const ItemUser = () =>
 
                         {filteredAndPaginatedData.map((user, index) => (
                             <div className='div-row' key={user.id}>
-                                    <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
+                                <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
                                     onClick={async event => { navigate(`user/${user.id}`); }}
-                                   >
+                                >
                                     <div className='c1'>{user.name}</div>
                                     <div className='c2'>{user.surname}</div>
                                     <div className='c3'>{user.phoneNumber}</div>
                                     <div className='c4'>{user.email}</div>
-                                    <div className='c5'>{user.orders.length}</div>
+                                    <div className='c5'>{user.orderCount}</div>
                                 </div>
                             </div>
-                                
-                                
                         )
                         )}
                     </div>

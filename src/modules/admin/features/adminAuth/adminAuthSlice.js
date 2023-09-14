@@ -5,7 +5,7 @@ import
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const POSTS_URL = "https://localhost:7052/api/Account/login";
+const {REACT_APP_BASE_URL} = process.env;
 
 const initialState = {
     admin: {},
@@ -19,7 +19,7 @@ export const adminLogin = createAsyncThunk('admin/adminLogin', async (initialAdm
 {
     try
     {
-        const response = await axios.post(POSTS_URL, initialAdmin)
+        const response = await axios.post(REACT_APP_BASE_URL + "/Account/login", initialAdmin)
 
         console.log("Responce" + response);
 

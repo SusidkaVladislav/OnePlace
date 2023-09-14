@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import AdminAuthForm from "./modules/admin/features/adminAuth/AdminAuthForm";
 import AdminManePanel from "./modules/admin/components/AdminMainPanel";
 import ItemMane from "./modules/admin/components/MenuItems/ItemMain/ItemMain";
@@ -14,10 +14,9 @@ import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
 
-import UserInfo from "./modules/admin/features/adminUsers/UserInfo";
+import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/UserInfo";
 
 import "./App.css";
-import OnePlaceIcon from './modules/admin/svg/loginIcons/OnePlaceIcon';
 
 function App()
 {

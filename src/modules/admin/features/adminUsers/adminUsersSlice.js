@@ -1,21 +1,16 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = 'https://localhost:7052/api';
-
-//const usersAdapter = createEntityAdapter()
+const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    commonUsersInfo: [],
     users: [],
     loading: null,
 }
 
-//Всі дані про користувачів зберігаються і обробляютсья тут 
-
 export const fetchUsers = createAsyncThunk('adminUsers/fetchUsers', async () =>
 {
-    const response = await axios.get(API_URL + '/Account/getAllUsers');
+    const response = await axios.get(REACT_APP_BASE_URL + '/Account/getAllUsers');
     return response.data
 })
 
@@ -33,10 +28,7 @@ const adminUsersSlice = createSlice({
             .addCase(fetchUsers.fulfilled, (state, { payload }) =>
             {
                 state.users = payload;
-
-                state.commonUsersInfo = payload.map(({ id, name, surname, phoneNumber, email, orders }) =>
-                    ({ id, name, surname, phoneNumber, email, orders }))
-
+                
                 state.loading = null;
             })
             .addCase(fetchUsers.rejected, (state) =>
@@ -47,10 +39,10 @@ const adminUsersSlice = createSlice({
 })
 
 
-export const getAllUsers = (state) => state.adminUsers.commonUsersInfo;
+export const getAllUsers = (state) => state.adminUsers.users;
 
 export const getFilteredUsers = (state, inputValue) =>
-    state.adminUsers.commonUsersInfo.filter(user =>
+    state.adminUsers.users.filter(user =>
         [user.name, user.surname, user.email, user.phoneNumber].some(field =>
             field.toLowerCase().includes(inputValue.toLowerCase())
         )

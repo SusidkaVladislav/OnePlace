@@ -68,3 +68,14 @@
         }
     }
 }
+
+.pagination-bar {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+}
+
+.pag {
+    margin-right: 80px;
+    margin-top: 20px;
+}

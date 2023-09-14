@@ -14,97 +14,15 @@
     width: 984px;
     height: 624px;
     top: 155px;
-
 }
 
 /*-----------------------------------------------*/
-.search-div {
-    display: flex;
-    margin-left: 15px;
-}
-
-.search-icon-user {
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    margin-left: -46px;
-    margin-top: -5px;
-}
-
-.search-field:hover {
-
-    width: 400px;
-}
-
-.search-field {
-    width: 48px;
-    height: 48px;
-    margin-top: -7px;
-    border-radius: 8px;
-    padding: 11px 4px 11px 20px;
-    border: 0.5px solid;
-    border-radius: 12px;
-    background: rgba(233, 236, 236, 1);
-}
-
-.search-radio-div {
-    position: relative;
-    margin-left: 60px;
-}
-
-.radio-group {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 5px;
-    display: block;
-    flex-direction: column;
-    z-index: 10;
-    width: 345px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-.radio-group input[type=radio] {
-    margin: 10px;
-}
-
-.radio-group div {
-    border-bottom: 1px solid;
-}
-
-.radio-group label {
-
-    font-family: 'Montserrat Alternates';
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: rgba(71, 25, 21, 1);
-    margin-top: 5px;
-}
-
-.user-bell-icon {
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    margin-top: -40px;
-    margin-left: 895px;
-    padding: 13px;
-    border-radius: 8px;
-
-}
 
 .user-count label {
     width: 180px;
     margin-left: 800px;
     margin-top: 20px;
     color: rgba(10, 61, 88, 1);
-
 }
 
 .user-table {
@@ -124,8 +42,6 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(71, 25, 21, 1);
-
-
 }
 
 .c1 {
@@ -255,50 +171,6 @@
 }
 
 /*----------------------------------------------------------------*/
-.pagination-bar {
-    width: 100%;
-    display: flex;
-    justify-content: right;
-}
-
-.pag {
-    margin-right: 80px;
-    margin-top: 20px;
-
-}
-
-/*---------------------------------------------------*/
-
-.search-button {
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: width 0.3s ease;
-    margin-left: 0px;
-    margin-top: -5px;
-    z-index: 2;
-}
-
-.search-button.hovered {
-    width: 44px;
-}
-
-.search-field {
-    width: 46px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-left: -45px;
-    padding-left: 44px;
-    transition: width 0.3s ease;
-    z-index: 1;
-}
-
-.search-field.focused {
-    width: 400px;
-}
-
-
-/*-----------------------------------------------------*/
 
 .user-div {
     display: block;
@@ -306,14 +178,12 @@
     height: 800px;
     width: 1000px;
     padding: 40px;
-
 }
 
 .user-img img {
     width: 50px;
     border-radius: 25px;
     border: 1px solid;
-
 }
 
 .user-name {
@@ -328,12 +198,6 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(71, 25, 21, 1);
-
-}
-
-.remove-button {
-    cursor: pointer;
-    margin-left: 50px;
 }
 
 .back-div {
@@ -421,40 +285,6 @@
     padding: 10px;
     margin-top: -10px;
 
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Darkened overlay */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    /* Higher value to ensure it's on top */
-}
-
-.confirm-dialog {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.confirm-buttom {
-    height: 40px;
-    width: 130px;
-    background-color: rgba(10, 61, 88, 1);
-    color: #F6F6F6;
-    cursor: pointer;
-    text-align: center;
-    padding-top: 6px;
-    border-radius: 8px;
-    margin-left: 20px;
 }
 
 .please-wait-dialog {
