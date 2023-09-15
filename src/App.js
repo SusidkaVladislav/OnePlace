@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import AdminAuthForm from "./modules/admin/features/adminAuth/AdminAuthForm";
+import AdminChangePassword from "./modules/admin/features/adminAuth/AdminChangePassword";
 import AdminManePanel from "./modules/admin/components/AdminMainPanel";
 import ItemMane from "./modules/admin/components/MenuItems/ItemMain/ItemMain";
 import ItemSale from "./modules/admin/components/MenuItems/ItemSale/ItemSale";
@@ -28,6 +29,7 @@ function App()
 
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />
+            <Route path="change-password" element={<AdminChangePassword/>} />
 
           <Route path="main" element={<AdminManePanel />}>
             <Route index element={<ItemMane />} />

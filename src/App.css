@@ -1,6 +1,6 @@
 .body-div {
-    background: rgba(10, 61, 88, 1);
-    padding: 15px;
-  }
-  
-  
+  background: rgba(10, 61, 88, 1);
+  padding: 15px;
+  height: 100vh;
+  overflow-y: auto;
+}

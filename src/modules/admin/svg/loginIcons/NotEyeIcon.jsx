@@ -13,8 +13,6 @@ const NotEyeIcon=()=>(
     <path d="M18.39 18.39L5.61 5.61M5.61 18.39l12.78-12.78" />
     <circle cx="12" cy="12" r="3" />
   </svg>
-
-    
 )
 
 export default NotEyeIcon;

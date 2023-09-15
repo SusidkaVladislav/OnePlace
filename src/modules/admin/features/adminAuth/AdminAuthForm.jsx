@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { adminLogin, getAdminCredentials } from "./adminAuthSlice";
-import './adminLoginStyle.css';
-import OnePlaceIcon from  '../../svg/loginIcons/OnePlaceIcon';
-import ErrorIcon from  '../../svg/loginIcons/ErrorIcon';
+import { Link } from "react-router-dom";
+
+//import './adminLoginStyle.css';
+import OnePlaceIcon from '../../svg/loginIcons/OnePlaceIcon';
+import ErrorIcon from '../../svg/loginIcons/ErrorIcon';
 import EyeIcon from '../../svg/loginIcons/EyeIcon';
 import NotEyeIcon from "../../svg/loginIcons/NotEyeIcon";
 import OnePlaceIcon2 from '../../svg/loginIcons/OnePlaceIcon2';
 import HelloIcon from '../../svg/loginIcons/HelloIcon';
+
+
 
 const AdminAuthForm = () =>
 {
@@ -22,12 +26,11 @@ const AdminAuthForm = () =>
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePassword, setErrorMessagePassword] = useState('');
 
-    const [EmailErrorIcon, setEmailErrorIcon] = useState(false);
+    const [EmailErrorIcon, setEmailErrorIcon] = useState(true);
     const [PasswordErrorIcon, setPasswordErrorIcon] = useState(false);
 
     const [EmailBorderColor, setEmailBorderColor] = useState('');
     const [PasswordBorderColor, setPasswordBorderColor] = useState('');
-
     const handleEmailChange = (event) =>
     {
         setEmail(event.target.value);
@@ -39,8 +42,6 @@ const AdminAuthForm = () =>
     const handlePasswordChange = (event) =>
     {
         setPassword(event.target.value);
-
-
         setPasswordErrorIcon(false);
         setPasswordBorderColor('');
         setErrorMessagePassword('');
@@ -53,8 +54,8 @@ const AdminAuthForm = () =>
         try
         {
             await dispatch(adminLogin(({ email, password }))).unwrap()
-            
-            if(adminCredentials.isAuth === true)
+
+            if (adminCredentials.isAuth === true)
                 console.log("isAuth is true")
 
         } catch (err)
@@ -134,52 +135,59 @@ const AdminAuthForm = () =>
 
     return (
         <div className='change-body'>
-        <div className='change-admin-div'>
-            <div className='change-icon'>
-                <OnePlaceIcon/>
-            </div>
-            <div className='change-body-div'>
-                <div className="left-post">
-                    <label className="text-change-post">Ел.пошта</label>
-                    <input className="input-change-post" type="email" 
-                        value={email} 
-                        onChange={handleEmailChange}
-                        style={{borderColor:EmailBorderColor}} />
-                    {EmailErrorIcon && <label className='error-icon-email'><ErrorIcon/></label>}
-                </div>
-                <div className='error-email'>
-                    {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
-                </div>
-                <div className="left-post">
-                    <label className="text-change-post">Пароль</label>
-                    <input className="input-change-post" type={showPassword ? 'text' : 'password'} 
-                        value={password} 
-                        onChange={handlePasswordChange}
-                        style={{borderColor:PasswordBorderColor}} />
-                        <label className="change-eye-button" onClick={() => setShowPassword(!showPassword)}>
-                            {showPassword ? <NotEyeIcon /> : <EyeIcon />}
-                        </label>
-                    {PasswordErrorIcon && <label className='error-icon-email'><ErrorIcon/></label>}
-                </div>
-                <div className='change-error-email'>
-                    {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
+            <div className='change-admin-div'>
+                <div className='change-icon'>
+                    <OnePlaceIcon />
                 </div>
                 
-                <div className='change-button'>
-                    <button className='confirm-button' onClick={handleEnter}>Увійти</button>
-                </div>
-                <div className='admin-left-forgot'>
-                    <a href='/change-password' className='admin-forgot'>Забули пароль?</a>
+                
+                <div className='change-body-div'>
+                    <div className="left-post">
+                        <label className="text-change-post">Ел.пошта</label>
+                        <input className="input-change-post" type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            style={{ borderColor: EmailBorderColor }} />
+                        {EmailErrorIcon && <label className='error-icon-email'><ErrorIcon /></label>}
+                    </div>
+                    <div className='error-email'>
+                        {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
+                    </div>
+
+                    <div className="left-post">
+                        <label className="text-change-post">Пароль</label>
+                        <input className="input-change-post" type={showPassword ? 'text' : 'password'} 
+                            value={password} 
+                            onChange={handlePasswordChange}
+                            style={{borderColor:PasswordBorderColor}} />
+                            <label className="change-eye-button" onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <NotEyeIcon /> : <EyeIcon />}
+                            </label>
+                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorIcon/></label>}
+                    </div>
+
+                    <div className='change-error-email'>
+                        {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
+                    </div>
+
+                    <div className='change-button'>
+                        <button className='confirm-button' onClick={handleEnter}>Увійти</button>
+                    </div>
+
+                    <div className='admin-left-forgot'>
+
+                        <Link to='change-password' className='admin-forgot'>Забули пароль?</Link>
+
+                    </div>
                 </div>
             </div>
+            <div className='hello-icon'>
+                <HelloIcon />
+            </div>
+            <div className='oneplace-icon'>
+                <OnePlaceIcon2 />
+            </div>
         </div>
-        <div className='hello-icon'>
-            <HelloIcon/>
-        </div>
-        <div className='oneplace-icon'>
-            <OnePlaceIcon2/>
-        </div>
-    </div>
     )
 }
 
