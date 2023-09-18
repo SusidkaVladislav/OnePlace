@@ -95,7 +95,7 @@ const AdminChangePassword = () =>
                 <ArrowBack />
             </span>
 
-            <div className='change-div'>
+            <div className='change-pass-div'>
                 <OnePlaceIcon />
 
                 {!isEmailCorrect && !isCodValid &&

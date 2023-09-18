@@ -1,6 +1,11 @@
-.body-div {
+/* .body-div {
   background: rgba(10, 61, 88, 1);
   padding: 15px;
   height: 100vh;
   overflow-y: auto;
+} */
+
+.body-div {
+  background: rgba(10, 61, 88, 1);
+  padding: 15px;
 }

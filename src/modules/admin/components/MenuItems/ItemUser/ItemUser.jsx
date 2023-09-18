@@ -19,7 +19,7 @@ import { fetchUsers, getFilteredUsers } from '../../../features/adminUsers/admin
 import { useNavigate } from "react-router-dom";
 //#endregion
 
-const PageSize = 10;
+const PageSize = 12;
 
 const ItemUser = () =>
 {

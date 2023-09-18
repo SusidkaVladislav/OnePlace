@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { adminLogin, getAdminCredentials } from "./adminAuthSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //#region Styles
 import './AuthStyles.css';
@@ -27,6 +27,7 @@ import PasswordInput from "../../../../services/passwordInputs/PasswordInput";
 const AdminAuthForm = () =>
 {
     const dispatch = useDispatch()
+    const navigate = useNavigate();
 
     const adminCredentials = useSelector(getAdminCredentials);
     const { password } = useSelector(state => state.passwordInputState)
@@ -57,21 +58,23 @@ const AdminAuthForm = () =>
 
     const handleEnter = async (event) =>
     {
-        try
-        {
-            //await dispatch(adminLogin(({ email, password }))).unwrap()
 
-            if (adminCredentials.isAuth === true)
-                console.log("isAuth is true")
+        navigate('main');
+        // try
+        // {
+        //     //await dispatch(adminLogin(({ email, password }))).unwrap()
 
-        } catch (err)
-        {
-            console.error('Failed to save the post', err)
-        }
-        finally
-        {
-            console.log(adminCredentials);
-        }
+        //     if (adminCredentials.isAuth === true)
+        //         console.log("isAuth is true")
+
+        // } catch (err)
+        // {
+        //     console.error('Failed to save the post', err)
+        // }
+        // finally
+        // {
+        //     console.log(adminCredentials);
+        // }
     }
 
     return (

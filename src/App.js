@@ -1,6 +1,12 @@
 import { Routes, Route } from 'react-router-dom';
+
+//#region Main routes
+import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
+import UserLoginForm from './modules/main/features/login/UserLoginForm';
+//#endregion
+
+//#region Admin routes
 import AdminAuthForm from "./modules/admin/features/adminAuth/AdminAuthForm";
-import AdminChangePassword from "./modules/main/features/changePassword/ChangePassword";
 import AdminManePanel from "./modules/admin/components/AdminMainPanel";
 import ItemMane from "./modules/admin/components/MenuItems/ItemMain/ItemMain";
 import ItemSale from "./modules/admin/components/MenuItems/ItemSale/ItemSale";
@@ -12,6 +18,7 @@ import ItemCategory from "./modules/admin/components/MenuItems/ItemCategory/Item
 import ItemReview from "./modules/admin/components/MenuItems/ItemReview/ItemReview";
 import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilter";
 import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
+//#endregion
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
 
@@ -26,12 +33,13 @@ function App()
 
       <Routes>
         <Route path="/" element={<OnePlaceMain />} />
-        
-        <Route path="change-password" element={<AdminChangePassword/>} />
+
+        <Route path="user-login" element={<UserLoginForm />} />
+        <Route path="change-password" element={<ChangePassword />} />
 
         <Route path="admin">
+
           <Route index element={<AdminAuthForm />} />
-            
 
           <Route path="main" element={<AdminManePanel />}>
             <Route index element={<ItemMane />} />

@@ -33,8 +33,8 @@ const rootReducer = combineReducers({
     adminOrders: adminOrdersReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
-})
 
+})
 
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

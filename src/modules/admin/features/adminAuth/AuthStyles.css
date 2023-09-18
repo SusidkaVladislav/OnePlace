@@ -1,4 +1,4 @@
-.change-body {
+/* .change-body {
     height: auto;
     width: auto;
 
@@ -9,22 +9,42 @@
     border-radius: 20px;
 
     padding-top: 45px;
+} */
+
+.change-body
+{
+    width: 1510px;
+    height: 685px;
+    top: 1800px;
+    left: 7324px;
+    padding: 173px 0px 173px 0px;
+    background: rgba(246, 246, 246, 1);
+    border-radius: 20px;
+
 }
 
 .change-body-div {
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
+
+    margin-top: 20px;
 }
 
 .change-div {
-    margin: auto;
-    width: 35%;
+    /* margin: auto;
+    width: 35%; */
+
+    width: 340px;
+    height: 500px;
+    margin-top: -50px;
+    margin-left: 550px;
+    gap: 68px;
 }
 
 .left-post {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    padding-top: 40px;
+    padding-top: 40px; */
 }
 
 .label-form {
@@ -37,19 +57,40 @@
 }
 
 .input-text-form {
-    width: 100%;
+    /* width: 100%;
     height: 46px;
     padding: 11px 20px 11px 20px;
     border-radius: 12px;
+    background: rgba(225, 227, 227, 1);
+    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset; */
+
+    width: 340px;
+    height: 46px;
+    padding: 11px 20px 11px 20px;
+    border-radius: 12px;
+    gap: 10px;
     background: rgba(225, 227, 227, 1);
     box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }
 
 
 .confirm-button {
-    width: 100%;
+    /* width: 100%;
     height: 50px;
     text-align: center;
+    border-radius: 26px;
+    gap: 10px;
+    background: rgba(218, 141, 51, 1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 26px;
+    letter-spacing: 0em;
+    color: rgba(255, 255, 255, 1); */
+
+    width: 309px;
+    height: 50px;
+    padding: 12px 50px 12px 50px;
     border-radius: 26px;
     gap: 10px;
     background: rgba(218, 141, 51, 1);

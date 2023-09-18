@@ -10,14 +10,16 @@ const initialState = {
 
 export const fetchUsers = createAsyncThunk('adminUsers/fetchUsers', async () =>
 {
-    const response = await axios.get(REACT_APP_BASE_URL + '/Account/getAllUsers');
+    const response = await axios.get(REACT_APP_BASE_URL + '/Admin/user');
     return response.data
 })
 
 const adminUsersSlice = createSlice({
     name: 'adminUsers',
     initialState,
-    reducers: {},
+    reducers: {
+        
+    },
     extraReducers(builder)
     {
         builder
