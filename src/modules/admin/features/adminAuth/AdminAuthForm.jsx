@@ -3,14 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { adminLogin, getAdminCredentials } from "./adminAuthSlice";
 import { Link } from "react-router-dom";
 
-//import './adminLoginStyle.css';
+//#region Styles
+import './AuthStyles.css';
+import './adminLoginStyle.css';
+//#endregion
+
+//#region Icons
 import OnePlaceIcon from '../../svg/loginIcons/OnePlaceIcon';
 import ErrorIcon from '../../svg/loginIcons/ErrorIcon';
-import EyeIcon from '../../svg/loginIcons/EyeIcon';
-import NotEyeIcon from "../../svg/loginIcons/NotEyeIcon";
 import OnePlaceIcon2 from '../../svg/loginIcons/OnePlaceIcon2';
 import HelloIcon from '../../svg/loginIcons/HelloIcon';
+//#endregion
 
+
+import { setPassword } from '../servicesState/passwordState';
+
+import PasswordInput from "../../../../services/passwordInputs/PasswordInput";
+
+
+//Тут треба обробити логіку входу і обробку помилок
 
 
 const AdminAuthForm = () =>
@@ -18,19 +29,19 @@ const AdminAuthForm = () =>
     const dispatch = useDispatch()
 
     const adminCredentials = useSelector(getAdminCredentials);
+    const { password } = useSelector(state => state.passwordInputState)
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+
+
 
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePassword, setErrorMessagePassword] = useState('');
-
-    const [EmailErrorIcon, setEmailErrorIcon] = useState(true);
+    const [EmailErrorIcon, setEmailErrorIcon] = useState(false);
     const [PasswordErrorIcon, setPasswordErrorIcon] = useState(false);
-
     const [EmailBorderColor, setEmailBorderColor] = useState('');
     const [PasswordBorderColor, setPasswordBorderColor] = useState('');
+
     const handleEmailChange = (event) =>
     {
         setEmail(event.target.value);
@@ -39,21 +50,16 @@ const AdminAuthForm = () =>
         setErrorMessageEmail('');
     };
 
-    const handlePasswordChange = (event) =>
+    const handlePasswordChange = (password) =>
     {
-        setPassword(event.target.value);
-        setPasswordErrorIcon(false);
-        setPasswordBorderColor('');
-        setErrorMessagePassword('');
+        dispatch(setPassword(password));
     };
 
     const handleEnter = async (event) =>
     {
-        event.preventDefault();
-
         try
         {
-            await dispatch(adminLogin(({ email, password }))).unwrap()
+            //await dispatch(adminLogin(({ email, password }))).unwrap()
 
             if (adminCredentials.isAuth === true)
                 console.log("isAuth is true")
@@ -62,131 +68,67 @@ const AdminAuthForm = () =>
         {
             console.error('Failed to save the post', err)
         }
-        // } finally
-        // {
-        //     console.log(adminCredentials);
-        // }
-
-
-
-        // const response = await fetch("https://localhost:7052/api/Account/login", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({ email, password }),
-        // });
-        // if (response.ok)
-        // {
-        //     const result = await response.json();
-
-        //     setPasswordErrorIcon(false);
-        //     setEmailErrorIcon(false);
-        //     setEmailBorderColor('');
-        //     setPasswordBorderColor('');
-        //     setErrorMessageEmail('');
-        //     setErrorMessagePassword('');
-        //     //?email=${result.data.Email}&name=${result.data.Name}&surname=${result.data.Surname}
-        //     window.location.href = `/admin/main`;
-
-        // }
-        // else
-        // {
-        //     if (password.length === 0 && email.length === 0)
-        //     {
-        //         setErrorMessageEmail('Введіть пошту.');
-        //         setErrorMessagePassword('Введіть пароль.');
-        //         setPasswordErrorIcon(true);
-        //         setEmailErrorIcon(true);
-        //         setEmailBorderColor('red');
-        //         setPasswordBorderColor('red');
-        //     }
-
-        //     if (response.status === 401)
-        //     {
-        //         setErrorMessageEmail('Користувач з такою поштою не знайдений.');
-        //         setErrorMessagePassword('');
-        //         setPasswordErrorIcon(false);
-        //         setEmailErrorIcon(true);
-        //         setEmailBorderColor('red');
-        //         setPasswordBorderColor('');
-        //     }
-        //     if (response.status === 411)
-        //     {
-        //         setErrorMessagePassword('Невірний пароль.');
-        //         setErrorMessageEmail('');
-        //         setPasswordErrorIcon(true);
-        //         setEmailErrorIcon(false);
-        //         setEmailBorderColor('');
-        //         setPasswordBorderColor('red');
-        //     }
-        //     if (response.status === 421)
-        //     {
-        //         setErrorMessageEmail('Доступ тільки для адміністраторів');
-        //         setErrorMessagePassword('');
-        //         setPasswordErrorIcon(false);
-        //         setEmailErrorIcon(true);
-        //         setEmailBorderColor('red');
-        //         setPasswordBorderColor('');
-        //     }
-        //}
-
+        finally
+        {
+            console.log(adminCredentials);
+        }
     }
 
     return (
         <div className='change-body'>
-            <div className='change-admin-div'>
-                <div className='change-icon'>
-                    <OnePlaceIcon />
-                </div>
-                
-                
+            <div className='change-div'>
+                <OnePlaceIcon />
+
                 <div className='change-body-div'>
                     <div className="left-post">
-                        <label className="text-change-post">Ел.пошта</label>
-                        <input className="input-change-post" type="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                            style={{ borderColor: EmailBorderColor }} />
-                        {EmailErrorIcon && <label className='error-icon-email'><ErrorIcon /></label>}
+                        <label className="label-form">Пошта</label>
+                        <div className="input-wrapper">
+                            <input
+                                className="input-text-form"
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                                style={{ borderColor: EmailBorderColor }} />
+
+                            {EmailErrorIcon && <span className="error-icon-email"></span>}
+                        </div>
+
                     </div>
+
                     <div className='error-email'>
                         {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
                     </div>
 
                     <div className="left-post">
-                        <label className="text-change-post">Пароль</label>
-                        <input className="input-change-post" type={showPassword ? 'text' : 'password'} 
-                            value={password} 
-                            onChange={handlePasswordChange}
-                            style={{borderColor:PasswordBorderColor}} />
-                            <label className="change-eye-button" onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <NotEyeIcon /> : <EyeIcon />}
-                            </label>
-                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorIcon/></label>}
+                        <label className="label-form">Пароль</label>
+
+                        <PasswordInput onChange={handlePasswordChange} />
+
+                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorIcon /></label>}
                     </div>
 
                     <div className='change-error-email'>
                         {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
                     </div>
 
-                    <div className='change-button'>
-                        <button className='confirm-button' onClick={handleEnter}>Увійти</button>
-                    </div>
+
+                    <button className='confirm-button' onClick={handleEnter}>Увійти</button>
+
 
                     <div className='admin-left-forgot'>
-
-                        <Link to='change-password' className='admin-forgot'>Забули пароль?</Link>
-
+                        <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
                     </div>
                 </div>
             </div>
+
             <div className='hello-icon'>
                 <HelloIcon />
             </div>
             <div className='oneplace-icon'>
                 <OnePlaceIcon2 />
             </div>
+
+
         </div>
     )
 }

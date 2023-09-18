@@ -1,10 +1,14 @@
 import React from 'react';
 
+import './verificationCodeStyle.css'
+import { useSelector } from 'react-redux';
+
+
 const VerificationCodeUnit = (props) =>
-{
+{    
     const {
         getValue,
-        index,
+        index
     } = props;
 
     const lastDigit = (number) =>
@@ -14,32 +18,35 @@ const VerificationCodeUnit = (props) =>
 
     const handleChange = ({ target }) =>
     {
-        //alert(target.toString());
-
         const regex = /^[0-9]$/;
 
         if (!regex.test(target.value))
         {
-            if (target.value !== NaN)
+            if (target.value !== '')
                 target.value = Number(lastDigit(target.value));
         }
-        if (target.value !== NaN)
-            getValue(target.value);
+
+        getValue(target.value);
     }
 
-    const handlerKeyDown = (event) => {
-        alert(2)
+    const handlerKeyDown = (event) =>
+    {
+        if (event.which === 69 || event.which === 189
+            || event.which === 107 || event.which === 109
+            || event.which === 190)
+        {
+            event.preventDefault();
+        }
     }
 
     return (<input
         key={index}
+        style={{borderColor: useSelector(state => state.verificationCode.codeUnitColor)}}
         type='number'
         className='code-piece'
-        onKeyDown={handleChange}
+        onChange={handleChange}
+        onKeyDown={handlerKeyDown}
     />)
 }
-
-//onClick={handleChange}
-
 
 export default VerificationCodeUnit;

@@ -7,22 +7,24 @@
 
     background: rgba(246, 246, 246, 1);
     border-radius: 20px;
+
+    padding-top: 45px;
 }
 
-.go-back-icon {
-    display: block;
-    padding-top: 45px;
-    padding-left: 45px;
-    cursor: pointer;
+.change-body-div {
+    display: flex;
+    flex-direction: column;
 }
 
 .change-div {
     margin: auto;
-    width: fit-content;
+    width: 35%;
 }
 
 .left-post {
-    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
 }
 
 .label-form {
@@ -43,26 +45,6 @@
     box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }
 
-.input-wrapper {
-    position: relative;
-}
-
-.error-icon-email {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    background-image: url(/src/modules/admin/svg/loginIcons/ErrorIcon.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.change-button {
-    text-align: center;
-    margin-top: 20px;
-}
 
 .confirm-button {
     width: 100%;
@@ -77,28 +59,4 @@
     line-height: 26px;
     letter-spacing: 0em;
     color: rgba(255, 255, 255, 1);
-}
-
-.code-piece::-webkit-outer-spin-button,
-.code-piece::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-   
-}
-
-.confirm-code-wrapper{
-    display: flex;
-}
-
-.code-piece + .code-piece{
-    margin-left: 15px;
-}
-
-.code-piece{
-    width: 30px;
-    height: 76px;
-    border-radius: 12px;
-    font-size: 30px;
-    background: rgba(225, 227, 227, 1);
-    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }

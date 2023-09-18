@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import AdminAuthForm from "./modules/admin/features/adminAuth/AdminAuthForm";
-import AdminChangePassword from "./modules/admin/features/adminAuth/AdminChangePassword";
+import AdminChangePassword from "./modules/main/features/changePassword/ChangePassword";
 import AdminManePanel from "./modules/admin/components/AdminMainPanel";
 import ItemMane from "./modules/admin/components/MenuItems/ItemMain/ItemMain";
 import ItemSale from "./modules/admin/components/MenuItems/ItemSale/ItemSale";
@@ -26,10 +26,12 @@ function App()
 
       <Routes>
         <Route path="/" element={<OnePlaceMain />} />
+        
+        <Route path="change-password" element={<AdminChangePassword/>} />
 
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />
-            <Route path="change-password" element={<AdminChangePassword/>} />
+            
 
           <Route path="main" element={<AdminManePanel />}>
             <Route index element={<ItemMane />} />

@@ -16,11 +16,14 @@ import storage from "redux-persist/lib/storage";
 import adminAuthReducer from "../modules/admin/features/adminAuth/adminAuthSlice";
 import adminUsersReducer from "../modules/admin/features/adminUsers/adminUsersSlice";
 import adminOrdersReducer from "../modules/admin/features/adminOrders/adminOrdersSlice";
+import verificationCodeReducer from "../modules/admin/features/servicesState/verificationCodeState";
+import passwordInputReducer from "../modules/admin/features/servicesState/passwordState";
 
 const persistConfig = {
     key: 'root',
     storage,
-    stateReconciler: autoMergeLevel2, 
+    blacklist: ['verificationCode', 'passwordInputState'],
+    stateReconciler: autoMergeLevel2,
 }
 
 
@@ -28,6 +31,8 @@ const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
     adminUsers: adminUsersReducer,
     adminOrders: adminOrdersReducer,
+    verificationCode: verificationCodeReducer,
+    passwordInputState: passwordInputReducer,
 })
 
 
