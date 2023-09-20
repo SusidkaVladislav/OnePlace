@@ -1,4 +1,6 @@
-﻿namespace OnePlace.DAL.Entities
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace OnePlace.DAL.Entities
 {
     public class Review
     {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL.CategoryDTO;
@@ -23,11 +24,16 @@ namespace OnePlace.BLL.Services
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private IUnitOfWork _unitOfWork;
-        public AdminService(IMapper mapper, IConfiguration configuration, IUnitOfWork unitOfWork)
+        private readonly UserManager<User> _userManager;
+        public AdminService(IMapper mapper, 
+            IConfiguration configuration, 
+            IUnitOfWork unitOfWork,
+            UserManager<User> userManager)
         {
             _mapper = mapper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<int> DeleteMessage(int id)

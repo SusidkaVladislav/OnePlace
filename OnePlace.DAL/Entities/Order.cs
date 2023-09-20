@@ -1,4 +1,5 @@
-﻿using OnePlace.DAL.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using OnePlace.DAL.Enums;
 
 namespace OnePlace.DAL.Entities
 {
@@ -11,6 +12,8 @@ namespace OnePlace.DAL.Entities
         public DateTime Date { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        
+        [DeleteBehavior(DeleteBehavior.SetNull)]
         public User? User {get;set;}
         public int? UserId { get; set; }
         public string PhoneNumber { get; set; }
