@@ -266,7 +266,7 @@ namespace OnePlace.BLL.Services
                 //Підрахунок повної суми цін продуктів з кожного замовлення
                 var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == order.Id);
                 foreach (var product in productsOrder)
-                    orderListModel.TotalPrice += product.Price;
+                    orderListModel.TotalPrice += product.Price * product.Quantity;
 
                 orderList.Add(orderListModel);
             }

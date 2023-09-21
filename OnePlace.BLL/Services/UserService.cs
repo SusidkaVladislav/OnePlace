@@ -118,6 +118,7 @@ namespace OnePlace.BLL.Services
 
             Review review = _mapper.Map<Review>(reviewDTO);
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            
             review.UserId = user.Id;
 
             _unitOfWork.Reviews.Create(review);

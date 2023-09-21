@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Validators;
@@ -25,11 +26,16 @@ namespace OnePlace.BLL.Services
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private IUnitOfWork _unitOfWork;
-        public AdminService(IMapper mapper, IConfiguration configuration, IUnitOfWork unitOfWork)
+        private readonly UserManager<User> _userManager;
+        public AdminService(IMapper mapper, 
+            IConfiguration configuration, 
+            IUnitOfWork unitOfWork,
+            UserManager<User> userManager)
         {
             _mapper = mapper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<int> AddReviewReply(ReviewReplyPayload reviewReplyPayload)
@@ -177,6 +183,12 @@ namespace OnePlace.BLL.Services
         {
             var users = await _unitOfWork.Users.GetAllAsync();
             IEnumerable<PureUser> res = _mapper.Map<IEnumerable<PureUser>>(users);
+
+            foreach (var user in res)
+            {
+                user.CountOfOrders = _unitOfWork.Orders.FindAsync(o => o.UserId == user.Id).Result.Count();
+            }
+
             return res;
         }
 

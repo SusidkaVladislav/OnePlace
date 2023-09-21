@@ -7,7 +7,7 @@ namespace OnePlace.BLL.Interfaces
 {
     public interface IAccountService
     {
-        Task<UserDetails> RegisterAsync(RegisterPayload registerPayload);
+        Task<IdentityResult> RegisterAsync(RegisterPayload registerPayload);
         Task<SignInResult> LoginAsync(LoginPayload loginPayload);
         Task LogoutAsync();
     }

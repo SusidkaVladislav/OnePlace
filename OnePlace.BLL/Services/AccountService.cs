@@ -30,7 +30,7 @@ namespace OnePlace.BLL.Services
             _configuration = configuration;
         }
 
-        public async Task<UserDetails> RegisterAsync(RegisterPayload registerPayload)
+        public async Task<IdentityResult> RegisterAsync(RegisterPayload registerPayload)
         {
             RegisterDTO registerDTO = _mapper.Map<RegisterDTO>(registerPayload);
             UserValidation validation = new UserValidation(_userManager);
@@ -54,28 +54,16 @@ namespace OnePlace.BLL.Services
                 throw ex;
             }
 
-            // add  user
+         
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
             if (result.Succeeded)
             {
-                // coockies
-                await _signInManager.SignInAsync(user, false);
+                //// coockies
+                //await _signInManager.SignInAsync(user, false);
                 await _userManager.AddToRoleAsync(user, USER_ROLE);
-                
-                return new UserDetails
-                {
-                    Name = registerDTO.Name,
-                    Surname= registerDTO.Surname,
-                    PhoneNumber = registerDTO.PhoneNumber,
-                    Email = registerDTO.Email
-                };
             }
-            else
-            {
-                var r = result.Errors.Select(e=> e.Description);
-                throw new Exception();
-            }
+            return result;
         }
 
         public async Task<SignInResult> LoginAsync(LoginPayload loginPayload)

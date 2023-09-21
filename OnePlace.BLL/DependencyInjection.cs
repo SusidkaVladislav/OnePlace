@@ -36,11 +36,13 @@ namespace OnePlace.BLL
             services.AddAutoMapper(typeof(OrderProfile));
             services.AddAutoMapper(typeof(UserProfile));
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }
