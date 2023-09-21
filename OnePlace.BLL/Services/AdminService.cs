@@ -112,6 +112,12 @@ namespace OnePlace.BLL.Services
         {
             var users = await _unitOfWork.Users.GetAllAsync();
             IEnumerable<PureUser> res = _mapper.Map<IEnumerable<PureUser>>(users);
+
+            foreach (var user in res)
+            {
+                user.CountOfOrders = _unitOfWork.Orders.FindAsync(o => o.UserId == user.Id).Result.Count();
+            }
+
             return res;
         }
 

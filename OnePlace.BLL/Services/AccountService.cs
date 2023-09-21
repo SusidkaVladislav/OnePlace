@@ -54,28 +54,16 @@ namespace OnePlace.BLL.Services
                 throw ex;
             }
 
-            // add  user
-            return await _userManager.CreateAsync(user, registerDTO.Password);
+         
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            //if (result.Succeeded)
-            //{
-            //    //// coockies
-            //    //await _signInManager.SignInAsync(user, false);
-            //    //await _userManager.AddToRoleAsync(user, USER_ROLE);
-                
-            //    //return new UserDetails
-            //    //{
-            //    //    Name = registerDTO.Name,
-            //    //    Surname= registerDTO.Surname,
-            //    //    PhoneNumber = registerDTO.PhoneNumber,
-            //    //    Email = registerDTO.Email
-            //    //};
-            //}
-            //else
-            //{
-            //    var r = result.Errors.Select(e=> e.Description);
-            //    throw new Exception();
-            //}
+            if (result.Succeeded)
+            {
+                //// coockies
+                //await _signInManager.SignInAsync(user, false);
+                await _userManager.AddToRoleAsync(user, USER_ROLE);
+            }
+            return result;
         }
 
         public async Task<SignInResult> LoginAsync(LoginPayload loginPayload)
