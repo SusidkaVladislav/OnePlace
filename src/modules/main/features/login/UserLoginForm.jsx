@@ -14,7 +14,6 @@ import PasswordInput from '../../../../services/passwordInputs/PasswordInput';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { useGoogleLogin } from '@react-oauth/google';
-import jwt_decode from "jwt-decode";
 
 const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
@@ -38,14 +37,13 @@ const UserLoginForm = () =>
     {
         setPhone(event.target.value);
     }
-    var jwt = '';
 
     const handleEnter = () =>
     {
+        //#region перевірка введення і встановлення помилок
         if (!PHONE_PATTERN.test(phone))
         {
             setPhoneBorderColor('red');
-            //alert("invalid phone")
         }
         else
         {
@@ -60,18 +58,19 @@ const UserLoginForm = () =>
         {
             setPasswordBorderColor('black');
         }
+        //#endregion
 
-        if (PHONE_PATTERN.test(phone) && password.length > 1)
+        //Якщо перевірка на стороні клієнта відбулась успішно
+        if (PHONE_PATTERN.test(phone) && password.length >= 1)
         {
             //Спроба ввійти залогінитися на сервері
 
+
             //Якщо буде помилка
             setAuthError(true);
-            
-            alert(jwt)
-            alert(jwt_decode(jwt));
         }
     }
+
 
     const handlePasswordChange = (password) =>
     {
@@ -80,12 +79,13 @@ const UserLoginForm = () =>
 
 
     const googleLogin = useGoogleLogin({
-        onSuccess: (codeResponse) => {
-          const userEmail = codeResponse.profileObj.email; // Assuming the email is available in the profileObj
-          console.log('User email:', userEmail);
+        onSuccess: (codeResponse) =>
+        {
+            const userEmail = codeResponse.profileObj.email; // Assuming the email is available in the profileObj
+            console.log('User email:', userEmail);
         },
         onError: (error) => console.log('Login Failed:', error)
-      });
+    });
 
     const handleFacebook = () =>
     {
@@ -95,7 +95,6 @@ const UserLoginForm = () =>
     return (
         <div className="enter-body">
             <div className="enter-body-cart">
-
                 <div className="enter-body-head">
                     <h2 className="enter-body-head-text">Вхід</h2>
                     <button
@@ -112,14 +111,14 @@ const UserLoginForm = () =>
                     <div className="enter-body-foot-left">
 
                         {authError &&
-                            <label className="error-message">
+                            <label className='error-from-server'>
                                 <ErrorIcon />
                                 Невіриний телефон або пароль
                             </label>}
 
                         <div className="left-post">
                             <label className="text-left-post">Номер телефону</label>
-                            <input className="input-left-post" type="tel"
+                            <input className="input-text-form" type="tel"
                                 value={phone}
                                 onChange={handlePhoneChange}
                                 style={{ borderColor: phoneBorderColor }}

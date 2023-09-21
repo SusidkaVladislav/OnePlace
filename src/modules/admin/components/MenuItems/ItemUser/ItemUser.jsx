@@ -88,7 +88,7 @@ const ItemUser = () =>
                                     <div className='c2'>{user.surname}</div>
                                     <div className='c3'>{user.phoneNumber}</div>
                                     <div className='c4'>{user.email}</div>
-                                    <div className='c5'>{user.orderCount}</div>
+                                    <div className='c5'>{user.countOfOrders}</div>
                                 </div>
                             </div>
                         )

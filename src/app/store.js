@@ -18,11 +18,12 @@ import adminUsersReducer from "../modules/admin/features/adminUsers/adminUsersSl
 import adminOrdersReducer from "../modules/admin/features/adminOrders/adminOrdersSlice";
 import verificationCodeReducer from "../modules/admin/features/servicesState/verificationCodeState";
 import passwordInputReducer from "../modules/admin/features/servicesState/passwordState";
+import userRegisterReducer from "../modules/main/features/register/userRegisterSlice";
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['verificationCode', 'passwordInputState'],
+    blacklist: ['verificationCode', 'passwordInputState', 'userRegister'],
     stateReconciler: autoMergeLevel2,
 }
 
@@ -33,7 +34,7 @@ const rootReducer = combineReducers({
     adminOrders: adminOrdersReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
-
+    userRegister: userRegisterReducer,
 })
 
 
