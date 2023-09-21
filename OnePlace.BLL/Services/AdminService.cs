@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
+using OnePlace.BLL.Validators;
+using OnePlace.BOL;
 using OnePlace.BOL.CategoryDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Message;
@@ -28,6 +30,20 @@ namespace OnePlace.BLL.Services
             _mapper = mapper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<int> AddReviewReply(ReviewReplyPayload reviewReplyPayload)
+        {
+            ReviewReply reviewReply = _mapper.Map<ReviewReply>(reviewReplyPayload);
+
+            var review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
+            if (review is null)
+                throw new ArgumentException("review with this id does not exist");
+
+            _unitOfWork.ReviewReplies.Create(reviewReply);
+            await _unitOfWork.SaveAsync();
+
+            return reviewReply.ReviewId;
         }
 
         public async Task<int> DeleteMessage(int id)
@@ -74,6 +90,37 @@ namespace OnePlace.BLL.Services
             return id;
         }
 
+        public async Task<int> DeleteReview(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+
+            var review = await _unitOfWork.Reviews.GetAsync(id);
+            if (review is null)
+                throw new NotFoundException(nameof(review) + " review with this id does not exist");
+          
+            await _unitOfWork.ReviewReplies.DeleteAsync(id);
+            await _unitOfWork.Reviews.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+
+            return id;
+        }
+
+        public async Task<int> DeleteReviewReply(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+
+            var reviewReply = await _unitOfWork.ReviewReplies.GetAsync(id);
+            if (reviewReply is null)
+                throw new NotFoundException(nameof(reviewReply) + " reviewReply with this id does not exist");
+
+            await _unitOfWork.ReviewReplies.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+
+            return id;
+        }
+
         public async Task<int> DeleteUser(int id)
         {
             if (id <= 0)
@@ -100,6 +147,30 @@ namespace OnePlace.BLL.Services
         {
             var orders = await _unitOfWork.Orders.GetAllAsync();
             return orders;
+        }
+
+        public async Task<Review> GetReview(int id)
+        {
+            var review = await _unitOfWork.Reviews.GetAsync(id);
+            return review;
+        }
+
+        public async Task<IEnumerable<ReviewReply>> GetReviewReplies()
+        {
+            var reviewReplies = await _unitOfWork.ReviewReplies.GetAllAsync();
+            return reviewReplies;
+        }
+
+        public async Task<ReviewReply> GetReviewReply(int id)
+        {
+            var reviewReply = await _unitOfWork.ReviewReplies.GetAsync(id);
+            return reviewReply;
+        }
+
+        public async Task<IEnumerable<Review>> GetReviews()
+        {
+            var reviews = await _unitOfWork.Reviews.GetAllAsync();
+            return reviews;
         }
 
         public async Task<IEnumerable<PureUser>> GetUsers()
