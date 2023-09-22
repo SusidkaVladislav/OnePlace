@@ -60,7 +60,7 @@ namespace OnePlace.BLL.Services
                 categoryDTO.ParentId = null;
 
             //Перевірка чи батьківська категорія не містить продуктів. Якщо місить, то значить що вона є кінцевою категорієї
-            //і добавити в неї нову пуд-категорію неможна
+            //і добавити в неї нову під-категорію неможна
             //IEnumerable<Product> products = await _unitOfWork.Products.FindAsync(p=>p.Category.Id == categoryDTO.ParentId);
             //if(products.Count() > 0)
             if(await validation.IsFinalCategory(categoryDTO.ParentId))
@@ -124,6 +124,7 @@ namespace OnePlace.BLL.Services
         {
             var mainCategories = await _unitOfWork.Categories.FindAsync(c=>c.ParentCategoryId == null);   
             List<PureCategory> res = _mapper.Map<List<PureCategory>>(mainCategories);
+            
             return res;
         }
 
@@ -145,7 +146,7 @@ namespace OnePlace.BLL.Services
                 throw new NotFoundException(id, "not found category");
 
             CategoryDetails details = _mapper.Map<CategoryDetails>(category);
-
+            
             return details;
         }   
 

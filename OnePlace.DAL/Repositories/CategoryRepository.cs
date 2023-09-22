@@ -45,12 +45,21 @@ namespace OnePlace.DAL.Repositories
             .FirstOrDefaultAsync(o => o.Id == id);
 
             //Підтягнути фотографії всіх підкатегорій
-            if(category != null)
+            if (category != null)
+            {
                 category.ChildCategories
                 .ForEach(async o =>
                     o.Picture = FindAsync(c => c.Id == o.Id)
                     .Result.Select(c => c.Picture).FirstOrDefault()
                 );
+
+                category.ChildCategories
+                .ForEach(async o =>
+                    o.Products = FindAsync(c => c.Id == o.Id)
+                    .Result.Select(c => c.Products).FirstOrDefault()
+                );
+            }
+                
 
             return category;
         }
