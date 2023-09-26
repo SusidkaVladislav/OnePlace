@@ -15,7 +15,7 @@ namespace webapi.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCategory(CategoryCreatePayload category)
         {
@@ -24,7 +24,7 @@ namespace webapi.Controllers
         }
 
         //Повертає самі верхні категорії
-        [HttpGet]
+        [HttpGet("categories")]
         public async Task<IActionResult> GetCategories()
         {
             var result = await _categoryService.GetCategories();
@@ -39,7 +39,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("delete")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
@@ -47,7 +47,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateCategory(CategorUpdatePayload categorUpdate)
         {
