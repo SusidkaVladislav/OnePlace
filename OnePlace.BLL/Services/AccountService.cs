@@ -85,7 +85,6 @@ namespace OnePlace.BLL.Services
             await _signInManager.SignOutAsync();
         }
 
-
         //private string GenerateToken(int userId, string username)
         //{
         //    var claims = new[]

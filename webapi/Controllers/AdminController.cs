@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Services;
+using OnePlace.BOL;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
 using OnePlace.BOL.Password;
@@ -37,7 +38,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("order")]
+        [HttpDelete("order/{id}")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
@@ -61,7 +62,7 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("message")]
+        [HttpDelete("message/{id}")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
@@ -77,13 +78,68 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("user")]
+        [HttpDelete("user/{id}")]
         //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _adminService.DeleteUser(id);
             return Ok(result);
         }
-      
+
+        [HttpGet("review")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetReviews()
+        {
+            var result = await _adminService.GetReviews();
+            return Ok(result);
+        }
+
+        [HttpGet("review/{id}")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetReview(int id)
+        {
+            var result = await _adminService.GetReview(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("review/{id}")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            var result = await _adminService.DeleteReview(id);
+            return Ok(result);
+        }
+
+        [HttpGet("reviewReply")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetReviewReplies()
+        {
+            var result = await _adminService.GetReviewReplies();
+            return Ok(result);
+        }
+
+        [HttpGet("reviewReply/{id}")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetReviewReply(int id)
+        {
+            var result = await _adminService.GetReviewReply(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("reviewReply")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteReviewReply(int id)
+        {
+            var result = await _adminService.DeleteReviewReply(id);
+            return Ok(result);
+        }
+
+        [HttpPost("reviewReply")]
+        //[Authorize(Roles = "admin")]
+        public async Task<IActionResult> AddReviewReply(ReviewReplyPayload reviewReply)
+        {
+            var result = await _adminService.AddReviewReply(reviewReply);
+            return Ok(result);
+        }
     }
 }
