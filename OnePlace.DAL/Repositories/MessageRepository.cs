@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,14 @@ namespace OnePlace.DAL.Repositories
                 .Include(m => m.User)
                 .Include(m => m.Product)
                 .Where(predicate).ToList());
+        }
+
+        public override async Task<IEnumerable<Message>> GetAllAsync()
+        {
+            return await db.Messages
+                .Include(m => m.User)
+                .Include(m => m.Product)
+                .ToListAsync();
         }
 
         public override async Task<Message> GetAsync(int id)

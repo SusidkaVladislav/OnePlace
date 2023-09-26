@@ -21,8 +21,7 @@ namespace OnePlace.BLL.Mappings
             CreateMap<ShoppingCartPayload, ShoppingCartDTO>();
             CreateMap<ShoppingCartDTO, ShoppingCart>(MemberList.Source);
 
-            CreateMap<MessagePayload, MessageDTO>();
-            CreateMap<MessageDTO, Message>(MemberList.Source);
+            CreateMap<MessagePayload, Message>(MemberList.Source);
 
             CreateMap<PasswordUpdatePayload, PasswordUpdateDTO>();
 

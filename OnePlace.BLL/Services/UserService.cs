@@ -62,14 +62,13 @@ namespace OnePlace.BLL.Services
 
         public async Task<int> AddMessage(MessagePayload messagePayload)
         {
-            MessageDTO messageDTO = _mapper.Map<MessageDTO>(messagePayload);
-            var product = await _unitOfWork.Products.GetAsync(messageDTO.ProductId);
+            var product = await _unitOfWork.Products.GetAsync(messagePayload.ProductId);
             if (product == null)
             {
                 throw new ArgumentException("product with this id does not exist");
             }
 
-            Message message = _mapper.Map<Message>(messageDTO);
+            Message message = _mapper.Map<Message>(messagePayload);
 
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             if(user != null)

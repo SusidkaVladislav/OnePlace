@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using OnePlace.BOL;
 using OnePlace.BOL.CategoryDTO;
+using OnePlace.BOL.Message;
+using OnePlace.BOL.OrderDTO;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
@@ -18,6 +20,7 @@ namespace OnePlace.BLL.Mappings
         {
             CreateMap<User, PureUser>(MemberList.Destination);
             CreateMap<ReviewReplyPayload, ReviewReply>(MemberList.Source);
+            CreateMap<Message, MessageDTO>(MemberList.Source);
         }
     }
 }

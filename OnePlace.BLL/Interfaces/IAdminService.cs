@@ -16,7 +16,7 @@ namespace OnePlace.BLL.Interfaces
         Task<IEnumerable<Order>> GetOrders();
         Task<int> UpdateOrder(UpdateOrderPayload order);
         Task<int> DeleteOrder(int id);
-        Task<IEnumerable<Message>> GetMessages();
+        Task<IEnumerable<MessageDTO>> GetMessages();
         Task<int> UpdateMessage(UpdateMessagePayload message);
         Task<int> DeleteMessage(int id);
         Task<IEnumerable<PureUser>> GetUsers();

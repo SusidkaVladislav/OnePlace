@@ -143,10 +143,15 @@ namespace OnePlace.BLL.Services
             return id;
         }
 
-        public async Task<IEnumerable<Message>> GetMessages()
+        public async Task<IEnumerable<MessageDTO>> GetMessages()
         {
             var messages = await _unitOfWork.Messages.GetAllAsync();
-            return messages;
+
+            List<MessageDTO> messagesDTO = new List<MessageDTO>();
+            foreach (var message in messages)
+                messagesDTO.Add(_mapper.Map<MessageDTO>(message));
+           
+            return messagesDTO;
         }
 
         public async Task<IEnumerable<Order>> GetOrders()
