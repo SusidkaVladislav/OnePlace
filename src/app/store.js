@@ -19,6 +19,7 @@ import adminOrdersReducer from "../modules/admin/features/adminOrders/adminOrder
 import verificationCodeReducer from "../modules/admin/features/servicesState/verificationCodeState";
 import passwordInputReducer from "../modules/admin/features/servicesState/passwordState";
 import userRegisterReducer from "../modules/main/features/register/userRegisterSlice";
+import adminCategoryReducer from "../modules/admin/features/adminCategory/adminCategorySlice";
 
 const persistConfig = {
     key: 'root',
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
     adminUsers: adminUsersReducer,
     adminOrders: adminOrdersReducer,
+    adminCategories: adminCategoryReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
     userRegister: userRegisterReducer,

@@ -1,0 +1,124 @@
+.edit-button {
+    cursor: pointer;
+}
+
+.edit-category-dialog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+}
+
+.edit-category-dialog-body {
+    width: 460px;
+    height: 200px;
+    background-color: white;
+    padding: 21.5px 24.5px 2px 25.5px;
+    border-radius: 26px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inputs-edit-category-container {
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs-edit-category {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+}
+
+
+.edit-category-input {
+    background-color: inherit;
+    border: none;
+    height: 100%;
+    width: 100%;
+    color: #471915;
+    font-family: Montserrat Alternates;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.img-category-edit {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    border: 1px;
+    border-color: #3B6479;
+    background-size: cover;
+}
+
+
+.custom-file-upload {
+    margin-top: 5px;
+    background-color: #f1f1f1;
+    width: 60px;
+    cursor: pointer;
+}
+
+.buttons-edit-category-container {
+    margin-left: 40%;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.confirm-buttom-cancel {
+    width: 130px;
+    height: 35px;
+    border-radius: 40px 0px 0px 40px;
+    border: 1px solid #0A3D58;
+    gap: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    align-items: center;
+    color: #0A3D58;
+    font-size: 16px;
+    font-family: Montserrat Alternates;
+    font-weight: 400;
+    line-height: 20.80px;
+    word-wrap: break-word
+}
+
+.confirm-buttom-ok {
+    width: 130px;
+    height: 35px;
+    border-radius: 0px 40px 40px 0px;
+    border: 1px solid #0A3D58;
+    background-color: #0A3D58;
+    gap: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #F6F6F6;
+    font-size: 16px;
+    font-family: Montserrat Alternates;
+    font-weight: 400;
+    line-height: 20.80px;
+    word-wrap: break-word
+}
+
+::file-selector-button {
+    display: none;
+}
+
+::-webkit-file-upload-button {
+    display: none;
+}
