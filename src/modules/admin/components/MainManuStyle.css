@@ -103,10 +103,10 @@
 .menu-item-main {
     height: 60px;
     display: flex;
-    text-align: center;
     padding-top: 13px;
-
+    align-items: center;
 }
+
 
 .left-menu-items {
     padding-left: 16px;
@@ -131,4 +131,11 @@ li {
 
 .header_top a {
     color: bisque;
+}
+
+.menu-item-product-container{
+    width: 100%;
+    display: flex;
+    gap: 40%;
+    align-items: center;
 }

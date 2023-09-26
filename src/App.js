@@ -19,6 +19,7 @@ import ItemCategory from "./modules/admin/components/MenuItems/ItemCategory/Item
 import ItemReview from "./modules/admin/components/MenuItems/ItemReview/ItemReview";
 import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilter";
 import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
+import ItemAddProduct from './modules/admin/components/MenuItems/ItemAddProduct/ItemAddProduct';
 //#endregion
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
@@ -56,6 +57,7 @@ function App()
 
             <Route path="messages" element={<ItemMessage />} />
             <Route path="products" element={<ItemProduct />} />
+            <Route path="add-product" element={<ItemAddProduct />} />
             <Route path="categories" element={<ItemCategory />} />
             <Route path="reviews" element={<ItemReview />} />
             <Route path="filters" element={<FilerItem />} />

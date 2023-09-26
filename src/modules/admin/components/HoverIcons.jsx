@@ -31,6 +31,11 @@ import ItemReviewIcon3 from '../svg/mainPanelIcons/ItemReviewIcon3';
 import ItemFilterIcon1 from '../svg/mainPanelIcons/ItemFilterIcon1';
 import ItemFilterIcon2 from '../svg/mainPanelIcons/ItemFilterIcon2';
 import ItemFilterIcon3 from '../svg/mainPanelIcons/ItemFilterIcon3';
+import BlackArrowOpenIcon from '../svg/sharedIcons/BlackArrowOpenIcon';
+import BlackArrowCloseIcon from '../svg/sharedIcons/BlackArrowCloseIcon';
+import ItemAddProductIcon1 from '../svg/mainPanelIcons/ItemAddProductIcon1';
+import ItemAddProductIcon2 from '../svg/mainPanelIcons/ItemAddProductIcon2';
+import ItemAddProductIcon3 from '../svg/mainPanelIcons/ItemAddProductIcon3';
 //#endregion
 
 import { Link } from 'react-router-dom'
@@ -39,6 +44,8 @@ const HoverIcon = () =>
 {
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [clickedIndex, setClickedIndex] = useState(null);
+
+    const [showAddProduct, setShowAddProduct] = useState(false);
 
     const handleClick = (index) =>
     {
@@ -58,7 +65,7 @@ const HoverIcon = () =>
     return (
         <div className='left-menu-items' >
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to=""
                     className={hoveredIndex === 0 ? 'hovered' : ''}
@@ -70,7 +77,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="sales"
                     className={hoveredIndex === 1 ? 'hovered' : ''}
@@ -82,7 +89,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="orders"
                     className={hoveredIndex === 2 ? 'hovered' : ''}
@@ -94,7 +101,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="users"
                     className={hoveredIndex === 3 ? 'hovered' : ''}
@@ -106,7 +113,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="messages"
                     className={hoveredIndex === 4 ? 'hovered' : ''}
@@ -117,20 +124,43 @@ const HoverIcon = () =>
                     {clickedIndex === 4 ? <ItemMessageIcon3 /> : (hoveredIndex === 4 ? <ItemMessageIcon2 /> : <ItemMessageIcon1 />)}
                 </Link>
             </div>
+
             <div className='menu-item-main'>
-                <div className='item-main'></div>
-                <Link
-                    to="products"
-                    className={hoveredIndex === 5 ? 'hovered' : ''}
-                    onClick={() => handleClick(5)}
-                    onMouseEnter={() => handleMouseEnter(5)}
-                    onMouseLeave={handleMouseLeave}
-                >
-                    {clickedIndex === 5 ? <ItemProductIcon3 /> : (hoveredIndex === 5 ? <ItemProductIcon2 /> : <ItemProductIcon1 />)}
-                </Link>
+                <div className='menu-item-product-container'>
+                    <Link
+                        to="products"
+                        className={hoveredIndex === 5 ? 'hovered' : ''}
+                        onClick={() => handleClick(5)}
+                        onMouseEnter={() => handleMouseEnter(5)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        {clickedIndex === 5 ? <ItemProductIcon3 /> : (hoveredIndex === 5 ? <ItemProductIcon2 /> : <ItemProductIcon1 />)}
+                    </Link>
+                    <span
+                        onClick={() => { setShowAddProduct(!showAddProduct) }}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        {showAddProduct ? <BlackArrowCloseIcon /> : <BlackArrowOpenIcon />}
+                    </span>
+                </div>
             </div>
+
+            {showAddProduct &&
+                <div className='menu-item-main'>
+                        <Link
+                            to="add-product"
+                            className={hoveredIndex === 10 ? 'hovered' : ''}
+                            onClick={() => handleClick(10)}
+                            onMouseEnter={() => handleMouseEnter(10)}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            {clickedIndex === 10 ? <ItemAddProductIcon3 /> : (hoveredIndex === 10 ? <ItemAddProductIcon2 /> : <ItemAddProductIcon1 />)}
+                        </Link>
+                </div>
+            }
+
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="categories"
                     className={hoveredIndex === 6 ? 'hovered' : ''}
@@ -153,7 +183,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="filters"
                     className={hoveredIndex === 8 ? 'hovered' : ''}
@@ -165,7 +195,7 @@ const HoverIcon = () =>
                 </Link>
             </div>
             <div className='menu-item-main'>
-                <div className='item-main'></div>
+
                 <Link
                     to="exit"
                     className={hoveredIndex === 9 ? 'hovered' : ''}
