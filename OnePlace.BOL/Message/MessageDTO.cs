@@ -20,6 +20,7 @@ namespace OnePlace.BOL.Message
         public int UserCountOfOrders { get; set; }
         public int ProductId { get; set; }
         public Product Product { get; set; }
+        public string ProductPictureAddress { get; set; } 
         public string Name { get; set; }
         public string Email { get; set; }
         public string MessageText { get; set; }

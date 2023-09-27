@@ -149,7 +149,14 @@ namespace OnePlace.BLL.Services
 
             List<MessageDTO> messagesDTO = new List<MessageDTO>();
             foreach (var message in messages)
-                messagesDTO.Add(_mapper.Map<MessageDTO>(message));
+            {
+                MessageDTO messageDTO = _mapper.Map<MessageDTO>(message);
+                IEnumerable<ProductPicture> productPictures = await _unitOfWork.ProductPictures
+                    .FindAsync(p => p.ProductId == message.ProductId && p.IsTitle == true);
+
+                messageDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
+                messagesDTO.Add(messageDTO);
+            }
            
             return messagesDTO;
         }
