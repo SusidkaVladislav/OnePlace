@@ -21,8 +21,36 @@ const initialState = {
     unsuccessfulAlertShow: false,
     actionNotification: '',
     chosenCategoryId: null,
+    categoriesForSelect: [],
 }
 
+export const getCategoriesForSelect = createAsyncThunk('admin/gatCategoriesForSelect', async (args, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.get(REACT_APP_BASE_URL + '/Category/forSelect');
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
 
 export const getCategories = createAsyncThunk('admin/getCategories', async (arg, { rejectWithValue }) =>
 {
@@ -188,7 +216,8 @@ const adminCategorySlice = createSlice({
                 categoryPath: []
             }
         },
-        resetState: (state) => {
+        resetState: (state) =>
+        {
             return {
                 ...state,
                 mainCategories: [],
@@ -224,6 +253,13 @@ const adminCategorySlice = createSlice({
     extraReducers(builder)
     {
         builder
+            .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    categoriesForSelect: payload
+                }
+            })
             .addCase(getCategories.pending, (state, action) =>
             {
 
