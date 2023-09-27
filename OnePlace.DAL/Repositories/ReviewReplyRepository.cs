@@ -29,9 +29,7 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task<ReviewReply> GetAsync(int id)
         {
-            //return await db.ReviewReplies.FirstOrDefaultAsync(o => o.ReviewId == id);
-
-            throw new NotImplementedException();
+            return await db.ReviewReplies.FirstOrDefaultAsync(o => o.ReviewId == id);
         }
     }
 }

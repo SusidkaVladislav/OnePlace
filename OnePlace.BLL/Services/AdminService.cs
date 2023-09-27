@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Validators;
-using OnePlace.BOL;
 using OnePlace.BOL.CategoryDTO;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
+using OnePlace.BOL.Review;
+using OnePlace.BOL.ReviewReply;
 using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
@@ -167,28 +168,74 @@ namespace OnePlace.BLL.Services
             return orders;
         }
 
-        public async Task<Review> GetReview(int id)
+        public async Task<ReviewDTO> GetReview(int id)
         {
+            if (id <= 0)
+                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+
             var review = await _unitOfWork.Reviews.GetAsync(id);
-            return review;
+
+            if (review is null)
+                throw new NotFoundException(nameof(review) + " review with this id does not exist");
+
+            ReviewDTO reviewDTO = _mapper.Map<ReviewDTO>(review);
+            IEnumerable<ProductPicture> productPictures = await _unitOfWork.ProductPictures
+                    .FindAsync(p => p.ProductId == review.ProductId && p.IsTitle == true);
+
+            reviewDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
+
+            return reviewDTO;
         }
 
-        public async Task<IEnumerable<ReviewReply>> GetReviewReplies()
+        public async Task<IEnumerable<ReviewReplyDTO>> GetReviewReplies()
         {
             var reviewReplies = await _unitOfWork.ReviewReplies.GetAllAsync();
-            return reviewReplies;
+            List<ReviewReplyDTO> reviewRepliesDTO = new List<ReviewReplyDTO>();
+
+            foreach (var reviewReply in reviewReplies)
+            {
+                ReviewReplyDTO reviewReplyDTO = _mapper.Map<ReviewReplyDTO>(reviewReply);
+                Review review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
+                reviewReplyDTO.Review = _mapper.Map<ReviewDTO>(review);
+
+                reviewRepliesDTO.Add(reviewReplyDTO);
+            }
+            return reviewRepliesDTO;
         }
 
-        public async Task<ReviewReply> GetReviewReply(int id)
+        public async Task<ReviewReplyDTO> GetReviewReply(int id)
         {
+            if (id <= 0)
+                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+
             var reviewReply = await _unitOfWork.ReviewReplies.GetAsync(id);
-            return reviewReply;
+
+            if (reviewReply is null)
+                throw new NotFoundException(nameof(reviewReply) + " reviewReply with this id does not exist");
+
+            ReviewReplyDTO reviewReplyDTO = _mapper.Map<ReviewReplyDTO>(reviewReply);
+            Review review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
+            reviewReplyDTO.Review = _mapper.Map<ReviewDTO>(review);
+
+            return reviewReplyDTO;
         }
 
-        public async Task<IEnumerable<Review>> GetReviews()
+        public async Task<IEnumerable<ReviewDTO>> GetReviews()
         {
             var reviews = await _unitOfWork.Reviews.GetAllAsync();
-            return reviews;
+
+            List<ReviewDTO> reviewsDTO = new List<ReviewDTO>();
+            foreach (var review in reviews)
+            {
+                ReviewDTO reviewDTO = _mapper.Map<ReviewDTO>(review);
+                IEnumerable<ProductPicture> productPictures = await _unitOfWork.ProductPictures
+                    .FindAsync(p => p.ProductId == review.ProductId && p.IsTitle == true);
+
+                reviewDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
+                reviewsDTO.Add(reviewDTO);
+            }
+
+            return reviewsDTO;
         }
 
         public async Task<IEnumerable<PureUser>> GetUsers()

@@ -1,6 +1,7 @@
-﻿using OnePlace.BOL;
-using OnePlace.BOL.Message;
+﻿using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
+using OnePlace.BOL.Review;
+using OnePlace.BOL.ReviewReply;
 using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using System;
@@ -21,11 +22,11 @@ namespace OnePlace.BLL.Interfaces
         Task<int> DeleteMessage(int id);
         Task<IEnumerable<PureUser>> GetUsers();
         Task<int> DeleteUser(int id);
-        Task<IEnumerable<Review>> GetReviews();
-        Task<Review> GetReview(int id);
+        Task<IEnumerable<ReviewDTO>> GetReviews();
+        Task<ReviewDTO> GetReview(int id);
         Task<int> DeleteReview(int id);
-        Task<IEnumerable<ReviewReply>> GetReviewReplies();
-        Task<ReviewReply> GetReviewReply(int id);
+        Task<IEnumerable<ReviewReplyDTO>> GetReviewReplies();
+        Task<ReviewReplyDTO> GetReviewReply(int id);
         Task<int> DeleteReviewReply(int id);
         Task<int> AddReviewReply(ReviewReplyPayload reviewReply);
     }

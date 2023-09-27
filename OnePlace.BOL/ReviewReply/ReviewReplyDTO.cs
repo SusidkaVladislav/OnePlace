@@ -1,19 +1,17 @@
-﻿using System;
+﻿using OnePlace.BOL.Review;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnePlace.BOL
+namespace OnePlace.BOL.ReviewReply
 {
-    public class ReviewReplyPayload
+    public class ReviewReplyDTO
     {
-        [Required]
         public int ReviewId { get; set; }
-        [Required]
+        public ReviewDTO Review { get; set; }
         public string Comment { get; set; }
-        [Required]
         public DateTime Date { get; set; }
     }
 }
