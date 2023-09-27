@@ -38,5 +38,7 @@ namespace OnePlace.BLL.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         Task<int> Delete(int id);
+
+       Task<List<CategoryWitoutPicture>> GetAllForSelectCategories();
     }
 }

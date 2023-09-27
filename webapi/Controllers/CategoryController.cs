@@ -54,5 +54,12 @@ namespace webapi.Controllers
             var result = await _categoryService.Update(categorUpdate);
             return Ok(result);
         }
+
+        [HttpGet("forSelect")]
+        public async Task<IActionResult> GetAllCategoriesForSelect()
+        {
+            var res = await _categoryService.GetAllForSelectCategories();
+            return Ok(res);
+        }
     }
 }

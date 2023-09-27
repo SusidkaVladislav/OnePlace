@@ -20,8 +20,6 @@ namespace OnePlace.BLL.Mappings
                 .ForMember(d=>d.ParentId, p=>p.MapFrom(s=>s.ParentCategoryId))
                 .ForMember(d=>d.ChildrenCategories, p=>p.MapFrom(s=>s.ChildCategories));
 
-            //CreateMap<List<Category>, List<PureCategory>>(MemberList.Destination)
-            //    .ForMember(d => d.Select(f => f.HasProducts), p => p.MapFrom(s => s.Select(f => f.Products.Count)));
 
             CreateMap<CategoryCreatePayload, CategoryCreateDTO>();
 
@@ -30,6 +28,7 @@ namespace OnePlace.BLL.Mappings
 
             CreateMap<Category, PureCategory>(MemberList.Destination)
                 .ForMember(d => d.HasProducts, p => p.MapFrom(s => s.Products.Count > 0));
+
         }
     }
 }

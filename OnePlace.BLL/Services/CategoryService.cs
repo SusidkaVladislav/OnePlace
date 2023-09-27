@@ -22,6 +22,24 @@ namespace OnePlace.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<List<CategoryWitoutPicture>> GetAllForSelectCategories()
+        {
+            var res = _unitOfWork.Categories.GetAllAsync().Result.ToList();
+
+            List<CategoryWitoutPicture> categoriesWithoutPicture = new List<CategoryWitoutPicture>();
+            foreach (var category in res)
+            {
+                categoriesWithoutPicture.Add(new CategoryWitoutPicture
+                {
+                    Id= category.Id,
+                    Name= category.Name,
+                    ParentCategoryId = category.ParentCategoryId
+                });
+            }
+            
+            return categoriesWithoutPicture;
+        }
+
         /// <summary>
         /// Додати нову категорію
         /// </summary>
