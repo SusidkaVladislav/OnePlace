@@ -35,12 +35,16 @@ namespace OnePlace.DAL.Repositories
         {
             return await db.Reviews
                 .Include(o => o.User)
+                .Include(o => o.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public override async Task<IEnumerable<Review>> GetAllAsync()
         {
-            return await db.Reviews.Include(o => o.User).ToListAsync();
+            return await db.Reviews
+                .Include(o => o.User)
+                .Include(o => o.Product)
+                .ToListAsync();
         }
     }
 }
