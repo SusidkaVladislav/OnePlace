@@ -12,7 +12,11 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            ReviewReply reviewReply = await db.ReviewReplies.FirstOrDefaultAsync(o => o.ReviewId == id);
+            if (reviewReply != null)
+            {
+                db.ReviewReplies.Remove(reviewReply);
+            }
         }
 
         public override async Task<IEnumerable<ReviewReply>> FindAsync(Func<ReviewReply, bool> predicate)

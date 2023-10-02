@@ -17,7 +17,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin, user")]
+        //[Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {
             var result = await _productService.GetProduct(id);
