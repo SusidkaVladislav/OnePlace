@@ -90,7 +90,6 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(71, 25, 21, 1);
-
 }
 
 .c5 {
@@ -207,7 +206,7 @@
 
 .back-button {
     cursor: pointer;
-    text-align: center;
+    text-align: right;
 }
 
 .user-div-info {

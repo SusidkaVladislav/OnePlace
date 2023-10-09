@@ -63,6 +63,7 @@ const HoverIcon = () =>
     };
 
     return (
+
         <div className='left-menu-items' >
             <div className='menu-item-main'>
 
@@ -147,15 +148,15 @@ const HoverIcon = () =>
 
             {showAddProduct &&
                 <div className='menu-item-main'>
-                        <Link
-                            to="add-product"
-                            className={hoveredIndex === 10 ? 'hovered' : ''}
-                            onClick={() => handleClick(10)}
-                            onMouseEnter={() => handleMouseEnter(10)}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            {clickedIndex === 10 ? <ItemAddProductIcon3 /> : (hoveredIndex === 10 ? <ItemAddProductIcon2 /> : <ItemAddProductIcon1 />)}
-                        </Link>
+                    <Link
+                        to="add-product"
+                        className={hoveredIndex === 10 ? 'hovered' : ''}
+                        onClick={() => handleClick(10)}
+                        onMouseEnter={() => handleMouseEnter(10)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        {clickedIndex === 10 ? <ItemAddProductIcon3 /> : (hoveredIndex === 10 ? <ItemAddProductIcon2 /> : <ItemAddProductIcon1 />)}
+                    </Link>
                 </div>
             }
 
@@ -206,6 +207,8 @@ const HoverIcon = () =>
                 </Link>
             </div>
         </div>
+
+
     );
 }
 

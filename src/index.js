@@ -12,7 +12,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <GoogleOAuthProvider clientId='195803029050-8tvhphtcii74f4jr974cac78ltick1rb.apps.googleusercontent.com'>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <StyledEngineProvider injectFirst>
@@ -24,7 +24,7 @@ root.render(
           </StyledEngineProvider>
         </PersistGate>
       </Provider>
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </GoogleOAuthProvider>
 );
 

@@ -1,0 +1,34 @@
+.category-select {
+    cursor: pointer;
+    width: 424px;
+    height: 50px;
+    background-color: #F6F6F6;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+
+}
+
+.category-select>label {
+    cursor: pointer;
+    width: 100%;
+    color: #0A3D58;
+    font-size: 18px;
+    font-family: 'Montserrat Alternates';
+    font-weight: 400;
+    line-height: 23.40px;
+    word-wrap: break-word
+}
+
+.category-select>span {
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
+
+}

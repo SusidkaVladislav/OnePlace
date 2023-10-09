@@ -1,0 +1,45 @@
+.common-picture-add-product-container {
+    width: 88px;
+    height: 62px;
+    border-radius: 10px;
+    background-color: #F6F6F6;
+    margin-right: 24px;
+    margin-bottom: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    align-items: end;
+
+    position: relative;
+}
+
+.common-picture-add-product {
+    width: 88px;
+    height: 62px;
+    border: none;
+    border-radius: 10px;
+    object-fit: contain;
+    background-color: #F6F6F6;
+
+}
+
+.common-picture-add-product {
+    cursor: pointer;
+}
+
+.common-picture-add-product-container >button {
+    position: absolute;
+    top: 10%;
+    left: 95%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    font-size: 16px;
+    padding: 12px 24px; 
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background: url(/src/modules/admin/svg/sharedIcons/CloseCrossIcon.svg) no-repeat;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+}

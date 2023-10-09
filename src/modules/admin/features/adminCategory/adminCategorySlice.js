@@ -248,13 +248,23 @@ const adminCategorySlice = createSlice({
                 ...state,
                 unsuccessfulAlertShow: false
             }
-        }
+        },
+        resetCategoriesforSelect: (state) =>{
+            return{
+                ...state,
+                categoriesForSelect: []
+            }
+        },
     },
     extraReducers(builder)
     {
         builder
             .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
             {
+                for (let i = 0; i < payload.length; i++){
+                    payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
+                }
+
                 return {
                     ...state,
                     categoriesForSelect: payload
@@ -266,6 +276,9 @@ const adminCategorySlice = createSlice({
             })
             .addCase(getCategories.fulfilled, (state, { payload }) =>
             {
+                for (let i = 0; i < payload.length; i++){
+                    payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
+                }
                 return {
                     ...state,
                     mainCategories: payload
@@ -273,6 +286,10 @@ const adminCategorySlice = createSlice({
             })
             .addCase(getCategoryById.fulfilled, (state, { payload }) =>
             {
+                for (let i = 0; i < payload.childrenCategories.length; i++){
+                    payload.childrenCategories[i].name = payload.childrenCategories[i].name.charAt(0).toUpperCase() + payload.childrenCategories[i].name.slice(1)
+                }
+
                 return {
                     ...state,
                     childrenCategories: payload.childrenCategories,
@@ -327,6 +344,7 @@ export const {
     resetPath,
     hideSuccessfulAlert,
     hideUnsuccessfulAlert,
-    resetState } = adminCategorySlice.actions;
+    resetState,
+    resetCategoriesforSelect, } = adminCategorySlice.actions;
 
 export default adminCategorySlice.reducer

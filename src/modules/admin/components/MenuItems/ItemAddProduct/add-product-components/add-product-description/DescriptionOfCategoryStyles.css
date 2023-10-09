@@ -1,0 +1,47 @@
+.description-of-category-container {
+    display: flex;
+    flex-direction: column;
+    /* height: 55px; */
+    width: 100%;
+}
+
+.description-of-category-container>div>label {
+    font-family: Montserrat Alternates;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #3B6479;
+    text-wrap: nowrap;
+    width: 85%;
+    overflow: hidden;
+}
+
+
+.description-of-category-container>input {
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    background-color: #F6F6F6;
+    border: none;
+    padding-left: 10px;
+}
+
+.description-of-category-container>div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.description-of-category-container>div>button {
+    align-self: center;
+    display: flex;
+    margin-left: 30%;
+    cursor: pointer;
+    padding: 12px;
+    margin-bottom: 5px;
+    background: url(/src/modules/admin/svg/sharedIcons/CloseCrossIcon.svg) no-repeat;
+    border: none;
+}
