@@ -20,7 +20,7 @@ import verificationCodeReducer from "../modules/admin/features/servicesState/ver
 import passwordInputReducer from "../modules/admin/features/servicesState/passwordState";
 import userRegisterReducer from "../modules/main/features/register/userRegisterSlice";
 import adminCategoryReducer from "../modules/admin/features/adminCategory/adminCategorySlice";
-import adminProductsSlice from "../modules/admin/features/adminProduct/adminProductSlice";
+import adminProductsReducer from "../modules/admin/features/adminProduct/adminProductSlice";
 
 const persistConfig = {
     key: 'root',
@@ -29,13 +29,18 @@ const persistConfig = {
     stateReconciler: autoMergeLevel2,
 }
 
+const adminProductPersistConfig = {
+    key: 'adminProduct',
+    storage,
+    blacklist: ['allProducts']
+}
 
 const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
     adminUsers: adminUsersReducer,
     adminOrders: adminOrdersReducer,
     adminCategories: adminCategoryReducer,
-    adminProducts: adminProductsSlice,
+    adminProducts: persistReducer(adminProductPersistConfig, adminProductsReducer),
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
     userRegister: userRegisterReducer,

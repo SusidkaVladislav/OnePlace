@@ -31,7 +31,7 @@ const UserOrdersBlock = (prop) =>
             <div className='order-div-list' id='scrollbar-style-1'>
                 {orders.map((order) => (
                     <div className='order-div-row' key={order.id}
-                        onClick={event => { alert(order.id); }}
+                        onClick={event => { }}
                     >
                         <div className='order-div-name'>
                             <label>{order.orderNumber}</label>

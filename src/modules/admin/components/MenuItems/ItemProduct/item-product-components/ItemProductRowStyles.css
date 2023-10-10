@@ -1,0 +1,40 @@
+.item-product-row-container {
+    width: 100%;
+    height: 71px;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border-radius: 10px;
+    align-items: center;
+    background-color: #F6F6F6;
+    border-bottom: 1px solid #9DB1BC;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.item-product-row-img {
+    width: 50px;
+    height: 51px;
+    padding: 15px, 30px, 15px, 30px;
+    border-radius: 10px;
+    border: 0px, 0px, 1px, 0px;
+}
+
+.item-product-row-container>label {
+    width: 200px;
+    overflow: hidden;
+    margin-left: 10px;
+
+
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #6C4744;
+}
+
+.item-product-row-container:hover {
+    background-color: #9DB1BC;
+}

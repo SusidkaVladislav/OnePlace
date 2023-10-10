@@ -58,7 +58,7 @@ import BackIcon from '../../../svg/sharedIcons/BackIcon';
 import CustomConfirm from '../../../../../services/confirmation/CustomConfirmation';
 
 import './ItemAddProductStyles.css';
-import { Category } from '@mui/icons-material';
+
 
 const ItemAddProduct = () =>
 {

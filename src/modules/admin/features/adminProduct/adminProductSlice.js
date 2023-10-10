@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { createSelector } from 'reselect';
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
@@ -34,6 +34,11 @@ const initialState = {
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
+
+    filteredProducts: [],
+    allProductCount: 0,
+
+    allProducts: [],
 }
 
 export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_, { rejectWithValue, getState }) =>
@@ -146,6 +151,62 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
         };
         return rejectWithValue(customError)
     }
+
+})
+
+export const filterProducts = createAsyncThunk('adminProducts/filterProducts', async (filter, { rejectWithValue, getState }) =>
+{
+    try
+    {
+
+        // const state = getState();
+        // filter.category = state.adminProducts.category.id;
+        const response = await axios.post(REACT_APP_BASE_URL + '/Product/search', filter);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+    }
+})
+
+export const allProductCount = createAsyncThunk('adminProducts/allProductCount', async (_, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.get(REACT_APP_BASE_URL + '/Product/getAllCount');
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+    }
+})
+
+export const getAllProducts = createAsyncThunk('adminProducts/allProducts', async (categoryId, { rejectWithValue }) =>
+{
+    const response = await axios.get(REACT_APP_BASE_URL + '/Product/getAllProducts', {
+        params: { categoryId: categoryId },
+    });
+    return response.data;
 
 })
 
@@ -550,6 +611,28 @@ const adminProductsSlice = createSlice({
                     charachteristicsFromCategory: payload,
                 }
             })
+            .addCase(filterProducts.fulfilled, (state, { payload }) =>
+            {
+                console.log(payload)
+                return {
+                    ...state,
+                    filteredProducts: payload,
+                }
+            })
+            .addCase(allProductCount.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    allProductCount: payload,
+                }
+            })
+            .addCase(getAllProducts.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    allProducts: payload,
+                }
+            })
     }
 })
 
@@ -584,5 +667,15 @@ export const {
     hideSuccessfulAlert,
     hideUnsuccessfulAlert,
 } = adminProductsSlice.actions;
+
+export const getFilteredProducts = createSelector(
+    state => state.adminProducts.allProducts,
+    (_, inputValue) => inputValue.toLowerCase(),
+    (allProducts, inputValue) => {
+      return allProducts.filter(product =>
+        [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
+      );
+    }
+  );
 
 export default adminProductsSlice.reducer
