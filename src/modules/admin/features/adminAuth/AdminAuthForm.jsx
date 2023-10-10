@@ -62,7 +62,7 @@ const AdminAuthForm = () =>
         navigate('main');
         // try
         // {
-        //     //await dispatch(adminLogin(({ email, password }))).unwrap()
+        //     await dispatch(adminLogin(({ email, password }))).unwrap()
 
         //     if (adminCredentials.isAuth === true)
         //         console.log("isAuth is true")

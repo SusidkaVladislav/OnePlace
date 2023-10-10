@@ -20,24 +20,34 @@ import adminReviewsReducer from "../modules/admin/features/adminReviews/adminRev
 import adminMessagesReducer from "../modules/admin/features/adminMessages/adminMessagesSlice";
 import verificationCodeReducer from "../modules/admin/features/servicesState/verificationCodeState";
 import passwordInputReducer from "../modules/admin/features/servicesState/passwordState";
+import userRegisterReducer from "../modules/main/features/register/userRegisterSlice";
+import adminCategoryReducer from "../modules/admin/features/adminCategory/adminCategorySlice";
+import adminProductsReducer from "../modules/admin/features/adminProduct/adminProductSlice";
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['verificationCode', 'passwordInputState'],
+    blacklist: ['verificationCode', 'passwordInputState', 'userRegister'],
     stateReconciler: autoMergeLevel2,
 }
 
+const adminProductPersistConfig = {
+    key: 'adminProduct',
+    storage,
+    blacklist: ['allProducts']
+}
 
 const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
     adminUsers: adminUsersReducer,
     adminOrders: adminOrdersReducer,
+    adminCategories: adminCategoryReducer,
+    adminProducts: persistReducer(adminProductPersistConfig, adminProductsReducer),
     adminReviews:adminReviewsReducer,
     adminMessages:adminMessagesReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
-
+    userRegister: userRegisterReducer,
 })
 
 

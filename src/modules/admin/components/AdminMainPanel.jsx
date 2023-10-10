@@ -54,32 +54,34 @@ const Main = () =>
     const divSize = isArrowWide ? '239px' : '20px';
 
     return (
-        <div className='admin-body'>
-            <div>
-                <header>
-                    <div className='main-logo'>
-                        <LogoIcon />
-                    </div>
-                </header>
-            </div>
-            <div className='left-menu' style={menuStyle} >
-                <div className='menu-item-user' style={divStyle}>
-                    <div className='menu-img-icon'></div>
-                    <div className='menu-labels'>
-                        <label className='menu-name'>Admin admin</label>
-                        {/* <label className='menu-email'>{email}</label> */}
-                    </div>
-                    <label className='menu-arrow-icon' style={arrowStyle}
-                        onClick={handleShowArrow}>
-                        {clickedArrow ? <ArrowIcon2 /> : <ArrowIcon />}
-                    </label>
+            <div className='admin-body'>
+                <div>
+                    <header>
+                        <div className='main-logo'>
+                            <LogoIcon />
+                        </div>
+                    </header>
                 </div>
-                <HoverIcon />
+                <div className='left-menu' style={menuStyle} >
+                    <div className='menu-item-user' style={divStyle}>
+                        <div className='menu-img-icon'></div>
+                        <div className='menu-labels'>
+                            <label className='menu-name'>Admin admin</label>
+                            {/* <label className='menu-email'>{email}</label> */}
+                        </div>
+                        <label className='menu-arrow-icon' style={arrowStyle}
+                            onClick={handleShowArrow}>
+                            {clickedArrow ? <ArrowIcon2 /> : <ArrowIcon />}
+                        </label>
+                    </div>
+                    <HoverIcon />
+                </div>
+                <div className='body-by-item' style={bodyStyle}>
+                    <Outlet />
+                </div>
             </div>
-            <div className='body-by-item' style={bodyStyle}>
-                <Outlet />
-            </div>
-        </div>
+
+
     )
 }
 

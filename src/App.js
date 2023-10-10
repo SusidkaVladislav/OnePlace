@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 //#region Main routes
 import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
 import UserLoginForm from './modules/main/features/login/UserLoginForm';
+import UserRegisterForm from './modules/main/features/register/UserRegisterForm';
 //#endregion
 
 //#region Admin routes
@@ -18,6 +19,7 @@ import ItemCategory from "./modules/admin/components/MenuItems/ItemCategory/Item
 import ItemReview from "./modules/admin/components/MenuItems/ItemReview/ItemReview";
 import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilter";
 import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
+import ItemAddProduct from './modules/admin/components/MenuItems/ItemAddProduct/ItemAddProduct';
 //#endregion
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
@@ -26,6 +28,7 @@ import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/Us
 import ReviewInfo from "./modules/admin/components/MenuItems/ItemReview/reviewPages/ReviewInfo";
 
 import "./App.css";
+
 
 function App()
 {
@@ -36,6 +39,7 @@ function App()
         <Route path="/" element={<OnePlaceMain />} />
 
         <Route path="user-login" element={<UserLoginForm />} />
+        <Route path="register" element={<UserRegisterForm />} />
         <Route path="change-password" element={<ChangePassword />} />
 
         <Route path="admin">
@@ -54,6 +58,7 @@ function App()
 
             <Route path="messages" element={<ItemMessage />} />
             <Route path="products" element={<ItemProduct />} />
+            <Route path="add-product" element={<ItemAddProduct />} />
             <Route path="categories" element={<ItemCategory />} />
 
             <Route path="reviews" >

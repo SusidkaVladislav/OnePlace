@@ -8,4 +8,6 @@
 .body-div {
   background: rgba(10, 61, 88, 1);
   padding: 15px;
+  min-height: 100vh;
+  height: fit-content;
 }

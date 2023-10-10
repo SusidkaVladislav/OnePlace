@@ -9,7 +9,6 @@
   background: rgba(246, 246, 246, 1);
   box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
   text-align: center;
-
 }
 
 .enter-body-cart {
@@ -22,7 +21,6 @@
   padding: 10px;
   border: 2px solid rgba(218, 141, 51, 1);
   border-radius: 20px;
-
 }
 
 .enter-body-head {
@@ -30,7 +28,6 @@
   height: 46px;
   gap: 520px;
   display: flex;
-
 }
 
 .enter-body-foot {
@@ -38,7 +35,6 @@
   height: 311px;
   gap: 78px;
   display: flex;
-
 }
 
 .enter-body-head-text {
@@ -51,14 +47,12 @@
   letter-spacing: 0em;
   text-align: left;
   color: rgba(71, 25, 21, 1);
-
 }
 
 .enter-body-head-btn {
   width: 36px;
   height: 36px;
   padding: 10.5px;
-
 }
 
 .cross-button {
@@ -79,7 +73,6 @@
   width: 309px;
   height: 311px;
   gap: 39px;
-
 }
 
 .text-left-post,
@@ -93,7 +86,6 @@
   letter-spacing: 0em;
   text-align: left;
   color: rgba(71, 25, 21, 1);
-
 }
 
 .text-left-forgot {
@@ -107,7 +99,6 @@
   text-align: left;
   color: rgba(10, 61, 88, 1);
   text-decoration: none;
-
 }
 
 .left-post,
@@ -115,23 +106,14 @@
   display: grid;
 }
 
-/* .left-post input, .left-pswrd input{
-    width: 5px;
-    height: 26px;
-    padding: 11px 284px 11px 20px;
-    border-radius: 12px;
-    background: rgba(233, 236, 236, 1);
-
-  } */
-
-.input-left-post,
-.input-left-pswrd {
-  width: 310px;
+.input-text-form {
+  width: 340px;
   height: 46px;
-  padding: 11px 4px 11px 20px;
-  border: 0.5px solid;
+  padding: 11px 20px 11px 20px;
   border-radius: 12px;
-  background: rgba(233, 236, 236, 1);
+  gap: 10px;
+  background: rgba(225, 227, 227, 1);
+  box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }
 
 .eye-button {
@@ -163,7 +145,6 @@
   animation-duration: 0ms;
   cursor: pointer;
   margin-top: 10px;
-
 }
 
 .div-register-button {
@@ -174,7 +155,6 @@
   cursor: pointer;
   text-decoration: none;
   color: #000;
-
 }
 
 /*----------------------------------------------*/
@@ -183,7 +163,6 @@
   height: 204px;
   padding: 33px 0px 33px 0px;
   gap: 38px;
-
 }
 
 .text-right-enter {
@@ -196,7 +175,6 @@
   letter-spacing: 0em;
   text-align: left;
   color: rgba(71, 25, 21, 1);
-
 }
 
 .icons-right-enter {
@@ -206,7 +184,6 @@
   display: flex;
   text-align: center;
   margin-top: 20px;
-
 }
 
 .google-right-enter,
@@ -227,7 +204,6 @@
   margin-top: 10px;
   margin-left: 10px;
   color: rgba(71, 25, 21, 1);
-
 }
 
 .google-button,
@@ -241,10 +217,13 @@
 .error-message {
   color: red;
   margin-top: 5px;
-  margin-left: 0%;
+  text-align: left;
 }
 
-
+.error-from-server{
+  color: red;
+  margin-bottom: 20px;
+}
 
 .error-email,
 .error-pswrd {
