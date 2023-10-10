@@ -8,7 +8,7 @@
     "@material/menu": "^14.0.0",
     "@mui/icons-material": "^5.14.11",
     "@mui/lab": "^5.0.0-alpha.145",
-    "@mui/material": "^5.14.10",
+    "@mui/material": "^5.14.12",
     "@react-oauth/google": "^0.11.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",
@@ -52,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1"
   }
 }
