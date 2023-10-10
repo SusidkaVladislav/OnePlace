@@ -147,6 +147,7 @@ const HoverIcon = () =>
                     to="reviews"
                     className={hoveredIndex === 7 ? 'hovered' : ''}
                     onClick={() => handleClick(7)}
+                    onMouseEnter={() => handleMouseEnter(7)}
                     onMouseLeave={handleMouseLeave}
                 >
                     {clickedIndex === 7 ? <ItemReviewIcon3 /> : (hoveredIndex === 7 ? <ItemReviewIcon2 /> : <ItemReviewIcon1 />)}

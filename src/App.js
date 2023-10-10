@@ -23,6 +23,7 @@ import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
 import OnePlaceMain from "./modules/main/OnePlaceMain";
 
 import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/UserInfo";
+import ReviewInfo from "./modules/admin/components/MenuItems/ItemReview/reviewPages/ReviewInfo";
 
 import "./App.css";
 
@@ -54,7 +55,12 @@ function App()
             <Route path="messages" element={<ItemMessage />} />
             <Route path="products" element={<ItemProduct />} />
             <Route path="categories" element={<ItemCategory />} />
-            <Route path="reviews" element={<ItemReview />} />
+
+            <Route path="reviews" >
+              <Route index element={<ItemReview />} />
+              <Route path="review/:id" element={<ReviewInfo />} />
+            </Route>
+
             <Route path="filters" element={<FilerItem />} />
             <Route path="exit" element={<ItemExit />} />
           </Route>

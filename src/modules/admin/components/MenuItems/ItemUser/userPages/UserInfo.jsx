@@ -1,5 +1,5 @@
 //#region  Imports
-import React from 'react';
+import React, { useState } from "react";
 
 //#region Router
 import { useParams, useNavigate } from 'react-router-dom'
@@ -11,38 +11,99 @@ import '../ItemUserStyle.css';
 
 //#region Icons
 import BackIcon from '../../../../svg/sharedIcons/BackIcon';
+import RemoveIcon from '../svg/RemoveIcon';
+import UserIcon from '../svg/UserIcon'
 //#endregion
 
 //#region Blocks
 import UserInfoBlock from '../../../../features/adminUsers/UserInfoBlock';
 import UserOrdersBlock from '../../../../features/adminUsers/UserOrdersBlock';
+import UserReviewBlock from '../../../../features/adminUsers/UserReviewBlock';
 //#endregion
 
 //#region Services
-import CustomDelete from '../../../../../../services/delete/CustomDelete';
+//import CustomDelete from '../../../../../../services/delete/CustomDelete';
 //#endregion
 
 //#region Redux
-import { useSelector } from 'react-redux';
-import { getUserById } from '../../../../features/adminUsers/adminUsersSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserById,fetchDeleteUser,fetchUsers } from '../../../../features/adminUsers/adminUsersSlice';
 //#endregion
 //#endregion
 
 
 const UserInfo = () =>
 {
+    const dispatch = useDispatch()
     const params = useParams();
     const navigate = useNavigate()
     const userId = params.id;
 
+    const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+    const [isConfirmDialogVisible2, setIsConfirmDialogVisible2] = useState(false);
+    const [isConfirmDialogError, setIsConfirmDialogError] = useState(false);
+    
     const user = useSelector(state => getUserById(state, Number(userId)));
 
     const deleteHandler = (isDelete, userId) =>
     {
         if (isDelete)
         {
-            //Тут логіка видалення
+            dispatch(fetchDeleteUser(userId))
+            .then((response) => {
+                console.log(response)
+                if (!response.ok) {
+                    setIsConfirmDialogError(true);
+                } else {
+                    setIsConfirmDialogVisible2(true);
+                    setTimeout(() => {
+                        dispatch(fetchUsers());
+                        navigate(-1);
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                setIsConfirmDialogError(true);
+                console.error("Error deleting user:", error);
+            });
         }
+    }
+
+    /*-------------------------------------------*/
+    const handleRemoveButtonClick = () =>
+    {
+        setIsConfirmDialogVisible(true);
+    };
+
+    const handleConfirmDelete = async () => {
+
+        setIsConfirmDialogVisible(false);
+        dispatch(fetchDeleteUser(userId))
+        .then((response) => {
+            if (response.meta.requestStatus==='rejected') {
+                setIsConfirmDialogError(true);
+                //console.log(response);
+            }
+            if(response.meta.requestStatus==='fulfilled')
+            {
+                //console.log(response);
+                setIsConfirmDialogVisible2(true);
+                setTimeout(() => {
+                    dispatch(fetchUsers());
+                    navigate(-1);
+                }, 2000);
+            }
+        });
+    };
+
+    const handleCancelDelete = () =>
+    {
+        setIsConfirmDialogVisible(false);
+    };
+    const handleClickOk=()=>{
+        setIsConfirmDialogError(false);
+        setIsConfirmDialogVisible2(false);
+        //console.log("Done");
     }
 
     return (
@@ -50,13 +111,14 @@ const UserInfo = () =>
             <div className='user-div'>
                 <div className='back-div'>
                     <div className='user-img'>
-                        <img src="https://p.kindpng.com/picc/s/116-1169050_avatar-michael-jordan-jersey-clip-art-michael-jordan.png" alt="" />
+                        <label> <UserIcon/></label>
                     </div>
                     {user !== null ? (
                         <label className='user-name'>{user !== null ? user.name : 'NotFound'} {user !== null ? user.surname : 'NotFound'}
-                            <CustomDelete
-                                onDelete={value => { deleteHandler(value, userId) }}
-                            /></label>
+                            <label>
+                                <label className='remove-button' onClick={handleRemoveButtonClick}> <RemoveIcon /></label>
+                            </label>
+                        </label>
                     ) : (<label className='user-name'>No User Selected</label>)}
                     <label className='back-button' onClick={() => navigate(-1)} > <BackIcon /></label>
                 </div>
@@ -64,8 +126,37 @@ const UserInfo = () =>
                     <UserInfoBlock user={user} />
                     <UserOrdersBlock userId={user.id} />
                 </div>
+                <div> 
+                    <UserReviewBlock userId={user.id}/>
+                </div>
 
             </div>
+            {isConfirmDialogVisible && (
+                <div className='modal-backdrop'>
+                    <div className='confirm-dialog'>
+                        <p>Ви впевнені, що бажаєте видалити запис?</p>
+                        <label className='confirm-buttom' onClick={handleConfirmDelete}>Так</label>
+                        <label className='confirm-buttom' onClick={handleCancelDelete}>Ні</label>
+                    </div>
+                </div>
+            )}
+            {isConfirmDialogVisible2 && (
+                <div className='modal-backdrop-true'>
+                    <div className='confirm-dialog-true'>
+                        <p>Запис видалено успішно</p>
+                        {/* <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label> */}
+                    </div>
+                </div>
+            )}
+            {isConfirmDialogError && (
+                <div className='modal-backdrop-false'>
+                    <div className='confirm-dialog-false'>
+                        <p>Помилка видалення запису. Спробуйте пізніше!</p>
+                        <label onClick={handleClickOk}className='confirm-buttom-ok'>Ok</label>
+                    </div>
+                </div>
+            )}
+            
         </div>
     )
 }

@@ -1,0 +1,20 @@
+[
+    {
+        "id":10,
+        "code":1245,
+        "name":"Monitor black",
+        "image":"https://content2.rozetka.com.ua/goods/images/big/106662744.jpg"
+    },
+    {
+        "id":11,
+        "code":3245,
+        "name":"Headfones black",
+        "image":"https://content2.rozetka.com.ua/goods/images/big/172266668.jpg"
+    },
+    {
+        "id":12,
+        "code":5678,
+        "name":"Bluetooth speaker olive",
+        "image":"https://img.moyo.ua/img/products/4942/96_600.jpg?1693298050"
+    }
+]

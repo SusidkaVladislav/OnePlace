@@ -9,7 +9,9 @@ const CustomDelete = props =>
     } = props;
 
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+    
 
+    
     const handleRemoveButtonClick = () =>
     {
         setIsConfirmDialogVisible(true);
@@ -39,6 +41,7 @@ const CustomDelete = props =>
                     </div>
                 </div>
             )}
+            
         </label>
 
     )

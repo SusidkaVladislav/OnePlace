@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios"; 
 
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -12,6 +12,16 @@ export const fetchUsers = createAsyncThunk('adminUsers/fetchUsers', async () =>
 {
     const response = await axios.get(REACT_APP_BASE_URL + '/Admin/user');
     return response.data
+})
+
+export const fetchDeleteUser=createAsyncThunk('adminUsers/fetchDeleteUser', async (userId) =>
+{
+    try {
+        const response = await axios.delete(`${REACT_APP_BASE_URL}/Admin/user/${Number(userId)}`);
+        return response.data;
+    } catch (error) {
+        throw error; 
+    }
 })
 
 const adminUsersSlice = createSlice({
@@ -37,6 +47,16 @@ const adminUsersSlice = createSlice({
             {
                 state.loading = null;
             })
+            .addCase(fetchDeleteUser.pending, (state) => {
+                state.loading = 'Deleting user...';
+              })
+            .addCase(fetchDeleteUser.fulfilled, (state, { payload }) => {
+                // No need to update state.users here, as it's already done in the thunk
+                state.loading = null;
+            })
+            .addCase(fetchDeleteUser.rejected, (state) => {
+                state.loading = null;
+            });
     }
 })
 
@@ -51,6 +71,7 @@ export const getFilteredUsers = (state, inputValue) =>
     );
 
 export const getUserById = (state, userId) =>
-    state.adminUsers.users.find(user => user.id === userId)
+    state.adminUsers.users.find(user => user.id === userId);
+
 
 export default adminUsersSlice.reducer

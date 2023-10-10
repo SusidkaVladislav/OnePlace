@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+
 //#region Styles
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
@@ -54,7 +55,6 @@ const ItemUser = () =>
 
     return (
         <div>
-
             <div className='user-main'>
 
                 <AdminSearch
@@ -82,8 +82,7 @@ const ItemUser = () =>
                         {filteredAndPaginatedData.map((user, index) => (
                             <div className='div-row' key={user.id}>
                                 <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
-                                    onClick={async event => { navigate(`user/${user.id}`); }}
-                                >
+                                    onClick={async event => { navigate(`user/${user.id}`); }}>
                                     <div className='c1'>{user.name}</div>
                                     <div className='c2'>{user.surname}</div>
                                     <div className='c3'>{user.phoneNumber}</div>

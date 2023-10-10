@@ -44,6 +44,7 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(10, 61, 88, 1);
+    margin-bottom: 10px;
 }
 
 .order-div-list
@@ -61,20 +62,24 @@
 }
 .order-div-name
 {
-    width: 150px;
+    width: 130px;
+    margin-left: 10px;
 }
 .order-div-code
 {
-    width: 70px;
+    width: 80px;
+    text-align: center;
 }
 
 .order-div-status{
     width: 90px;
+    text-align: center;
 }
 
 .order-div-price
 {
-    width: 70px;
+    width: 80px;
+    text-align: center;
 }
 .order-div-row
 {
@@ -88,8 +93,10 @@
     text-align: left;
     color: rgba(108, 71, 68, 1);
     padding-bottom: 15px;
-    margin-right: 20px;
+    margin-right: 10px;
     cursor: pointer;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .order-div-row > div >label {
@@ -97,7 +104,8 @@
 }
 
 .order-div-row:hover{
-    background-color: azure;
+    background: rgb(92, 124, 145);
+    color: #f5f5f5;
 }
 
 .order-div-row div{
@@ -111,3 +119,228 @@
 {
     margin-top: -10px;
 }
+
+/*UserReview----------------------------------------------------------------*/
+
+
+.review-div{
+    margin-top: 50px;
+    width: 480px;
+    height: 250px;
+    display: block;
+
+}
+.review-body
+{
+    margin: 10px;
+    width: 424px;
+    height: 230px;
+    border-radius: 10px;
+    background: rgba(246, 246, 246, 1);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 10px;
+
+}
+
+.code-dropdown-item {
+    margin: 8px;
+ }
+ .review-label
+ {
+     display: flex;
+ 
+ }
+ .review-label label
+ {
+     width: 75px;
+     height: 23px;
+     top: 555px;
+     left: 396px;
+     font-family: 'Montserrat Alternates';
+     font-size: 18px;
+     font-weight: 500;
+     line-height: 23px;
+     letter-spacing: 0em;
+     text-align: left;
+     color: rgba(10, 61, 88, 1);
+     padding-right: 12px;
+ 
+ }
+ .review-row
+ {
+     display: block;
+ 
+ }
+ .review-img
+ {
+     height: 35px;
+     width: 35px;
+     border-radius: 6px;
+ 
+ }
+ .review-title
+ {
+     font-family: 'Montserrat Alternates';
+     font-size: 14px;
+     font-weight: 400;
+     line-height: 18px;
+     letter-spacing: 0em;
+     text-align: left;
+     color: rgba(108, 71, 68, 1);
+     margin: 8px;
+     width: 325px;
+ 
+ 
+ }
+ .review-header{
+     display: flex;
+     margin-top: 10px;
+     margin-bottom: 15px;
+ 
+ }
+ .review-bottom-line
+ {
+     border-bottom: 1px solid;
+     margin: 20px;
+ }
+ .review-review
+ {
+     width: 386px;
+     height: 54px;
+     top: 126px;
+     left: 20px;
+     font-family: 'Montserrat Alternates';
+     font-size: 14px;
+     font-weight: 400;
+     line-height: 18px;
+     letter-spacing: 0em;
+     text-align: left;
+     color: rgba(108, 71, 68, 1);
+     margin-top: 15px;
+     margin-bottom: 20px;
+     overflow-y: auto;
+     scrollbar-width: thin;
+ 
+ }
+ .review-date
+ {
+     width: 280px;
+     height: 18px;
+     top: 198px;
+     left: 18px;
+     font-family: 'Montserrat Alternates';
+     font-size: 14px;
+     font-weight: 300;
+     line-height: 18px;
+     letter-spacing: 0em;
+     text-align: left;
+     color: rgba(71, 25, 21, 1);
+ 
+ }
+ .msg-from-admin
+ {
+     font-family: 'Montserrat Alternates';
+     font-size: 14px;
+     font-weight: 300;
+     line-height: 18px;
+     letter-spacing: 0em;
+     text-align: left;
+     color: rgba(71, 25, 21, 1);
+     background-color: rgb(227, 230, 233);
+     border-radius: 10px;
+     padding: 5px;
+     margin-top: 10px;
+     margin-left: 60px;
+     overflow-y: auto;
+     scrollbar-width: thin;
+ 
+ }
+ .review-fluent
+ {
+     cursor: pointer;
+ }
+ .review-message
+ {
+     width: 500px;
+     height: 235px;
+     background: rgba(246, 246, 246, 1);
+     position: absolute;
+     margin-left: 440px;
+     margin-top: -220px;
+     border-top-right-radius: 10px;
+     border-bottom-right-radius: 10px;
+     padding: 15px;
+     display: flex;
+ 
+ }
+ .review-message-label
+ {
+     display: flex;
+ }
+ .textarea-count
+ {
+     margin-left: 20px;
+ }
+ 
+ .review-message-input textarea{
+     height: 120px;
+     margin: 10px;
+     border-radius: 8px;
+     width: 435px;
+     resize: none;
+     font-size: 12px;
+     padding: 10px;
+ }
+ .review-message-send
+ {
+     display: flex;
+ }
+ 
+ .review-send
+ {
+     height: 35px;
+     width: 130px;
+     background-color: azure;
+     text-align: center;
+     padding-top: 4px;
+     border-radius: 10px;
+     font-size: 16px;
+     cursor: pointer;
+     margin-left: 75px;
+     border: 1px solid;
+ }
+ .review-send:hover{
+     background-color: rgba(10, 61, 88, 1);
+     color: rgba(246, 246, 246, 1);
+ }
+ .arrow-toLeft
+ {
+     width: 20px;
+     height: 20px;
+     margin-top: 90px;
+     transform: rotate(90deg);
+     cursor: pointer;
+ }
+
+ .error-review-message
+ {
+    display:flex;
+    height: 270px;
+ }
+ .error-reply
+ {
+    width: 250px;
+    height: 25px;
+    color: red;
+ }
+
+ .order-block
+ {
+    width: 424px;
+    height: 310px;
+    border-radius: 10px;
+    background: rgba(246, 246, 246, 1);
+    padding: 10px;
+
+ }
