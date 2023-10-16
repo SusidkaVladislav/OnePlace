@@ -8,6 +8,7 @@ const initialState = {
         id: null,
         name: 'Категорії'
     },
+
     productName: '',
     productCode: -1,
     manufacturerCountryId: -1,
@@ -23,23 +24,26 @@ const initialState = {
     charachteristicsFromCategory: [],
     charachteristics: [],
     messageFromServer: '',
-
     categoryValid: true,
     nameValid: true,
     colorValid: true,
     codeValid: true,
     descriptionValid: true,
     charachteristicsValid: true,
-
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
-
     filteredProducts: [],
     allProductCount: 0,
-
     allProducts: [],
+    loading: false,
 }
+
+export const getProduct = createAsyncThunk('adminProducts/getProduct', async (id, { rejectWithValue }) =>
+{
+    const response = await axios.get(REACT_APP_BASE_URL + '/Product/product/' + id);
+    return response.data
+})
 
 export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_, { rejectWithValue, getState }) =>
 {
@@ -91,6 +95,7 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
         var sale = null;
 
         if (state.adminProducts.productSale.percent !== undefined
+            && state.adminProducts.productSale.percent > 0
             && state.adminProducts.productSale.startDate !== undefined
             && state.adminProducts.productSale.endDate !== undefined)
         {
@@ -100,9 +105,6 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
                 endDate: new Date(state.adminProducts.productSale.endDate)
             }
         }
-
-
-
 
         const product = {
             name: state.adminProducts.productName,
@@ -152,6 +154,156 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
         return rejectWithValue(customError)
     }
 
+})
+
+export const updateProduct = createAsyncThunk('adminProducts/updateProduct', async (args, { rejectWithValue, getState }) =>
+{
+    try
+    {
+        const state = getState();
+        var descriptions = [];
+
+        for (var i = 0; i < state.adminProducts.charachteristics.length; i++)
+        {
+            if (!state.adminProducts.charachteristics[i].id)
+                descriptions.push(
+                    {
+                        name: state.adminProducts.charachteristics[i].name,
+                        about: state.adminProducts.charachteristics[i].about
+                    }
+                )
+            else
+                descriptions.push(
+                    {
+                        id: state.adminProducts.charachteristics[i].id,
+                        name: state.adminProducts.charachteristics[i].name,
+                        about: state.adminProducts.charachteristics[i].about
+                    }
+                )
+        }
+
+
+        var productColors = [];
+        for (let i = 0; i < state.adminProducts.productColorPrice.length; i++)
+        {
+            productColors.push(
+                {
+                    colorId: state.adminProducts.productColorPrice[i].colorId,
+                    price: state.adminProducts.productColorPrice[i].price,
+                    quantity: state.adminProducts.productColorPrice[i].quantity
+                }
+            )
+        }
+
+        var pictures = [
+            {
+                id: 77,
+                address: 'string',
+                isTitle: true
+            }
+        ]
+
+        var sale = null;
+
+        if (
+            state.adminProducts.productSale.discountPercent !== undefined
+            && state.adminProducts.productSale.startDate !== undefined
+            && state.adminProducts.productSale.endDate !== undefined)
+        {
+            sale = {
+                id: Number(state.adminProducts.productSale.id),
+                discountPercent: Number(state.adminProducts.productSale.discountPercent),
+                startDate: new Date(state.adminProducts.productSale.startDate),
+                endDate: new Date(state.adminProducts.productSale.endDate)
+            }
+        }
+
+        const product = {
+            id: Number(args),
+            name: state.adminProducts.productName,
+            code: state.adminProducts.productCode,
+            manufacturerCountryId: Number(state.adminProducts.manufacturerCountryId),
+            manufacturerId: Number(state.adminProducts.manufacturerId),
+            categoryId: state.adminProducts.category.id,
+            description: state.adminProducts.productDescription,
+            sale: sale,
+            isInBestProducts: state.adminProducts.isInBestProducts,
+            pictures: pictures,
+            descriptions: descriptions,
+            colorDetails: productColors
+        }
+
+        const response = await axios.put(REACT_APP_BASE_URL + '/Product/updateProduct', product);
+        return response.data
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+
+})
+
+export const deleteProduct = createAsyncThunk('adminProducts/deleteProduct', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.delete(REACT_APP_BASE_URL + '/Product/deleteProduct', {
+            params: { id: id },
+        });
+        return response.data
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
 })
 
 export const filterProducts = createAsyncThunk('adminProducts/filterProducts', async (filter, { rejectWithValue, getState }) =>
@@ -481,30 +633,73 @@ const adminProductsSlice = createSlice({
                 charachteristics: []
             }
         },
-
-
         resetProduct: (state) =>
         {
             return {
                 ...state,
                 productName: '',
                 productCode: -1,
-                manufacturerCountryId: -1,
-                manufacturerId: -1,
+                manufacturerCountryId: 1,
+                manufacturerId: 1,
                 productDescription: '',
                 productSale: {},
                 allColors: [],
                 allCountries: [],
                 allBrands: [],
-                productColorPrice: [],
-                category: {},
+                productColorPrice: [
+                    {
+                        blockId: 0,
+                        colorId: 1,
+                        price: 0,
+                        quantity: 0,
+                    }
+                ],
                 categoryFullPath: '',
                 charachteristics: [],
                 charachteristicsFromCategory: [],
+
+                allProductCount: 0,
+
+                categoryValid: true,
+                nameValid: true,
+                colorValid: true,
+                codeValid: true,
+                descriptionValid: true,
+                charachteristicsValid: true,
+                isInBestProducts: false,
             }
         },
-
-
+        resetColorPrice: (state) =>
+        {
+            return {
+                ...state,
+                productColorPrice: [],
+            }
+        },
+        resetAllProducts: (state) =>
+        {
+            return {
+                ...state,
+                allProducts: [],
+            }
+        },
+        resetFilteredProducts: (state) =>
+        {
+            return {
+                ...state,
+                filteredProducts: [],
+            }
+        },
+        resetCategory: (state) =>
+        {
+            return {
+                ...state,
+                category: {
+                    id: null,
+                    name: 'Категорії'
+                },
+            }
+        },
         setCategoryValid: (state, { payload }) =>
         {
             return {
@@ -583,6 +778,33 @@ const adminProductsSlice = createSlice({
                     actionNotification: payload.detail
                 }
             })
+            .addCase(deleteProduct.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(deleteProduct.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: true,
+                    unsuccessfulAlertShow: false,
+                    loading: false,
+                    actionNotification: 'Товар успішно видалено!'
+                }
+            })
+            .addCase(deleteProduct.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: false,
+                    unsuccessfulAlertShow: true,
+                    loading: false,
+                    actionNotification: payload.detail
+                }
+            })
             .addCase(getAllBrands.fulfilled, (state, { payload }) =>
             {
                 return {
@@ -613,7 +835,6 @@ const adminProductsSlice = createSlice({
             })
             .addCase(filterProducts.fulfilled, (state, { payload }) =>
             {
-                console.log(payload)
                 return {
                     ...state,
                     filteredProducts: payload,
@@ -626,11 +847,91 @@ const adminProductsSlice = createSlice({
                     allProductCount: payload,
                 }
             })
+            .addCase(getAllProducts.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
             .addCase(getAllProducts.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
                     allProducts: payload,
+                    loading: false,
+                }
+            })
+            .addCase(getProduct.pending, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getProduct.fulfilled, (state, { payload }) =>
+            {
+
+                var productColors = payload.productColors.map((col, index) =>
+                {
+                    return {
+                        blockId: index,
+                        colorId: col.colorId,
+                        price: col.price,
+                        quantity: col.quantity,
+                    }
+                })
+
+                var productCharachteristics = payload.descriptions.map((characteristic, index) =>
+                {
+                    return {
+                        ...characteristic,
+                        blockId: index,
+                        name: characteristic.name,
+                        about: characteristic.about,
+                        update: true,
+                    }
+                })
+
+                //Pictures to receive from server
+
+                return {
+                    ...state,
+                    loading: false,
+                    category: payload.category,
+                    manufacturerId: payload.manufacturer.id,
+                    manufacturerCountryId: payload.manufacturerCountry.id,
+                    productName: payload.name,
+                    productColorPrice: productColors,
+                    productSale: payload.sale,
+                    productCode: payload.code,
+                    isInBestProducts: payload.isInBestProducts,
+                    productDescription: payload.description,
+                    charachteristics: productCharachteristics,
+                }
+            })
+            .addCase(updateProduct.pending, (state, { payload }) =>
+            {
+
+            })
+            .addCase(updateProduct.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: true,
+                    unsuccessfulAlertShow: false,
+                    actionNotification: 'Товар успішно оновлено!',
+                    loading: false,
+                }
+            })
+            .addCase(updateProduct.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: false,
+                    unsuccessfulAlertShow: true,
+                    actionNotification: payload.detail,
+                    loading: false,
                 }
             })
     }
@@ -655,7 +956,12 @@ export const {
     updateCharacteristicFromCategory,
     updateCharachteristic,
     charachteristicsReset,
+
     resetProduct,
+    resetColorPrice,
+    resetAllProducts,
+    resetFilteredProducts,
+    resetCategory,
 
     setCategoryValid,
     setNameValid,
@@ -671,11 +977,12 @@ export const {
 export const getFilteredProducts = createSelector(
     state => state.adminProducts.allProducts,
     (_, inputValue) => inputValue.toLowerCase(),
-    (allProducts, inputValue) => {
-      return allProducts.filter(product =>
-        [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
-      );
+    (allProducts, inputValue) =>
+    {
+        return allProducts.filter(product =>
+            [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
+        );
     }
-  );
+);
 
 export default adminProductsSlice.reducer

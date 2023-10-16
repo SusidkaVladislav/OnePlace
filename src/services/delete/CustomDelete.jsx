@@ -10,8 +10,6 @@ const CustomDelete = props =>
 
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
     
-
-    
     const handleRemoveButtonClick = () =>
     {
         setIsConfirmDialogVisible(true);

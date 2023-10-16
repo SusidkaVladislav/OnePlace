@@ -270,10 +270,7 @@ const adminCategorySlice = createSlice({
                     categoriesForSelect: payload
                 }
             })
-            .addCase(getCategories.pending, (state, action) =>
-            {
 
-            })
             .addCase(getCategories.fulfilled, (state, { payload }) =>
             {
                 for (let i = 0; i < payload.length; i++){

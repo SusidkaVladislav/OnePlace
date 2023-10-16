@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
+
 //#region Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategoriesForSelect } from '../../../features/adminCategory/adminCategorySlice';
@@ -26,16 +26,16 @@ import
     setSale,
     setIsInBestProducts,
     resetProduct,
+    resetAllProducts,
+    resetFilteredProducts,
+    resetCategory,
     setProductCode,
-
-    //Validation
     setCategoryValid,
     setNameValid,
     setColorValid,
     setCodeValid,
     setDescriptionValid,
     setCharachteristicsValid,
-
     hideUnsuccessfulAlert,
     hideSuccessfulAlert,
 } from '../../../features/adminProduct/adminProductSlice';
@@ -48,6 +48,7 @@ import DiscountAmountInput from './add-product-components/add-product-discount/D
 import DiscountRangePicker from './add-product-components/add-product-discount/DiscountRangePicker';
 import DescriptionOfCategory from './add-product-components/add-product-description/DescriptionOfCategory';
 import NewDescription from './add-product-components/add-product-description/NewDescription';
+import Alert from '@mui/material/Alert';
 //#endregion
 
 //#region Icons
@@ -55,10 +56,8 @@ import CommonPicture from './add-product-components/add-product-pictures/CommonP
 import BackIcon from '../../../svg/sharedIcons/BackIcon';
 //#endregion
 
-import CustomConfirm from '../../../../../services/confirmation/CustomConfirmation';
-
+import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
 import './ItemAddProductStyles.css';
-
 
 const ItemAddProduct = () =>
 {
@@ -83,6 +82,7 @@ const ItemAddProduct = () =>
     var characteristicFromCategoryRightSide = [];
     var blocks = [];
     var images = [];
+
     const {
         category,
         categoryFullPath,
@@ -92,14 +92,10 @@ const ItemAddProduct = () =>
         productColorPrice,
         charachteristicsFromCategory,
         charachteristics,
-        productName,
-        productCode,
         manufacturerCountryId,
         manufacturerId,
-        productDescription,
         productSale,
         isInBestProducts,
-        categoryValid,
         nameValid,
         colorValid,
         codeValid,
@@ -109,14 +105,9 @@ const ItemAddProduct = () =>
         unsuccessfulAlertShow,
         actionNotification, } = useSelector(state => state.adminProducts);
 
-    var percentAmount = {
-        percent: productSale.percent
-    }
-
-    var discountDates = {
-        startDate: productSale.startDate,
-        endDate: productSale.endDate,
-    }
+    const [percentAmount, setPercentAmount] = useState(productSale ? productSale.percent ? productSale.percent : 0 : 0);
+    const [startDiscount, setStartDiscount] = useState(productSale ? productSale.startDate ? new Date(productSale.startDate) : new Date() : new Date());
+    const [endDiscount, setEndDiscount] = useState(productSale ? productSale.endDate ? new Date(productSale.endDate) : new Date() : new Date());
 
     var productColorsBlocks = {
         productColorPriceBlock: productColorPrice
@@ -129,12 +120,29 @@ const ItemAddProduct = () =>
     var productAddedCharacteristics = {
         productCharacteristic: charachteristics
     }
+    const [loading, setLoading] = useState(true);
 
     useEffect(() =>
     {
+        dispatch(resetProduct())
+        dispatch(resetAllProducts())
+        dispatch(resetFilteredProducts())
+        dispatch(resetCategory())
         dispatch(getCategoriesForSelect())
-        mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
-        subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
+            .then(() =>
+            {
+                setLoading(false);
+                mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
+                subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
+            })
+            .catch((error) =>
+            {
+                console.error('Failed to fetch data', error);
+                setLoading(false);
+                navigate(-1);
+            });
+
+
 
         if (manufacturerId === -1)
         {
@@ -150,18 +158,6 @@ const ItemAddProduct = () =>
         dispatch(getAllBrands());
         dispatch(getAllCountries());
         dispatch(getAllColors());
-
-        if (productColorPrice.length === 0)
-        {
-            dispatch(addColorPriceBlock(
-                {
-                    blockId: 0,
-                    colorId: 1,
-                    price: 0,
-                    quantity: 0,
-                }
-            ))
-        }
 
         productAddedCharacteristics = {
             productCharacteristic: charachteristics
@@ -323,9 +319,9 @@ const ItemAddProduct = () =>
         dispatch(setDescriptions(description));
 
         dispatch(setSale({
-            percent: percentAmount.percent,
-            startDate: discountDates.startDate,
-            endDate: discountDates.endDate,
+            percent: percentAmount,
+            startDate: startDiscount,
+            endDate: endDiscount,
         }));
 
         if (categoryValidation() && nameValidation()
@@ -343,8 +339,6 @@ const ItemAddProduct = () =>
     {
         if (isEmpty(category) || category.id === null)
         {
-            console.log(category)
-
             dispatch(setCategoryValid(false));
             return false;
         }
@@ -416,6 +410,7 @@ const ItemAddProduct = () =>
 
     const generateDescriptionsFromCategoryLeft = () =>
     {
+        characteristicFromCategoryLeftSide = [];
         if (productDescriptionsFromCategory.productDescriptionFromCategory !== undefined)
         {
             for (let c = 0; c < productDescriptionsFromCategory.productDescriptionFromCategory.length; c++)
@@ -423,6 +418,7 @@ const ItemAddProduct = () =>
                 if (c % 2 === 0)
                     characteristicFromCategoryLeftSide.push(
                         <DescriptionOfCategory
+                            key={productDescriptionsFromCategory.productDescriptionFromCategory[c].id}
                             descriptionInfo={productDescriptionsFromCategory.productDescriptionFromCategory[c]}
                             deleteDescription={deleteDescriptionFromCategory}
                         />
@@ -434,6 +430,7 @@ const ItemAddProduct = () =>
                 if (c % 2 === 0)
                     characteristicFromCategoryLeftSide.push(
                         <NewDescription
+                            key={c}
                             charachteristicInfo={productAddedCharacteristics.productCharacteristic[c]}
                             deleteDescription={deleteAddedDescription}
                         />
@@ -446,16 +443,21 @@ const ItemAddProduct = () =>
 
     const generateDescriptionsFromCategoryRight = () =>
     {
+        characteristicFromCategoryRightSide = [];
         if (productDescriptionsFromCategory.productDescriptionFromCategory !== undefined)
         {
             for (let c = 0; c < productDescriptionsFromCategory.productDescriptionFromCategory.length; c++)
             {
                 if (c % 2 !== 0)
+                {
                     characteristicFromCategoryRightSide.push(
                         <DescriptionOfCategory
+                            key={productDescriptionsFromCategory.productDescriptionFromCategory[c].id}
                             descriptionInfo={productDescriptionsFromCategory.productDescriptionFromCategory[c]}
-                            deleteDescription={deleteDescriptionFromCategory} />
-                    )
+                            deleteDescription={deleteDescriptionFromCategory}
+                        />
+                    );
+                }
             }
 
             for (let c = 0; c < productAddedCharacteristics.productCharacteristic.length; c++)
@@ -463,6 +465,7 @@ const ItemAddProduct = () =>
                 if (c % 2 !== 0)
                     characteristicFromCategoryRightSide.push(
                         <NewDescription
+                            key={c}
                             charachteristicInfo={productAddedCharacteristics.productCharacteristic[c]}
                             deleteDescription={deleteAddedDescription}
                         />
@@ -524,8 +527,7 @@ const ItemAddProduct = () =>
         if (charachteristicsValid)
         {
             await dispatch(addProduct());
-            //dispatch(resetProduct());
-            //navigate('/admin/main/products')
+            navigate('/admin/main/products')
         }
     }
 
@@ -541,6 +543,37 @@ const ItemAddProduct = () =>
         dispatch(setManufacturer(selectedValue));
     }
 
+
+
+    const handlePercentAmountChange = (newPercentAmount) =>
+    {
+        setPercentAmount(newPercentAmount);
+    };
+
+
+
+    const handleStartDateChange = (newStartDate) =>
+    {
+        setStartDiscount(newStartDate)
+    }
+
+    const handleEndDateChange = (newEndDate) =>
+    {
+        setEndDiscount(newEndDate)
+    }
+
+    if (loading)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
     return (
         <div className="add-product-main-container">
             {
@@ -550,6 +583,7 @@ const ItemAddProduct = () =>
                             <div className='add-product-left-side-container-1'>
 
                                 <RecursedCombo
+
                                     onCategoryClick={selectCategory}
                                     mainCategories={mainCategories}
                                     subCategories={subCategories}
@@ -566,7 +600,7 @@ const ItemAddProduct = () =>
                                         {
                                             allBrands.map((brand) => (
                                                 <option
-                                                    selected={brand.id === Number(manufacturerId)}
+                                                    defaultValue={brand.id === Number(manufacturerId)}
                                                     key={brand.id} value={brand.id}>{brand.name}</option>
                                             ))
                                         }
@@ -603,7 +637,7 @@ const ItemAddProduct = () =>
                                         <option disabled ></option>
                                         {allCountries.map((country) => (
                                             <option
-                                                selected={country.id === Number(manufacturerCountryId)}
+                                                defaultValue={country.id === Number(manufacturerCountryId)}
                                                 key={country.id}
                                                 value={country.id}
                                             >{country.name}</option>
@@ -627,9 +661,18 @@ const ItemAddProduct = () =>
 
                         <div className='discout-code-add-product-container'>
 
-                            <DiscountAmountInput percentAmount={percentAmount} />
+                            <DiscountAmountInput
+                                percentAmount={percentAmount}
+                                onPercentAmountChange={handlePercentAmountChange}
+                            />
 
-                            <DiscountRangePicker discountDates={discountDates} />
+                            <DiscountRangePicker
+                                //discountDates={discountDates}
+                                startDiscountDate={startDiscount}
+                                onStartDateChange={handleStartDateChange}
+                                endDiscountDate={endDiscount}
+                                onEndDateChange={handleEndDateChange}
+                            />
 
                             <div className='add-product-number-container'>
                                 <label>Код</label>
@@ -712,7 +755,11 @@ const ItemAddProduct = () =>
             {
                 productCharacteristics && (
                     <Fragment>
-                        <label className='back-to-main-product-button' onClick={() => { setProductCharacteristics(false) }}><BackIcon /></label>
+                        <label className='back-to-main-product-button' onClick={() =>
+                        {
+                            setProductCharacteristics(false)
+
+                        }}><BackIcon /></label>
                         <h3 className='full-category-path'>{categoryFullPath}</h3>
 
                         {

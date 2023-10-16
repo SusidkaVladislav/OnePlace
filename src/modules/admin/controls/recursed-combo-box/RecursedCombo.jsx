@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Dropdown from './Dropdown';
 import NestedMenuItem from './NestedMenuItem';
-
 import MenuItem from "@mui/material/MenuItem";
-
 import ComboBoxArrowOpenIcon from '../../svg/sharedIcons/ComboboxArrowOpenIcon';
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import './RecursedComboStyles.css';
@@ -12,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 const RecursedCombo = (props) =>
 {
-    const {categoryValid} = useSelector(state => state.adminProducts)
+    const { categoryValid } = useSelector(state => state.adminProducts)
 
     const {
         onCategoryClick,
@@ -128,6 +126,7 @@ const RecursedCombo = (props) =>
             }
 
         }
+
     }
 
     const validBorderStyles = {
@@ -140,8 +139,8 @@ const RecursedCombo = (props) =>
                 <div className='category-select' style={validBorderStyles}>
                     <label onClick={() =>
                     {
-                        getCategories()
                         categories.current = [];
+                        getCategories()
                     }}>
                         {
                             category.name !== undefined ? category.name : 'Категорії'
@@ -151,8 +150,8 @@ const RecursedCombo = (props) =>
                     <span
                         onClick={() =>
                         {
-                            getCategories()
                             categories.current = [];
+                            getCategories()
                         }}>
 
                         <ComboBoxArrowOpenIcon />

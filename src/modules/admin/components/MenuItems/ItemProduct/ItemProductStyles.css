@@ -36,14 +36,20 @@
 }
 
 .item-products-table-head {
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     margin-left: 70px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; */
+
+    display: grid;
+    margin-left: 70px;
+    grid-template-columns: 25% 10% 11% 15% 11% 10%;
+    column-gap: 1%;
+    margin-bottom: 14px;
 }
 
 .item-products-table-head>label {
-    width: 200px;
+    /* width: 200px; */
 
     font-family: 'Montserrat Alternates';
     font-size: 14px;

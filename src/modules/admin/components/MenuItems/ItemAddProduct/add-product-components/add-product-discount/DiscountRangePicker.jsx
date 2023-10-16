@@ -10,10 +10,15 @@ import CalendarIcon from '../../../../../svg/sharedIcons/CalendarIcon.jsx';
 const DiscountRangePicker = (props) =>
 {
     const {
-        discountDates
+        startDiscountDate,
+        endDiscountDate,
+        onStartDateChange,
+        onEndDateChange,
+
     } = props;
 
     const [showCalendar, setShowCalendar] = useState(false);
+
     useEffect(() =>
     {
         if (showCalendar)
@@ -23,22 +28,15 @@ const DiscountRangePicker = (props) =>
     }, [showCalendar])
 
     const [dateRange, setDateRange] = useState({
-        startDate: discountDates.startDate ? new Date(discountDates.startDate) : new Date(), //
-        endDate: discountDates.endDate ? new Date(discountDates.endDate) : new Date(),
+        startDate: startDiscountDate ? new Date(startDiscountDate) : new Date(),
+        endDate: endDiscountDate ? new Date(endDiscountDate) : new Date(),
         key: 'selection',
     });
 
     const handleSelect = (ranges) =>
     {
-        discountDates.startDate = ranges.selection.startDate.getFullYear() + '.' + (ranges.selection.startDate.getMonth() + 1) + '.' + ranges.selection.startDate.getDate()
-
-        //new Date(ranges.selection.endDate.getFullYear(),
-        //ranges.selection.endDate.getMonth() + 1, ranges.selection.endDate.getDate());
-
-        discountDates.endDate = ranges.selection.endDate.getFullYear() + '.' + (ranges.selection.endDate.getMonth() + 1) + '.' + ranges.selection.endDate.getDate()
-        //new Date(ranges.selection.startDate.getFullYear(),
-        //ranges.selection.startDate.getMonth() + 1, ranges.selection.startDate.getDate());
-
+        onStartDateChange(ranges.selection.startDate.getFullYear() + '.' + (ranges.selection.startDate.getMonth() + 1) + '.' + (ranges.selection.startDate.getDate() + 1))
+        onEndDateChange(ranges.selection.endDate.getFullYear() + '.' + (ranges.selection.endDate.getMonth() + 1) + '.' + (ranges.selection.endDate.getDate() + 1))
         setDateRange(ranges.selection);
     };
 

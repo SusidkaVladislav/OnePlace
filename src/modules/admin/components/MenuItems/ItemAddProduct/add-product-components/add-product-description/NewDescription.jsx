@@ -17,24 +17,29 @@ const NewDescription = (props) =>
     const [name, setName] = useState(charachteristicInfo.name ? charachteristicInfo.name : '')
     const [about, setAbout] = useState(charachteristicInfo.about ? charachteristicInfo.about : '')
 
+
     return (
         <div className='new-description-container'>
             <div>
-                <input type="text" value={charachteristicInfo.name} onChange={(event) =>
-                {
-                    setName(event.target.value)
+                <input
+                    disabled={charachteristicInfo.update? true: false}
+                    type="text"
+                    value={charachteristicInfo.name}
+                    onChange={(event) =>
+                    {
+                        setName(event.target.value)
 
-                    if (!charachteristicsValid)
-                        dispatch(setCharachteristicsValid(true))
+                        if (!charachteristicsValid)
+                            dispatch(setCharachteristicsValid(true))
 
-                    dispatch(updateCharachteristic(
-                        {
-                            blockId: charachteristicInfo.blockId,
-                            name: event.target.value,
-                            about: about
-                        }
-                    ))
-                }}
+                        dispatch(updateCharachteristic(
+                            {
+                                blockId: charachteristicInfo.blockId,
+                                name: event.target.value,
+                                about: about
+                            }
+                        ))
+                    }}
                     placeholder='введіть назву'
                     style={{
                         border: (name.length < 1 && !charachteristicsValid) ? '1px solid red' : 'none'

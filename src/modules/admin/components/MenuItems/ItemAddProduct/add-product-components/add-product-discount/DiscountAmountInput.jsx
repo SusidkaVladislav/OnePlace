@@ -5,11 +5,12 @@ import './DiscountAmountInputStyles.css';
 const DiscountAmountInput = (props) =>
 {
     const {
-        percentAmount
+        percentAmount,
+        onPercentAmountChange,
     } = props;
 
 
-    const [discountPercent, setDiscountPercent] = useState(percentAmount.percent? percentAmount.percent : 0);
+    const [discountPercent, setDiscountPercent] = useState(Number(percentAmount) ? Number(percentAmount) : 0);
 
     const timerId = useRef();
     const DURATION = 150;
@@ -27,27 +28,30 @@ const DiscountAmountInput = (props) =>
 
     const changeValueHandler = (event) =>
     {
+        const newPercentAmount = event.target.value;
         setDiscountPercent(discountPercent =>
         {
-            if (event.target.value <= 100 && event.target.value >= 0)
+            if (newPercentAmount <= 100 && newPercentAmount >= 0)
             {
-                percentAmount.percent = event.target.value;
-                return event.target.value;
+                onPercentAmountChange(newPercentAmount);
+                return newPercentAmount;
             }
-            percentAmount.percent = discountPercent;
+            onPercentAmountChange(discountPercent);
             return discountPercent;
         });
     }
-
 
     return (
         <div>
             <label>Знижка</label>
             <div className="discount-amount-wrapper">
-                <input type="number" className='discount-add-product-input'
+                <input
+                    type="number"
+                    className='discount-add-product-input'
                     onKeyDown={handlerKeyDown}
                     onChange={changeValueHandler}
-                    value={discountPercent} />
+                    value={discountPercent}
+                />
 
                 <div className="discount-amount-arrows-container">
                     <span
@@ -61,7 +65,7 @@ const DiscountAmountInput = (props) =>
                         {
                             if (discountPercent < 100)
                             {
-                                percentAmount.percent = Number(discountPercent) + 1;
+                                onPercentAmountChange(Number(discountPercent) + 1);
                                 setDiscountPercent(Number(discountPercent) + 1)
                             }
 
@@ -71,10 +75,10 @@ const DiscountAmountInput = (props) =>
                                 {
                                     if (discountPercent < 100)
                                     {
-                                        percentAmount.percent = discountPercent + 1;
+                                        onPercentAmountChange(discountPercent + 1);
                                         return discountPercent + 1;
                                     }
-                                    percentAmount.percent = discountPercent;
+                                    onPercentAmountChange(discountPercent);
                                     return discountPercent;
                                 });
 
@@ -96,7 +100,7 @@ const DiscountAmountInput = (props) =>
                         {
                             if (discountPercent > 0)
                             {
-                                percentAmount.percent = discountPercent - 1;
+                                onPercentAmountChange(discountPercent - 1);
                                 setDiscountPercent(discountPercent - 1)
                             }
 
@@ -106,10 +110,10 @@ const DiscountAmountInput = (props) =>
                                 {
                                     if (discountPercent > 0)
                                     {
-                                        percentAmount.percent = discountPercent - 1;
+                                        onPercentAmountChange(discountPercent - 1);
                                         return discountPercent - 1;
                                     }
-                                    percentAmount.percent = discountPercent;
+                                    onPercentAmountChange(discountPercent);
                                     return discountPercent;
                                 });
                             }, DURATION);

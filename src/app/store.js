@@ -1,5 +1,6 @@
 import { configureStore, combineReducers, getDefaultMiddleware } from "@reduxjs/toolkit";
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+
 import
 {
     persistStore,
@@ -58,9 +59,10 @@ const store = configureStore({
     devTools: true,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: {
-                ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-            },
+            // serializableCheck: {
+            //     ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+            // },
+            serializableCheck: false,
         }),
 })
 
