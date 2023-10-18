@@ -1,13 +1,145 @@
-/* .body-div {
-  background: rgba(10, 61, 88, 1);
-  padding: 15px;
-  height: 100vh;
-  overflow-y: auto;
-} */
-
-.body-div {
-  background: rgba(10, 61, 88, 1);
-  padding: 15px;
-  min-height: 100vh;
-  height: fit-content;
-}
+:root {
+    --blue1: #0A3D58;
+    --blue2: #3B6479;
+    --blue3: #6C8B9B;
+    --blue4: #9DB1BC;
+    --blue5: #CED8DE;
+    --blue6: #DCE1E3;
+    --brown1: #471915;
+    --brown2: #6C4744;
+    --brown3: #917573;
+    --brown4: #B5A3A1;
+    --brown5: #DAD1D0;
+    --orange1: #D17100;
+    --orange2: #DA8D33;
+    --orange3: #E3AA66;
+    --orange4: #EDC699;
+    --orange5: #F6E3CC;
+    --purple1: #C4A8D3;
+    --purple2: #CBB6D8;
+    --purple3: #DCCBE5;
+    --purple4: #E7DCED;
+    --purple5: #F3EEF6;
+    --gray1: #E9ECEC;
+    --gray2: #E1E3E3;
+    --gray3: #F6F6F6;
+    --red: #B31D21;
+    --green: #3FB914;
+  }
+  
+  h1{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 52px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+  
+  h2{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  h3{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  h4{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+  
+  h5.light{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  h5.bold{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+  
+  .t1-light{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 130%; 
+  }
+  
+  .t1-bold{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  .t2-light{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 130%; 
+  }
+  
+  .t2-medium{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  .t2-bold{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+  
+  .t3-light{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 130%; 
+  }
+  
+  .t3-bold{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }

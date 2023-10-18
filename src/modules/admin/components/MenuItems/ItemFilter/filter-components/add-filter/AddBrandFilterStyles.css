@@ -1,0 +1,32 @@
+.add-brand-filter-container{
+    position: absolute;
+    top: 22%;
+    left: 35%;
+    width: 30%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    border-radius: 26px;
+    background-color: #DCE1E3;
+
+    padding: 20px;
+}
+
+.add-brand-header{
+    display: flex;
+    flex-direction: row;
+    gap: 40%;
+}
+
+.add-brand-header>span {
+    cursor: pointer;
+}
+
+.add-brand-header>label {
+    color: #471915;
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+}

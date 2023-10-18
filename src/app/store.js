@@ -24,11 +24,12 @@ import passwordInputReducer from "../modules/admin/features/servicesState/passwo
 import userRegisterReducer from "../modules/main/features/register/userRegisterSlice";
 import adminCategoryReducer from "../modules/admin/features/adminCategory/adminCategorySlice";
 import adminProductsReducer from "../modules/admin/features/adminProduct/adminProductSlice";
+import adminFilterReducer from "../modules/admin/features/adminFilter/adminFilterSlice";
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['verificationCode', 'passwordInputState', 'userRegister'],
+    blacklist: ['verificationCode', 'passwordInputState', 'userRegister', 'adminFilter'],
     stateReconciler: autoMergeLevel2,
 }
 
@@ -44,8 +45,9 @@ const rootReducer = combineReducers({
     adminOrders: adminOrdersReducer,
     adminCategories: adminCategoryReducer,
     adminProducts: persistReducer(adminProductPersistConfig, adminProductsReducer),
-    adminReviews:adminReviewsReducer,
-    adminMessages:adminMessagesReducer,
+    adminReviews: adminReviewsReducer,
+    adminMessages: adminMessagesReducer,
+    adminFilter: adminFilterReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
     userRegister: userRegisterReducer,
@@ -59,10 +61,10 @@ const store = configureStore({
     devTools: true,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            // serializableCheck: {
-            //     ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-            // },
-            serializableCheck: false,
+            serializableCheck: {
+                ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+            },
+            //serializableCheck: false,
         }),
 })
 
