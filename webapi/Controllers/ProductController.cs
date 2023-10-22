@@ -16,7 +16,7 @@ namespace webapi.Controllers
             _productService = productService;
         }
 
-        [HttpGet("product/{id}")]
+        [HttpGet]
        // [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {

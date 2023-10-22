@@ -29,10 +29,10 @@ namespace webapi.Controllers
         public async Task<IActionResult> Login(LoginPayload login)
         {
             var result = await _accountService.LoginAsync(login);
-            if(result.Succeeded)
+            if(result != null)
                 return Ok(result);
             else
-                return BadRequest(result);
+                return BadRequest("Invalid Credentials");
         }
 
         [HttpPost("logout")]

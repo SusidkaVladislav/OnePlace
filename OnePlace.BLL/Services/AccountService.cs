@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Validators;
 using OnePlace.BOL.AccoountPayload;
@@ -8,6 +9,10 @@ using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Entities.ViewModels;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
+using System.Text;
 
 namespace OnePlace.BLL.Services
 {
@@ -66,7 +71,7 @@ namespace OnePlace.BLL.Services
             return result;
         }
 
-        public async Task<SignInResult> LoginAsync(LoginPayload loginPayload)
+        public async Task<string> LoginAsync(LoginPayload loginPayload)
         {
             var login = _mapper.Map<LoginDTO>(loginPayload);
 
@@ -77,12 +82,42 @@ namespace OnePlace.BLL.Services
 
             SignInResult result = await _signInManager
                     .PasswordSignInAsync(login.Email, login.Password, login.RememberMe, lockoutOnFailure: false);
-            return result;
+
+            if (result.Succeeded)
+            {
+                User user = _userManager.FindByEmailAsync(login.Email).Result;
+                return GetToken(user);
+            }
+            else
+                return null;
         }
 
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public string GetToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("UserId", user.Id.ToString()),
+                new Claim("Email", user.Email)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: signIn);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         //private string GenerateToken(int userId, string username)
