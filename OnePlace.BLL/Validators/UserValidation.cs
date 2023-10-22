@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnePlace.BOL.Exceptions;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Entities.ViewModels;
-using OnePlace.DAL.Interfaces;
-using System.Globalization;
 
 namespace OnePlace.BLL.Validators
 {
@@ -29,18 +26,18 @@ namespace OnePlace.BLL.Validators
                 throw new ArgumentNullException(nameof(email) + " is null or empty");
             User? user = await _userManager.FindByEmailAsync(email);
             if (user != null)
-                throw new BusinessException("Користувач з такою електронною адресою уже існує");
+                throw new BusinessException("Користувач з такою електронною адресою уже існує!");
         }
 
         public async Task PhoneValid(string phoneNumber)
         {
             if (string.IsNullOrEmpty(phoneNumber))
-                throw new ArgumentNullException(nameof(phoneNumber) + " is null or empty");
+                throw new ArgumentNullException("Некоректний телефон!");
             User? user = await _userManager.Users
                 .Where(u=>u.PhoneNumber == phoneNumber).FirstOrDefaultAsync();
             
             if (user != null)
-                throw new BusinessException("Користувач з таким номером телефону уже існує");
+                throw new BusinessException("Користувач з таким номером телефону уже існує!");
         }
     }
 }

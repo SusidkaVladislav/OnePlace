@@ -11,6 +11,7 @@ namespace OnePlace.DAL.Interfaces
         Task<IEnumerable<T>> FindAsync(Func<T, Boolean> predicate);
         void Create(T item);
         void Update(T item);
+        Task<int> GetAllCount();
         Task DeleteAsync(TKey key);
         Task<PaginatedList<T>> Filter<S>(S searchParamsModel) where S : BaseSearchParams;
     }

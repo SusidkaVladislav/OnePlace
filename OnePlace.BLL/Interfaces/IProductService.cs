@@ -40,5 +40,8 @@ namespace OnePlace.BLL.Interfaces
         /// <param name="productId"></param>
         /// <returns></returns>
         Task<int> DeleteProduct(int productId);
+
+        Task<int> GetProductCount();
+        Task<List<ProductToReturnAllDTO>> GetAllProducts(int? categoryId = null);
     }
 }

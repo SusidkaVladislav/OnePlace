@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
-using OnePlace.BLL.Validators;
-using OnePlace.BOL.CategoryDTO;
+using OnePlace.BOL;
+using OnePlace.BOL.Description;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
@@ -14,11 +13,8 @@ using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 
 namespace OnePlace.BLL.Services
 {
@@ -56,12 +52,12 @@ namespace OnePlace.BLL.Services
         public async Task<int> DeleteMessage(int id)
         {
             if (id <= 0)
-                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+                throw new ArgumentNullException("Некоректний ID!");
 
             var message = await _unitOfWork.Messages.GetAsync(id);
 
             if (message is null)
-                throw new NotFoundException(nameof(message) + " message with this id does not exist");
+                throw new NotFoundException("Повідомлення з таким ID не існує!");
 
             await _unitOfWork.Messages.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
@@ -100,11 +96,11 @@ namespace OnePlace.BLL.Services
         public async Task<int> DeleteReview(int id)
         {
             if (id <= 0)
-                throw new ArgumentNullException(nameof(id) + " некоректний ID");
+                throw new ArgumentNullException("Некоректний ID!");
 
             var review = await _unitOfWork.Reviews.GetAsync(id);
             if (review is null)
-                throw new NotFoundException(nameof(review) + " review with this id does not exist");
+                throw new NotFoundException("Відгук з таким ID не існує!");
           
             await _unitOfWork.ReviewReplies.DeleteAsync(id);
             await _unitOfWork.Reviews.DeleteAsync(id);
@@ -287,6 +283,171 @@ namespace OnePlace.BLL.Services
             await _unitOfWork.SaveAsync();
 
             return orderPayload.Id;
+        }
+
+        public async Task<List<ManufacturerDTO>> GetAllManufacturers()
+        {
+            return _mapper.Map<List<ManufacturerDTO>>(await _unitOfWork.Manufacturers.GetAllAsync());
+        }
+    
+        public async Task<List<ManufacturerCountryDTO>> GetAllCountries()
+        {
+            return _mapper.Map<List<ManufacturerCountryDTO>>(await _unitOfWork.ManufactureCountries.GetAllAsync());
+        }
+
+        public async Task<List<ColorDTO>> GetAllColors()
+        {
+            return _mapper.Map<List<ColorDTO>>(await _unitOfWork.Colors.GetAllAsync());
+        }
+
+        public async Task<List<DescriptionHeader>> GetDescriptionsByCategoryId(int categoryId)
+        {
+            if (categoryId < 1)
+            {
+                throw new ArgumentException("Недійсне id категорії");
+            }
+            var descriptions = await _unitOfWork.Descriptions.FindAsync(
+                d => d.CategoryId == categoryId);
+            
+            List<DescriptionHeader> result = new List<DescriptionHeader>();
+            foreach ( var description in descriptions ) 
+            {
+                result.Add(new DescriptionHeader()
+                {
+                    Id = description.Id,
+                    Name = description.Name
+                });
+            }
+            return result;
+        }
+
+        public async Task<int> CreateColor(ColorToAdd colorToAdd)
+        {
+            if(colorToAdd.Name.Length == 0)
+            {
+                throw new BusinessException("Немає назви кольору!");
+            }
+            if(_unitOfWork.Colors.FindAsync(c=>c.Name== colorToAdd.Name).Result.Count() > 0)
+            {
+                throw new BusinessException("Колір з такою назвою уже існує!");
+            }
+
+            DAL.Entities.Color color = _mapper.Map<DAL.Entities.Color>(colorToAdd);
+
+            _unitOfWork.Colors.Create(color);
+        
+            await _unitOfWork.SaveAsync();
+            return color.Id;
+        }
+
+        public async Task<int> DeleteColor(int colorId)
+        {
+            if (colorId <= 0)
+                throw new ArgumentNullException("Некоректний ID кольору!");
+
+            if(_unitOfWork.ProductColors.FindAsync(c=>c.ColorId==colorId).Result.Count() > 0)
+                throw new BusinessException("Цей колір використовуєтсья деякими продуктами!");
+            
+
+            await _unitOfWork.Colors.DeleteAsync(colorId);
+            await _unitOfWork.SaveAsync();
+            return colorId;
+        }
+
+        public async Task<int> UpdateColor(ColorDTO color)
+        {
+            if(_unitOfWork.Colors.FindAsync(c=>c.Id == color.Id).Result.FirstOrDefault() is not null)
+            {
+                DAL.Entities.Color updatedColor = _mapper.Map<DAL.Entities.Color>(color);
+                _unitOfWork.Colors.Update(updatedColor);
+                await _unitOfWork.SaveAsync();
+                return updatedColor.Id;
+            }
+            throw new BusinessException("Неіснуючий колір!");
+        }
+
+        public async Task<int> CreateCountry(string countryName)
+        {
+            if (countryName.Length < 2)
+                throw new ArgumentException("Немає назви країни!");
+            if(_unitOfWork.ManufactureCountries.FindAsync(c=>c.Name.ToLower() == countryName.ToLower()).Result.Count() > 0)
+            {
+                throw new BusinessException("Така країна вже існує!");
+            }
+
+            ManufactureCountry country = new ManufactureCountry
+            {
+                Name= countryName,
+            };
+            _unitOfWork.ManufactureCountries.Create(country);
+            await _unitOfWork.SaveAsync();
+            return country.Id;
+        }
+
+        public async Task<int> DeleteCountry(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentNullException("Некоректний ID країни!");
+            if (_unitOfWork.Products.FindAsync(p=>p.ManufacturerCountryId == id).Result.FirstOrDefault() is not null)
+                throw new BusinessException("Ця країна використовується деякими продуктами!");
+        
+            await _unitOfWork.ManufactureCountries.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+            return id;
+        }
+
+        public async Task<int> UpdateCountry(ManufacturerCountryDTO country)
+        {
+            if (_unitOfWork.ManufactureCountries.FindAsync(c => c.Id == country.Id).Result.FirstOrDefault() is not null)
+            {
+                ManufactureCountry updatedCountry= _mapper.Map<ManufactureCountry>(country);
+                _unitOfWork.ManufactureCountries.Update(updatedCountry);
+                await _unitOfWork.SaveAsync();
+                return updatedCountry.Id;
+            }
+            throw new BusinessException("Неіснуюча країна!");
+        }
+
+        public async Task<int> CreateBrand(string brandName)
+        {
+            if (brandName.Length < 2)
+                throw new ArgumentException("Немає назви виробника!");
+            if (_unitOfWork.Manufacturers.FindAsync(m => m.Name.ToLower() == brandName.ToLower()).Result.Count() > 0)
+            {
+                throw new BusinessException("Такий виробник вже існує!");
+            }
+
+            Manufacturer brand = new Manufacturer
+            {
+                Name = brandName,
+            };
+            _unitOfWork.Manufacturers.Create(brand);
+            await _unitOfWork.SaveAsync();
+            return brand.Id;
+        }
+
+        public async Task<int> DeleteBrand(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentNullException("Некоректний ID виробника!");
+            if (_unitOfWork.Products.FindAsync(p => p.Manufacturer.Id == id).Result.FirstOrDefault() is not null)
+                throw new BusinessException("Цей виробник використовується деякими продуктами!");
+
+            await _unitOfWork.Manufacturers.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+            return id;
+        }
+
+        public async Task<int> UpdateBrand(ManufacturerDTO brand)
+        {
+            if (_unitOfWork.Manufacturers.FindAsync(m => m.Id == brand.Id).Result.FirstOrDefault() is not null)
+            {
+                Manufacturer updatedBrand= _mapper.Map<Manufacturer>(brand);
+                _unitOfWork.Manufacturers.Update(updatedBrand);
+                await _unitOfWork.SaveAsync();
+                return updatedBrand.Id;
+            }
+            throw new BusinessException("Неіснуючий виробник!");
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using OnePlace.BOL.Exceptions;
+﻿using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.OrderDTO;
-using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 
 namespace OnePlace.BLL.Validators
@@ -54,12 +52,12 @@ namespace OnePlace.BLL.Validators
                 if (p is not null)
                 {
                     if (p.Quantity < product.Quantity)
-                        throw new BusinessException("product with productId={" + product.ProductId +
-                        "} and colorId={" + product.ColorId + "} is not enough in the warehouse");
+                        throw new BusinessException("Товару з ID={" + product.ProductId +
+                        "} та кольором ID={" + product.ColorId + "} не достатньо на складі!");
                 }
                 else
-                    throw new BusinessException("product with productId={" + product.ProductId +
-                        "} and colorId={" + product.ColorId + "} not exists");
+                    throw new BusinessException("Товару з ID={" + product.ProductId +
+                        "} і кольором ID={" + product.ColorId + "} немає!");
             }
         }
     }

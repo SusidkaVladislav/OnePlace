@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Services;
+using OnePlace.BOL;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
 using OnePlace.BOL.Password;
@@ -139,6 +140,97 @@ namespace webapi.Controllers
         public async Task<IActionResult> AddReviewReply(ReviewReplyPayload reviewReply)
         {
             var result = await _adminService.AddReviewReply(reviewReply);
+            return Ok(result);
+        }
+
+        [HttpGet("getAllBrands")]
+        public async Task<IActionResult> GetAllBrands()
+        {
+            var result = await _adminService.GetAllManufacturers();
+            return Ok(result);
+        }
+
+        [HttpGet("getAllCountries")]
+        public async Task<IActionResult> GetAllCountries()
+        {
+            var result = await _adminService.GetAllCountries();
+            return Ok(result);
+        }
+
+        [HttpGet("getAllColors")]
+        public async Task<IActionResult> GetAllColors()
+        {
+            var result = await _adminService.GetAllColors();
+            return Ok(result);
+        }
+        
+        [HttpGet("getDescriptionsByCategory")]    
+        public async Task<IActionResult> GetDescriptionsByCategory(int categoryId)
+        {
+            var result = await _adminService.GetDescriptionsByCategoryId(categoryId);
+            return Ok(result);
+        }
+
+        [HttpPost("createColor")]
+        public async Task<IActionResult> CreateColor(ColorToAdd color)
+        {
+            var result = await _adminService.CreateColor(color);
+            return Ok(result);
+        }
+
+        [HttpDelete("deleteColor/{id}")]
+        public async Task<IActionResult> CreateColor(int id)
+        {
+            var result = await _adminService.DeleteColor(id);
+            return Ok(result);
+        }
+
+        [HttpPut("updateColor")]
+        public async Task<IActionResult> UpdateColor(ColorDTO color)
+        {
+            var result = await _adminService.UpdateColor(color);
+            return Ok(result);
+        }
+
+        [HttpPost("createCountry/{country}")]
+        public async Task<IActionResult> CreateCountry(string country)
+        {
+            var result = await _adminService.CreateCountry(country);
+            return Ok(result);
+        }
+
+        [HttpDelete("deleteCountry/{id}")]
+        public async Task<IActionResult> DeleteCountry(int id)
+        {
+            var result = await _adminService.DeleteCountry(id);
+            return Ok(result);
+        }
+
+        [HttpPut("updateCountry")]
+        public async Task<IActionResult> UpdateCountry(ManufacturerCountryDTO country)
+        {
+            var result = await _adminService.UpdateCountry(country);
+            return Ok(result);
+        }
+
+        [HttpPost("createBrand/{brand}")]
+        public async Task<IActionResult> CreateBrand(string brand)
+        {
+            var result = await _adminService.CreateBrand(brand);
+            return Ok(result);
+        }
+
+        [HttpDelete("deleteBrand/{id}")]
+        public async Task<IActionResult> DeleteBrand(int id)
+        {
+            var result = await _adminService.DeleteBrand(id);
+            return Ok(result);
+        }
+
+        [HttpPut("updateBrand")]
+        public async Task<IActionResult> UpdateBrand(ManufacturerDTO brand)
+        {
+            var result = await _adminService.UpdateBrand(brand);
             return Ok(result);
         }
     }

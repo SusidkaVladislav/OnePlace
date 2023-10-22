@@ -1,4 +1,7 @@
-﻿using OnePlace.BOL.Message;
+﻿using Microsoft.Extensions.ObjectPool;
+using OnePlace.BOL;
+using OnePlace.BOL.Description;
+using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.ReviewReply;
@@ -29,5 +32,18 @@ namespace OnePlace.BLL.Interfaces
         Task<ReviewReplyDTO> GetReviewReply(int id);
         Task<int> DeleteReviewReply(int id);
         Task<int> AddReviewReply(ReviewReplyPayload reviewReply);
+        Task<List<ManufacturerDTO>> GetAllManufacturers();
+        Task<List<ManufacturerCountryDTO>> GetAllCountries();
+        Task<List<ColorDTO>> GetAllColors();
+        Task<List<DescriptionHeader>> GetDescriptionsByCategoryId(int categoryId);
+        Task<int> CreateColor(ColorToAdd color);
+        Task<int> DeleteColor(int colorId);
+        Task<int> UpdateColor (ColorDTO color);
+        Task<int> CreateCountry(string colorName);
+        Task<int> DeleteCountry(int id);
+        Task<int> UpdateCountry(ManufacturerCountryDTO country);
+        Task<int> CreateBrand (string brandName);
+        Task<int> DeleteBrand(int id);
+        Task<int> UpdateBrand(ManufacturerDTO brand);
     }
 }

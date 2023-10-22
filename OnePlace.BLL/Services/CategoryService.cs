@@ -140,7 +140,8 @@ namespace OnePlace.BLL.Services
         /// <returns></returns>
         public async Task<List<PureCategory>> GetCategories()
         {
-            var mainCategories = await _unitOfWork.Categories.FindAsync(c=>c.ParentCategoryId == null);   
+            var mainCategories = await _unitOfWork.Categories.FindAsync(c=>c.ParentCategoryId == null);
+
             List<PureCategory> res = _mapper.Map<List<PureCategory>>(mainCategories);
             
             return res;

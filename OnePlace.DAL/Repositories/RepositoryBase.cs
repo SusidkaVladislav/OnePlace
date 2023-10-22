@@ -23,6 +23,11 @@ namespace OnePlace.DAL.Repositories
            db.Set<T>().Add(item);
         }
 
+        public Task<int> GetAllCount()
+        {
+            return db.Set<T>().CountAsync();
+        }
+
         public virtual Task DeleteAsync(TKey key)
         {
             throw new NotImplementedException();

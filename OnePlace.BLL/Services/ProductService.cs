@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
@@ -15,6 +16,7 @@ using OnePlace.BOL.ProductPayload;
 using OnePlace.BOL.Sale;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
+using System.Collections.Generic;
 
 namespace OnePlace.BLL.Services
 {
@@ -54,10 +56,10 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException("Неіснуюча категорія");
 
             DAL.SearchParams.ProductSearchParams searchParams = _mapper.Map<DAL.SearchParams.ProductSearchParams>(filters);
-            
+
             var products = await _unitOfWork.Products.Filter(searchParams);
 
-            List<ProductListModel> productListModels = new List<ProductListModel>();    
+            List<ProductListModel> productListModels = new List<ProductListModel>();
 
             //Отримання користувача
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
@@ -81,7 +83,7 @@ namespace OnePlace.BLL.Services
 
                 productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
 
-               
+
 
                 //Чи є цей товар в улуюблених товарах користувача
                 var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
@@ -291,12 +293,12 @@ namespace OnePlace.BLL.Services
         public async Task<int> DeleteProduct(int productId)
         {
             if (productId <= 0)
-                throw new ArgumentNullException(nameof(productId) + " некоректний ID");
+                throw new ArgumentNullException("Некоректний ID!");
 
             var product = await _unitOfWork.Products.GetAsync(productId);
 
             if (product is null)
-                throw new NotFoundException(nameof(product) + " немає такого продукту");
+                throw new NotFoundException($"Немає продукту з ID={productId}");
 
             //Спочатку йде видалення записів з таблички ProductDescriptions
             foreach (var productDescription in product.ProductDescriptions)
@@ -393,13 +395,13 @@ namespace OnePlace.BLL.Services
                     await _unitOfWork.SaveAsync();
                 }
                 else
-                   details.Sale = new SaleDetails
-                   {
+                    details.Sale = new SaleDetails
+                    {
                         StartDate = sale.StartDate,
                         EndDate = sale.EndDate,
                         DiscountPercent = sale.DiscountPercent,
                         Id = sale.Id
-                   };
+                    };
             }
 
             #endregion
@@ -412,7 +414,7 @@ namespace OnePlace.BLL.Services
 
                 details.ProductColors[i].Color = _mapper.Map<ColorDTO>(color);
             }
-            
+
             #endregion
 
             return details;
@@ -428,18 +430,18 @@ namespace OnePlace.BLL.Services
         /// <exception cref="BusinessException"></exception>
         public async Task<int> UpdateProduct(ProductUpdatePayload productPayload)
         {
-            if (productPayload is null) throw new ArgumentNullException(nameof(productPayload) + " is null");
+            if (productPayload is null) throw new ArgumentNullException("Некоректні дані");
 
             ProductUpdateDTO updatedProduct = _mapper.Map<ProductUpdateDTO>(productPayload);
 
             if (updatedProduct is null)
-                throw new NotFoundException(nameof(ProductUpdateDTO) + " null");
+                throw new NotFoundException("Некоректні дані");
 
             Product productToUpdate = _unitOfWork.Products.FindAsync(p => p.Id == updatedProduct.Id).Result.FirstOrDefault();
 
             #region Validation
             //Якщо такого продукту взагалі не існує
-            if (productToUpdate is null) throw new NotFoundException(nameof(ProductUpdateDTO) + " not exists!");
+            if (productToUpdate is null) throw new NotFoundException("Неіснуючий товар");
 
             ProductValidation validation = new ProductValidation(_unitOfWork);
 
@@ -448,9 +450,14 @@ namespace OnePlace.BLL.Services
             try
             {
                 validation.CodeValid(updatedProduct.Code);
-                
-               await validation
-                    .ProductColorsValid(updatedProduct.ColorDetails);
+
+                var productByCodeCount = _unitOfWork.Products.FindAsync(x => x.Code == updatedProduct.Code).Result.Count();
+
+                if (productByCodeCount > 1)
+                    throw new BusinessException("Товар з таким кодом вже існує!");
+
+                await validation
+                     .ProductColorsValid(updatedProduct.ColorDetails);
 
                 var countryId = await validation.ManufacturerCountryValidAsync(updatedProduct.ManufacturerCountryId);
                 productToUpdate.ManufacturerCountryId = countryId;
@@ -458,7 +465,7 @@ namespace OnePlace.BLL.Services
                 var manufacturerId = await validation.ManufacturerValidAsync(updatedProduct.ManufacturerId);
                 productToUpdate.ManufacturerId = manufacturerId;
 
-                validation.SaleValid(updatedProduct.Sale);
+                //validation.SaleValid(updatedProduct.Sale);
             }
             catch (ArgumentNullException ex)
             {
@@ -485,7 +492,7 @@ namespace OnePlace.BLL.Services
                 {
                     ProductId = updatedProduct.Id,
                     Price = productColor.Price,
-                    Quantity= productColor.Quantity,
+                    Quantity = productColor.Quantity,
                     ColorId = productColor.ColorId
                 });
             }
@@ -495,18 +502,18 @@ namespace OnePlace.BLL.Services
             #region Picures validation
 
             if (updatedProduct.Pictures.Count == 0)
-                throw new ArgumentNullException(nameof(Picture) + " no pictures");
+                throw new ArgumentNullException("Немає фотографій!");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() == 0)
-                throw new BusinessException("no title picture");
+                throw new BusinessException("Немає головної фотографії!");
             if (updatedProduct.Pictures.Where(p => p.IsTitle == true).Count() >= 2)
-                throw new BusinessException("more than one title pictures");
+                throw new BusinessException("Головна фотографія має бути лише одна!");
 
             #endregion
 
             #region Photos
             //Якщо у відредагованого товару немає фотографій
             if (updatedProduct.Pictures.Count == 0)
-                throw new BusinessException(nameof(updatedProduct.Pictures) + " add photos");
+                throw new BusinessException("Немає фотографій!");
 
             //Всі фотографії які відносяться до зміненого товару
             List<Picture> updatedPictures = new List<Picture>();
@@ -579,11 +586,14 @@ namespace OnePlace.BLL.Services
 
             #region Sale
             Sale sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == productToUpdate.Id).Result.FirstOrDefault();
+            
             //Якщо у відредагованому товарі присутня знижка
             if (updatedProduct.Sale != null)
             {
-                if (sale is null) //Якщо знижки на цей товар ще не було, то створити
-                {
+                if (sale is null && updatedProduct.Sale.DiscountPercent > 0) //Якщо знижки на цей товар ще не було, то створити
+                {   
+                    validation.SaleValid(updatedProduct.Sale);
+
                     sale = new Sale
                     {
                         ProductId = productToUpdate.Id,
@@ -593,8 +603,15 @@ namespace OnePlace.BLL.Services
                     };
                     _unitOfWork.Sales.Create(sale);
                 }
-                else //Якщо знижка вже існувала раніше, то просто оновити запис
+                else if(updatedProduct.Sale.DiscountPercent > 0) //Якщо знижка вже існувала раніше, то просто оновити запис
                 {
+                    if (DateTime.Compare(updatedProduct.Sale.StartDate.Date, sale.StartDate.Date) < 0
+                   || DateTime.Compare(updatedProduct.Sale.EndDate.Date, DateTime.UtcNow.Date) < 0)
+                        throw new BusinessException("Дата початку та кінця акції не може бути раніша за сьогоднішню!");
+                    if (DateTime.Compare(updatedProduct.Sale.StartDate.Date, updatedProduct.Sale.EndDate.Date) >= 0)
+                        throw new BusinessException("Дата закінчення акції не може бути меншою ніж дата початку!");
+                    if (updatedProduct.Sale.DiscountPercent > 100 || updatedProduct.Sale.DiscountPercent < 0)
+                        throw new BusinessException("Некоректний відсоток знижки!");
                     sale.StartDate = updatedProduct.Sale.StartDate;
                     sale.EndDate = updatedProduct.Sale.EndDate;
                     sale.DiscountPercent = updatedProduct.Sale.DiscountPercent;
@@ -709,7 +726,7 @@ namespace OnePlace.BLL.Services
             List<int> colorIds = productToUpdate.ProductColors.Select(c => c.ColorId).ToList();
 
             List<ProductColor> productColorsForDelete = _unitOfWork.ProductColors
-                .FindAsync(pc => pc.ProductId == productToUpdate.Id 
+                .FindAsync(pc => pc.ProductId == productToUpdate.Id
                 && !colorIds.Contains(pc.ColorId)).Result.ToList();
 
             foreach (ProductColor colorDelete in productColorsForDelete)
@@ -723,7 +740,7 @@ namespace OnePlace.BLL.Services
             await _unitOfWork.SaveAsync();
             foreach (ProductColor productColor in productToUpdate.ProductColors)
             {
-                if(await _unitOfWork.ProductColors
+                if (await _unitOfWork.ProductColors
                     .GetAsync(new Composite2Key
                     {
                         Column1 = updatedProduct.Id,
@@ -742,23 +759,74 @@ namespace OnePlace.BLL.Services
             return productToUpdate.Id;
         }
 
+        public async Task<int> GetProductCount()
+        {
+            return await _unitOfWork.Products.GetAllCount();
+        }
+
+        public async Task<List<ProductToReturnAllDTO>> GetAllProducts(int? categoryId = null)
+        {
+            List <Product> products = new List<Product>();
+            if (categoryId != null)
+            {
+                products = _unitOfWork.Products.FindAsync(product => product.CategoryId == categoryId).Result.ToList();
+            }
+            else
+            {
+                products = _unitOfWork.Products.GetAllAsync().Result.ToList();
+            }
+
+
+            List<ProductToReturnAllDTO> res = new List<ProductToReturnAllDTO>();
+
+            foreach (var product in products)
+            {
+
+                ProductToReturnAllDTO tmp = new ProductToReturnAllDTO
+                {
+                    Id = product.Id,
+                    Code = product.Code,
+                    Name = product.Name,
+                };
+                foreach (var colorPrice in product.ProductColors)
+                {
+                    var color = _unitOfWork
+                    .Colors.FindAsync(c => c.Id == colorPrice.ColorId).Result.FirstOrDefault();
+                    
+                    ProductToReturnAllDTO productToReturnAll = new ProductToReturnAllDTO
+                    {
+                        Id=tmp.Id,
+                        Code = tmp.Code,
+                        Name = tmp.Name,
+                        Color = color.Name,
+                        Price = colorPrice.Price,
+                        Quantity = colorPrice.Quantity,
+                    };
+
+                    res.Add(productToReturnAll);
+                }
+            }
+
+            return res;
+        }
+
         private async Task DeleteUnusedDescriptions(int categoryId)
         {
             //Всі характеристики з переданої категорії
-            var descroptions = await _unitOfWork.Descriptions.FindAsync(d=>d.CategoryId == categoryId);
+            var descroptions = await _unitOfWork.Descriptions.FindAsync(d => d.CategoryId == categoryId);
 
             var isUsed = 0;
             foreach (var description in descroptions)
             {
                 isUsed = _unitOfWork.ProductDescriptions
                     .FindAsync(pd => pd.DescriptionId == description.Id).Result.Count();
-            
-                if(isUsed == 0)
+
+                if (isUsed == 0)
                 {
                     await _unitOfWork.Descriptions.DeleteAsync(description.Id);
                 }
             }
             await _unitOfWork.SaveAsync();
         }
-    }   
+    }
 }

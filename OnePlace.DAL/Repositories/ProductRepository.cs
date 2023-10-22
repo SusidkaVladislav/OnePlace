@@ -15,7 +15,7 @@ namespace OnePlace.DAL.Repositories
         /// <summary>
         /// Кількість товарів які повертаються на клієнт
         /// </summary>
-        private const int LIMIT = 30;
+        //private const int LIMIT = 30;
 
         public override async Task DeleteAsync(int id)
         {
@@ -41,6 +41,7 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
                 .Include(o => o.ProductPictures)
+                .Include(o=>o.ProductColors)
                 .Where(predicate).ToList());
         }
 
@@ -131,8 +132,8 @@ namespace OnePlace.DAL.Repositories
                     .Include(o => o.ProductColors);
 
                 //Виконання предикату
-                query = query.Where(predicate).Skip((searchParams.Page.Value - 1) * LIMIT)
-                    .Take(LIMIT);
+                query = query.Where(predicate).Skip((searchParams.Page.Value - 1) * searchParams.Limit.Value)
+                    .Take(searchParams.Limit.Value);
 
                 //Всіх продуктів для повернення
                 var totalCount = await query.CountAsync();
@@ -170,7 +171,9 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await db.Products.Include(o => o.ProductPictures).ToListAsync();
+            return await db.Products
+                .Include(o => o.ProductPictures)
+                .Include(o=>o.ProductColors).ToListAsync();
         }
     }
 }

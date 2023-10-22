@@ -16,7 +16,7 @@ namespace webapi.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("product/{id}")]
        // [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -26,30 +26,44 @@ namespace webapi.Controllers
 
         [HttpPost("search")]
         //[Authorize(Roles = "admin, user")]
-        public async Task<IActionResult> GetFilteredProducts([FromBody] ProductSearchParams filter)
+        public async Task<IActionResult> GetFilteredProducts([FromBody]ProductSearchParams filter)
         {
             var result = await _productService.FilterProduct(filter);
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("addProduct")]
         public async Task<IActionResult> AddProduct(ProductCreatePayload product)
         {
             var result = await _productService.AddProduct(product);
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("updateProduct")]
         public async Task<IActionResult> UpdateProduct(ProductUpdatePayload product)
         {
             var result = await _productService.UpdateProduct(product);
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("deleteProduct")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var result = await _productService.DeleteProduct(id);
+            return Ok(result);
+        }
+
+        [HttpGet("getAllCount")]
+        public async Task<IActionResult> GetAllProductCount()
+        {
+            var result = await _productService.GetProductCount();
+            return Ok(result);
+        }
+
+        [HttpGet("getAllProducts")]
+        public async Task<IActionResult> GetAllProducts(int? categoryId = null)
+        {
+            var result = await _productService.GetAllProducts(categoryId);
             return Ok(result);
         }
     }
