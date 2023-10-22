@@ -105,30 +105,8 @@
 
 .edit-product-recommend-container {
     display: flex;
+    margin-top: 10px;
     align-items: center;
-    gap: 15px;
-}
-
-.edit-product-recommend-container>input {
-    width: 24px;
-    height: 24px;
-    padding: 10px;
-    border-radius: 2px;
-    border: 1px;
-    gap: 10px;
-    border: 1px solid #6C8B9B
-}
-
-.edit-product-recommend-container>label {
-
-    text-align: center;
-
-    font-family: 'Montserrat Alternates';
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 130%;
-    color: #0A3D58;
 }
 
 .edit-product-left-side-container-4 {
@@ -159,7 +137,7 @@
 
     color: #F6F6F6;
     text-align: center;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -181,7 +159,7 @@
     flex-direction: column;
 }
 
-.edit-product-add-characteristic-btn{
+.edit-product-add-characteristic-btn {
     display: flex;
     width: 424px;
     height: 50px;
@@ -194,7 +172,7 @@
     border: none;
     color: #FFF;
     text-align: center;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-size: 18px;
     font-style: normal;
     font-weight: 500;

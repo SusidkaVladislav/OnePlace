@@ -43,7 +43,7 @@ const DiscountAmountInput = (props) =>
 
     return (
         <div>
-            <label>Знижка</label>
+            <label className='discount-amount-header-label'>Знижка(%)</label>
             <div className="discount-amount-wrapper">
                 <input
                     type="number"

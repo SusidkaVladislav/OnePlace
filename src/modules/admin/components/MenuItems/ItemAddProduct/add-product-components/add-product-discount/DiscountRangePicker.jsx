@@ -77,7 +77,7 @@ const DiscountRangePicker = (props) =>
 
     return (
         <div>
-            <label>Термін дії знижки</label>
+            <label className='discount-range-picker-header-label'>Термін дії знижки</label>
             <div className='date-range-container'>
                 <div
                     className='date-range-input'

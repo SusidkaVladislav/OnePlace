@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Dropdown from './Dropdown';
 import NestedMenuItem from './NestedMenuItem';
 import MenuItem from "@mui/material/MenuItem";
 import ComboBoxArrowOpenIcon from '../../svg/sharedIcons/ComboboxArrowOpenIcon';
+import ComboBoxArrowOpenIcon2 from '../../svg/sharedIcons/ComboBoxArrowOpenIcon2';
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import './RecursedComboStyles.css';
 
@@ -20,7 +21,7 @@ const RecursedCombo = (props) =>
     } = props;
 
 
-
+    const [isOpen, setIsOpen] = useState(false)
     var categories = useRef([])
 
     useEffect(() =>
@@ -90,8 +91,12 @@ const RecursedCombo = (props) =>
             {
                 result.push(
                     <MenuItem
-                        onClick={() => onCatClick(childrens[i].id, childrens[i].name, childrens[i].parentCategoryId)}>
-                        <p>{childrens[i].name}</p>
+                        onClick={() =>
+                        {
+                            onCatClick(childrens[i].id, childrens[i].name, childrens[i].parentCategoryId)
+                            setIsOpen(false)
+                        }}>
+                        <p className='category-option-span'>{childrens[i].name}</p>
                     </MenuItem>
                 )
             }
@@ -118,9 +123,13 @@ const RecursedCombo = (props) =>
             {
                 categories.current.push(
                     <MenuItem
-                        onClick={() => onCatClick(mainCategories.current[i].id, mainCategories.current[i].name, null)}
+                        onClick={() =>
+                        {
+                            onCatClick(mainCategories.current[i].id, mainCategories.current[i].name, null)
+                            setIsOpen(false);
+                        }}
                     >
-                        <p>{mainCategories.current[i].name}</p>
+                        <p className='category-option-span'>{mainCategories.current[i].name}</p>
                     </MenuItem>
                 )
             }
@@ -136,10 +145,12 @@ const RecursedCombo = (props) =>
     return (
         <Dropdown
             trigger={
-                <div className='category-select' style={validBorderStyles}>
+                <div className={!isOpen ? "category-select" : "category-select is-open"} style={validBorderStyles}
+                >
                     <label onClick={() =>
                     {
                         categories.current = [];
+                        setIsOpen(!isOpen);
                         getCategories()
                     }}>
                         {
@@ -154,7 +165,11 @@ const RecursedCombo = (props) =>
                             getCategories()
                         }}>
 
-                        <ComboBoxArrowOpenIcon />
+                        {
+                            isOpen ?
+                                <ComboBoxArrowOpenIcon2 /> : <ComboBoxArrowOpenIcon />
+
+                        }
 
                     </span>
                 </div>

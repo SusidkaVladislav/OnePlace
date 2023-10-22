@@ -34,6 +34,14 @@
     background-color: #F6F6F6;
     border: 0;
     padding-left: 10px;
+
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
 }
 
 .select-color {
@@ -51,4 +59,12 @@
     background-image: url(/src/modules/admin/svg/sharedIcons/ComboboxArrowOpenIcon.svg);
     background-repeat: no-repeat;
     background-position: 170px;
+
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
 }

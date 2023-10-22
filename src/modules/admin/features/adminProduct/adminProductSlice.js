@@ -452,6 +452,10 @@ export const getCharacteristicsFromCategory = createAsyncThunk('adminProducts/ge
     }
 })
 
+function sortByName(a, b) {
+    return a.name.localeCompare(b.name);
+}
+
 const adminProductsSlice = createSlice({
     name: 'adminProducts',
     initialState,
@@ -809,21 +813,21 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    allBrands: payload,
+                    allBrands: payload.sort(sortByName),
                 }
             })
             .addCase(getAllCountries.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    allCountries: payload,
+                    allCountries: payload.sort(sortByName),
                 }
             })
             .addCase(getAllColors.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    allColors: payload,
+                    allColors: payload.sort(sortByName),
                 }
             })
             .addCase(getCharacteristicsFromCategory.fulfilled, (state, { payload }) =>

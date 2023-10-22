@@ -54,6 +54,7 @@ import Alert from '@mui/material/Alert';
 //#region Icons
 import CommonPicture from './add-product-components/add-product-pictures/CommonPicture';
 import BackIcon from '../../../svg/sharedIcons/BackIcon';
+import VectorIcon from '../ItemMessage/svg/VectorIcon';
 //#endregion
 
 import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
@@ -593,6 +594,7 @@ const ItemAddProduct = () =>
                                 <div className='add-product-name-container'>
                                     <label>Бренд</label>
                                     <select
+                                        id='scrollbar-style-2'
                                         className='select-option-add-product'
                                         onChange={handleSelectBrand}
                                     >
@@ -633,7 +635,10 @@ const ItemAddProduct = () =>
                                 </div>
                                 <div className='add-product-name-container'>
                                     <label>Країна виробник</label>
-                                    <select className='select-option-add-product' onChange={handleSelectCountry}>
+                                    <select
+                                        id='scrollbar-style-2'
+                                        className='select-option-add-product'
+                                        onChange={handleSelectCountry}>
                                         <option disabled ></option>
                                         {allCountries.map((country) => (
                                             <option
@@ -699,12 +704,28 @@ const ItemAddProduct = () =>
                             </div>
 
                             <div className='add-product-recommend-container'>
-                                <input type='checkbox' checked={isInBestProducts} onChange={() =>
-                                {
-                                    dispatch(setIsInBestProducts(!isInBestProducts))
-                                }} />
+
+                            <label className="add-product-recommend-custom-checkbox">
+                                <input type="checkbox" checked={isInBestProducts}
+                                    onChange={() =>
+                                    {
+                                        dispatch(setIsInBestProducts(!isInBestProducts))
+                                    }} />
+                                <span className="checkmark"><VectorIcon /></span>
                                 <label>Рекомендувати</label>
-                            </div>
+                            </label>
+
+
+
+                            {/* <input
+                                    type='checkbox'
+                                    checked={isInBestProducts}
+                                    onChange={() =>
+                                    {
+                                        dispatch(setIsInBestProducts(!isInBestProducts))
+                                    }} />
+                                <label>Рекомендувати</label> */}
+                        </div>
                         </div>
 
                         <div className='top-add-product-container'>

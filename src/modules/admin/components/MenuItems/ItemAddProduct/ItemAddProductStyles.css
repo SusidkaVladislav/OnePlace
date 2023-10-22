@@ -50,13 +50,23 @@
     background-image: url(/src/modules/admin/svg/sharedIcons/ComboboxArrowOpenIcon.svg);
     background-repeat: no-repeat;
     background-position: 95%;
+
+
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
+
 }
 
 .add-product-name-container>label {
     width: 100%;
     color: #0A3D58;
     font-size: 18px;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-weight: 400;
     line-height: 23.40px;
     word-wrap: break-word
@@ -71,6 +81,14 @@
     border-radius: 10px;
     border: 0;
     padding-left: 10px;
+
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
 }
 
 .add-color-price-product-btn-container {
@@ -129,6 +147,16 @@
     flex-direction: column;
 }
 
+.add-product-number-input {
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #471915;
+}
+
 .add-product-number-input-container>label {
     font-family: 'Montserrat Alternates';
     font-size: 14px;
@@ -153,23 +181,52 @@
     flex-direction: column;
 }
 
-.add-product-recommend-container {
+.add-product-recommend-container{
     display: flex;
+    margin-top: 10px;
     align-items: center;
-    gap: 15px;
 }
 
-.add-product-recommend-container>input {
+.add-product-number-container>label {
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #0A3D58;
+}
+
+.add-product-recommend-custom-checkbox {
+    position: relative;
     width: 24px;
     height: 24px;
-    padding: 10px;
-    border-radius: 2px;
-    border: 1px;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
-    border: 1px solid #6C8B9B
+    border-radius: 2px;
+    border: 1px solid #6C8B9B;
 }
 
-.add-product-recommend-container>label {
+.checkmark {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    margin-left: 4px;
+    margin-top: -4px;
+    display: none;
+}
+
+.add-product-recommend-custom-checkbox input:checked+.checkmark {
+    display: block;
+}
+
+.add-product-recommend-custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.add-product-recommend-custom-checkbox>label {
     text-align: center;
     font-family: 'Montserrat Alternates';
     font-size: 18px;
@@ -177,6 +234,8 @@
     font-weight: 400;
     line-height: 130%;
     color: #0A3D58;
+
+    margin-left: 30px;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

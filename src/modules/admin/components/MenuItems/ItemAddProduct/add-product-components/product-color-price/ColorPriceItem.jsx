@@ -90,7 +90,7 @@ const ColorPriceItem = (props) =>
             </div>
 
             <div>
-                <label>Ціна</label>
+                <label>Ціна (грн.)</label>
                 <input
                     className='add-product-number-input'
                     type='number'

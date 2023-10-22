@@ -1,14 +1,16 @@
 import React, { useState, useRef, useImperativeHandle, forwardRef } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ArrowRight from "@mui/icons-material/ArrowRight";
+//import ArrowRight from "@mui/icons-material/ArrowRight";
+import ArrowNestedCategory from '../../svg/sharedIcons/ArrowNestedCategory';
+import BackIcon from '../../svg/sharedIcons/BackIcon';
 
 const NestedMenuItem = (props, ref) =>
 {
     const {
         parentMenuOpen,
         label,
-        rightIcon = <ArrowRight style={{ fontSize: 16 }} />,
+        rightIcon, //= <BackIcon />, //<ArrowRight style={{ fontSize: 16 }} />,
         keepOpen,
         children,
         customTheme,
@@ -131,11 +133,13 @@ const NestedMenuItem = (props, ref) =>
                 data-open={!!open || undefined}
                 className={className}
                 ref={menuItemRef}
-                //keepOpen={keepOpen}
+            //keepOpen={keepOpen}
             >
-                {label}
-                <div style={{ flexGrow: 1 }} />
-                {rightIcon}
+                <div className="category-option-row">
+                    <span className='category-option-span'>{label}</span>
+                    <div style={{ flexGrow: 1 }} />
+                    <span className="nested-category-arrow-icon"><ArrowNestedCategory /></span>
+                </div>
             </MenuItem>
             <Menu
                 hideBackdrop

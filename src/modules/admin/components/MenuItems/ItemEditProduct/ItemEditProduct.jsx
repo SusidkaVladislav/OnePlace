@@ -43,6 +43,7 @@ import NewDescription from '../ItemAddProduct/add-product-components/add-product
 import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
 import BackIcon from '../../../svg/sharedIcons/BackIcon';
 import CommonPicture from '../ItemAddProduct/add-product-components/add-product-pictures/CommonPicture';
+import VectorIcon from '../ItemMessage/svg/VectorIcon';
 //#endregion
 
 import './ItemEditProductStyles.css';
@@ -582,11 +583,21 @@ const ItemEditProduct = () =>
                             </div>
 
                             <div className='edit-product-recommend-container'>
-                                <input type='checkbox' checked={isInBestProducts} onChange={() =>
+                                <label className="add-product-recommend-custom-checkbox">
+                                    <input type="checkbox" checked={isInBestProducts}
+                                        onChange={() =>
+                                        {
+                                            dispatch(setIsInBestProducts(!isInBestProducts))
+                                        }} />
+                                    <span className="checkmark"><VectorIcon /></span>
+                                    <label>Рекомендувати</label>
+                                </label>
+
+                                {/* <input type='checkbox' checked={isInBestProducts} onChange={() =>
                                 {
                                     dispatch(setIsInBestProducts(!isInBestProducts))
                                 }} />
-                                <label>Рекомендувати</label>
+                                <label>Рекомендувати</label> */}
                             </div>
                         </div>
 

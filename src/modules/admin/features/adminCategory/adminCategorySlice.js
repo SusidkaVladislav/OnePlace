@@ -129,9 +129,6 @@ export const addCategory = createAsyncThunk('admin/addCategory', async (category
         }
         if (error.response.status === 400)
         {
-
-            //console.log(error.response.data.errors.Name[0])
-
             const customError = {
                 status: error.response.data.status,
                 message: error.response.data.title,
@@ -273,9 +270,13 @@ const adminCategorySlice = createSlice({
 
             .addCase(getCategories.fulfilled, (state, { payload }) =>
             {
+                //Першу букву назви категорії зробити великою
                 for (let i = 0; i < payload.length; i++){
                     payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
                 }
+
+                console.log(payload)
+
                 return {
                     ...state,
                     mainCategories: payload

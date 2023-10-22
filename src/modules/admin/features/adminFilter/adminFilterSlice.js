@@ -420,6 +420,10 @@ export const updateBrand = createAsyncThunk('adminFilter/updateBrand', async (br
     }
 })
 
+function sortByName(a, b) {
+    return a.name.localeCompare(b.name);
+}
+
 const adminFilterSlice = createSlice({
     name: 'adminFilter',
     initialState,
@@ -453,7 +457,7 @@ const adminFilterSlice = createSlice({
             {
                 return {
                     ...state,
-                    allCountries: payload,
+                    allCountries: payload.sort(sortByName),
                     loading: false,
                 }
             })
@@ -478,7 +482,7 @@ const adminFilterSlice = createSlice({
             {
                 return {
                     ...state,
-                    allBrands: payload,
+                    allBrands: payload.sort(sortByName),
                     loading: false,
                 }
             })
@@ -503,7 +507,7 @@ const adminFilterSlice = createSlice({
             {
                 return {
                     ...state,
-                    allColors: payload,
+                    allColors: payload.sort(sortByName),
                     loading: false,
                 }
             })

@@ -22,6 +22,14 @@
     word-wrap: break-word
 }
 
+.is-open>label {
+    color: #D17100;
+}
+
+.open-arrow-category-arrow{
+    transform: rotate(180deg);
+}
+
 .category-select>span {
     font-family: 'Montserrat Alternates';
     font-size: 16px;
@@ -30,5 +38,29 @@
     letter-spacing: 0em;
     text-align: left;
     color: #471915;
+}
 
+.category-option-span {
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #471915;
+
+    margin: 0px;
+    border-bottom: 1px solid #9DB1BC;
+}
+
+.nested-category-arrow-icon {
+    margin-left: 5px;
+    rotate: 180deg;
+}
+
+.category-option-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
 }
