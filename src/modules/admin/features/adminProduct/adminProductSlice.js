@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { createSelector } from 'reselect';
+import { instance } from "../../../../api.config.js";
+
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
@@ -41,7 +42,7 @@ const initialState = {
 
 export const getProduct = createAsyncThunk('adminProducts/getProduct', async (id, { rejectWithValue }) =>
 {
-    const response = await axios.get(REACT_APP_BASE_URL + '/Product/product/' + id);
+    const response = await instance.get(REACT_APP_BASE_URL + '/Product/product/' + id);
     return response.data
 })
 
@@ -120,7 +121,7 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
             productColors: productColors
         }
 
-        const response = await axios.post(REACT_APP_BASE_URL + '/Product/addProduct', product);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Product/addProduct', product);
         return response.data
     }
     catch (error)
@@ -233,7 +234,7 @@ export const updateProduct = createAsyncThunk('adminProducts/updateProduct', asy
             colorDetails: productColors
         }
 
-        const response = await axios.put(REACT_APP_BASE_URL + '/Product/updateProduct', product);
+        const response = await instance.put(REACT_APP_BASE_URL + '/Product/updateProduct', product);
         return response.data
     }
     catch (error)
@@ -271,7 +272,7 @@ export const deleteProduct = createAsyncThunk('adminProducts/deleteProduct', asy
 {
     try
     {
-        const response = await axios.delete(REACT_APP_BASE_URL + '/Product/deleteProduct', {
+        const response = await instance.delete(REACT_APP_BASE_URL + '/Product/deleteProduct', {
             params: { id: id },
         });
         return response.data
@@ -313,7 +314,7 @@ export const filterProducts = createAsyncThunk('adminProducts/filterProducts', a
 
         // const state = getState();
         // filter.category = state.adminProducts.category.id;
-        const response = await axios.post(REACT_APP_BASE_URL + '/Product/search', filter);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Product/search', filter);
         return response.data;
     }
     catch (error)
@@ -335,7 +336,7 @@ export const allProductCount = createAsyncThunk('adminProducts/allProductCount',
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Product/getAllCount');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Product/getAllCount');
         return response.data;
     }
     catch (error)
@@ -355,7 +356,7 @@ export const allProductCount = createAsyncThunk('adminProducts/allProductCount',
 
 export const getAllProducts = createAsyncThunk('adminProducts/allProducts', async (categoryId, { rejectWithValue }) =>
 {
-    const response = await axios.get(REACT_APP_BASE_URL + '/Product/getAllProducts', {
+    const response = await instance.get(REACT_APP_BASE_URL + '/Product/getAllProducts', {
         params: { categoryId: categoryId },
     });
     return response.data;
@@ -366,7 +367,7 @@ export const getAllBrands = createAsyncThunk('adminProducts/getAllBrands', async
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllBrands');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllBrands');
         return response.data;
     }
     catch (error)
@@ -388,7 +389,7 @@ export const getAllCountries = createAsyncThunk('adminProducts/getAllCountries',
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllCountries');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllCountries');
         return response.data;
     }
     catch (error)
@@ -410,7 +411,7 @@ export const getAllColors = createAsyncThunk('adminProducts/getAllColors', async
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllColors');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllColors');
         return response.data;
     }
     catch (error)
@@ -432,7 +433,7 @@ export const getCharacteristicsFromCategory = createAsyncThunk('adminProducts/ge
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getDescriptionsByCategory', {
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getDescriptionsByCategory', {
             params: { categoryId: id },
         });
         return response.data;

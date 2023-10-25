@@ -3,7 +3,8 @@ import
     createSlice,
     createAsyncThunk
 } from "@reduxjs/toolkit";
-import axios from "axios";
+import { instance } from "../../../../api.config.js";
+
 
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -28,7 +29,7 @@ export const getCategoriesForSelect = createAsyncThunk('admin/gatCategoriesForSe
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Category/forSelect');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Category/forSelect');
         return response.data;
     }
     catch (error)
@@ -56,7 +57,7 @@ export const getCategories = createAsyncThunk('admin/getCategories', async (arg,
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Category/categories');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Category/categories');
         return response.data;
     }
     catch (error)
@@ -84,7 +85,7 @@ export const getCategoryById = createAsyncThunk('admin/getCategory', async (id, 
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + "/Category/category/" + id);
+        const response = await instance.get(REACT_APP_BASE_URL + "/Category/category/" + id);
         return response.data;
     }
     catch (error)
@@ -112,7 +113,7 @@ export const addCategory = createAsyncThunk('admin/addCategory', async (category
 {
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + "/Category/create", category);
+        const response = await instance.post(REACT_APP_BASE_URL + "/Category/create", category);
         return response.data;
     }
     catch (error)
@@ -147,7 +148,7 @@ export const addCategory = createAsyncThunk('admin/addCategory', async (category
 
 export const updateCategory = createAsyncThunk('admin/updateCategory', async (categoryToUpdate, { rejectWithValue }) =>
 {
-    const response = await axios.put(REACT_APP_BASE_URL + "/Category/update", categoryToUpdate);
+    const response = await instance.put(REACT_APP_BASE_URL + "/Category/update", categoryToUpdate);
     return response.data;
 })
 
@@ -155,7 +156,7 @@ export const deleteCategory = createAsyncThunk('admin/deleteCategory', async (id
 {
     try
     {
-        const response = await axios.delete(REACT_APP_BASE_URL + "/Category/delete", {
+        const response = await instance.delete(REACT_APP_BASE_URL + "/Category/delete", {
             params: { id: id },
         });
         return response.data;
@@ -274,8 +275,6 @@ const adminCategorySlice = createSlice({
                 for (let i = 0; i < payload.length; i++){
                     payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
                 }
-
-                console.log(payload)
 
                 return {
                     ...state,

@@ -37,10 +37,6 @@ const ReviewInfo = () =>
         .then(()=>{
             dispatch(fetchReviewReplies());
         })
-
-        // console.log(id);
-        // console.log(message);
-        // console.log(date);
     }
 
     const handleMessageChange=(event)=>

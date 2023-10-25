@@ -54,18 +54,20 @@ const AdminAuthForm = () =>
     const handlePasswordChange = (password) =>
     {
         dispatch(setPassword(password));
+
     };
 
     const handleEnter = async (event) =>
     {
 
+        //navigate('main');
+        //try
+        //{
+        const rememberMe = true;
+        await dispatch(adminLogin(({ email, password, rememberMe })))
         navigate('main');
-        // try
-        // {
-        //     await dispatch(adminLogin(({ email, password }))).unwrap()
-
-        //     if (adminCredentials.isAuth === true)
-        //         console.log("isAuth is true")
+        //if (adminCredentials.isAuth === true)
+        //console.log("isAuth is true")
 
         // } catch (err)
         // {
@@ -73,7 +75,7 @@ const AdminAuthForm = () =>
         // }
         // finally
         // {
-        //     console.log(adminCredentials);
+        //     //console.log(adminCredentials);
         // }
     }
 
