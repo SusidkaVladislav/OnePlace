@@ -2,15 +2,15 @@ import React, { useState,useEffect, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemUserStyle.css';
 import './ReviewStyle.css';
-import SearchIcon from './svg/SearchIcon';
-import BellIcon from './svg/BellIcon';
+import SearchIcon from '../../../icons/SearchIcon';
+import BellIcon from '../../../icons/BellIcon';
 import CustomPagination from '../Pagination/CustomPagination';
 import data from './data/mock-data.json';
-import BackIcon from './svg/BackIcon';
-import RemoveIcon from './svg/RemoveIcon';
+import BackIcon from '../../../icons/BackIcon';
+import RemoveIcon from '../../../icons/RemoveIcon';
 import StarRating from '../StartRating/StarRating';
-import FluentArrowIcon from './svg/FluentArrowIcon';
-import ArrowDownDark from './svg/ArrowDownDark';
+import FluentArrowIcon from '../../../icons/FluentArrowIcon';
+import ArrowDownDark from '../../../icons/ArrowDownDark';
 import reviewData from '../ItemReview/reviews.json';
 import reviewReply from '../ItemReview/reviewReply.json'
 

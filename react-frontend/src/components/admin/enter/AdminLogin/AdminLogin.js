@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import "./AdminLoginStyle.css";
-import OnePlaceIcon from "../Login/svg/OnePlaceIcon";   
-import ErrorIcon from '../Login/svg/ErrorIcon';
-import EyeIcon from '../Login/svg/EyeIcon';
-import NotEyeIcon from '../Login/svg/NotEyeIcon';
-import OnePlaceIcon2 from '../Login/svg/OnePlaceIcon2';
-import HelloIcon from '../Login/svg/HelloIcon';
+import OnePlaceIcon from "../../../icons/OnePlaceIcon";   
+import ErrorIcon from '../../../icons/ErrorIcon';
+import EyeIcon from '../../../icons/EyeIcon';
+import NotEyeIcon from '../../../icons/NotEyeIcon';
+import OnePlaceIcon2 from '../../../icons/OnePlaceIcon2';
+import HelloIcon from '../../../icons/HelloIcon';
 
 const AdminLogin=()=> {
 

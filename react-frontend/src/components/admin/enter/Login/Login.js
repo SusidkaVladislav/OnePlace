@@ -1,12 +1,12 @@
 import React, { useState,useEffect } from 'react';
 import './LoginStyle.css';
-import CrossIcon from "./svg/CrossIcon";
-import EyeIcon from './svg/EyeIcon';
-import GoogleIcon from './svg/GoogleIcon';
-import FacebookIcon from './svg/FacebookIcon';
-import NotEyeIcon from './svg/NotEyeIcon';
-import ErrorIcon from './svg/ErrorIcon';
-import VerticalLine from './svg/VerticalLine';
+import CrossIcon from "../../../icons/CrossIcon";
+import EyeIcon from '../../../icons/EyeIcon';
+import GoogleIcon from '../../../icons/GoogleIcon';
+import FacebookIcon from '../../../icons/FacebookIcon';
+import NotEyeIcon from '../../../icons/NotEyeIcon';
+import ErrorIcon from '../../../icons/ErrorIcon';
+import VerticalLine from '../../../icons/VerticalLine';
 
 const Login= ()=> {
     const [email, setEmail] = useState("");

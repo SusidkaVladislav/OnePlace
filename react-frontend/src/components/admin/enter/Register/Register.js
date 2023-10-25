@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './RegisterStyle.css';
-import CrossIcon from '../Login/svg/CrossIcon';
-import ErrorIcon from '../Login/svg/ErrorIcon';
-import NotEyeIcon from '../Login/svg/NotEyeIcon';
-import EyeIcon from '../Login/svg/EyeIcon';
+import CrossIcon from '../../../icons/CrossIcon';
+import ErrorIcon from '../../../icons/ErrorIcon';
+import NotEyeIcon from '../../../icons/NotEyeIcon';
+import EyeIcon from '../../../icons/EyeIcon';
 import countryData from './PhoneCodes.json';
 //import ArrowDownDark from '../Login/svg/ArrowDownDark';
-import VerticalLine from '../Login/svg/VerticalLine';
-import GoogleIcon from '../Login/svg/GoogleIcon';
-import FacebookIcon from '../Login/svg/FacebookIcon';
+import VerticalLine from '../../../icons/VerticalLine';
+import GoogleIcon from '../../../icons/GoogleIcon';
+import FacebookIcon from '../../../icons/FacebookIcon';
 
 
 const Register=()=> {

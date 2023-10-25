@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemReviewStyle.css';
-import SearchIcon from './svg/SearchIcon';
-import BellIcon from './svg/BellIcon';
-import BackIcon from './svg/BackIcon';
+import SearchIcon from '../../../icons/SearchIcon';
+import BellIcon from '../../../icons/BellIcon';
+import BackIcon from '../../../icons/BackIcon';
 import CustomPagination from '../Pagination/CustomPagination';
-import FluentArrowIcon from './svg/FluentArrowIcon';
+import FluentArrowIcon from '../../../icons/FluentArrowIcon';
 import StarRating from '../StartRating/StarRating';
-import ElipseIcon from './svg/ElipseIcon';
-import ComunicationIcon from './svg/ComunicationIcon';
+import ElipseIcon from '../../../icons/ElipseIcon';
+import ComunicationIcon from '../../../icons/ComunicationIcon';
 import reviewData from './reviews.json';
 import reviewReply from './reviewReply.json'
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './MainMenuStyle.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ItemMenuIcon1 from '../svg/ItemMenuIcon1';
-import ItemMenuIcon2 from '../svg/ItemMenuIcon2';
-import ItemMenuIcon3 from '../svg/ItemMenuIcon3';
+import ItemMenuIcon1 from '../../../icons/ItemMenuIcon1';
+import ItemMenuIcon2 from '../../../icons/ItemMenuIcon2';
+import ItemMenuIcon3 from '../../../icons/ItemMenuIcon3';
 
 import ItemMain from '../ItemMain/ItemMain';
 import ItemSales from '../ItemSales/ItemSales';

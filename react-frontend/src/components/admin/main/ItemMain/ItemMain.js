@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemMainStyle.css';
-import SearchIcon from './svg/SearchIcon';
-import BellIcon from './svg/BellIcon';
-import ArrowDown from './svg/ArrowDown';
+import SearchIcon from '../../../icons/SearchIcon';
+import BellIcon from '../../../icons/BellIcon';
+import ArrowDown from '../../../icons/ArrowDown';
 
 const ItemMain =({size})=>{
   const divStyle = {

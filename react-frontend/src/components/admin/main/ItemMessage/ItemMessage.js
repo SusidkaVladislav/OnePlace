@@ -1,13 +1,13 @@
 import React, { useState,useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SearchIcon from './svg/SearchIcon';
+import SearchIcon from '../../../icons/SearchIcon';
 import './ItemMessageStyle.css';
 import messages from './data/messages.json';
 import products from './data/products.json';
 import users from './data/users.json';
-import ElipseIcon from './svg/ElipseIcon';
-import FluentArrowIcon from './svg/FluentArrowIcon';
-import VectorIcon from './svg/VectorIcon';
+import ElipseIcon from '../../../icons/ElipseIcon';
+import FluentArrowIcon from '../../../icons/FluentArrowIcon';
+import VectorIcon from '../../../icons/VectorIcon';
 
 function sortByIdSmallerToLarger(messages) {
   return messages.sort((a, b) => {

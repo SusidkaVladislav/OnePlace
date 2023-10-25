@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import "./ChangePasswordStyle.css";
-import OnePlaceIcon from "../Login/svg/OnePlaceIcon";   
-import ErrorIcon from '../Login/svg/ErrorIcon';
-import EyeIcon from '../Login/svg/EyeIcon';
-import NotEyeIcon from '../Login/svg/NotEyeIcon';
+import OnePlaceIcon from "../../../icons/OnePlaceIcon";   
+import ErrorIcon from '../../../icons/ErrorIcon';
+import EyeIcon from '../../../icons/EyeIcon';
+import NotEyeIcon from '../../../icons/NotEyeIcon';
 
 const ChangePassword=()=> {
     const MIN_PASSWORD_LENGTH = 8;

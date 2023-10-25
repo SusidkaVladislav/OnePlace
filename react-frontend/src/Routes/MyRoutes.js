@@ -5,6 +5,7 @@ import Register from '../components/admin/enter/Register/Register';
 import Main from '../components/admin/main/Main';
 import ChangePassword from '../components/admin/enter/ChangePassword/ChangePassword';
 import AdminLogin from '../components/admin/enter/AdminLogin/AdminLogin';
+import Header from '../components/user/main/Header';
 
 class MyRoutes extends Component {
   
@@ -22,6 +23,7 @@ class MyRoutes extends Component {
     return (
       <BrowserRouter>
         <Routes>
+            <Route path="/main" element={<Header/>}/>
             <Route path="/" element={<AdminLogin/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>

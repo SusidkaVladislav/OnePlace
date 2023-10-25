@@ -1,7 +1,7 @@
 import React from 'react';
 import './HeaderStyle.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LogoIcon from './svg/LogoIcon';
+import LogoIcon from '../icons/LogoIcon';
 
 const Header = () => {
   return (
