@@ -59,8 +59,6 @@ function App()
 
           <Route index element={<AdminAuthForm />} />
 
-
-          {/* <Route path="/main" element={<AdminManePane />}> */}
           <Route path="main" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminManePanel />}>
               <Route index element={<ItemMane />} />
@@ -101,6 +99,3 @@ function App()
 }
 
 export default App;
-
-
-{/* <Route path="user/:id" element={<UserInfo />} /> */ }

@@ -1,12 +1,9 @@
 import React from "react";
-import BlueArrow from "../../../../../svg/arrows/BlueArrow";
-
 
 const ItemExit = () =>
 {
     return (
-
-        <BlueArrow color={'green'} />
+        <h1>Exit</h1>
     );
 }
 
