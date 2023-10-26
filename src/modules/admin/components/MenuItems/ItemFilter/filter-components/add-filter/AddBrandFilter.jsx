@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import './AddBrandFilterStyles.css';
-import CloseCross from '../../../../../svg/sharedIcons/CloseCross';
+import CloseCross from '../../../../../../../svg/shared-icons/BlueCloseCrossIcon';
 
 const AddBrandFilter = (props) =>
 {

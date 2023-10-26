@@ -56,7 +56,7 @@
     padding: 5px;
     padding-left: 10px;
     cursor: pointer;
-    background-image: url(/src/modules/admin/svg/sharedIcons/ComboboxArrowOpenIcon.svg);
+    background-image: url(/src/svg/arrows/BlueFilledTriangleToDownArrow.svg);
     background-repeat: no-repeat;
     background-position: 170px;
 

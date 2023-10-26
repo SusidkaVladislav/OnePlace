@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import './UserLoginFormStyles.css';
 
 //#region Icons
-import CrossIcon from './../../svg/authIncons/CrossIcon.svg';
-import VerticalLine from '../../svg/authIncons/VerticalLine';
-import GoogleIcon from '../../svg/authIncons/GoogleIcon';
-import FacebookIcon from '../../svg/authIncons/FacebookIcon';
-import ErrorIcon from '../../svg/authIncons/ErrorIcon';
+import BrownCloseCrossIcon from '../../../../svg/shared-icons/BrownCloseCrossIcon.svg';
+import VerticalLine from '../../../../svg/login-icons/VerticalLine';
+import GoogleIcon from '../../../../svg/login-icons/GoogleIcon';
+import FacebookIcon from '../../../../svg/login-icons/FacebookIcon';
+import ErrorInputIcon from '../../../../svg/login-icons/ErrorInputIcon';
 //#endregion
 
 import PasswordInput from '../../../../services/passwordInputs/PasswordInput';
@@ -101,7 +101,7 @@ const UserLoginForm = () =>
                         className="cross-button "
                         onClick={handleClose}
                         style={{
-                            backgroundImage: `url(${CrossIcon})`,
+                            backgroundImage: `url(${BrownCloseCrossIcon})`,
                             backgroundRepeat: 'no-repeat',
                         }}
                     />
@@ -112,7 +112,7 @@ const UserLoginForm = () =>
 
                         {authError &&
                             <label className='error-from-server'>
-                                <ErrorIcon />
+                                <ErrorInputIcon />
                                 Невіриний телефон або пароль
                             </label>}
 
@@ -125,7 +125,7 @@ const UserLoginForm = () =>
                             />
                             {phoneBorderColor === "red" &&
                                 <label className="error-message">
-                                    <ErrorIcon />
+                                    <ErrorInputIcon />
                                     Некоректний номер телефону
                                 </label>}
                         </div>
@@ -135,7 +135,7 @@ const UserLoginForm = () =>
                             <PasswordInput onChange={handlePasswordChange} />
                             {passwordBorderColor === "red" &&
                                 <label className="error-message">
-                                    <ErrorIcon />
+                                    <ErrorInputIcon />
                                     Введіть пароль
                                 </label>}
                         </div>

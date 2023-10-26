@@ -5,7 +5,7 @@ import 'react-date-range/dist/theme/default.css';
 
 import './DiscountRangePickerStyles.css';
 
-import CalendarIcon from '../../../../../svg/sharedIcons/CalendarIcon.jsx';
+import CalendarIcon from '../../../../../../../svg/shared-icons/CalendarIcon.jsx';
 
 const DiscountRangePicker = (props) =>
 {

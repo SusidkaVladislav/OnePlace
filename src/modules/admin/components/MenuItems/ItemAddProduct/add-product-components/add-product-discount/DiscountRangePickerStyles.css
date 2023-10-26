@@ -170,7 +170,7 @@
 
     width: 32px;
     height: 32px;
-    background-image: url('../../../../../svg/sharedIcons/CloseCrossIcon.svg');
+    background-image: url(/src/svg/shared-icons/BlueCloseCrossIcon.svg);
     cursor: pointer;
 }
 

@@ -10,9 +10,9 @@ import '../ItemUserStyle.css';
 //#endregion
 
 //#region Icons
-import BackIcon from '../../../../svg/sharedIcons/BackIcon';
-import RemoveIcon from '../svg/RemoveIcon';
-import UserIcon from '../svg/UserIcon'
+import BackTextAndArrowIcon from '../../../../../../svg/arrows/BackTextAndArrowIcon';
+import RemoveIcon from '../../../../../../svg/shared-icons/RemoveIcon';
+import UnknownUserIcon from '../../../../../../svg/shared-icons/UnknownUserIcon';
 //#endregion
 
 //#region Blocks
@@ -27,7 +27,7 @@ import UserReviewBlock from '../../../../features/adminUsers/UserReviewBlock';
 
 //#region Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserById,fetchDeleteUser,fetchUsers } from '../../../../features/adminUsers/adminUsersSlice';
+import { getUserById, fetchDeleteUser, fetchUsers } from '../../../../features/adminUsers/adminUsersSlice';
 //#endregion
 //#endregion
 
@@ -42,7 +42,7 @@ const UserInfo = () =>
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
     const [isConfirmDialogVisible2, setIsConfirmDialogVisible2] = useState(false);
     const [isConfirmDialogError, setIsConfirmDialogError] = useState(false);
-    
+
     const user = useSelector(state => getUserById(state, Number(userId)));
 
     const deleteHandler = (isDelete, userId) =>
@@ -50,22 +50,27 @@ const UserInfo = () =>
         if (isDelete)
         {
             dispatch(fetchDeleteUser(userId))
-            .then((response) => {
-                console.log(response)
-                if (!response.ok) {
+                .then((response) =>
+                {
+                    console.log(response)
+                    if (!response.ok)
+                    {
+                        setIsConfirmDialogError(true);
+                    } else
+                    {
+                        setIsConfirmDialogVisible2(true);
+                        setTimeout(() =>
+                        {
+                            dispatch(fetchUsers());
+                            navigate(-1);
+                        }, 3000);
+                    }
+                })
+                .catch(error =>
+                {
                     setIsConfirmDialogError(true);
-                } else {
-                    setIsConfirmDialogVisible2(true);
-                    setTimeout(() => {
-                        dispatch(fetchUsers());
-                        navigate(-1);
-                    }, 3000);
-                }
-            })
-            .catch(error => {
-                setIsConfirmDialogError(true);
-                console.error("Error deleting user:", error);
-            });
+                    console.error("Error deleting user:", error);
+                });
         }
     }
 
@@ -75,32 +80,37 @@ const UserInfo = () =>
         setIsConfirmDialogVisible(true);
     };
 
-    const handleConfirmDelete = async () => {
+    const handleConfirmDelete = async () =>
+    {
 
         setIsConfirmDialogVisible(false);
         dispatch(fetchDeleteUser(userId))
-        .then((response) => {
-            if (response.meta.requestStatus==='rejected') {
-                setIsConfirmDialogError(true);
-                //console.log(response);
-            }
-            if(response.meta.requestStatus==='fulfilled')
+            .then((response) =>
             {
-                //console.log(response);
-                setIsConfirmDialogVisible2(true);
-                setTimeout(() => {
-                    dispatch(fetchUsers());
-                    navigate(-1);
-                }, 2000);
-            }
-        });
+                if (response.meta.requestStatus === 'rejected')
+                {
+                    setIsConfirmDialogError(true);
+                    //console.log(response);
+                }
+                if (response.meta.requestStatus === 'fulfilled')
+                {
+                    //console.log(response);
+                    setIsConfirmDialogVisible2(true);
+                    setTimeout(() =>
+                    {
+                        dispatch(fetchUsers());
+                        navigate(-1);
+                    }, 2000);
+                }
+            });
     };
 
     const handleCancelDelete = () =>
     {
         setIsConfirmDialogVisible(false);
     };
-    const handleClickOk=()=>{
+    const handleClickOk = () =>
+    {
         setIsConfirmDialogError(false);
         setIsConfirmDialogVisible2(false);
         //console.log("Done");
@@ -111,7 +121,7 @@ const UserInfo = () =>
             <div className='user-div'>
                 <div className='back-div'>
                     <div className='user-img'>
-                        <label> <UserIcon/></label>
+                        <label> <UnknownUserIcon /></label>
                     </div>
                     {user !== null ? (
                         <label className='user-name'>{user !== null ? user.name : 'NotFound'} {user !== null ? user.surname : 'NotFound'}
@@ -120,14 +130,14 @@ const UserInfo = () =>
                             </label>
                         </label>
                     ) : (<label className='user-name'>No User Selected</label>)}
-                    <label className='back-button' onClick={() => navigate(-1)} > <BackIcon /></label>
+                    <label className='back-button' onClick={() => navigate(-1)} > <BackTextAndArrowIcon /></label>
                 </div>
                 <div className='user-div-info'>
                     <UserInfoBlock user={user} />
                     <UserOrdersBlock userId={user.id} />
                 </div>
-                <div> 
-                    <UserReviewBlock userId={user.id}/>
+                <div>
+                    <UserReviewBlock userId={user.id} />
                 </div>
 
             </div>
@@ -152,11 +162,11 @@ const UserInfo = () =>
                 <div className='modal-backdrop-false'>
                     <div className='confirm-dialog-false'>
                         <p>Помилка видалення запису. Спробуйте пізніше!</p>
-                        <label onClick={handleClickOk}className='confirm-buttom-ok'>Ok</label>
+                        <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label>
                     </div>
                 </div>
             )}
-            
+
         </div>
     )
 }

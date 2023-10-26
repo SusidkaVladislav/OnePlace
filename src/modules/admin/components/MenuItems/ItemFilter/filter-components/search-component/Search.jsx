@@ -1,6 +1,6 @@
 import React from 'react';
 import './SearchStyles.css';
-import SearchIcon from '../../../../../svg/sharedIcons/SearchIcon';
+import SearchIcon from '../../../../../../../svg/shared-icons/SearchIcon';
 
 const Search = (props) =>
 {

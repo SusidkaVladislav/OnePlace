@@ -7,8 +7,9 @@ import AdminSearch from '../../../../../services/search/adminSearch';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchReviews, fetchReviewReplies, getAllReviewReplies, getFilteredReviews, fetchDeleteReview } from '../../../features/adminReviews/adminReviewsSlice';
 import { useNavigate } from "react-router-dom";
-import ElipseIcon from './svg/ElipseIcon';
-import FluentArrowIcon from './svg/FluentArrowIcon';
+
+import MessageComeIndicator from '../../../../../svg/shared-icons/MessageComeIndicator';
+import CurvedBrownArrow from '../../../../../svg/arrows/CurvedBrownArrow';
 
 const PageSize = 7;
 const ItemReview = () =>
@@ -162,14 +163,14 @@ const ItemReview = () =>
                                     <div className='r2'>
                                         <img src={review?.productPictureAddress} alt={review?.productName} />
                                         {!reviewsReply.some((reply) => reply.review.id === review.id) && (
-                                            <label key={review.id} className='review-elipse-icon'><ElipseIcon /></label>
+                                            <label key={review.id} className='review-elipse-icon'><MessageComeIndicator /></label>
                                         )}
                                     </div>
                                     <div className='r3'>{review?.productName} {review?.productCode}</div>
                                     <div className='r4'>{review?.comment}</div>
                                     <div className='r5'>{review?.date}</div>
                                     <div className='r6' onClick={async event => { navigate(`review/${review.id}`); }}>
-                                        <FluentArrowIcon />
+                                        <CurvedBrownArrow />
                                     </div>
                                 </div>
                             </div>

@@ -5,8 +5,8 @@ import CustomDelete from '../../../../../../../services/delete/CustomDelete';
 import AddCountryFilter from '../add-filter/AddCountryFilter';
 import AddBrandFilter from '../add-filter/AddBrandFilter';
 
-import LoadingIcon from '../../../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
-import EditIcon from '../../../../../svg/sharedIcons/EditIcon';
+import LoadingIcon from '../../../../../../../svg/animations/LoadingAnimation.gif';
+import EditIcon from '../../../../../../../svg/shared-icons/EditIcon';
 
 import { useDispatch, useSelector } from 'react-redux';
 

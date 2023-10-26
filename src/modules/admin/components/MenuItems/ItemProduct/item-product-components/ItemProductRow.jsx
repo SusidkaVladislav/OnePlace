@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getAllProducts } from '../../../../features/adminProduct/adminProductSlice';
 
-import EditIcon from '../../../../../admin/svg/sharedIcons/EditIcon';
+import EditIcon from '../../../../../../svg/shared-icons/EditIcon';
 
 import CustomDelete from "../../../../../../services/delete/CustomDelete";
 import './ItemProductRowStyles.css';

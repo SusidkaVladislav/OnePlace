@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChromePicker } from 'react-color';
 import './AddColorFilterStyles.css';
 
-import CloseCross from '../../../../../svg/sharedIcons/CloseCross';
+import CloseCross from '../../../../../../../svg/shared-icons/BlueCloseCrossIcon';
 
 const AddColorFilter = (props) =>
 {

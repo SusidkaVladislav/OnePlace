@@ -53,11 +53,11 @@ import Alert from '@mui/material/Alert';
 
 //#region Icons
 import CommonPicture from './add-product-components/add-product-pictures/CommonPicture';
-import BackIcon from '../../../svg/sharedIcons/BackIcon';
-import VectorIcon from '../ItemMessage/svg/VectorIcon';
+import BackIcon from '../../../../../svg/arrows/BackTextAndArrowIcon';
+import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 //#endregion
 
-import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
+import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
 import './ItemAddProductStyles.css';
 
 const ItemAddProduct = () =>
@@ -705,19 +705,19 @@ const ItemAddProduct = () =>
 
                             <div className='add-product-recommend-container'>
 
-                            <label className="add-product-recommend-custom-checkbox">
-                                <input type="checkbox" checked={isInBestProducts}
-                                    onChange={() =>
-                                    {
-                                        dispatch(setIsInBestProducts(!isInBestProducts))
-                                    }} />
-                                <span className="checkmark"><VectorIcon /></span>
-                                <label>Рекомендувати</label>
-                            </label>
+                                <label className="add-product-recommend-custom-checkbox">
+                                    <input type="checkbox" checked={isInBestProducts}
+                                        onChange={() =>
+                                        {
+                                            dispatch(setIsInBestProducts(!isInBestProducts))
+                                        }} />
+                                    <span className="checkmark"><GreenCheckCheckboxIcon /></span>
+                                    <label>Рекомендувати</label>
+                                </label>
 
 
 
-                            {/* <input
+                                {/* <input
                                     type='checkbox'
                                     checked={isInBestProducts}
                                     onChange={() =>
@@ -725,7 +725,7 @@ const ItemAddProduct = () =>
                                         dispatch(setIsInBestProducts(!isInBestProducts))
                                     }} />
                                 <label>Рекомендувати</label> */}
-                        </div>
+                            </div>
                         </div>
 
                         <div className='top-add-product-container'>

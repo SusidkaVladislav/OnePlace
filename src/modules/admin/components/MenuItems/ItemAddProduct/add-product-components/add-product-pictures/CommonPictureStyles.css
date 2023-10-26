@@ -38,7 +38,7 @@
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    background: url(/src/modules/admin/svg/sharedIcons/CloseCrossIcon.svg) no-repeat;
+    background: url(/src/svg/shared-icons/BlueCloseCrossIcon.svg) no-repeat;
     width: 10px;
     height: 10px;
     opacity: 0;

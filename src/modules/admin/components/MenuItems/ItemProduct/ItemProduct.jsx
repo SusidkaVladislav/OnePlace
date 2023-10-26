@@ -23,7 +23,7 @@ import
 //#endregion
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
+import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
 import './ItemProductStyles.css';
 
 const PageSize = 8;

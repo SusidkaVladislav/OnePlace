@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AddCountryFilterStyles.css';
-import CloseCross from '../../../../../svg/sharedIcons/CloseCross';
+import CloseCross from '../../../../../../../svg/shared-icons/BlueCloseCrossIcon';
 
 const AddCountryFilter = (props) =>
 {

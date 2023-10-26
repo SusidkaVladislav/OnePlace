@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useOutletContext } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemMainStyle.css';
-import ArrowDown from '../../../svg/mainPageIcons/ArrowDown';
+import WhiteSmallToBottomArrow from '../../../../../svg/arrows/WhiteSmallToBottomArrow';
 import AdminSearch from '../../../../../services/search//adminSearch';
 
 const ItemMain = () =>
@@ -39,7 +39,7 @@ const ItemMain = () =>
         <div className={`dropdown-header ${isOpen ? 'open' : ''}`} onClick={handleToggleDropdown}>
 
           <label className='main-select-item'>{selectedItem}</label>
-          <label className='main-arrow-down'><ArrowDown /></label>
+          <label className='main-arrow-down'><WhiteSmallToBottomArrow /></label>
           {isOpen && (
             <div className="dropdown-list">
               {options.map((item, index) => (

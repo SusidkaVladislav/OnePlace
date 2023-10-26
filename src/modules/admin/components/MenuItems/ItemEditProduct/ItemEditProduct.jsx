@@ -40,10 +40,10 @@ import NewDescription from '../ItemAddProduct/add-product-components/add-product
 //#endregion
 
 //#region Icons
-import LoadingIcon from '../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
-import BackIcon from '../../../svg/sharedIcons/BackIcon';
+import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import BackIcon from '../../../../../svg/arrows/BackTextAndArrowIcon';
 import CommonPicture from '../ItemAddProduct/add-product-components/add-product-pictures/CommonPicture';
-import VectorIcon from '../ItemMessage/svg/VectorIcon';
+import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 //#endregion
 
 import './ItemEditProductStyles.css';
@@ -589,7 +589,7 @@ const ItemEditProduct = () =>
                                         {
                                             dispatch(setIsInBestProducts(!isInBestProducts))
                                         }} />
-                                    <span className="checkmark"><VectorIcon /></span>
+                                    <span className="checkmark"><GreenCheckCheckboxIcon /></span>
                                     <label>Рекомендувати</label>
                                 </label>
 

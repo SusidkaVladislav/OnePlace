@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import SearchIcon from '../../modules/admin/svg/sharedIcons/SearchIcon';
+import SearchIcon from '../../svg/shared-icons/SearchIcon';
 
 import './adminSearchStyle.css';
 

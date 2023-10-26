@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import EditIcon from '../../../../svg/sharedIcons/EditIcon';
+import EditIcon from '../../../../../../svg/shared-icons/EditIcon';
 import './EditCategoryStyles.css';
 
 const EditCategory = props =>

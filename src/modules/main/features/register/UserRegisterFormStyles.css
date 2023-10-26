@@ -5,7 +5,7 @@
     padding: 50px 70px 50px 70px;
     border-radius: 10px;
     gap: 10px;
-    background: rgba(246, 246, 246, 1);
+    background: var(--gray3);
     box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
 
 }
@@ -30,7 +30,7 @@
     line-height: 31px;
     letter-spacing: 0em;
     text-align: left;
-    color: rgba(71, 25, 21, 1);
+    color: var(--brown1);
 
 }
 
@@ -57,8 +57,8 @@
 .code-dropdown-header {
     width: 120px;
     height: 46px;
-    background: rgba(246, 246, 246, 1);
-    color: rgba(10, 61, 88, 1);
+    background: var(--gray3);
+    color: var(--blue1);
     font-family: 'Montserrat Alternates';
     font-size: 16px;
     font-weight: 400;
@@ -91,7 +91,7 @@
 
 .code-dropdown-list {
     margin-top: 2px;
-    background-color: rgba(246, 246, 246, 1);
+    background-color: var(--gray3);
     border: 1px solid #ccc;
     border-top: none;
     max-height: 200px;
@@ -100,7 +100,7 @@
     border-top-left-radius: 10px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    color: rgba(10, 61, 88, 1);
+    color: var(--blue1);
     position: absolute;
     margin-top: 67px;
     overflow-y: auto;
@@ -110,7 +110,7 @@
 .code-dropdown-item {
     padding: 7px;
     width: 80px;
-    color: rgba(10, 61, 88, 1);
+    color: var(--blue1);
     font-family: 'Montserrat Alternates';
     font-size: 14px;
     text-align: left;
@@ -124,7 +124,7 @@
 
 .code-dropdown-item:hover {
     font-size: 16px;
-    color: rgba(10, 61, 88, 1);
+    color: var(--blue1);
 
 }
 
@@ -144,7 +144,7 @@
     padding: 11px 20px 11px 20px;
     border-radius: 12px;
     gap: 10px;
-    background: rgba(225, 227, 227, 1);
+    background: var(--gray2);
     box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }
 
@@ -154,7 +154,7 @@
     padding: 11px 4px 11px 20px;
     border: 0.5px solid;
     border-radius: 12px;
-    background: rgba(233, 236, 236, 1);
+    background: var(--gray1);
     margin-left: 70px;
 }
 
@@ -179,7 +179,7 @@
     line-height: 16px;
     letter-spacing: 0em;
     text-align: left;
-    color: rgba(71, 25, 21, 1);
+    color: var(--brown1);
     margin-top: 20px;
     margin-left: 30px;
     margin-right: 15px;
@@ -191,11 +191,11 @@
     padding: 13px 50px 13px 50px;
     border-radius: 12px;
     gap: 10px;
-    background: rgba(218, 141, 51, 1);
+    background: var(--orange2);
     animation-duration: 0ms;
     cursor: pointer;
     margin-bottom: 10px;
-    color: rgba(233, 236, 236, 1);
+    color: var(--gray1);
     font-family: "Montserrat Alternates";
     font-size: 20px;
     font-weight: 500;
@@ -212,7 +212,7 @@
     line-height: 23px;
     letter-spacing: 0em;
     text-align: left;
-    color: rgba(10, 61, 88, 1);
+    color: var(--blue1);
     text-decoration: none;
     height: 50px;
 
@@ -244,14 +244,14 @@
 
 .reg-error-message {
     line-height: 14px;
-    color: red;
+    color: var(--red);
     margin-top: 5px;
     font-size: 12px;
 }
 
-.success-message{
+.success-message {
     line-height: 14px;
-    color: green;
+    color: var(--green);
     margin-top: 5px;
     font-size: 12px;
 }
@@ -263,12 +263,12 @@
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    background-image: url(/src/modules/admin/svg/loginIcons/ErrorIcon.svg);
+    background-image: url(/src/svg/login-icons/ErrorInputIcon.svg);
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.eye-icon{
+.eye-icon {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -281,14 +281,14 @@
     border: none;
 }
 
-.no-eye-icon-password{
-    background-image: url(/src/modules/admin/svg/loginIcons/NotEyeIcon.svg);
+.no-eye-icon-password {
+    background-image: url(/src/svg/login-icons/HidePasswordIcon.svg);
 }
 
-.eye-icon-password{
-    background-image: url(/src/modules/admin/svg/loginIcons/EyeIcon.svg);
+.eye-icon-password {
+    background-image: url(/src/svg/login-icons/ShowPasswordIcon.svg);
 }
 
-.input-wrapper{
+.input-wrapper {
     position: relative;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import RemoveIcon from '../../modules/admin/svg/sharedIcons/RemoveIcon';
+import RemoveIcon from '../../svg/shared-icons/RemoveIcon';
 import './customDeleteStyles.css';
 
 const CustomDelete = props =>

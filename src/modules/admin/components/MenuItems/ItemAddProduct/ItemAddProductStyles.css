@@ -47,7 +47,7 @@
     padding: 5px;
     padding-left: 10px;
     cursor: pointer;
-    background-image: url(/src/modules/admin/svg/sharedIcons/ComboboxArrowOpenIcon.svg);
+    background-image: url(/src/svg/arrows/BlueFilledTriangleToDownArrow.svg);
     background-repeat: no-repeat;
     background-position: 95%;
 
@@ -267,7 +267,7 @@ input[type="number"]::-webkit-inner-spin-button {
     background-color: #F6F6F6;
 
 
-    background-image: url(/src/modules/admin/svg/sharedIcons/NoPictureMainIcon.svg);
+    background-image: url(/src/svg/shared-icons/NoPictureMainIcon.svg);
     background-repeat: no-repeat;
     background-position: center;
 
@@ -299,7 +299,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
     color: #F6F6F6;
     text-align: center;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -343,7 +343,7 @@ input[type="number"]::-webkit-inner-spin-button {
     border: none;
     resize: none;
     color: #0A3D58;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-size: 22px;
     font-style: normal;
     font-weight: 400;
@@ -386,7 +386,7 @@ input[type="number"]::-webkit-inner-spin-button {
     border: none;
     color: #FFF;
     text-align: center;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-size: 18px;
     font-style: normal;
     font-weight: 500;

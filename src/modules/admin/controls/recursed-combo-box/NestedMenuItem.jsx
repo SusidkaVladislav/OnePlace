@@ -2,8 +2,8 @@ import React, { useState, useRef, useImperativeHandle, forwardRef } from "react"
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 //import ArrowRight from "@mui/icons-material/ArrowRight";
-import ArrowNestedCategory from '../../svg/sharedIcons/ArrowNestedCategory';
-import BackIcon from '../../svg/sharedIcons/BackIcon';
+import BrownLeftArrow from '../../../../svg/arrows/BrownLeftArrow';
+import BackIcon from '../../../../svg/arrows/BackTextAndArrowIcon';
 
 const NestedMenuItem = (props, ref) =>
 {
@@ -138,7 +138,7 @@ const NestedMenuItem = (props, ref) =>
                 <div className="category-option-row">
                     <span className='category-option-span'>{label}</span>
                     <div style={{ flexGrow: 1 }} />
-                    <span className="nested-category-arrow-icon"><ArrowNestedCategory /></span>
+                    <span className="nested-category-arrow-icon"><BrownLeftArrow /></span>
                 </div>
             </MenuItem>
             <Menu

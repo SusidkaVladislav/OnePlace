@@ -5,8 +5,8 @@ import './ChangePasswordStyles.css'
 
 import { useNavigate } from 'react-router-dom';
 
-import OnePlaceIcon from '../../../admin/svg/loginIcons/OnePlaceIcon';
-import ArrowBack from '../../../admin/svg/sharedIcons/BackIcon';
+import OnePlaceIcon from '../../../../svg/login-icons/OnePlaceIcon';
+import BackTextAndArrowIcon from '../../../../svg/arrows/BackTextAndArrowIcon';
 
 import VerificationLogic from '../../../../services/verification/VerificationLogic';
 import PasswordInput from '../../../../services/passwordInputs/PasswordInput';
@@ -73,7 +73,8 @@ const AdminChangePassword = () =>
     useEffect(() =>
     {
         //Якщо все заповнено успішно, то можна міняти пароль
-        if(!hasErrors && !errorMatch) {
+        if (!hasErrors && !errorMatch)
+        {
 
             //Зміна паролю
 
@@ -81,7 +82,7 @@ const AdminChangePassword = () =>
             dispatch(resetPasswordState())
             navigate(-1);
         }
-        
+
     }, [hasErrors, errorMatch]);
 
     return (
@@ -92,7 +93,7 @@ const AdminChangePassword = () =>
                 dispatch(resetPasswordState());
                 navigate(-1)
             }}>
-                <ArrowBack />
+                <BackTextAndArrowIcon />
             </span>
 
             <div className='change-pass-div'>
@@ -127,7 +128,7 @@ const AdminChangePassword = () =>
                             <PasswordInput onChange={handlePasswordChange} />
                         </div>
 
-                        {(hasErrors && errorMessage.length > 0)  && <label className="error-text">{errorMessage}</label>}
+                        {(hasErrors && errorMessage.length > 0) && <label className="error-text">{errorMessage}</label>}
 
                         <div className="left-post">
                             <label className="label-form">Підтвердіть новий пароль</label>

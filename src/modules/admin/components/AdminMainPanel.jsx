@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import "./MainManuStyle.css";
 
 //#region Icons
-import LogoIcon from '../svg/LogoIcon';
-import ArrowIcon from "../svg/mainPanelIcons/ArrowIcon";
-import ArrowIcon2 from "../svg/mainPanelIcons/ArrowIcon2";
+import MainSiteLogo from '../../../svg/shared-icons/MainSiteLogo';
+import WhiteLeftWithGapArrow from "../../../svg/arrows/WhiteLeftWithGapArrow";
+import WhiteRightWithGapArrow from "../../../svg/arrows/WhiteRightWithGapArrow";
 //#endregion
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -54,32 +54,32 @@ const Main = () =>
     const divSize = isArrowWide ? '239px' : '20px';
 
     return (
-            <div className='admin-body'>
-                <div>
-                    <header>
-                        <div className='main-logo'>
-                            <LogoIcon />
-                        </div>
-                    </header>
-                </div>
-                <div className='left-menu' style={menuStyle} >
-                    <div className='menu-item-user' style={divStyle}>
-                        <div className='menu-img-icon'></div>
-                        <div className='menu-labels'>
-                            <label className='menu-name'>Admin admin</label>
-                            {/* <label className='menu-email'>{email}</label> */}
-                        </div>
-                        <label className='menu-arrow-icon' style={arrowStyle}
-                            onClick={handleShowArrow}>
-                            {clickedArrow ? <ArrowIcon2 /> : <ArrowIcon />}
-                        </label>
+        <div className='admin-body'>
+            <div>
+                <header>
+                    <div className='main-logo'>
+                        <MainSiteLogo />
                     </div>
-                    <HoverIcon />
-                </div>
-                <div className='body-by-item' style={bodyStyle}>
-                    <Outlet />
-                </div>
+                </header>
             </div>
+            <div className='left-menu' style={menuStyle} >
+                <div className='menu-item-user' style={divStyle}>
+                    <div className='menu-img-icon'></div>
+                    <div className='menu-labels'>
+                        <label className='menu-name'>Admin admin</label>
+                        {/* <label className='menu-email'>{email}</label> */}
+                    </div>
+                    <label className='menu-arrow-icon' style={arrowStyle}
+                        onClick={handleShowArrow}>
+                        {clickedArrow ? <WhiteRightWithGapArrow /> : <WhiteLeftWithGapArrow />}
+                    </label>
+                </div>
+                <HoverIcon />
+            </div>
+            <div className='body-by-item' style={bodyStyle}>
+                <Outlet />
+            </div>
+        </div>
 
 
     )

@@ -9,10 +9,10 @@ import './adminLoginStyle.css';
 //#endregion
 
 //#region Icons
-import OnePlaceIcon from '../../svg/loginIcons/OnePlaceIcon';
-import ErrorIcon from '../../svg/loginIcons/ErrorIcon';
-import OnePlaceIcon2 from '../../svg/loginIcons/OnePlaceIcon2';
-import HelloIcon from '../../svg/loginIcons/HelloIcon';
+import OnePlaceIcon from '../../../../svg/login-icons/OnePlaceIcon';
+import ErrorInputIcon from '../../../../svg/login-icons/ErrorInputIcon';
+import OnePlaceIcon2 from '../../../../svg/login-icons/OnePlaceIcon2';
+import HelloIcon from '../../../../svg/login-icons/HelloIcon';
 //#endregion
 
 
@@ -109,7 +109,7 @@ const AdminAuthForm = () =>
 
                         <PasswordInput onChange={handlePasswordChange} />
 
-                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorIcon /></label>}
+                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorInputIcon /></label>}
                     </div>
 
                     <div className='change-error-email'>

@@ -42,7 +42,7 @@
 }
 
 .discount-amount-decrease-arrow {
-    background-image: url(/src/modules/admin/svg/sharedIcons/BlackArrowOpenIcon.svg);
+    background-image: url(/src/svg/arrows/BlueSmallToBottomArrow.svg);
     cursor: pointer;
     width: 24px;
     height: 24px;
@@ -50,7 +50,7 @@
 }
 
 .discount-amount-increase-arrow {
-    background-image: url(/src/modules/admin/svg/sharedIcons/BlackArrowCloseIcon.svg);
+    background-image: url(/src/svg/arrows/BlueSmallToTopArrow.svg);
     cursor: pointer;
     width: 24px;
     height: 24px;

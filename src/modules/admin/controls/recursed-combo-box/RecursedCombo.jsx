@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Dropdown from './Dropdown';
 import NestedMenuItem from './NestedMenuItem';
 import MenuItem from "@mui/material/MenuItem";
-import ComboBoxArrowOpenIcon from '../../svg/sharedIcons/ComboboxArrowOpenIcon';
-import ComboBoxArrowOpenIcon2 from '../../svg/sharedIcons/ComboBoxArrowOpenIcon2';
+import ComboBoxArrowOpenIcon from '../../../../svg/arrows/BlueFilledTriangleToDownArrow';
+import OrangeFilledTriangleToTopArrow from '../../../../svg/arrows/OrangeFilledTriangleToTopArrow';
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import './RecursedComboStyles.css';
 
@@ -167,7 +167,7 @@ const RecursedCombo = (props) =>
 
                         {
                             isOpen ?
-                                <ComboBoxArrowOpenIcon2 /> : <ComboBoxArrowOpenIcon />
+                                <OrangeFilledTriangleToTopArrow /> : <ComboBoxArrowOpenIcon />
 
                         }
 

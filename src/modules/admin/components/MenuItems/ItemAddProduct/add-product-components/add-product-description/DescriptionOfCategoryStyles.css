@@ -42,6 +42,6 @@
     cursor: pointer;
     padding: 12px;
     margin-bottom: 5px;
-    background: url(/src/modules/admin/svg/sharedIcons/CloseCrossIcon.svg) no-repeat;
+    background: url(/src/svg/shared-icons/BlueCloseCrossIcon.svg) no-repeat;
     border: none;
 }

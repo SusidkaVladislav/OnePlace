@@ -1,44 +1,40 @@
 import React, { useState } from 'react';
 
 //#region Icons
-import ItemMenuIcon1 from '../svg/mainPanelIcons/ItemMenuIcon1';
-import ItemMenuIcon2 from '../svg/mainPanelIcons/ItemMenuIcon2';
-import ItemMenuIcon3 from '../svg/mainPanelIcons/ItemMenuIcon3';
-import ItemSalesIcon1 from '../svg/mainPanelIcons/ItemSalesIcon1';
-import ItemSalesIcon2 from '../svg/mainPanelIcons/ItemSalesIcon2';
-import ItemSalesIcon3 from '../svg/mainPanelIcons/ItemSalesIcon3';
-import ItemOrderIcon1 from '../svg/mainPanelIcons/ItemOrderIcon1';
-import ItemOrderIcon2 from '../svg/mainPanelIcons/ItemOrderIcon2';
-import ItemOrderIcon3 from '../svg/mainPanelIcons/ItemOrderIcon3';
-import ItemUserIcon1 from '../svg/mainPanelIcons/ItemUserIcon1';
-import ItemUserIcon2 from '../svg/mainPanelIcons/ItemUserIcon2';
-import ItemUserIcon3 from '../svg/mainPanelIcons/ItemUserIcon3';
-import ItemMessageIcon1 from '../svg/mainPanelIcons/ItemMessageIcon1';
-import ItemMessageIcon2 from '../svg/mainPanelIcons/ItemMessageIcon2';
-import ItemMessageIcon3 from '../svg/mainPanelIcons/ItemMessageIcon3';
-import ItemProductIcon1 from '../svg/mainPanelIcons/ItemProductIcon1';
-import ItemProductIcon2 from '../svg/mainPanelIcons/ItemProductIcon2';
-import ItemProductIcon3 from '../svg/mainPanelIcons/ItemProductIcon3';
-import ItemCategoryIcon1 from '../svg/mainPanelIcons/ItemCategoryIcon1';
-import ItemCategoryIcon2 from '../svg/mainPanelIcons/ItemCategoryIcon2';
-import ItemCategoryIcon3 from '../svg/mainPanelIcons/ItemCategoryIcon3';
-import ItemExitIcon1 from '../svg/mainPanelIcons/ItemExitIcon1';
-import ItemExitIcon2 from '../svg/mainPanelIcons/ItemExitIcon2';
-import ItemExitIcon3 from '../svg/mainPanelIcons/ItemExitIcon3';
-import ItemReviewIcon1 from '../svg/mainPanelIcons/ItemReviewIcon1';
-import ItemReviewIcon2 from '../svg/mainPanelIcons/ItemReviewIcon2';
-import ItemReviewIcon3 from '../svg/mainPanelIcons/ItemReviewIcon3';
-import ItemFilterIcon1 from '../svg/mainPanelIcons/ItemFilterIcon1';
-import ItemFilterIcon2 from '../svg/mainPanelIcons/ItemFilterIcon2';
-import ItemFilterIcon3 from '../svg/mainPanelIcons/ItemFilterIcon3';
-import BlackArrowOpenIcon from '../svg/sharedIcons/BlackArrowOpenIcon';
-import BlackArrowCloseIcon from '../svg/sharedIcons/BlackArrowCloseIcon';
-import ItemAddProductIcon1 from '../svg/mainPanelIcons/ItemAddProductIcon1';
-import ItemAddProductIcon2 from '../svg/mainPanelIcons/ItemAddProductIcon2';
-import ItemAddProductIcon3 from '../svg/mainPanelIcons/ItemAddProductIcon3';
+
+
+import BrownSmallToBottomArrow from '../../../svg/arrows/BrownSmallToBottomArrow';
+
+
+import BlueSmallToTopArrow from '../../../svg/arrows/BlueSmallToTopArrow';
+import UsersWithTextActiveIcon from '../../../svg/main-panel-icons/users/icons-with-text/UsersWithTextActiveIcon';
+import UsersWithTextIcon from '../../../svg/main-panel-icons/users/icons-with-text/UsersWithTextIcon';
+import SalesWithTextActiveIcon from '../../../svg/main-panel-icons/sales/icons-with-text/SalesWithTextActiveIcon';
+import SalesWithTextIcon from '../../../svg/main-panel-icons/sales/icons-with-text/SalesWithTextIcon';
+import ReviewWithTextActiveIcon from '../../../svg/main-panel-icons/review/icons-with-text/ReviewWithTextActiveIcon';
+import ReviewWithTextIcon from '../../../svg/main-panel-icons/review/icons-with-text/ReviewWithTextIcon';
+import ProductWithTextActiveIcon from '../../../svg/main-panel-icons/product/icons-with-text/ProductWithTextActiveIcon';
+import ProductWithTextIcon from '../../../svg/main-panel-icons/product/icons-with-text/ProductWithTextIcon';
+import OrderWithTextActiveIcon from '../../../svg/main-panel-icons/order/icons-with-text/OrderWithTextActiveIcon';
+import OrerWithTextIcon from '../../../svg/main-panel-icons/order/icons-with-text/OrerWithTextIcon';
+import MessageWithTextIcon from '../../../svg/main-panel-icons/message/icons-with-text/MessageWithTextIcon';
+import MessageWithTextActiveIcon from '../../../svg/main-panel-icons/message/icons-with-text/MessageWithTextActiveIcon';
+import MainWithTextActiveIcon from '../../../svg/main-panel-icons/main/icons-with-text/MainWithTextActiveIcon';
+import MainWithTextIcon from '../../../svg/main-panel-icons/main/icons-with-text/MainWithTextIcon';
+import FilterWithTextIcon from '../../../svg/main-panel-icons/filter/icons-with-text/FilterWithTextIcon';
+import FilterWithTextActiveIcon from '../../../svg/main-panel-icons/filter/icons-with-text/FilterWithTextActiveIcon';
+import ExitWithTextIcon from '../../../svg/main-panel-icons/exit/icons-with-text/ExitWithTextIcon';
+import ExitWithTextActiveIcon from '../../../svg/main-panel-icons/exit/icons-with-text/ExitWithTextActiveIcon';
+import CategoryWithTextActiveIcon from '../../../svg/main-panel-icons/category/icons-with-text/CategoryWithTextActiveIcon';
+import CategoryWithTextIcon from '../../../svg/main-panel-icons/category/icons-with-text/CategoryWithTextIcon';
+import AddProductWithTextActiveIcon from '../../../svg/main-panel-icons/add-product/icons-with-text/AddProductWithTextActiveIcon';
+import AddProductWithTextIcon from '../../../svg/main-panel-icons/add-product/icons-with-text/AddProductWithTextIcon';
 //#endregion
 
 import { Link } from 'react-router-dom'
+
+const HOVER_ICON_COLOR = '#DA8D33'
+const DEFAULT_ICON_COLOR = '#471915'
 
 const HoverIcon = () =>
 {
@@ -74,7 +70,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(0)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 0 ? <ItemMenuIcon3 /> : (hoveredIndex === 0 ? <ItemMenuIcon2 /> : <ItemMenuIcon2 />)}
+                    {clickedIndex === 0 ? <MainWithTextActiveIcon /> : (hoveredIndex === 0 ? <MainWithTextIcon color={HOVER_ICON_COLOR} /> : <MainWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -86,7 +82,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(1)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 1 ? <ItemSalesIcon3 /> : (hoveredIndex === 1 ? <ItemSalesIcon2 /> : <ItemSalesIcon1 />)}
+                    {clickedIndex === 1 ? <SalesWithTextActiveIcon /> : (hoveredIndex === 1 ? <SalesWithTextIcon color={HOVER_ICON_COLOR} /> : <SalesWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -98,7 +94,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(2)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 2 ? <ItemOrderIcon3 /> : (hoveredIndex === 2 ? <ItemOrderIcon2 /> : <ItemOrderIcon1 />)}
+                    {clickedIndex === 2 ? <OrderWithTextActiveIcon /> : (hoveredIndex === 2 ? <OrerWithTextIcon color={HOVER_ICON_COLOR} /> : <OrerWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -110,7 +106,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(3)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 3 ? <ItemUserIcon3 /> : (hoveredIndex === 3 ? <ItemUserIcon2 /> : <ItemUserIcon1 />)}
+                    {clickedIndex === 3 ? <UsersWithTextActiveIcon /> : (hoveredIndex === 3 ? <UsersWithTextIcon color={HOVER_ICON_COLOR} /> : <UsersWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -122,7 +118,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(4)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 4 ? <ItemMessageIcon3 /> : (hoveredIndex === 4 ? <ItemMessageIcon2 /> : <ItemMessageIcon1 />)}
+                    {clickedIndex === 4 ? <MessageWithTextActiveIcon /> : (hoveredIndex === 4 ? <MessageWithTextIcon color={HOVER_ICON_COLOR} /> : <MessageWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
 
@@ -135,13 +131,13 @@ const HoverIcon = () =>
                         onMouseEnter={() => handleMouseEnter(5)}
                         onMouseLeave={handleMouseLeave}
                     >
-                        {clickedIndex === 5 ? <ItemProductIcon3 /> : (hoveredIndex === 5 ? <ItemProductIcon2 /> : <ItemProductIcon1 />)}
+                        {clickedIndex === 5 ? <ProductWithTextActiveIcon /> : (hoveredIndex === 5 ? <ProductWithTextIcon color={HOVER_ICON_COLOR} /> : <ProductWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                     </Link>
                     <span
                         onClick={() => { setShowAddProduct(!showAddProduct) }}
                         style={{ cursor: 'pointer' }}
                     >
-                        {showAddProduct ? <BlackArrowCloseIcon /> : <BlackArrowOpenIcon />}
+                        {showAddProduct ? <BlueSmallToTopArrow /> : <BrownSmallToBottomArrow />}
                     </span>
                 </div>
             </div>
@@ -155,7 +151,7 @@ const HoverIcon = () =>
                         onMouseEnter={() => handleMouseEnter(10)}
                         onMouseLeave={handleMouseLeave}
                     >
-                        {clickedIndex === 10 ? <ItemAddProductIcon3 /> : (hoveredIndex === 10 ? <ItemAddProductIcon2 /> : <ItemAddProductIcon1 />)}
+                        {clickedIndex === 10 ? <AddProductWithTextActiveIcon /> : (hoveredIndex === 10 ? <AddProductWithTextIcon color={HOVER_ICON_COLOR} /> : <AddProductWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                     </Link>
                 </div>
             }
@@ -169,7 +165,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(6)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 6 ? <ItemCategoryIcon3 /> : (hoveredIndex === 6 ? <ItemCategoryIcon2 /> : <ItemCategoryIcon1 />)}
+                    {clickedIndex === 6 ? <CategoryWithTextActiveIcon /> : (hoveredIndex === 6 ? <CategoryWithTextIcon color={HOVER_ICON_COLOR} /> : <CategoryWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -181,7 +177,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(7)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 7 ? <ItemReviewIcon3 /> : (hoveredIndex === 7 ? <ItemReviewIcon2 /> : <ItemReviewIcon1 />)}
+                    {clickedIndex === 7 ? <ReviewWithTextActiveIcon /> : (hoveredIndex === 7 ? <ReviewWithTextIcon color={HOVER_ICON_COLOR} /> : <ReviewWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -193,7 +189,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(8)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 8 ? <ItemFilterIcon3 /> : (hoveredIndex === 8 ? <ItemFilterIcon2 /> : <ItemFilterIcon1 />)}
+                    {clickedIndex === 8 ? <FilterWithTextActiveIcon /> : (hoveredIndex === 8 ? <FilterWithTextIcon color={HOVER_ICON_COLOR} /> : <FilterWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
             <div className='menu-item-main'>
@@ -204,7 +200,7 @@ const HoverIcon = () =>
                     onClick={() => handleClick(9)}
                     onMouseEnter={() => handleMouseEnter(9)}
                     onMouseLeave={handleMouseLeave}>
-                    {clickedIndex === 9 ? <ItemExitIcon3 /> : (hoveredIndex === 9 ? <ItemExitIcon2 /> : <ItemExitIcon1 />)}
+                    {clickedIndex === 9 ? <ExitWithTextActiveIcon /> : (hoveredIndex === 9 ? <ExitWithTextIcon color={HOVER_ICON_COLOR} /> : <ExitWithTextIcon color={DEFAULT_ICON_COLOR} />)}
                 </Link>
             </div>
         </div>

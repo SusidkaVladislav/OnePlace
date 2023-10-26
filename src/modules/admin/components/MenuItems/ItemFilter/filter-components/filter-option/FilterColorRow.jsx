@@ -3,16 +3,16 @@ import './FilterColorRowStyles.css';
 import CustomDelete from '../../../../../../../services/delete/CustomDelete';
 import AddColorFilter from '../add-filter/AddColorFilter';
 
-import EditIcon from '../../../../../svg/sharedIcons/EditIcon';
-import LoadingIcon from '../../../../../svg/sharedIcons/Dual Ring-1s-54px.gif';
+import EditIcon from '../../../../../../../svg/shared-icons/EditIcon';
+import LoadingIcon from '../../../../../../../svg/animations/LoadingAnimation.gif';
 
 import { useDispatch, useSelector } from 'react-redux';
 import
-    {
-        deleteColor,
-        updateColor,
-        getColors,
-    } from '../../../../../features/adminFilter/adminFilterSlice'
+{
+    deleteColor,
+    updateColor,
+    getColors,
+} from '../../../../../features/adminFilter/adminFilterSlice'
 
 const FilterColorRow = (props) =>
 {

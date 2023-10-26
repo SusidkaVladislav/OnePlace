@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './UserRegisterFormStyles.css';
 
-import CrossIcon from './../../svg/authIncons/CrossIcon.svg';
-import VerticalLine from '../../svg/authIncons/VerticalLine';
-import GoogleIcon from '../../svg/authIncons/GoogleIcon';
-import FacebookIcon from '../../svg/authIncons/FacebookIcon';
+import BrownCloseCrossIcon from '../../../../svg/shared-icons/BrownCloseCrossIcon.svg';
+import VerticalLine from '../../../../svg/login-icons/VerticalLine';
+import GoogleIcon from '../../../../svg/login-icons/GoogleIcon';
+import FacebookIcon from '../../../../svg/login-icons/FacebookIcon';
 
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -99,7 +99,7 @@ const UserRegisterForm = () =>
                         className="cross-button "
                         onClick={handleClose}
                         style={{
-                            backgroundImage: `url(${CrossIcon})`,
+                            backgroundImage: `url(${BrownCloseCrossIcon})`,
                             backgroundRepeat: 'no-repeat',
                         }}
                     />
@@ -190,7 +190,7 @@ const UserRegisterForm = () =>
                                         <div
                                             className={`code-main-select-item `}
                                         >
-                                            <img src={require('../../svg/authIncons/flag.png')} title='ukraine-flag' alt='flag'></img>
+                                            <img src={'../../../../svg/loginIcons/flag.png'} title='ukraine-flag' alt='flag'></img>
                                             <label>+380</label>
                                         </div>
                                         <div className='input-wrapper'>
