@@ -5,7 +5,7 @@ import './ChangePasswordStyles.css'
 
 import { useNavigate } from 'react-router-dom';
 
-import OnePlaceIcon from '../../../admin/svg/loginIcons/OnePlaceIcon';
+import OnePlaceIcon from '../../../admin/svg/loginIcons/TextLogoIcon';
 import ArrowBack from '../../../admin/svg/sharedIcons/BackIcon';
 
 import VerificationLogic from '../../../../services/verification/VerificationLogic';

@@ -1,0 +1,41 @@
+.appbar{
+    display: flex;
+    width: 100%;
+    padding: 1% 5%;
+    background: linear-gradient(225deg, #FFF 9.71%, #D9D9D9 155.32%);
+    box-shadow:  0.067em -0.2em 1em 0em rgba(0, 0, 0, 0.15);
+}
+
+.logo{
+    display: flex;
+}
+
+.searchbar{
+    width: 30%;
+}
+
+.navigation {
+    width: 12%
+}
+
+
+
+.toolbar{
+    justify-content: space-between;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
