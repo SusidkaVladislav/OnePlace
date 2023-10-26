@@ -1,4 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
+import { Helmet} from 'react-helmet';
+
+//#region Client routes
+import Header from './modules/client/components/Header';
+//#endregion
 
 //#region Main routes
 import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
@@ -37,8 +42,13 @@ function App()
 {
   return (
     <div className='body-div'>
+      <Helmet>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Helmet>
 
       <Routes>
+        <Route path="home" element={<Header />} />
+
         <Route path="/" element={<OnePlaceMain />} />
 
         <Route path="user-login" element={<UserLoginForm />} />

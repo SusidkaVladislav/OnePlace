@@ -9,10 +9,10 @@ import './adminLoginStyle.css';
 //#endregion
 
 //#region Icons
-import OnePlaceIcon from '../../../../svg/login-icons/OnePlaceIcon';
-import ErrorInputIcon from '../../../../svg/login-icons/ErrorInputIcon';
-import OnePlaceIcon2 from '../../../../svg/login-icons/OnePlaceIcon2';
-import HelloIcon from '../../../../svg/login-icons/HelloIcon';
+import OnePlaceIcon from '../../svg/loginIcons/OnePlaceIcon';
+import ErrorIcon from '../../svg/loginIcons/ErrorIcon';
+import OnePlaceIcon2 from '../../svg/loginIcons/OnePlaceIcon2';
+import HelloIcon from '../../svg/loginIcons/HelloIcon';
 //#endregion
 
 
@@ -82,7 +82,7 @@ const AdminAuthForm = () =>
     return (
         <div className='change-body'>
             <div className='change-div'>
-                <OnePlaceIcon />
+                <TextLogoIcon />
 
                 <div className='change-body-div'>
                     <div className="left-post">
@@ -127,10 +127,10 @@ const AdminAuthForm = () =>
             </div>
 
             <div className='hello-icon'>
-                <HelloIcon />
+                <AdminLoginBackground1 />
             </div>
             <div className='oneplace-icon'>
-                <OnePlaceIcon2 />
+                <AdminLoginBackground2 />
             </div>
 
 
