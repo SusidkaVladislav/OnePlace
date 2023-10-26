@@ -28,6 +28,8 @@ import OnePlaceMain from "./modules/main/OnePlaceMain";
 import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/UserInfo";
 import ReviewInfo from "./modules/admin/components/MenuItems/ItemReview/reviewPages/ReviewInfo";
 
+import AdminPrivateRoute from './privateRouting/adminPrivateRoute';
+
 import "./App.css";
 
 
@@ -47,33 +49,38 @@ function App()
 
           <Route index element={<AdminAuthForm />} />
 
-          <Route path="main" element={<AdminManePanel />}>
-            <Route index element={<ItemMane />} />
-            <Route path="sales" element={<ItemSale />} />
-            <Route path="orders" element={<ItemOrder />} />
 
-            <Route path="users" >
-              <Route index element={<ItemUser />} />
-              <Route path="user/:id" element={<UserInfo />} />
+          {/* <Route path="/main" element={<AdminManePane />}> */}
+          <Route path="main" element={<AdminPrivateRoute />}>
+            <Route path="" element={<AdminManePanel />}>
+              <Route index element={<ItemMane />} />
+              <Route path="sales" element={<ItemSale />} />
+              <Route path="orders" element={<ItemOrder />} />
+
+              <Route path="users" >
+                <Route index element={<ItemUser />} />
+                <Route path="user/:id" element={<UserInfo />} />
+              </Route>
+
+              <Route path="messages" element={<ItemMessage />} />
+
+              <Route path="products" >
+                <Route index element={<ItemProduct />} />
+                <Route path={"product/:id"} element={<ItemEditProduct />} />
+              </Route>
+
+              <Route path="add-product" element={<ItemAddProduct />} />
+              <Route path="categories" element={<ItemCategory />} />
+
+              <Route path="reviews" >
+                <Route index element={<ItemReview />} />
+                <Route path="review/:id" element={<ReviewInfo />} />
+              </Route>
+
+              <Route path="filters" element={<FilerItem />} />
+              <Route path="exit" element={<ItemExit />} />
             </Route>
 
-            <Route path="messages" element={<ItemMessage />} />
-
-            <Route path="products" >
-              <Route index element={<ItemProduct />} />
-              <Route path={"product/:id"} element={<ItemEditProduct />} />
-            </Route>
-
-            <Route path="add-product" element={<ItemAddProduct />} />
-            <Route path="categories" element={<ItemCategory />} />
-
-            <Route path="reviews" >
-              <Route index element={<ItemReview />} />
-              <Route path="review/:id" element={<ReviewInfo />} />
-            </Route>
-
-            <Route path="filters" element={<FilerItem />} />
-            <Route path="exit" element={<ItemExit />} />
           </Route>
         </Route>
 

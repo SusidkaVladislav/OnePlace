@@ -5,7 +5,7 @@ import './ItemReviewStyle.css';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
 import AdminSearch from '../../../../../services/search/adminSearch';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchReviews,fetchReviewReplies, getAllReviewReplies, getFilteredReviews,fetchDeleteReview } from '../../../features/adminReviews/adminReviewsSlice';
+import { fetchReviews, fetchReviewReplies, getAllReviewReplies, getFilteredReviews, fetchDeleteReview } from '../../../features/adminReviews/adminReviewsSlice';
 import { useNavigate } from "react-router-dom";
 import ElipseIcon from './svg/ElipseIcon';
 import FluentArrowIcon from './svg/FluentArrowIcon';
@@ -21,78 +21,91 @@ const ItemReview = () =>
     const [checkedUsers, setCheckedUsers] = useState([]);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-    const { loading, reviews } = useSelector((state) => state.adminReviews)
+    const { loading,
+        reviews,
+    } = useSelector((state) => state.adminReviews)
+
     const filteredData = useSelector(state => getFilteredReviews(state, inputValue));
     const reviewsReply = useSelector(state => getAllReviewReplies(state));
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
     const [isConfirmDialogVisible2, setIsConfirmDialogVisible2] = useState(false);
     const [isConfirmDialogError, setIsConfirmDialogError] = useState(false);
 
-    const handleChecked = (id) => {
+    const handleChecked = (id) =>
+    {
         const updatedCheckedUsers = checkedUsers.includes(id)
-        ? checkedUsers.filter((userId) => userId !== id)
-        : [...checkedUsers, id];
+            ? checkedUsers.filter((userId) => userId !== id)
+            : [...checkedUsers, id];
         setCheckedUsers(updatedCheckedUsers);
-        console.log(updatedCheckedUsers);
     }
 
-    const handleCheckedAll=()=>{
+    const handleCheckedAll = () =>
+    {
         const allIds = filteredData.map((review) => review.id);
-        if (checkedUsers.length > 0) {
-            if (checkedUsers.length === allIds.length) {
+        if (checkedUsers.length > 0)
+        {
+            if (checkedUsers.length === allIds.length)
+            {
                 setCheckedUsers([]);
                 setSelectAllChecked(false)
             }
-            else{
-                const newCheckedUsers = [...new Set([...checkedUsers, ...allIds])]; // Combine and remove duplicates
+            else
+            {
+                const newCheckedUsers = [...new Set([...checkedUsers, ...allIds])];
                 setCheckedUsers(newCheckedUsers);
                 setSelectAllChecked(true);
             }
         }
-        else{
-            if (selectAllChecked) {
-                setCheckedUsers([]); // Uncheck all checkboxes
+        else
+        {
+            if (selectAllChecked)
+            {
+                setCheckedUsers([]);
                 setSelectAllChecked(false)
-            } else {
-                setCheckedUsers(allIds); // Check all checkboxes
+            } else
+            {
+                setCheckedUsers(allIds);
                 setSelectAllChecked(true)
             }
 
         }
-        console.log(checkedUsers);
     }
-    const handleDeleteReview=()=>
+    const handleDeleteReview = () =>
     {
+        if (checkedUsers.length === 0)
+            return;
         setIsConfirmDialogVisible(true);
-        //console.log(checkedUsers);
     }
 
-    const handleConfirmDelete = async () => {
-        
+    const handleConfirmDelete = async () =>
+    {
         setIsConfirmDialogVisible(false);
         dispatch(fetchDeleteReview(checkedUsers))
-        .then((response) => {
-            if (response.meta.requestStatus==='rejected') {
-                setIsConfirmDialogError(true);
-                //console.log(response);
-            }
-            if(response.meta.requestStatus==='fulfilled')
+            .then((response) =>
             {
-                dispatch(fetchReviews());
-                setIsConfirmDialogVisible2(true);
-                setTimeout(() => {
-                    setIsConfirmDialogVisible2(false);
-                }, 3000);
-                
-            }
-        });
+                if (response.meta.requestStatus === 'rejected')
+                {
+                    setIsConfirmDialogError(true);
+                }
+                if (response.meta.requestStatus === 'fulfilled')
+                {
+                    dispatch(fetchReviews());
+                    setIsConfirmDialogVisible2(true);
+                    setTimeout(() =>
+                    {
+                        setIsConfirmDialogVisible2(false);
+                    }, 2000);
+
+                }
+            });
     };
 
     const handleCancelDelete = () =>
     {
         setIsConfirmDialogVisible(false);
     };
-    const handleClickOk=()=>{
+    const handleClickOk = () =>
+    {
         setIsConfirmDialogError(false);
         setIsConfirmDialogVisible2(false);
     }
@@ -101,8 +114,6 @@ const ItemReview = () =>
     {
         dispatch(fetchReviews());
         dispatch(fetchReviewReplies());
-        //console.log(filteredData);
-        //console.log(reviewsReply);
     }, [])
 
     const filteredAndPaginatedData = useMemo(() =>
@@ -131,39 +142,39 @@ const ItemReview = () =>
                 <div className='user-body' >
                     <div className='user-table'>
                         <div className='review-table-head'>
-                        <div className='r1-h'> 
-                            <input type="checkbox" 
-                            onChange={handleCheckedAll}
-                            checked={selectAllChecked} />
+                            <div className='r1-h'>
+                                <input type="checkbox"
+                                    onChange={handleCheckedAll}
+                                    checked={selectAllChecked} />
+                            </div>
+                            <label className="r2-h">Всі</label>
+                            <label className="r3-h" onClick={handleDeleteReview}>Видалити</label>
                         </div>
-                        <label className="r2-h">Всі</label>
-                        <label className="r3-h" onClick={handleDeleteReview}>Видалити</label>
-                    </div>
-                    {filteredAndPaginatedData.map((review,index)=>(   
-                        <div className='review-div-row' key={review.id}>
-                            <div className={`review-table-row ${index % 2 === 0 ? 'even-row' : ''}`}>
-                                <div className='r1'>
-                                    <input type="checkbox" id={review.id} 
-                                    onChange={()=>handleChecked(review.id)}
-                                    checked={checkedUsers.includes(review.id)}
-                                    />
-                                </div>
-                                <div className='r2'> 
-                                    <img src={review?.productPictureAddress} alt={review?.productName}/>
-                                    {!reviewsReply.some((reply) => reply.review.id === review.id) && (
-                                        <label key={review.id} className='review-elipse-icon'><ElipseIcon/></label>
-                                    )}
-                                </div>
-                                <div className='r3'>{review?.productName} {review?.productCode}</div>
-                                <div className='r4'>{review?.comment}</div>
-                                <div className='r5'>{review?.date}</div>
-                                <div className='r6' onClick={async event => { navigate(`review/${review.id}`); }}>
-                                    <FluentArrowIcon/>
+                        {filteredAndPaginatedData.map((review, index) => (
+                            <div className='review-div-row' key={review.id}>
+                                <div className={`review-table-row ${index % 2 === 0 ? 'even-row' : ''}`}>
+                                    <div className='r1'>
+                                        <input type="checkbox" id={review.id}
+                                            onChange={() => handleChecked(review.id)}
+                                            checked={checkedUsers.includes(review.id)}
+                                        />
+                                    </div>
+                                    <div className='r2'>
+                                        <img src={review?.productPictureAddress} alt={review?.productName} />
+                                        {!reviewsReply.some((reply) => reply.review.id === review.id) && (
+                                            <label key={review.id} className='review-elipse-icon'><ElipseIcon /></label>
+                                        )}
+                                    </div>
+                                    <div className='r3'>{review?.productName} {review?.productCode}</div>
+                                    <div className='r4'>{review?.comment}</div>
+                                    <div className='r5'>{review?.date}</div>
+                                    <div className='r6' onClick={async event => { navigate(`review/${review.id}`); }}>
+                                        <FluentArrowIcon />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                    )}
+                        )
+                        )}
                     </div>
                 </div>
 
@@ -198,7 +209,7 @@ const ItemReview = () =>
                 <div className='modal-backdrop-false'>
                     <div className='confirm-dialog-false'>
                         <p>Помилка видалення запису. Спробуйте пізніше!</p>
-                        <label onClick={handleClickOk}className='confirm-buttom-ok'>Ok</label>
+                        <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label>
                     </div>
                 </div>
             )}

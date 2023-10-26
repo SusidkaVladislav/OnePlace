@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
 
+import { instance } from "../../../../api.config.js";
 
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -14,14 +15,14 @@ const initialState = {
 
 export const fetchMessages = createAsyncThunk('adminMessages/fetchMessages', async () =>
 {
-     const response = await axios.get(REACT_APP_BASE_URL + '/Admin/message');
+     const response = await instance.get(REACT_APP_BASE_URL + '/Admin/message');
      return response.data;
 })
 
 export const fetchPutMessage=createAsyncThunk('adminMessages/fetchPutMessage', async (message) =>{
     try {
 
-        const response = await axios.put(REACT_APP_BASE_URL+'/Admin/message',
+        const response = await instance.put(REACT_APP_BASE_URL+'/Admin/message',
           { id:message.id,isReplied:message.isReplied }
         );
         return response.data;
@@ -35,7 +36,7 @@ export const fetchDeleteMessage=createAsyncThunk('adminMessages/fetchDeleteMessa
     try {
 
       const deleteRequests = messages.map((messageId) => {
-        return axios.delete(`${REACT_APP_BASE_URL}/Admin/message/${messageId}`);
+        return instance.delete(`${REACT_APP_BASE_URL}/Admin/message/${messageId}`);
       });
       const response = await Promise.all(deleteRequests);
       return response.map((res) => res.data);

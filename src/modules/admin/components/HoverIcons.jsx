@@ -74,7 +74,7 @@ const HoverIcon = () =>
                     onMouseEnter={() => handleMouseEnter(0)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    {clickedIndex === 0 ? <ItemMenuIcon3 /> : (hoveredIndex === 0 ? <ItemMenuIcon2 /> : <ItemMenuIcon1 />)}
+                    {clickedIndex === 0 ? <ItemMenuIcon3 /> : (hoveredIndex === 0 ? <ItemMenuIcon2 /> : <ItemMenuIcon2 />)}
                 </Link>
             </div>
             <div className='menu-item-main'>

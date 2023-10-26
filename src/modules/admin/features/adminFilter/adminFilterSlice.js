@@ -4,8 +4,7 @@ import
     createAsyncThunk
 } from "@reduxjs/toolkit";
 
-import axios from "axios";
-
+import { instance } from "../../../../api.config.js";
 import { createSelector } from 'reselect';
 
 const { REACT_APP_BASE_URL } = process.env;
@@ -25,7 +24,7 @@ export const getCountries = createAsyncThunk('adminFilter/getCountries', async (
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllCountries');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllCountries');
         return response.data;
     }
     catch (error)
@@ -47,7 +46,7 @@ export const getAllBrands = createAsyncThunk('adminFilter/getAllBrands', async (
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllBrands');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllBrands');
         return response.data;
     }
     catch (error)
@@ -69,7 +68,7 @@ export const getColors = createAsyncThunk('adminFilter/getAllColors', async (arg
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Admin/getAllColors');
+        const response = await instance.get(REACT_APP_BASE_URL + '/Admin/getAllColors');
         return response.data;
     }
     catch (error)
@@ -91,7 +90,7 @@ export const createColor = createAsyncThunk('adminFilter/createColor', async (co
 {
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + '/Admin/createColor', color);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Admin/createColor', color);
         return response.data;
     }
     catch (error)
@@ -128,7 +127,7 @@ export const deleteColor = createAsyncThunk('adminFilter/deleteColor', async (id
 {
     try
     {
-        const response = await axios.delete(REACT_APP_BASE_URL + '/Admin/deleteColor/' + Number(id));
+        const response = await instance.delete(REACT_APP_BASE_URL + '/Admin/deleteColor/' + Number(id));
         return response.data;
     }
     catch (error)
@@ -165,7 +164,7 @@ export const updateColor = createAsyncThunk('adminFilter/updateColor', async (co
 {
     try
     {
-        const response = await axios.put(REACT_APP_BASE_URL + '/Admin/updateColor', color);
+        const response = await instance.put(REACT_APP_BASE_URL + '/Admin/updateColor', color);
         return response.data;
     }
     catch (error)
@@ -202,7 +201,7 @@ export const createCountry = createAsyncThunk('adminFilter/createCountry', async
 {
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + '/Admin/createCountry/' + country);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Admin/createCountry/' + country);
         return response.data;
     }
     catch (error)
@@ -239,7 +238,7 @@ export const deleteCountry = createAsyncThunk('adminFilter/deleteCountry', async
 {
     try
     {
-        const response = await axios.delete(REACT_APP_BASE_URL + '/Admin/deleteCountry/' + id);
+        const response = await instance.delete(REACT_APP_BASE_URL + '/Admin/deleteCountry/' + id);
         return response.data;
     }
     catch (error)
@@ -276,7 +275,7 @@ export const updateCountry = createAsyncThunk('adminFilter/updateCountry', async
 {
     try
     {
-        const response = await axios.put(REACT_APP_BASE_URL + '/Admin/updateCountry', country);
+        const response = await instance.put(REACT_APP_BASE_URL + '/Admin/updateCountry', country);
         return response.data;
     }
     catch (error)
@@ -313,7 +312,7 @@ export const createBrand = createAsyncThunk('adminFilter/createBrand', async (br
 {
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + '/Admin/createBrand/' + brand);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Admin/createBrand/' + brand);
         return response.data;
     }
     catch (error)
@@ -350,7 +349,7 @@ export const deleteBrand = createAsyncThunk('adminFilter/deleteBrand', async (id
 {
     try
     {
-        const response = await axios.delete(REACT_APP_BASE_URL + '/Admin/deleteBrand/' + id);
+        const response = await instance.delete(REACT_APP_BASE_URL + '/Admin/deleteBrand/' + id);
         return response.data;
     }
     catch (error)
@@ -387,7 +386,7 @@ export const updateBrand = createAsyncThunk('adminFilter/updateBrand', async (br
 {
     try
     {
-        const response = await axios.put(REACT_APP_BASE_URL + '/Admin/updateBrand', brand);
+        const response = await instance.put(REACT_APP_BASE_URL + '/Admin/updateBrand', brand);
         return response.data;
     }
     catch (error)

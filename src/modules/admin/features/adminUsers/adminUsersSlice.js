@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"; 
-
+import { instance } from "../../../../api.config.js";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
@@ -10,14 +10,14 @@ const initialState = {
 
 export const fetchUsers = createAsyncThunk('adminUsers/fetchUsers', async () =>
 {
-    const response = await axios.get(REACT_APP_BASE_URL + '/Admin/user');
+    const response = await instance.get(REACT_APP_BASE_URL + '/Admin/user');
     return response.data
 })
 
 export const fetchDeleteUser=createAsyncThunk('adminUsers/fetchDeleteUser', async (userId) =>
 {
     try {
-        const response = await axios.delete(`${REACT_APP_BASE_URL}/Admin/user/${Number(userId)}`);
+        const response = await instance.delete(`${REACT_APP_BASE_URL}/Admin/user/${Number(userId)}`);
         return response.data;
     } catch (error) {
         throw error; 
