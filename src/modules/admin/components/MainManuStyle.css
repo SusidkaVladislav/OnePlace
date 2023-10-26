@@ -1,12 +1,14 @@
 .body-div {
-    background: rgba(10, 61, 88, 1);
-    padding: 15px;
+
     min-height: 100vh;
     height: fit-content;
 }
 
 .admin-body {
+    background: rgba(10, 61, 88, 1);
+    
     display: flex;
+    padding: 15px;
     min-height: 100vh;
     height: fit-content;
 }

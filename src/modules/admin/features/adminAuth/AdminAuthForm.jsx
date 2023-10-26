@@ -80,60 +80,62 @@ const AdminAuthForm = () =>
     }
 
     return (
-        <div className='change-body'>
-            <div className='change-div'>
-                <OnePlaceIcon />
+        <div className="admin-template">
+            <div className='change-body'>
+                <div className='change-div'>
+                    <OnePlaceIcon />
 
-                <div className='change-body-div'>
-                    <div className="left-post">
-                        <label className="label-form">Пошта</label>
-                        <div className="input-wrapper">
-                            <input
-                                className="input-text-form"
-                                type="email"
-                                value={email}
-                                onChange={handleEmailChange}
-                                style={{ borderColor: EmailBorderColor }} />
+                    <div className='change-body-div'>
+                        <div className="left-post">
+                            <label className="label-form">Пошта</label>
+                            <div className="input-wrapper">
+                                <input
+                                    className="input-text-form"
+                                    type="email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    style={{ borderColor: EmailBorderColor }} />
 
-                            {EmailErrorIcon && <span className="error-icon-email"></span>}
+                                {EmailErrorIcon && <span className="error-icon-email"></span>}
+                            </div>
+
                         </div>
 
-                    </div>
+                        <div className='error-email'>
+                            {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
+                        </div>
 
-                    <div className='error-email'>
-                        {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
-                    </div>
+                        <div className="left-post">
+                            <label className="label-form">Пароль</label>
 
-                    <div className="left-post">
-                        <label className="label-form">Пароль</label>
+                            <PasswordInput onChange={handlePasswordChange} />
 
-                        <PasswordInput onChange={handlePasswordChange} />
+                            {PasswordErrorIcon && <label className='error-icon-email'><ErrorInputIcon /></label>}
+                        </div>
 
-                        {PasswordErrorIcon && <label className='error-icon-email'><ErrorInputIcon /></label>}
-                    </div>
-
-                    <div className='change-error-email'>
-                        {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
-                    </div>
+                        <div className='change-error-email'>
+                            {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
+                        </div>
 
 
-                    <button className='confirm-button' onClick={handleEnter}>Увійти</button>
+                        <button className='confirm-button' onClick={handleEnter}>Увійти</button>
 
 
-                    <div className='admin-left-forgot'>
-                        <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
+                        <div className='admin-left-forgot'>
+                            <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className='hello-icon'>
-                <AdminLoginBackground1 />
-            </div>
-            <div className='oneplace-icon'>
-                <OnePlaceIcon2 />
-            </div>
+                <div className='hello-icon'>
+                    <AdminLoginBackground1 />
+                </div>
+                <div className='oneplace-icon'>
+                    <OnePlaceIcon2 />
+                </div>
 
 
+            </div>
         </div>
     )
 }

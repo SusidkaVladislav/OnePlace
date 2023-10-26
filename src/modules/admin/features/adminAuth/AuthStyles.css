@@ -11,12 +11,18 @@
     padding-top: 45px;
 } */
 
+.admin-template{
+    padding: 15px;
+    height: fit-content;
+    background: rgba(10, 61, 88, 1);
+}
+
 .change-body
 {
-    width: 1510px;
+    /* width: 1510px;
     height: 685px;
     top: 1800px;
-    left: 7324px;
+    left: 7324px; */
     padding: 173px 0px 173px 0px;
     background: rgba(246, 246, 246, 1);
     border-radius: 20px;
