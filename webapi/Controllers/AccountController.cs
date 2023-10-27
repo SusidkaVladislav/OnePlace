@@ -19,7 +19,7 @@ namespace webapi.Controllers
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterPayload register)
-        {      
+        {
             var result = await _accountService.RegisterAsync(register);
             return Ok(result);
         }
@@ -29,13 +29,19 @@ namespace webapi.Controllers
         public async Task<IActionResult> Login(LoginPayload login)
         {
             var result = await _accountService.LoginAsync(login);
-            if(result != null)
-                return Ok(result);
-            else
-                return BadRequest("Invalid Credentials");
+            return Ok(result);
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh(string accessToken)
+        {
+            var result = await _accountService.RefreshToken(accessToken);
+            return Ok(result);
         }
 
         [HttpPost("logout")]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _accountService.LogoutAsync();

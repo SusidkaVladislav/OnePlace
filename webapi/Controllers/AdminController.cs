@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
-using OnePlace.BLL.Services;
 using OnePlace.BOL;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
-using OnePlace.BOL.Password;
-using OnePlace.BOL.Picture;
-using OnePlace.BOL.Review;
 using OnePlace.BOL.ReviewReply;
-using OnePlace.BOL.ShoppingCart;
 
 namespace webapi.Controllers
 {
@@ -24,7 +19,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("order")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetOrders()
         {
             var result = await _adminService.GetOrders();
@@ -32,7 +27,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("order")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateOrder(UpdateOrderPayload order)
         {
             var result = await _adminService.UpdateOrder(order);
@@ -40,7 +35,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("order/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var result = await _adminService.DeleteOrder(id);
@@ -48,7 +43,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("message")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetMessages()
         {
             var result = await _adminService.GetMessages();
@@ -56,7 +51,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("message")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateMessage(UpdateMessagePayload message)
         {
             var result = await _adminService.UpdateMessage(message);
@@ -64,7 +59,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("message/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
             var result = await _adminService.DeleteMessage(id);
@@ -72,7 +67,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("user")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsers()
         {
             var result = await _adminService.GetUsers();
@@ -80,7 +75,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("user/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _adminService.DeleteUser(id);
@@ -88,7 +83,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("review")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetReviews()
         {
             var result = await _adminService.GetReviews();
@@ -96,7 +91,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("review/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetReview(int id)
         {
             var result = await _adminService.GetReview(id);
@@ -104,7 +99,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("review/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteReview(int id)
         {
             var result = await _adminService.DeleteReview(id);
@@ -112,7 +107,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("reviewReply")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetReviewReplies()
         {
             var result = await _adminService.GetReviewReplies();
@@ -120,7 +115,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("reviewReply/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetReviewReply(int id)
         {
             var result = await _adminService.GetReviewReply(id);
@@ -128,7 +123,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("reviewReply")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteReviewReply(int id)
         {
             var result = await _adminService.DeleteReviewReply(id);
@@ -136,7 +131,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("reviewReply")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddReviewReply(ReviewReplyPayload reviewReply)
         {
             var result = await _adminService.AddReviewReply(reviewReply);
@@ -172,6 +167,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("createColor")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateColor(ColorToAdd color)
         {
             var result = await _adminService.CreateColor(color);
@@ -179,6 +175,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("deleteColor/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateColor(int id)
         {
             var result = await _adminService.DeleteColor(id);
@@ -186,6 +183,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateColor")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateColor(ColorDTO color)
         {
             var result = await _adminService.UpdateColor(color);
@@ -193,6 +191,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("createCountry/{country}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCountry(string country)
         {
             var result = await _adminService.CreateCountry(country);
@@ -200,6 +199,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("deleteCountry/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             var result = await _adminService.DeleteCountry(id);
@@ -207,6 +207,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateCountry")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateCountry(ManufacturerCountryDTO country)
         {
             var result = await _adminService.UpdateCountry(country);
@@ -214,6 +215,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("createBrand/{brand}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateBrand(string brand)
         {
             var result = await _adminService.CreateBrand(brand);
@@ -221,6 +223,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("deleteBrand/{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteBrand(int id)
         {
             var result = await _adminService.DeleteBrand(id);
@@ -228,6 +231,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateBrand")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateBrand(ManufacturerDTO brand)
         {
             var result = await _adminService.UpdateBrand(brand);

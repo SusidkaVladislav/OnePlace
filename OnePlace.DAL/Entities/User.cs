@@ -18,5 +18,9 @@ namespace OnePlace.DAL.Entities
 
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<CreditCard> CreditCards { get; set;} = new List<CreditCard>();
+
+        public string? RefreshToken { get; set; }
+        public DateTime? TokenCreated { get; set; }
+        public DateTime? TokenExpires { get; set; }
     }
 }

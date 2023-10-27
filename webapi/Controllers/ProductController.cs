@@ -16,7 +16,7 @@ namespace webapi.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("product/{id}")]
        // [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -33,6 +33,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("addProduct")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddProduct(ProductCreatePayload product)
         {
             var result = await _productService.AddProduct(product);
@@ -40,6 +41,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("updateProduct")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateProduct(ProductUpdatePayload product)
         {
             var result = await _productService.UpdateProduct(product);
@@ -47,6 +49,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("deleteProduct")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var result = await _productService.DeleteProduct(id);
@@ -54,6 +57,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("getAllCount")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAllProductCount()
         {
             var result = await _productService.GetProductCount();

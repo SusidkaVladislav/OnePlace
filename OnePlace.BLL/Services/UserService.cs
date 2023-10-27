@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Validators;
 using OnePlace.BOL.CategoryDTO;
@@ -15,6 +16,7 @@ using OnePlace.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -113,12 +115,13 @@ namespace OnePlace.BLL.Services
             ReviewValidation validation = new ReviewValidation(_unitOfWork);
 
             if (reviewDTO == null)
-                throw new NotFoundException(nameof(CreateReviewDTO) + " переданий об'єкт рівний null");
+                throw new NotFoundException("Переданий об'єкт рівний null");
 
             Review review = _mapper.Map<Review>(reviewDTO);
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            
-            review.UserId = user.Id;
+
+            var userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c=>c.Type == "UserId").Value);
+
+            review.UserId = userId;
 
             _unitOfWork.Reviews.Create(review);
 
