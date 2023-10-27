@@ -63,8 +63,8 @@ const AdminAuthForm = () =>
         //navigate('main');
         //try
         //{
-        const rememberMe = true;
-        await dispatch(adminLogin(({ email, password, rememberMe })))
+        //const rememberMe = true;
+        await dispatch(adminLogin(({ email, password })))
         navigate('main');
         //if (adminCredentials.isAuth === true)
         //console.log("isAuth is true")

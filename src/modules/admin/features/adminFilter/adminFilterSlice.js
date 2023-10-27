@@ -6,6 +6,7 @@ import
 
 import { instance } from "../../../../api.config.js";
 import { createSelector } from 'reselect';
+import axios from "axios";
 
 const { REACT_APP_BASE_URL } = process.env;
 

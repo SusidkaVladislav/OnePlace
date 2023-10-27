@@ -21,7 +21,9 @@ export const adminLogin = createAsyncThunk('admin/adminLogin', async (login, { r
 {
     try
     {
-        const response = await instance.post(REACT_APP_BASE_URL + "/Account/login", login)
+        const response = await instance.post(REACT_APP_BASE_URL + "/Account/login", login, {
+            withCredentials: true
+          })
         return response.data;
     }
     catch (error)
@@ -55,7 +57,6 @@ export const adminLogin = createAsyncThunk('admin/adminLogin', async (login, { r
 })
 
 
-
 const adminAuthSlice = createSlice({
     name: 'adminAuth',
     initialState,
@@ -73,7 +74,7 @@ const adminAuthSlice = createSlice({
             .addCase(adminLogin.fulfilled, (state, action) =>
             {
                 localStorage.setItem("token", action.payload);
-                
+
                 const user = jwt(action.payload);
                 const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
