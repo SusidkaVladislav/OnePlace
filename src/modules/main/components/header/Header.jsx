@@ -4,14 +4,13 @@ import './Header.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
-import SearchBar from '../controls/SearchBar';
+import SearchBar from '../../controls/SearchBar';
 
-import Logo from '../svg/Logo';
-import CartIcon from '../svg/CartIcon';
-import HeartIcon from '../svg/HeartIcon';
-import SearchIcon from '../svg/SearchIcon';
-import UserIcon from '../svg/UserIcon';
-import DownArrowBlue from '../svg/DownArrowBlue';
+import Logo from '../../../../svg/shared-icons/Logo';
+import CartIcon from '../../../../svg/client-icons/header/CartIcon';
+import HeartIcon from '../../../../svg/client-icons/header/HeartIcon';
+import UserIcon from '../../../../svg/client-icons/header/UserIcon';
+import DownArrowBlue from '../../../../svg/arrows/DownArrowBlue';
 
 
 const Header = () => {
