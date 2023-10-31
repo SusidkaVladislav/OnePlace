@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import SearchIcon from '../svg/SearchIcon';
+import SearchIcon from '../../../svg/client-icons/header/SearchIcon';
   
 const SearchBar = () => {
     return(
