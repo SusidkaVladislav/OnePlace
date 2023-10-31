@@ -1,0 +1,18 @@
+div.background{
+    background: var(--gray-1001, #E9ECEC);
+    width: 100%;
+    height: fit-content;
+}
+
+.text1{
+    padding-bottom: 2%;
+}
+
+.text2{
+    padding-bottom: 2%;
+}
+
+div.content{
+    padding-left: 6%;
+    padding-top: 10%;
+}
