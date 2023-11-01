@@ -2,18 +2,25 @@ import React, { useState, useRef, useEffect } from "react";
 import EditIcon from '../../../../../../svg/shared-icons/EditIcon';
 import './EditCategoryStyles.css';
 
+import ImgBBUpload from "../../../../../../services/image-upload-service/ImgBBUpload";
+
 const EditCategory = props =>
 {
+    const { upload } = ImgBBUpload();
+
     const {
-        onChange,
-        onEdit,
         categoryId,
+        imgURL,
+        onEditHandler,
         categoryName,
-        picturePath
     } = props;
 
+
+    const [name, setName] = useState(categoryName);
+    const [nameValid, setNameValid] = useState(true);
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
-    const [selectedPicture, setSelectedPicture] = useState(picturePath);
+    const [pictureFile, setPictureFile] = useState(null);
+    const [picture, setPicture] = useState(imgURL);
 
     const handleRemoveButtonClick = () =>
     {
@@ -22,35 +29,60 @@ const EditCategory = props =>
 
     const handleConfirmEdit = async () =>
     {
-        setIsConfirmDialogVisible(false);
-        onEdit(true, categoryName, categoryId, selectedPicture);
+        if (nameValid)
+        {
+            setIsConfirmDialogVisible(false);
+
+            let urlToPicture = {
+                data: {
+                    display_url: null,
+                    delete_url: null
+                }
+            };
+            if (pictureFile !== null)
+                urlToPicture = await upload(pictureFile)
+
+            onEditHandler(true, name, categoryId, urlToPicture.data.display_url, urlToPicture.data.delete_url);
+        }
     };
 
     const handleCancelEdit = () =>
     {
         setIsConfirmDialogVisible(false);
-        onEdit(false)
+        onEditHandler(false)
+        setName(categoryName)
+        setNameValid(true);
     };
 
     const changeCategoryNameHandler = (event) =>
     {
-        onChange(event.target.value);
+        setName(event.target.value)
+        if (event.target.value.length === 0)
+        {
+            setNameValid(false);
+        }
+        else
+        {
+            setNameValid(true);
+        }
     }
 
 
-    const handleFileChange = (event) =>
+    const handleFileChange = async (event) =>
     {
-        // const file = event.target.files[0];
+        if (event.target.files.length !== 0)
+        {
+            const file = event.target.files[0];
 
-        // const reader = new FileReader();
-    
-        // reader.onload = () => {
-        //   setSelectedPicture(reader.result);
-        // };
-    
-        // if (file) {
-        //   reader.readAsDataURL(file);
-        // }
+            setPictureFile(file)
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () =>
+            {
+                setPicture(reader.result)
+            }
+        }
     };
 
     return (
@@ -77,14 +109,17 @@ const EditCategory = props =>
                                 <input
                                     className="img-category-edit"
                                     type="image"
-                                    src={selectedPicture}
+                                    src={picture}
                                     alt=""
                                 />
-                  
+
                                 <input
+                                    style={{
+                                        'border': nameValid ? 'none' : '1px solid red'
+                                    }}
                                     className='edit-category-input'
                                     type='text'
-                                    value={categoryName}
+                                    value={name}
                                     onChange={changeCategoryNameHandler}
                                 />
 

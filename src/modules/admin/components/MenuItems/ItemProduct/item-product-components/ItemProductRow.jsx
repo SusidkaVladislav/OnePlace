@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteProduct, getAllProducts } from '../../../../features/adminProduct/adminProductSlice';
+import { deleteProduct, getAllProducts, hideSuccessfulAlert, hideUnsuccessfulAlert } from '../../../../features/adminProduct/adminProductSlice';
 
 import EditIcon from '../../../../../../svg/shared-icons/EditIcon';
 
@@ -32,6 +32,14 @@ const ItemProductRow = props =>
         {
             await dispatch(deleteProduct(id));
             await dispatch(getAllProducts(category.id));
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
 

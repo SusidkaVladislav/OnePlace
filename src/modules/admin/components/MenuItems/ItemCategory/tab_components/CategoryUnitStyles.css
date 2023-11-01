@@ -1,6 +1,7 @@
 .main-category-unit-container {
     height: 59px;
-    width: 872px;
+    /* width: 872px; */
+    width: 90%;
     background-color: #E1E3E3;
     padding: 8px 18px 8px 18px;
 
@@ -52,7 +53,7 @@
     gap: 156px;
     color: #471915;
     font-size: 16px;
-    font-family: Montserrat Alternates;
+    font-family: 'Montserrat Alternates';
     font-weight: 400;
     line-height: 20.80px;
     word-wrap: break-word;

@@ -20,6 +20,7 @@ import
     setManufacturer,
     setDescriptions,
     setSale,
+    setPictures,
     setIsInBestProducts,
     resetProduct,
     resetColorPrice,
@@ -29,6 +30,8 @@ import
     setCodeValid,
     setDescriptionValid,
     setCharachteristicsValid,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
 } from '../../../features/adminProduct/adminProductSlice';
 //#endregion
 
@@ -45,7 +48,7 @@ import BackIcon from '../../../../../svg/arrows/BackTextAndArrowIcon';
 import CommonPicture from '../ItemAddProduct/add-product-components/add-product-pictures/CommonPicture';
 import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 //#endregion
-
+import ImgBBUpload from '../../../../../services/image-upload-service/ImgBBUpload';
 import './ItemEditProductStyles.css';
 
 const ItemEditProduct = () =>
@@ -53,6 +56,7 @@ const ItemEditProduct = () =>
     const params = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { upload } = ImgBBUpload();
     const [productId, setProductId] = useState(params.id)
     const [saleId, setSaleId] = useState(0);
     const [percentAmount, setPercentAmount] = useState(0);
@@ -63,12 +67,40 @@ const ItemEditProduct = () =>
     const [productCharacteristics, setProductCharacteristics] = useState(false);
     var characteristicFromCategoryLeftSide = [];
     var characteristicFromCategoryRightSide = [];
+    const {
+        category,
+        allBrands,
+        allCountries,
+        allColors,
+        productColorPrice,
+        charachteristics,
+        productName,
+        productCode,
+        manufacturerCountryId,
+        manufacturerId,
+        productDescription,
+        productSale,
+        isInBestProducts,
+        nameValid,
+        colorValid,
+        codeValid,
+        descriptionValid,
+        productImages,
+    } = useSelector(state => state.adminProducts);
+
+    //#region Validation states
+    const [colorValidity, setColorValidadity] = useState(true)
+    //#endregion
 
     //#region Images
-    const [mainPicturePath, setPicturePath] = useState('');
+
+
+    const [mainPicturePath, setPicturePath] = useState();
     const inputFile = useRef(null);
-    var [productPictures, setProductPictures] = useState([]);
+    var [productPictures, setProductPictures] = useState();
     var images = [];
+
+    const [imgFiles, setImageFiles] = useState([]);
 
     const hideImg = () =>
     {
@@ -93,22 +125,37 @@ const ItemEditProduct = () =>
 
                 try
                 {
-                    let lastPictureBlockId = productPictures[productPictures.length - 1].pictureBlockId;
+                    let lastPictureBlockId = productPictures[productPictures.length - 1].blockId;
                     newPictureBlock = {
-                        pictureBlockId: lastPictureBlockId + 1,
-                        picturePath: reader.result,
+                        id: -1,
+                        blockId: lastPictureBlockId + 1,
+                        address: reader.result,
+                        isTitle: false,
                     };
+
+                    setImageFiles([...imgFiles, {
+                        blockId: lastPictureBlockId + 1,
+                        pictureFile: file,
+                    }])
                 }
                 catch
                 {
                     newPictureBlock = {
-                        pictureBlockId: 0,
-                        picturePath: reader.result,
+                        id: -1,
+                        blockId: 0,
+                        address: reader.result,
+                        isTitle: false,
                     };
+
+                    setImageFiles([...imgFiles, {
+                        blockId: 0,
+                        pictureFile: file,
+                    }])
                 }
                 finally
                 {
                     setProductPictures([...productPictures, newPictureBlock]);
+                    dispatch(setPictures([...productPictures, newPictureBlock]))
                 }
             }
             else
@@ -128,8 +175,8 @@ const ItemEditProduct = () =>
         for (let i = 0; i < productPictures.length; i++)
         {
             images.push(<CommonPicture
-                srcPath={productPictures[i].picturePath}
-                pictureId={productPictures[i].pictureBlockId}
+                srcPath={productPictures[i].address}
+                pictureId={productPictures[i].blockId}
                 onRemove={RemovePicture}
                 onSetMain={setMainPicture} />)
         }
@@ -139,40 +186,45 @@ const ItemEditProduct = () =>
 
     const RemovePicture = (blockId) =>
     {
-        const filteredPictures = productPictures.filter((block) => block.pictureBlockId !== blockId);
-        setProductPictures(filteredPictures)
+        const forDelete = productPictures.filter((block) => block.blockId === blockId)
+        if (forDelete[0].address !== mainPicturePath)
+        {
+            const fileterFiles = imgFiles.filter((file) => file.blockId !== blockId)
+            setImageFiles(fileterFiles)
+            const filteredPictures = productPictures.filter((block) => block.blockId !== blockId);
+            setProductPictures(filteredPictures)
+            dispatch(setPictures(filteredPictures))
+        }
     }
 
-    const setMainPicture = (blockId, srcPath) => 
+    const setMainPicture = (blockId) => 
     {
-        var pictures = productPictures;
-        var index = productPictures.findIndex(x => x.pictureBlockId === blockId);
-        pictures[index].picturePath = mainPicturePath;
-        setProductPictures(pictures)
-        setPicturePath(srcPath);
+        productPictures = productPictures.map((pict) =>
+        {
+            let p = {
+                blockId: pict.blockId,
+                id: pict.id,
+                address: pict.address,
+                deleteURL: pict.deleteURL,
+            }
+
+            if (pict.blockId === blockId)
+            {
+                setPicturePath(pict.address)
+                p.isTitle = true
+            }
+            else
+            {
+                p.isTitle = false
+            }
+            return p;
+        })
+
+        setProductPictures(productPictures)
+
+        dispatch(setPictures(productPictures))
     }
     //#endregion
-
-    const {
-        category,
-        allBrands,
-        allCountries,
-        allColors,
-        productColorPrice,
-        charachteristics,
-        productName,
-        productCode,
-        manufacturerCountryId,
-        manufacturerId,
-        productDescription,
-        productSale,
-        isInBestProducts,
-        nameValid,
-        colorValid,
-        codeValid,
-        descriptionValid,
-    } = useSelector(state => state.adminProducts);
-
 
     var productAddedCharacteristics = {
         productCharacteristic: charachteristics
@@ -213,12 +265,15 @@ const ItemEditProduct = () =>
         setStartDiscount(productSale !== null ? new Date(productSale.startDate) : new Date())
         setEndDiscount(productSale !== null ? new Date(productSale.endDate) : new Date())
         setDescription(productDescription)
+        setProductPictures(productImages)
 
+        let mainPicture = productImages.filter(img => img.isTitle === true);
+        setPicturePath(mainPicture[0].address)
         productAddedCharacteristics = {
             productCharacteristic: charachteristics
         }
 
-    }, [productSale, productDescription, charachteristics]);
+    }, [productSale, productDescription, charachteristics, productImages]);
 
 
     const handleSelectBrand = (event) =>
@@ -244,7 +299,7 @@ const ItemEditProduct = () =>
             dispatch(addColorPriceBlock(
                 {
                     blockId: lastBlockId + 1,
-                    colorId: 1,
+                    colorId: allColors[allColors.length - 1].id,
                     price: 0,
                     quantity: 0,
                 }
@@ -262,6 +317,7 @@ const ItemEditProduct = () =>
                     productColorsBlocks={productColorPrice[i]}
                     key={productColorPrice[i].blockId}
                     deleteColorPriceBlock={deleteBlock}
+                    colorValidity={colorValidity}
                 />)
         }
 
@@ -279,18 +335,19 @@ const ItemEditProduct = () =>
 
     const handlePercentAmountChange = (newPercentAmount) =>
     {
-        //При переході до характеристик, потрібно змінити глобальний стан знижки
         setPercentAmount(newPercentAmount);
     };
 
     const handleStartDateChange = (newStartDate) =>
     {
-        setStartDiscount(newStartDate)
+        const formattedStartDate = new Date(newStartDate).toDateString();
+        setStartDiscount(formattedStartDate);
     }
 
     const handleEndDateChange = (newEndDate) =>
     {
-        setEndDiscount(newEndDate)
+        const formattedStartDate = new Date(newEndDate).toDateString();
+        setEndDiscount(formattedStartDate);
     }
 
     const handlerKeyDown = (event) =>
@@ -311,14 +368,18 @@ const ItemEditProduct = () =>
             {
                 id: saleId,
                 discountPercent: percentAmount,
-                startDate: startDiscount,
-                endDate: endDiscount,
+                startDate: new Date(startDiscount).toDateString(),
+                endDate: new Date(endDiscount).toDateString(),
             }
         ));
 
-        if (nameValidation()
-            && colorIdValidation() && codeValidation()
-            && descriptionValidation())
+        if (nameValidation() &&
+            brandValidation() &&
+            countryValidation() &&
+            colorIdValidation() &&
+            codeValidation() &&
+            descriptionValidation()
+        )
             setProductCharacteristics(true)
     }
 
@@ -338,19 +399,62 @@ const ItemEditProduct = () =>
 
     const colorIdValidation = () =>
     {
+        if (productColorPrice[0].colorId === -1)
+        {
+            setColorValidadity(false)
+            return false;
+        }
+
         const colorIds = productColorPrice.map((block) => block.colorId);
         const uniqueColorIds = new Set(colorIds);
         const areAllUnique = colorIds.length === uniqueColorIds.size;
         if (areAllUnique)
         {
             dispatch(setColorValid(true))
+            setColorValidadity(true)
             return true;
         }
         else
         {
             dispatch(setColorValid(false))
+            setColorValidadity(false)
             return false;
         }
+    }
+
+    const brandValidation = () =>
+    {
+        if (manufacturerId === -1)
+        {
+            if (allBrands.length > 0)
+            {
+                dispatch(setManufacturer(allBrands[0].id));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const countryValidation = () =>
+    {
+        if (manufacturerCountryId === -1)
+        {
+            if (allCountries.length > 0)
+            {
+                dispatch(setManufacturerCountry(allCountries[0].id));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+
     }
 
     const codeValidation = () =>
@@ -449,8 +553,47 @@ const ItemEditProduct = () =>
 
     const confirmUpdateProduct = async () =>
     {
-        await dispatch(updateProduct(productId));
+        setLoading(true);
+        let pictures = [];
+
+        for (let i = 0; i < productPictures.length; i++)
+        {
+            let picture = {
+                id: productPictures[i].id,
+                isTitle: productPictures[i].isTitle
+            }
+
+            if (productPictures[i].id === -1)
+            {
+                let file = imgFiles.filter(f => f.blockId === productPictures[i].blockId)
+                let uploadResult = await upload(file[0].pictureFile);
+
+                picture.address = uploadResult.data.display_url
+                picture.deleteURL = uploadResult.data.delete_url
+            }
+            else
+            {
+                picture.address = productPictures[i].address
+                picture.deleteURL = productPictures[i].deleteURL
+            }
+
+            pictures.push(picture)
+        }
+
+        await dispatch(updateProduct({
+            id: productId,
+            pictures: pictures
+        }));
+        setLoading(false);
         navigate(-1);
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     if (loading)
@@ -479,7 +622,7 @@ const ItemEditProduct = () =>
                                         className='product-edit-category'
                                         type='text'
                                         id='product-name-input'
-                                        value={category.name || ''}
+                                        value={category.name.charAt(0).toUpperCase() + category.name.slice(1) || ''}
                                     />
                                 </div>
 
@@ -494,7 +637,7 @@ const ItemEditProduct = () =>
                                             allBrands.map((brand) => (
                                                 <option
                                                     selected={brand.id === Number(manufacturerId)}
-                                                    key={brand.id} value={brand.id}>{brand.name}</option>
+                                                    key={brand.id} value={Number(brand.id)}>{brand.name}</option>
                                             ))
                                         }
                                     </select>
@@ -530,7 +673,7 @@ const ItemEditProduct = () =>
                                             <option
                                                 selected={country.id === Number(manufacturerCountryId)}
                                                 key={country.id}
-                                                value={country.id}
+                                                value={Number(country.id)}
                                             >{country.name}</option>
                                         ))}
                                     </select>
@@ -592,12 +735,6 @@ const ItemEditProduct = () =>
                                     <span className="checkmark"><GreenCheckCheckboxIcon /></span>
                                     <label>Рекомендувати</label>
                                 </label>
-
-                                {/* <input type='checkbox' checked={isInBestProducts} onChange={() =>
-                                {
-                                    dispatch(setIsInBestProducts(!isInBestProducts))
-                                }} />
-                                <label>Рекомендувати</label> */}
                             </div>
                         </div>
 

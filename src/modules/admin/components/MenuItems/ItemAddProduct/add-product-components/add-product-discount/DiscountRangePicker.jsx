@@ -28,15 +28,15 @@ const DiscountRangePicker = (props) =>
     }, [showCalendar])
 
     const [dateRange, setDateRange] = useState({
-        startDate: startDiscountDate ? new Date(startDiscountDate) : new Date(),
-        endDate: endDiscountDate ? new Date(endDiscountDate) : new Date(),
+        startDate: startDiscountDate ? new Date(startDiscountDate) : new Date().toDateString(),
+        endDate: endDiscountDate ? new Date(endDiscountDate) : new Date().toDateString(),
         key: 'selection',
     });
 
     const handleSelect = (ranges) =>
     {
-        onStartDateChange(ranges.selection.startDate.getFullYear() + '.' + (ranges.selection.startDate.getMonth() + 1) + '.' + (ranges.selection.startDate.getDate() + 1))
-        onEndDateChange(ranges.selection.endDate.getFullYear() + '.' + (ranges.selection.endDate.getMonth() + 1) + '.' + (ranges.selection.endDate.getDate() + 1))
+        onStartDateChange(ranges.selection.startDate.toDateString())
+        onEndDateChange(ranges.selection.endDate.toDateString())
         setDateRange(ranges.selection);
     };
 

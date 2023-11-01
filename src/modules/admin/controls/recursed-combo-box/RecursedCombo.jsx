@@ -3,7 +3,6 @@ import Dropdown from './Dropdown';
 import NestedMenuItem from './NestedMenuItem';
 import MenuItem from "@mui/material/MenuItem";
 import ComboBoxArrowOpenIcon from '../../../../svg/arrows/BlueFilledTriangleToDownArrow';
-import OrangeFilledTriangleToTopArrow from '../../../../svg/arrows/OrangeFilledTriangleToTopArrow';
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import './RecursedComboStyles.css';
 
@@ -20,8 +19,6 @@ const RecursedCombo = (props) =>
         category,
     } = props;
 
-
-    const [isOpen, setIsOpen] = useState(false)
     var categories = useRef([])
 
     useEffect(() =>
@@ -94,7 +91,6 @@ const RecursedCombo = (props) =>
                         onClick={() =>
                         {
                             onCatClick(childrens[i].id, childrens[i].name, childrens[i].parentCategoryId)
-                            setIsOpen(false)
                         }}>
                         <p className='category-option-span'>{childrens[i].name}</p>
                     </MenuItem>
@@ -126,7 +122,6 @@ const RecursedCombo = (props) =>
                         onClick={() =>
                         {
                             onCatClick(mainCategories.current[i].id, mainCategories.current[i].name, null)
-                            setIsOpen(false);
                         }}
                     >
                         <p className='category-option-span'>{mainCategories.current[i].name}</p>
@@ -145,12 +140,11 @@ const RecursedCombo = (props) =>
     return (
         <Dropdown
             trigger={
-                <div className={!isOpen ? "category-select" : "category-select is-open"} style={validBorderStyles}
+                <div className="category-select" style={validBorderStyles}
                 >
                     <label onClick={() =>
                     {
                         categories.current = [];
-                        setIsOpen(!isOpen);
                         getCategories()
                     }}>
                         {
@@ -165,11 +159,7 @@ const RecursedCombo = (props) =>
                             getCategories()
                         }}>
 
-                        {
-                            isOpen ?
-                                <OrangeFilledTriangleToTopArrow /> : <ComboBoxArrowOpenIcon />
-
-                        }
+                        <ComboBoxArrowOpenIcon />
 
                     </span>
                 </div>

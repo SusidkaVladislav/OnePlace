@@ -7,7 +7,8 @@ import FilterColorRow from './filter-components/filter-option/FilterColorRow';
 import AddColorFilter from './filter-components/add-filter/AddColorFilter';
 import AddCountryFilter from './filter-components/add-filter/AddCountryFilter';
 import AddBrandFilter from './filter-components/add-filter/AddBrandFilter';
-import Alert from '@mui/material/Alert';
+import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 
 import { useDispatch, useSelector } from 'react-redux';
 import
@@ -113,12 +114,28 @@ const ItemFilter = () =>
     {
         await dispatch(createCountry(countryName))
         await dispatch(getCountries());
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     const addBrand = async (brandName) =>
     {
         await dispatch(createBrand(brandName));
         await dispatch(getAllBrands());
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     const addColor = async (colorInfo, colorName) =>
@@ -129,6 +146,14 @@ const ItemFilter = () =>
         }))
         await dispatch(getColors());
         setShowAddColor(false);
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     return (
@@ -136,35 +161,15 @@ const ItemFilter = () =>
 
             {
                 successfulAlertShow &&
-                <Alert variant='filled'
-                    severity="success"
-                    sx={
-                        {
-                            width: 'fit-content',
-                            height: 'fit-content',
-                            minWidth: '433px',
-                            marginTop: '7%',
-                            marginLeft: '60%',
-                            position: 'absolute'
-                        }
-                    }
-                    onClose={() => { dispatch(hideSuccessfulAlert()) }}>{actionNotification}</Alert>
+                <div className='modal-backdrop'>
+                    <SuccessfulNotification notifiaction={actionNotification} />
+                </div>
             }
             {
                 unsuccessfulAlertShow &&
-                <Alert value='filled'
-                    severity="error"
-                    sx={
-                        {
-                            width: 'fit-content',
-                            minWidth: '433px',
-                            height: 'fit-content',
-                            marginTop: '7%',
-                            marginLeft: '60%',
-                            position: 'absolute'
-                        }
-                    }
-                    onClose={() => { dispatch(hideUnsuccessfulAlert()) }}>{actionNotification}</Alert>
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
             }
 
             <div className='filter-grid'>

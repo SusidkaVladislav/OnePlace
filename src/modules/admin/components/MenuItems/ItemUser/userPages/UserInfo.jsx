@@ -90,11 +90,9 @@ const UserInfo = () =>
                 if (response.meta.requestStatus === 'rejected')
                 {
                     setIsConfirmDialogError(true);
-                    //console.log(response);
                 }
                 if (response.meta.requestStatus === 'fulfilled')
                 {
-                    //console.log(response);
                     setIsConfirmDialogVisible2(true);
                     setTimeout(() =>
                     {
@@ -113,7 +111,6 @@ const UserInfo = () =>
     {
         setIsConfirmDialogError(false);
         setIsConfirmDialogVisible2(false);
-        //console.log("Done");
     }
 
     return (
@@ -154,7 +151,6 @@ const UserInfo = () =>
                 <div className='modal-backdrop-true'>
                     <div className='confirm-dialog-true'>
                         <p>Запис видалено успішно</p>
-                        {/* <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label> */}
                     </div>
                 </div>
             )}

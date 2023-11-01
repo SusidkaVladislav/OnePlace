@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TabTemplate from './TabTemplate';
-import Alert from '@mui/material/Alert';
 
 import './ItemCategoryStyles.css';
+
+import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 
 import { useDispatch, useSelector } from 'react-redux';
 import
@@ -26,6 +28,12 @@ const ItemCategory = () =>
         unsuccessfulAlertShow,
         chosenCategoryId,
         actionNotification, } = useSelector(state => state.adminCategories);
+
+    useEffect(() =>
+    {
+        dispatch(hideSuccessfulAlert())
+        dispatch(hideUnsuccessfulAlert())
+    }, [])
 
     const categoryNameOnChange = (event) =>
     {
@@ -54,41 +62,30 @@ const ItemCategory = () =>
             await dispatch(getCategoryById(chosenCategoryId));
         else
             await dispatch(getCategories());
+
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     return (
         <div>
             {
                 successfulAlertShow &&
-                <Alert variant='filled'
-                    severity="success"
-                    sx={
-                        {
-                            width: 'fit-content',
-                            height: 'fit-content',
-                            minWidth: '433px',
-                            marginTop: '7%',
-                            marginLeft: '60%',
-                            position: 'absolute'
-                        }
-                    }
-                    onClose={() => { dispatch(hideSuccessfulAlert()) }}>{actionNotification}</Alert>
+                <div className='modal-backdrop'>
+                    <SuccessfulNotification notifiaction={actionNotification} />
+                </div>
             }
             {
                 unsuccessfulAlertShow &&
-                <Alert value='filled'
-                    severity="error"
-                    sx={
-                        {
-                            width: 'fit-content',
-                            minWidth: '433px',
-                            height: 'fit-content',
-                            marginTop: '7%',
-                            marginLeft: '60%',
-                            position: 'absolute'
-                        }
-                    }
-                    onClose={() => { dispatch(hideUnsuccessfulAlert()) }}>{actionNotification}</Alert>
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
             }
             <div className='categories-main'>
 
@@ -96,7 +93,7 @@ const ItemCategory = () =>
                     <div>
                         <label className='label-create-category'>Створити категорію</label>
                         <input
-                            style={errorBorder ? { borderColor: 'red' } : { borderColor: 'black' }}
+                            style={errorBorder ? { border: '2px solid red' } : { border: 'none' }}
                             className='input-create-category'
                             value={categoryName}
                             type='text'
@@ -112,7 +109,6 @@ const ItemCategory = () =>
                 <div className='category-body'>
                     <TabTemplate />
                 </div>
-
             </div>
         </div >
     );

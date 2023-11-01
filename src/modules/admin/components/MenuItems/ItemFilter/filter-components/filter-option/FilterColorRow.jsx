@@ -12,6 +12,8 @@ import
     deleteColor,
     updateColor,
     getColors,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
 } from '../../../../../features/adminFilter/adminFilterSlice'
 
 const FilterColorRow = (props) =>
@@ -35,6 +37,14 @@ const FilterColorRow = (props) =>
             await dispatch(deleteColor(id))
             await dispatch(getColors());
             setShowUpdateColor(false);
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
 
@@ -47,6 +57,14 @@ const FilterColorRow = (props) =>
         }))
         await dispatch(getColors());
         setShowUpdateColor(false);
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     const updateColorOpenHandler = () =>

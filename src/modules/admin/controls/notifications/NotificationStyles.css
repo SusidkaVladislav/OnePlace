@@ -1,0 +1,25 @@
+.notification-main-container {
+    position: fixed;
+    width: 22%;
+    height: 55%;
+    min-height: fit-content;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+}
+
+.notification-text {
+    padding-top: 20%;
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+.notification-icon {
+    display: flex;
+    margin-left: 0px;
+}

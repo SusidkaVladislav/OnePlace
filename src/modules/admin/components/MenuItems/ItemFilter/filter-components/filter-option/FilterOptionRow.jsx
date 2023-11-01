@@ -18,6 +18,8 @@ import
     getAllBrands,
     deleteBrand,
     updateBrand,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
 } from '../../../../../features/adminFilter/adminFilterSlice'
 
 const FilterOptionRow = (props) =>
@@ -41,6 +43,14 @@ const FilterOptionRow = (props) =>
         {
             await dispatch(deleteCountry(id));
             await dispatch(getCountries());
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
 
@@ -50,6 +60,14 @@ const FilterOptionRow = (props) =>
         {
             await dispatch(deleteBrand(id));
             await dispatch(getAllBrands());
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
 
@@ -80,6 +98,14 @@ const FilterOptionRow = (props) =>
             name: country,
         }))
         await dispatch(getCountries());
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     const updateBrandHandler = async (brand) =>
@@ -89,6 +115,14 @@ const FilterOptionRow = (props) =>
             name: brand,
         }))
         await dispatch(getAllBrands());
+        setTimeout(() =>
+        {
+            dispatch(hideSuccessfulAlert())
+        }, 1000);
+        setTimeout(() =>
+        {
+            dispatch(hideUnsuccessfulAlert())
+        }, 2000);
     }
 
     if (loading)

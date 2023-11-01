@@ -23,6 +23,7 @@ const initialState = {
     actionNotification: '',
     chosenCategoryId: null,
     categoriesForSelect: [],
+    loading: false,
 }
 
 export const getCategoriesForSelect = createAsyncThunk('admin/gatCategoriesForSelect', async (args, { rejectWithValue }) =>
@@ -247,8 +248,9 @@ const adminCategorySlice = createSlice({
                 unsuccessfulAlertShow: false
             }
         },
-        resetCategoriesforSelect: (state) =>{
-            return{
+        resetCategoriesforSelect: (state) =>
+        {
+            return {
                 ...state,
                 categoriesForSelect: []
             }
@@ -257,33 +259,75 @@ const adminCategorySlice = createSlice({
     extraReducers(builder)
     {
         builder
+            .addCase(getCategoriesForSelect.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
             .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
             {
-                for (let i = 0; i < payload.length; i++){
+                for (let i = 0; i < payload.length; i++)
+                {
                     payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
                 }
 
                 return {
                     ...state,
-                    categoriesForSelect: payload
+                    categoriesForSelect: payload,
+                    loading: false,
+                }
+            })
+            .addCase(getCategoriesForSelect.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
                 }
             })
 
+
+            .addCase(getCategories.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
             .addCase(getCategories.fulfilled, (state, { payload }) =>
             {
                 //Першу букву назви категорії зробити великою
-                for (let i = 0; i < payload.length; i++){
+                for (let i = 0; i < payload.length; i++)
+                {
                     payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
                 }
 
                 return {
                     ...state,
-                    mainCategories: payload
+                    mainCategories: payload,
+                    loading: false
+                }
+            })
+            .addCase(getCategories.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(getCategoryById.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(getCategoryById.fulfilled, (state, { payload }) =>
             {
-                for (let i = 0; i < payload.childrenCategories.length; i++){
+                for (let i = 0; i < payload.childrenCategories.length; i++)
+                {
                     payload.childrenCategories[i].name = payload.childrenCategories[i].name.charAt(0).toUpperCase() + payload.childrenCategories[i].name.slice(1)
                 }
 
@@ -292,8 +336,26 @@ const adminCategorySlice = createSlice({
                     childrenCategories: payload.childrenCategories,
                     categoryByIdData: {
                         name: payload.name,
-                        pictureAddress: payload.pictureAddress
-                    }
+                        pictureURL: payload.PictureURL,
+                        deletePictureURL: payload.DeletePictureURL,
+                    },
+                    loading: false,
+                }
+            })
+            .addCase(getCategoryById.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+
+            .addCase(addCategory.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(addCategory.fulfilled, (state) =>
@@ -302,7 +364,8 @@ const adminCategorySlice = createSlice({
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    actionNotification: 'Категорію успішно додано!'
+                    actionNotification: 'Категорію успішно додано!',
+                    loading: false,
                 }
             })
             .addCase(addCategory.rejected, (state, { payload }) =>
@@ -311,7 +374,45 @@ const adminCategorySlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    actionNotification: payload.detail
+                    actionNotification: payload.detail,
+                    loading: false,
+                }
+            })
+
+            .addCase(updateCategory.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(updateCategory.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: true,
+                    unsuccessfulAlertShow: false,
+                    actionNotification: 'Категорію оновлено!',
+                    loading: false,
+                }
+            })
+            .addCase(updateCategory.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: false,
+                    unsuccessfulAlertShow: true,
+                    actionNotification: payload.detail,
+                    loading: false,
+                }
+            })
+
+
+            .addCase(deleteCategory.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(deleteCategory.fulfilled, (state) =>
@@ -320,7 +421,8 @@ const adminCategorySlice = createSlice({
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    actionNotification: 'Категорію успішно видалено!'
+                    actionNotification: 'Категорію видалено!',
+                    loading: false,
                 }
             })
             .addCase(deleteCategory.rejected, (state, { payload }) =>
@@ -329,7 +431,8 @@ const adminCategorySlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    actionNotification: payload.detail
+                    actionNotification: payload.detail,
+                    loading: false,
                 }
             })
     }

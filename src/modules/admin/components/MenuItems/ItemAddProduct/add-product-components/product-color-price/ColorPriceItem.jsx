@@ -7,7 +7,6 @@ import
 {
     updateColorPriceBlock,
     setColorValid,
-
 } from '../../../../../features/adminProduct/adminProductSlice';
 
 const ColorPriceItem = (props) =>
@@ -18,11 +17,13 @@ const ColorPriceItem = (props) =>
         productColorsBlocks,
         colors,
         deleteColorPriceBlock,
+        colorValidity,
     } = props;
 
     const [color, setColor] = useState(productColorsBlocks.colorId ? productColorsBlocks.colorId : 1);
+    const [colorValid, setColorValidity] = useState(colorValidity)
     const [quantity, setQuantity] = useState(productColorsBlocks.quantity ? productColorsBlocks.quantity : 0);
-    const [price, setPrice] = useState(productColorsBlocks.price ? productColorsBlocks.price : 0);
+    const [price, setPrice] = useState(productColorsBlocks.price ? productColorsBlocks.price : 1);
 
     const deleteBlock = (blockId) =>
     {
@@ -44,21 +45,27 @@ const ColorPriceItem = (props) =>
             <div>
                 <label>Колір</label>
 
-                <select className='select-color' value={color} onChange={(event) =>
-                {
-                    setColor(event.target.value)
+                <select
+                    style={{
+                        border: colorValid ? 'none' : '2px solid red'
+                    }}
+                    className='select-color'
+                    value={color}
+                    onChange={(event) =>
+                    {
+                        setColor(event.target.value)
+                        setColorValidity(true);
+                        dispatch(setColorValid(true))
 
-                    dispatch(setColorValid(true))
-
-                    dispatch(updateColorPriceBlock(
-                        {
-                            blockId: Number(productColorsBlocks.blockId),
-                            colorId: Number(event.target.value),
-                            quantity: Number(quantity),
-                            price: Number(price),
-                        }
-                    ))
-                }}>
+                        dispatch(updateColorPriceBlock(
+                            {
+                                blockId: Number(productColorsBlocks.blockId),
+                                colorId: Number(event.target.value),
+                                quantity: Number(quantity),
+                                price: Number(price),
+                            }
+                        ))
+                    }}>
                     {colors.map((color) => (
                         <option key={color.id} value={color.id} >{color.name}</option>
                     ))}
