@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllOrdersByUserId } from '../adminOrders/adminOrdersSlice';
-import { fetchReviewReplies, fetchReviews, fetchPostReview } from '../adminReviews/adminReviewsSlice';
+import
+{
+    getReviewReplies,
+    getReviews,
+    createPostReview
+} from '../adminReviews/adminReviewsSlice';
 import StarRating from '../../../../services/starRating/StarRating';
 import CurvedBrownArrow from '../../../../svg/arrows/CurvedBrownArrow';
 import BlueFilledTriangleToDownArrow from '../../../../svg/arrows/BlueFilledTriangleToDownArrow';
@@ -23,7 +27,6 @@ const UserReviewBlock = (prop) =>
     const handleShowMessage = (review) =>
     {
         setSelectedReview(review);
-        //console.log(review);
     };
     const handleCloseMessage = () =>
     {
@@ -44,33 +47,28 @@ const UserReviewBlock = (prop) =>
                 date: date,
             };
 
-            dispatch(fetchPostReview(reviewPostData))
+            dispatch(createPostReview(reviewPostData))
                 .then(() =>
                 {
-                    dispatch(fetchReviewReplies());
+                    dispatch(getReviewReplies());
                 })
-            //console.log(reviewPostData);
         }
         else
         {
             setIsReply(true)
         }
-
-
     }
-
 
     useEffect(() =>
     {
-        dispatch(fetchReviews());
-        dispatch(fetchReviewReplies())
+        dispatch(getReviews());
+        dispatch(getReviewReplies())
         const countOfReviews = reviews.filter((review) => review.userId === userId);
         setCountReviews(countOfReviews.length);
-        //console.log(reviews);
     }, [])
 
     return (
-        <div>
+        <Fragment>
             <div className='review-div'>
                 <div className='review-label'>
                     <label>Відгуки </label><label className='review-count'> {countReviews}</label>
@@ -142,8 +140,7 @@ const UserReviewBlock = (prop) =>
                     </div>
                 )
             )}
-        </div>
-
+        </Fragment>
     )
 }
 

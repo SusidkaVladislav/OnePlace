@@ -202,7 +202,7 @@ const ItemAddProduct = () =>
         dispatch(setCategoryValid(true));
         await dispatch(getCharacteristicsFromCategory(id));
     }
-    
+
     //#endregion
 
     //#region Brand
@@ -681,7 +681,7 @@ const ItemAddProduct = () =>
             return characteristicFromCategoryRightSide;
         }
     }
-    
+
     const deleteDescriptionFromCategory = (id) =>
     {
         dispatch(deleteCharachteristicFormCategory(id))
@@ -708,7 +708,7 @@ const ItemAddProduct = () =>
     }
     //#endregion
 
-    
+
     const cancelAddProduct = () =>
     {
         dispatch(resetProduct());
@@ -756,7 +756,8 @@ const ItemAddProduct = () =>
                 {
                     dispatch(hideSuccessfulAlert());
                 }, 1000);
-            } catch (error)
+            }
+            catch (error)
             {
                 setLoading(false);
 
@@ -1019,7 +1020,6 @@ const ItemAddProduct = () =>
                                     }} src={LoadingIcon} alt="loading" />
                                 )
                             }
-
                         </Fragment>
                     )
                 }

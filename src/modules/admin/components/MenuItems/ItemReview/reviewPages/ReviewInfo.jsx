@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
 import '../ItemReviewStyle.css';
 import BackTextAndArrowIcon from '../../../../../../svg/arrows/BackTextAndArrowIcon';
@@ -6,7 +6,13 @@ import SendMessageIcon from '../../../../../../svg/shared-icons/SendMessageIcon'
 import UnknownUserIcon from '../../../../../../svg/shared-icons/UnknownUserIcon';
 import StarRating from '../../../../../../services/starRating/StarRating';
 import { useSelector, useDispatch } from 'react-redux';
-import { getReviewById, getAllReviewReplies, fetchPostReview, fetchGetReviewReply, fetchReviews, fetchReviewReplies } from '../../../../features/adminReviews/adminReviewsSlice';
+import
+{
+    getReviewById,
+    getAllReviewReplies,
+    createPostReview,
+    getReviewReplies
+} from '../../../../features/adminReviews/adminReviewsSlice';
 
 
 const ReviewInfo = () =>
@@ -20,9 +26,7 @@ const ReviewInfo = () =>
     const date = new Date();
     const clickedReview = useSelector(state => getReviewById(state, Number(reviewId)));
     const reviewsReply = useSelector(state => getAllReviewReplies(state));
-    //const {replyById}=useSelector(state=>state.adminReviews);
 
-    //console.log(reviewsReply);
     const handleSendAnswer = (id) =>
     {
         const reviewID = id;
@@ -33,10 +37,10 @@ const ReviewInfo = () =>
             comment: comment,
             date: date,
         };
-        dispatch(fetchPostReview(reviewPostData))
+        dispatch(createPostReview(reviewPostData))
             .then(() =>
             {
-                dispatch(fetchReviewReplies());
+                dispatch(getReviewReplies());
             })
     }
 
@@ -47,7 +51,7 @@ const ReviewInfo = () =>
     }
 
     return (
-        <div>
+        <Fragment>
             <div className='user-div'>
                 <div className='back-div'>
                     <div className='review-user-img'>
@@ -71,7 +75,7 @@ const ReviewInfo = () =>
                                     </div>
                                     <div className='review-list-date'>
                                         <label>
-                                            {clickedReview.date}
+                                            {new Date(clickedReview.date).toLocaleDateString() + " " + new Date(clickedReview.date).toLocaleTimeString()}
                                         </label>
                                     </div>
                                 </div>
@@ -80,7 +84,7 @@ const ReviewInfo = () =>
                                         <div className='review-item-by-user-msg'>
                                             <label className='review-item-by-user-msg-label'> <UnknownUserIcon /></label>
                                             <div className='review-by-user' id='scrollbar-style-2'>
-                                                <label>{clickedReview.comment}</label>
+                                                {clickedReview.comment}
                                             </div>
                                         </div>
                                         {reviewsReply.map((reply) => (
@@ -88,10 +92,9 @@ const ReviewInfo = () =>
                                                 <div key={clickedReview.id} className='review-item-by-admin-msg'>
                                                     <div className='review-by-admin' id='scrollbar-style-2'>
                                                         <label>{reply.comment}</label>
-                                                        <div className='review-by-admin-date'>{reply.date}</div>
+                                                        <div className='review-by-admin-date'>{new Date(reply.date).toLocaleDateString() + " " + new Date(reply.date).toLocaleTimeString()}</div>
                                                     </div>
                                                     <img src="https://cdn-icons-png.flaticon.com/512/6897/6897018.png" alt="" />
-
                                                 </div>
                                             ) : null
                                         ))
@@ -112,7 +115,7 @@ const ReviewInfo = () =>
                     </div>
                 </div>
             </div>
-        </div>
+        </Fragment>
     )
 }
 

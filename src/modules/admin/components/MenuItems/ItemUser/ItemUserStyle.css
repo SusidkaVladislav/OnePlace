@@ -20,8 +20,9 @@
 
 .user-count label {
     width: 180px;
-    margin-left: 800px;
-    margin-top: 20px;
+    margin-left: 75%;
+    /* margin-left: 800px; */
+    /* margin-top: 20px; */
     color: rgba(10, 61, 88, 1);
 }
 
@@ -172,11 +173,22 @@
 /*----------------------------------------------------------------*/
 
 .user-div {
-    display: block;
-    background: rgba(233, 236, 236, 1);
-    height: 800px;
-    width: 1000px;
+    /* display: block; */
+    /* background: rgba(233, 236, 236, 1); */
+
+    height: fit-content;
+    width: 100%;
+    /* width: 1000px; */
     padding: 40px;
+}
+
+.back-div {
+    width: 100%;
+    /* text-align: center;
+    display: flex; */
+    display: grid;
+    grid-template-columns: 5% 70% 20%;
+    gap: 1%;
 }
 
 .user-img label {
@@ -189,8 +201,8 @@
 
 .user-name {
     text-align: left;
-    width: 840px;
-    height: 50px;
+    /* width: 840px;
+    height: 50px; */
     padding: 14px;
     font-family: 'Montserrat Alternates';
     font-size: 18px;
@@ -199,11 +211,6 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(71, 25, 21, 1);
-}
-
-.back-div {
-    text-align: center;
-    display: flex;
 }
 
 .back-button {
