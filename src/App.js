@@ -1,10 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Helmet} from 'react-helmet';
 
-//#region Client routes
-import Header from './modules/client/components/Header';
-//#endregion
-
 //#region Main routes
 import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
 import UserLoginForm from './modules/main/features/login/UserLoginForm';
@@ -47,8 +43,6 @@ function App()
       </Helmet>
 
       <Routes>
-        <Route path="home" element={<Header />} />
-
         <Route path="/" element={<OnePlaceMain />} />
 
         <Route path="user-login" element={<UserLoginForm />} />

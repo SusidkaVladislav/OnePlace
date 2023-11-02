@@ -1,10 +1,13 @@
 import React from 'react';
-
+import Header from './components/header/Header';
+import Banner1 from './components/banner1/Banner1';
 
 const OnePlaceMain = () => {
     return (
-
-        <h1>Main catalog page</h1>
+        <div>
+        <Header/>
+        <Banner1/>
+        </div>
     )
 }
 
