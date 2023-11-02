@@ -1,0 +1,43 @@
+div.bg1{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--gray-1001, #E9ECEC);
+    height: 450px;
+}
+
+.slide{
+    width: 94%;
+    height: 100%;
+    margin-top: 6%;
+    position: relative;
+    display: flex;
+    align-items: center; 
+}
+
+.slide1{
+    background: linear-gradient(90deg, #94A1C2 -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
+}
+
+.slide2{
+    background: linear-gradient(90deg, #88B6A6 -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
+}
+
+.slide3{
+    background: linear-gradient(90deg, #C4A8D3 -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
+}
+
+.slide4{
+    background: linear-gradient(90deg, #D6BFAD -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
+}
+
+.text{
+   padding-left: 10%;
+}
+
+.image {
+    position: absolute;
+    bottom: 0;
+    right: 5%;
+}
