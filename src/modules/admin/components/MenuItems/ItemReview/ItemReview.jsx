@@ -1,15 +1,30 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Fragment } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemReviewStyle.css';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
 import AdminSearch from '../../../../../services/search/adminSearch';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchReviews, fetchReviewReplies, getAllReviewReplies, getFilteredReviews, fetchDeleteReview } from '../../../features/adminReviews/adminReviewsSlice';
-import { useNavigate } from "react-router-dom";
+import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
+import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 
-import MessageComeIndicator from '../../../../../svg/shared-icons/MessageComeIndicator';
-import CurvedBrownArrow from '../../../../../svg/arrows/CurvedBrownArrow';
+import ReviewRow from './item-review-components/ReviewRow';
+
+import { useSelector, useDispatch } from 'react-redux';
+
+import
+{
+    getReviews,
+    getReviewReplies,
+    getAllReviewReplies,
+    getFilteredReviews,
+    deleteReview,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert
+} from '../../../features/adminReviews/adminReviewsSlice';
+
+import { useNavigate } from "react-router-dom";
 
 const PageSize = 7;
 const ItemReview = () =>
@@ -22,15 +37,25 @@ const ItemReview = () =>
     const [checkedUsers, setCheckedUsers] = useState([]);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-    const { loading,
+    const {
+        loading,
         reviews,
+        successfulAlertShow,
+        unsuccessfulAlertShow,
+        actionNotification,
     } = useSelector((state) => state.adminReviews)
 
     const filteredData = useSelector(state => getFilteredReviews(state, inputValue));
     const reviewsReply = useSelector(state => getAllReviewReplies(state));
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
-    const [isConfirmDialogVisible2, setIsConfirmDialogVisible2] = useState(false);
-    const [isConfirmDialogError, setIsConfirmDialogError] = useState(false);
+
+
+    useEffect(() =>
+    {
+        dispatch(hideUnsuccessfulAlert());
+        dispatch(getReviews());
+        dispatch(getReviewReplies());
+    }, [])
 
     const handleChecked = (id) =>
     {
@@ -81,41 +106,31 @@ const ItemReview = () =>
     const handleConfirmDelete = async () =>
     {
         setIsConfirmDialogVisible(false);
-        dispatch(fetchDeleteReview(checkedUsers))
-            .then((response) =>
-            {
-                if (response.meta.requestStatus === 'rejected')
-                {
-                    setIsConfirmDialogError(true);
-                }
-                if (response.meta.requestStatus === 'fulfilled')
-                {
-                    dispatch(fetchReviews());
-                    setIsConfirmDialogVisible2(true);
-                    setTimeout(() =>
-                    {
-                        setIsConfirmDialogVisible2(false);
-                    }, 2000);
+        try
+        {
+            await dispatch(deleteReview(checkedUsers)).unwrap();
 
-                }
-            });
+            await setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert());
+                dispatch(getReviews());
+                setCheckedUsers([])
+            }, 1000);
+        }
+        catch (error)
+        {
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert());
+            }, 2000);
+        }
     };
 
     const handleCancelDelete = () =>
     {
         setIsConfirmDialogVisible(false);
     };
-    const handleClickOk = () =>
-    {
-        setIsConfirmDialogError(false);
-        setIsConfirmDialogVisible2(false);
-    }
 
-    useEffect(() =>
-    {
-        dispatch(fetchReviews());
-        dispatch(fetchReviewReplies());
-    }, [])
 
     const filteredAndPaginatedData = useMemo(() =>
     {
@@ -124,11 +139,33 @@ const ItemReview = () =>
         return filteredData.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, inputValue, reviews]);
 
-    if (loading) return <p>Loading...</p>
-
+    if (loading)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
     return (
-        <div>
-            <div className='user-main'>
+        <Fragment>
+
+            {successfulAlertShow && (
+                <div className='modal-backdrop'>
+                    <SuccessfulNotification notifiaction={actionNotification} />
+                </div>
+            )}
+            {unsuccessfulAlertShow && (
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
+            )}
+
+            <div className='message-main'>
                 <AdminSearch
                     onSearchChange={value =>
                     {
@@ -140,43 +177,37 @@ const ItemReview = () =>
                     <label>({filteredData.length}) відгуки</label>
                 </div>
 
-                <div className='user-body' >
-                    <div className='user-table'>
-                        <div className='review-table-head'>
-                            <div className='r1-h'>
-                                <input type="checkbox"
-                                    onChange={handleCheckedAll}
-                                    checked={selectAllChecked} />
-                            </div>
-                            <label className="r2-h">Всі</label>
-                            <label className="r3-h" onClick={handleDeleteReview}>Видалити</label>
-                        </div>
-                        {filteredAndPaginatedData.map((review, index) => (
-                            <div className='review-div-row' key={review.id}>
-                                <div className={`review-table-row ${index % 2 === 0 ? 'even-row' : ''}`}>
-                                    <div className='r1'>
-                                        <input type="checkbox" id={review.id}
-                                            onChange={() => handleChecked(review.id)}
-                                            checked={checkedUsers.includes(review.id)}
-                                        />
-                                    </div>
-                                    <div className='r2'>
-                                        <img src={review?.productPictureAddress} alt={review?.productName} />
-                                        {!reviewsReply.some((reply) => reply.review.id === review.id) && (
-                                            <label key={review.id} className='review-elipse-icon'><MessageComeIndicator /></label>
-                                        )}
-                                    </div>
-                                    <div className='r3'>{review?.productName} {review?.productCode}</div>
-                                    <div className='r4'>{review?.comment}</div>
-                                    <div className='r5'>{review?.date}</div>
-                                    <div className='r6' onClick={async event => { navigate(`review/${review.id}`); }}>
-                                        <CurvedBrownArrow />
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                        )}
+                <div className='user-table'>
+                    <div className='review-table-head'>
+                        <label className="message-custom-checkbox">
+                            <input
+                                type="checkbox"
+                                checked={selectAllChecked}
+                                onChange={handleCheckedAll} />
+                            <span className='message-custom-checkbox-checkmark'><GreenCheckCheckboxIcon /></span>
+                        </label>
+                        <label>Всі</label>
+                        <label style={{
+                            'cursor': 'pointer',
+                        }} onClick={handleDeleteReview}>Видалити</label>
                     </div>
+                    {
+                        filteredAndPaginatedData.map((review, index) => (
+
+                            <ReviewRow
+                                index={index}
+                                reviewId={review.id}
+                                reviewProductPictureAddress={review.productPictureAddress}
+                                reviewProductName={review.productName}
+                                reviewProductCode={review.productCode}
+                                reviewComment={review.comment}
+                                reviewDate={review.date}
+                                handleChecked={handleChecked}
+                                reviewsReply={reviewsReply}
+                                checkedUsers={checkedUsers}
+                            />
+                        ))
+                    }
                 </div>
 
                 <div className='pag'>
@@ -198,23 +229,8 @@ const ItemReview = () =>
                     </div>
                 </div>
             )}
-            {isConfirmDialogVisible2 && (
-                <div className='modal-backdrop-true'>
-                    <div className='confirm-dialog-true'>
-                        <p>Запис видалено успішно</p>
-                        {/* <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label> */}
-                    </div>
-                </div>
-            )}
-            {isConfirmDialogError && (
-                <div className='modal-backdrop-false'>
-                    <div className='confirm-dialog-false'>
-                        <p>Помилка видалення запису. Спробуйте пізніше!</p>
-                        <label onClick={handleClickOk} className='confirm-buttom-ok'>Ok</label>
-                    </div>
-                </div>
-            )}
-        </div>
+
+        </Fragment>
     );
 }
 

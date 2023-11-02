@@ -14,8 +14,7 @@
 
 .date-range-calendar {
     position: absolute;
-    /* top: -725%; */
-    left: 40%;
+    left: 100%;
 }
 
 .date-range-input {
@@ -147,6 +146,8 @@
     height: fit-content;
     width: 150px;
     margin-bottom: 10px;
+
+    
 }
 
 .rdrMonthAndYearWrapper {

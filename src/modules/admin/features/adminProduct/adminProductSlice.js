@@ -20,6 +20,7 @@ const initialState = {
     allCountries: [],
     allColors: [],
     productSale: {},
+    productImages: [],
     isInBestProducts: false,
     productColorPrice: [],
     charachteristicsFromCategory: [],
@@ -46,11 +47,12 @@ export const getProduct = createAsyncThunk('adminProducts/getProduct', async (id
     return response.data
 })
 
-export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_, { rejectWithValue, getState }) =>
+export const addProduct = createAsyncThunk('adminProducts/addProduct', async (pictures, { rejectWithValue, getState }) =>
 {
     try
     {
         const state = getState();
+
         var descriptions = [];
 
         for (var i = 0; i < state.adminProducts.charachteristicsFromCategory.length; i++)
@@ -62,7 +64,6 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
                 }
             )
         }
-
 
         for (var i = 0; i < state.adminProducts.charachteristics.length; i++)
         {
@@ -86,13 +87,6 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
             )
         }
 
-        var pictures = [
-            {
-                address: 'string',
-                isTitle: true
-            }
-        ]
-
         var sale = null;
 
         if (state.adminProducts.productSale.percent !== undefined
@@ -103,7 +97,7 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
             sale = {
                 discountPercent: Number(state.adminProducts.productSale.percent),
                 startDate: new Date(state.adminProducts.productSale.startDate),
-                endDate: new Date(state.adminProducts.productSale.endDate)
+                endDate: new Date(state.adminProducts.productSale.endDate),
             }
         }
 
@@ -138,8 +132,6 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (_,
         }
         if (error.response.status === 400)
         {
-            console.log(error.response)
-
             const customError = {
                 status: error.response.data.status,
                 message: error.response.data.title,
@@ -196,14 +188,6 @@ export const updateProduct = createAsyncThunk('adminProducts/updateProduct', asy
             )
         }
 
-        var pictures = [
-            {
-                id: 77,
-                address: 'string',
-                isTitle: true
-            }
-        ]
-
         var sale = null;
 
         if (
@@ -220,7 +204,7 @@ export const updateProduct = createAsyncThunk('adminProducts/updateProduct', asy
         }
 
         const product = {
-            id: Number(args),
+            id: Number(args.id),
             name: state.adminProducts.productName,
             code: state.adminProducts.productCode,
             manufacturerCountryId: Number(state.adminProducts.manufacturerCountryId),
@@ -229,7 +213,7 @@ export const updateProduct = createAsyncThunk('adminProducts/updateProduct', asy
             description: state.adminProducts.productDescription,
             sale: sale,
             isInBestProducts: state.adminProducts.isInBestProducts,
-            pictures: pictures,
+            pictures: args.pictures,
             descriptions: descriptions,
             colorDetails: productColors
         }
@@ -453,7 +437,8 @@ export const getCharacteristicsFromCategory = createAsyncThunk('adminProducts/ge
     }
 })
 
-function sortByName(a, b) {
+function sortByName(a, b)
+{
     return a.name.localeCompare(b.name);
 }
 
@@ -515,6 +500,13 @@ const adminProductsSlice = createSlice({
             return {
                 ...state,
                 productSale: payload,
+            }
+        },
+        setPictures: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                productImages: payload,
             }
         },
         setIsInBestProducts: (state, { payload }) =>
@@ -644,18 +636,19 @@ const adminProductsSlice = createSlice({
                 ...state,
                 productName: '',
                 productCode: -1,
-                manufacturerCountryId: 1,
-                manufacturerId: 1,
+                manufacturerCountryId: -1,
+                manufacturerId: -1,
                 productDescription: '',
                 productSale: {},
                 allColors: [],
                 allCountries: [],
                 allBrands: [],
+
                 productColorPrice: [
                     {
                         blockId: 0,
-                        colorId: 1,
-                        price: 0,
+                        colorId: -1,
+                        price: 1,
                         quantity: 0,
                     }
                 ],
@@ -672,6 +665,13 @@ const adminProductsSlice = createSlice({
                 descriptionValid: true,
                 charachteristicsValid: true,
                 isInBestProducts: false,
+            }
+        },
+        resetPictures: (state) =>
+        {
+            return {
+                ...state,
+                productImages: [],
             }
         },
         resetColorPrice: (state) =>
@@ -765,13 +765,21 @@ const adminProductsSlice = createSlice({
     extraReducers(builder)
     {
         builder
+            .addCase(addProduct.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
             .addCase(addProduct.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    actionNotification: 'Товар успішно додано!'
+                    actionNotification: 'Товар розміщено на сайті!',
+                    loading: false
                 }
             })
             .addCase(addProduct.rejected, (state, { payload }) =>
@@ -780,9 +788,11 @@ const adminProductsSlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    actionNotification: payload.detail
+                    actionNotification: payload.detail,
+                    loading: false
                 }
             })
+
             .addCase(deleteProduct.pending, (state) =>
             {
                 return {
@@ -797,7 +807,7 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     loading: false,
-                    actionNotification: 'Товар успішно видалено!'
+                    actionNotification: 'Товар видалено!'
                 }
             })
             .addCase(deleteProduct.rejected, (state, { payload }) =>
@@ -807,14 +817,38 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     loading: false,
-                    actionNotification: payload.detail
+                    actionNotification: payload.detail,
+                }
+            })
+
+            .addCase(getAllBrands.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(getAllBrands.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
+                    loading: false,
                     allBrands: payload.sort(sortByName),
+                }
+            })
+            .addCase(getAllBrands.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(getAllCountries.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(getAllCountries.fulfilled, (state, { payload }) =>
@@ -822,6 +856,22 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allCountries: payload.sort(sortByName),
+                    loading: false,
+                }
+            })
+            .addCase(getAllCountries.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false
+                }
+            })
+
+            .addCase(getAllColors.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(getAllColors.fulfilled, (state, { payload }) =>
@@ -829,6 +879,22 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allColors: payload.sort(sortByName),
+                    loading: false,
+                }
+            })
+            .addCase(getAllColors.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(getCharacteristicsFromCategory.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(getCharacteristicsFromCategory.fulfilled, (state, { payload }) =>
@@ -836,6 +902,22 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     charachteristicsFromCategory: payload,
+                    loading: false,
+                }
+            })
+            .addCase(getCharacteristicsFromCategory.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false
+                }
+            })
+
+            .addCase(filterProducts.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(filterProducts.fulfilled, (state, { payload }) =>
@@ -843,6 +925,22 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     filteredProducts: payload,
+                    loading: false,
+                }
+            })
+            .addCase(filterProducts.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(allProductCount.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
                 }
             })
             .addCase(allProductCount.fulfilled, (state, { payload }) =>
@@ -850,8 +948,18 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allProductCount: payload,
+                    loading: false,
                 }
             })
+            .addCase(allProductCount.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+
             .addCase(getAllProducts.pending, (state) =>
             {
                 return {
@@ -867,6 +975,15 @@ const adminProductsSlice = createSlice({
                     loading: false,
                 }
             })
+            .addCase(getAllProducts.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+
             .addCase(getProduct.pending, (state, { payload }) =>
             {
                 return {
@@ -876,7 +993,6 @@ const adminProductsSlice = createSlice({
             })
             .addCase(getProduct.fulfilled, (state, { payload }) =>
             {
-
                 var productColors = payload.productColors.map((col, index) =>
                 {
                     return {
@@ -898,7 +1014,17 @@ const adminProductsSlice = createSlice({
                     }
                 })
 
-                //Pictures to receive from server
+                var productPictures = payload.pictures.map((picture, index) =>
+                {
+                    return {
+                        ...picture,
+                        blockId: index,
+                        address: picture.address,
+                        deleteURL: picture.deleteURL,
+                        isTitle: picture.isTitle,
+                        id: picture.id,
+                    }
+                })
 
                 return {
                     ...state,
@@ -910,14 +1036,26 @@ const adminProductsSlice = createSlice({
                     productColorPrice: productColors,
                     productSale: payload.sale,
                     productCode: payload.code,
+                    productImages: productPictures,
                     isInBestProducts: payload.isInBestProducts,
                     productDescription: payload.description,
                     charachteristics: productCharachteristics,
                 }
             })
+            .addCase(getProduct.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
             .addCase(updateProduct.pending, (state, { payload }) =>
             {
-
+                return {
+                    ...state,
+                    loading: true,
+                }
             })
             .addCase(updateProduct.fulfilled, (state) =>
             {
@@ -925,7 +1063,7 @@ const adminProductsSlice = createSlice({
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    actionNotification: 'Товар успішно оновлено!',
+                    actionNotification: 'Товар оновлено!',
                     loading: false,
                 }
             })
@@ -957,12 +1095,14 @@ export const {
     setManufacturer,
     setDescriptions,
     setSale,
+    setPictures,
     setIsInBestProducts,
     updateCharacteristicFromCategory,
     updateCharachteristic,
     charachteristicsReset,
 
     resetProduct,
+    resetPictures,
     resetColorPrice,
     resetAllProducts,
     resetFilteredProducts,

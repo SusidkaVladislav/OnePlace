@@ -5,6 +5,8 @@ const CommonPicture = (props) =>
 {
 
     const {
+        keyIndex,
+        imageHintId,
         srcPath,
         pictureId,
         onRemove,
@@ -16,7 +18,7 @@ const CommonPicture = (props) =>
     const picture = useRef(null);
 
     return (
-        <div ref={divPicture} key={pictureId} className='common-picture-add-product-container'
+        <div ref={divPicture} key={keyIndex} className='common-picture-add-product-container'
             onMouseOver={() =>
             {
                 picture.current.style.opacity = 0.5;
@@ -30,6 +32,7 @@ const CommonPicture = (props) =>
         >
 
             <img
+                
                 ref={picture}
                 id='common-picture-add-product'
                 className='common-picture-add-product'
@@ -49,14 +52,14 @@ const CommonPicture = (props) =>
                 }}
                 onClick={() =>
                 {
-                    onSetMain(pictureId, srcPath)
+                    onSetMain(pictureId, srcPath, imageHintId)
                 }}
             />
 
             <button ref={closeBtn}
                 onClick={() =>
                 {
-                    onRemove(pictureId);
+                    onRemove(pictureId, imageHintId);
                 }}
             ></button>
         </div>

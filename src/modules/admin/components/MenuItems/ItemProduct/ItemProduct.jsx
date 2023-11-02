@@ -1,11 +1,12 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
-
+import React, { useRef, useState, useEffect, useMemo, Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
 //#region Services
 import AdminSearch from '../../../../../services/search/adminSearch';
 import RecursedCombo from '../../../controls/recursed-combo-box/RecursedCombo';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
 import ItemProductRow from './item-product-components/ItemProductRow';
-import Alert from '@mui/material/Alert';
+import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 //#endregion
 
 //#region Redux
@@ -17,8 +18,6 @@ import
     getAllProducts,
     getFilteredProducts,
     resetProduct,
-    hideSuccessfulAlert,
-    hideUnsuccessfulAlert,
 } from '../../../features/adminProduct/adminProductSlice';
 //#endregion
 
@@ -31,11 +30,14 @@ const PageSize = 8;
 const ItemProduct = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [inputValue, setInputValue] = useState('');
     const [currentProductPage, setCurrentProductPage] = useState(1);
 
     const { categoriesForSelect } = useSelector(state => state.adminCategories);
+
+    const [categoryLoading, setCategoryLoading] = useState(false)
 
     const filteredData = useSelector(state => getFilteredProducts(state, inputValue));
 
@@ -55,15 +57,26 @@ const ItemProduct = () =>
     {
         dispatch(resetProduct())
         dispatch(getCategoriesForSelect())
-        mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
-        subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
+            .then(() =>
+            {
+                mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
+                subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
 
-        dispatch(setCategory({ id: category.id, name: category.name }))
+                setCategoryLoading(true);
+            })
+            .catch((error) =>
+            {
+                console.error('Failed to fetch data', error);
+                setCategoryLoading(true);
+                navigate(-1);
+            });
 
-        dispatch(getAllProducts(category.id));
-
+        if (category.id !== null)
+        {
+            dispatch(setCategory({ id: category.id, name: category.name.charAt(0).toUpperCase() + category.name.slice(1) }))
+            dispatch(getAllProducts(category.id));
+        }
     }, [])
-
 
     const selectCategory = async (id, name) =>
     {
@@ -80,6 +93,18 @@ const ItemProduct = () =>
     }, [currentProductPage, inputValue, allProducts]);
 
 
+    if (!categoryLoading)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
     if (loading)
     {
         return <img style={{
@@ -93,105 +118,88 @@ const ItemProduct = () =>
         }} src={LoadingIcon} alt="loading" />
     }
     return (
-        <div className='item-product-main-container'>
-            <div className='item-product-row-1'>
-                <span style={{
-                    width: '400px',
-                }}>
-                    <AdminSearch
-                        onSearchChange={value =>
-                        {
-                            setInputValue(value);
-                            setCurrentProductPage(1);
-                        }}
-                    />
-                </span>
-                <select className='item-product-sale-select-filter'>
-                    <option>Всі</option>
-                    <option>Без знижки</option>
-                    <option>Зі знижкою</option>
-                </select>
-            </div>
-
-            <div className='item-product-row-2'>
-                {
-                    successfulAlertShow &&
-                    <Alert variant='filled'
-                        severity="success"
-                        sx={
-                            {
-                                width: 'fit-content',
-                                height: 'fit-content',
-                                minWidth: '433px',
-                                marginTop: '7%',
-                                marginLeft: '60%',
-                                position: 'absolute'
-                            }
-                        }
-                        onClose={() => { dispatch(hideSuccessfulAlert()) }}>{actionNotification}</Alert>
-                }
-                {
-                    unsuccessfulAlertShow &&
-                    <Alert value='filled'
-                        severity="error"
-                        sx={
-                            {
-                                width: 'fit-content',
-                                minWidth: '433px',
-                                height: 'fit-content',
-                                marginTop: '7%',
-                                marginLeft: '60%',
-                                position: 'absolute'
-                            }
-                        }
-                        onClose={() => { dispatch(hideUnsuccessfulAlert()) }}>{actionNotification}</Alert>
-                }
-                <RecursedCombo
-                    onCategoryClick={selectCategory}
-                    mainCategories={mainCategories}
-                    subCategories={subCategories}
-                    category={category}
-                />
-            </div>
-
-            <div className='item-product-row-3'>
-                <div className='item-products-table' >
-
-                    <div className='item-products-table-head'>
-                        <label>Назва</label>
-                        <label>Код</label>
-                        <label>Ціна</label>
-                        <label>Колір</label>
-                        <label>К-сть</label>
-                        <label>Статус</label>
-                    </div>
-                    <div className=''>
-                        {filteredAndPaginatedData.map((product, index) => (
-
-                            <ItemProductRow
-                                key={index}
-                                name={product.name}
-                                code={product.code}
-                                price={product.price}
-                                color={product.color}
-                                quantity={product.quantity}
-                                productId={product.id}
-                            />
-                        )
-                        )}
-                    </div>
+        <Fragment>
+            {
+                successfulAlertShow &&
+                <div className='modal-backdrop'>
+                    <SuccessfulNotification notifiaction={actionNotification} />
                 </div>
-                <div className='pag'>
-                    <CustomPagination
-                        className="pagination-bar"
-                        currentPage={currentProductPage}
-                        totalCount={filteredData.length}
-                        pageSize={PageSize}
-                        onPageChange={page => setCurrentProductPage(page)}
+            }
+            {
+                unsuccessfulAlertShow &&
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
+            }
+            <div className='item-product-main-container'>
+                <div className='item-product-row-1'>
+                    <span style={{
+                        width: '400px',
+                    }}>
+                        <AdminSearch
+                            onSearchChange={value =>
+                            {
+                                setInputValue(value);
+                                setCurrentProductPage(1);
+                            }}
+                        />
+                    </span>
+                    <select className='item-product-sale-select-filter'>
+                        <option>Всі</option>
+                        <option>Без знижки</option>
+                        <option>Зі знижкою</option>
+                    </select>
+                </div>
+
+                <div className='item-product-row-2'>
+                    <RecursedCombo
+                        onCategoryClick={selectCategory}
+                        mainCategories={mainCategories}
+                        subCategories={subCategories}
+                        category={category}
                     />
                 </div>
+
+                <div className='item-product-row-3'>
+                    <div className='item-products-table' >
+
+                        <div className='item-products-table-head'>
+                            <label>Назва</label>
+                            <label>Код</label>
+                            <label>Ціна</label>
+                            <label>Колір</label>
+                            <label>К-сть</label>
+                            <label>Статус</label>
+                        </div>
+                        <div className=''>
+                            {filteredAndPaginatedData.map((product, index) => (
+                                <ItemProductRow
+                                    key={index}
+                                    picture={product.picture}
+                                    name={product.name}
+                                    code={product.code}
+                                    price={product.price}
+                                    color={product.color}
+                                    quantity={product.quantity}
+                                    productId={product.id}
+                                />
+                            )
+                            )}
+                        </div>
+                    </div>
+                    <div className='pag'>
+                        <CustomPagination
+                            className="pagination-bar"
+                            currentPage={currentProductPage}
+                            totalCount={filteredData.length}
+                            pageSize={PageSize}
+                            onPageChange={page => setCurrentProductPage(page)}
+                        />
+                    </div>
+                </div>
             </div>
-        </div>
+        </Fragment>
+
     );
 }
 

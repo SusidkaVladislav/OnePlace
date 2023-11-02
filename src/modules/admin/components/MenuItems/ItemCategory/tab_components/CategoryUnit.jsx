@@ -5,7 +5,15 @@ import CustomDelete from "../../../../../../services/delete/CustomDelete";
 import EditCategory from "./EditCategory";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories, getCategoryById, deleteCategory, updateCategory, resetState } from '../../../../features/adminCategory/adminCategorySlice';
+import
+{
+    getCategories,
+    getCategoryById,
+    deleteCategory,
+    updateCategory,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
+} from '../../../../features/adminCategory/adminCategorySlice';
 
 const CategoryUnit = (props) =>
 {
@@ -29,7 +37,7 @@ const CategoryUnit = (props) =>
     {
         setCategoryName(title)
         setCategoryImgPath(img)
-        
+
     }, [title, img])
 
     const onClickHandle = () =>
@@ -47,30 +55,46 @@ const CategoryUnit = (props) =>
                 await dispatch(getCategories());
             else
                 await dispatch(getCategoryById(chosenCategoryId));
+
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
 
-    const onChangeCategoryName = (newName) =>
-    {
-        setCategoryName(newName);
-    }
 
-    const editCategoryHandler = async (isUpdate, categoryName, categoryId, picturePath) =>
+    const editCategoryHandler = async (isUpdate, categoryName, categoryId, picturePath, pictureDeletePath) =>
     {
         if (isUpdate)
         {
             const categoryToUpdate = {
                 id: categoryId,
                 name: categoryName,
-                pictureAddress: picturePath
+                pictureURL: picturePath,
+                deletePictureURL: pictureDeletePath,
             }
             await dispatch(updateCategory(categoryToUpdate));
             if (chosenCategoryId === null)
                 await dispatch(getCategories());
             else
                 await dispatch(getCategoryById(chosenCategoryId));
+
+            setTimeout(() =>
+            {
+                dispatch(hideSuccessfulAlert())
+            }, 1000);
+            setTimeout(() =>
+            {
+                dispatch(hideUnsuccessfulAlert())
+            }, 2000);
         }
     }
+
 
     return (
         <div className='main-category-unit-container'>
@@ -86,11 +110,23 @@ const CategoryUnit = (props) =>
             <div className="right-side-main-category-unit-container">
                 <div className="main-category-unit-control">
                     <EditCategory
-                        categoryName={categoryName}
                         categoryId={idCategory}
-                        picturePath={img}
-                        onEdit={(value, categoryName, categoryId, picturePath) => { editCategoryHandler(value, categoryName, categoryId, picturePath) }}
-                        onChange={onChangeCategoryName}
+                        imgURL={categoryImgPath}
+                        categoryName={categoryName}
+
+                        onEditHandler={(value,
+                            categoryName,
+                            categoryId,
+                            picturePath,
+                            pictureDeletePath
+                        ) =>
+                        {
+                            editCategoryHandler(value,
+                                categoryName,
+                                categoryId,
+                                picturePath,
+                                pictureDeletePath)
+                        }}
                     />
                 </div>
                 <div className={hasProducts ? "main-category-unit-control no-clickable" : "main-category-unit-control"}>

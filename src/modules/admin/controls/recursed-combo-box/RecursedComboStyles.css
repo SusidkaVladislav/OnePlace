@@ -22,14 +22,6 @@
     word-wrap: break-word
 }
 
-.is-open>label {
-    color: #D17100;
-}
-
-.open-arrow-category-arrow{
-    transform: rotate(180deg);
-}
-
 .category-select>span {
     font-family: 'Montserrat Alternates';
     font-size: 16px;

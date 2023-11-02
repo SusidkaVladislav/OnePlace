@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 //#region Redux
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +39,7 @@ import
     setCharachteristicsValid,
     hideUnsuccessfulAlert,
     hideSuccessfulAlert,
+    updateColorPriceBlock,
 } from '../../../features/adminProduct/adminProductSlice';
 //#endregion
 
@@ -48,7 +50,8 @@ import DiscountAmountInput from './add-product-components/add-product-discount/D
 import DiscountRangePicker from './add-product-components/add-product-discount/DiscountRangePicker';
 import DescriptionOfCategory from './add-product-components/add-product-description/DescriptionOfCategory';
 import NewDescription from './add-product-components/add-product-description/NewDescription';
-import Alert from '@mui/material/Alert';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
+import ImgBBUpload from '../../../../../services/image-upload-service/ImgBBUpload';
 //#endregion
 
 //#region Icons
@@ -64,17 +67,24 @@ const ItemAddProduct = () =>
 {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { upload } = ImgBBUpload();
+
+
+    //#region Validation states
+    const [colorValidity, setColorValidadity] = useState(true)
+    const [pictureValidity, setPictureValidity] = useState(true)
+    //#endregion
 
     const { categoriesForSelect } = useSelector(state => state.adminCategories);
-    var [productPictures, setProductPictures] = useState([]);
+    const [productPictures, setProductPictures] = useState([]);
     const [description, setDescription] = useState('');
-    const [mainPicturePath, setPicturePath] = useState('');
+    const [mainPicturePath, setPicturePath] = useState({
+        pictureId: null,
+        picturePath: '',
+    });
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
     const [productCharacteristics, setProductCharacteristics] = useState(false);
-
-    const [addConfairmation, setAddConfairmation] = useState(false)
-    const [showCancelDialog, setshowCancelDialog] = useState(false)
 
     var mainCategories = useRef([]);
     var subCategories = useRef([]);
@@ -102,13 +112,15 @@ const ItemAddProduct = () =>
         codeValid,
         descriptionValid,
         charachteristicsValid,
-        successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification, } = useSelector(state => state.adminProducts);
 
     const [percentAmount, setPercentAmount] = useState(productSale ? productSale.percent ? productSale.percent : 0 : 0);
     const [startDiscount, setStartDiscount] = useState(productSale ? productSale.startDate ? new Date(productSale.startDate) : new Date() : new Date());
     const [endDiscount, setEndDiscount] = useState(productSale ? productSale.endDate ? new Date(productSale.endDate) : new Date() : new Date());
+    const [pictureFiles, setPictureFiles] = useState([])
+    const [loading, setLoading] = useState(true);
+
 
     var productColorsBlocks = {
         productColorPriceBlock: productColorPrice
@@ -121,7 +133,6 @@ const ItemAddProduct = () =>
     var productAddedCharacteristics = {
         productCharacteristic: charachteristics
     }
-    const [loading, setLoading] = useState(true);
 
     useEffect(() =>
     {
@@ -129,6 +140,10 @@ const ItemAddProduct = () =>
         dispatch(resetAllProducts())
         dispatch(resetFilteredProducts())
         dispatch(resetCategory())
+        dispatch(getAllBrands());
+        dispatch(getAllCountries());
+        dispatch(getAllColors());
+
         dispatch(getCategoriesForSelect())
             .then(() =>
             {
@@ -143,28 +158,41 @@ const ItemAddProduct = () =>
                 navigate(-1);
             });
 
-
-
-        if (manufacturerId === -1)
-        {
-            if (allBrands.length > 0)
-                dispatch(setManufacturer(allBrands[0].id));
-        }
-        if (manufacturerCountryId === -1)
-        {
-            if (allCountries.length > 0)
-                dispatch(setManufacturerCountry(allCountries[0].id));
-        }
-
-        dispatch(getAllBrands());
-        dispatch(getAllCountries());
-        dispatch(getAllColors());
-
         productAddedCharacteristics = {
             productCharacteristic: charachteristics
         }
     }, [])
 
+
+    useEffect(() =>
+    {
+        if (allBrands.length > 0)
+            dispatch(setManufacturer(allBrands[0].id));
+
+        if (allCountries.length > 0)
+            dispatch(setManufacturerCountry(allCountries[0].id));
+
+        if (allColors.length > 0)
+            dispatch(updateColorPriceBlock({
+                blockId: 0,
+                colorId: allColors[0].id,
+                price: 0,
+                quantity: 0,
+            }))
+    }, [allBrands, allCountries, allColors])
+
+
+    const handlerKeyDown = (event) =>
+    {
+        if (event.which === 69 || event.which === 189
+            || event.which === 107 || event.which === 109
+            || event.which === 190 || event.which === 187)
+        {
+            event.preventDefault();
+        }
+    }
+
+    //#region Category
 
     const selectCategory = async (id, name, fullPath) =>
     {
@@ -174,6 +202,30 @@ const ItemAddProduct = () =>
         dispatch(setCategoryValid(true));
         await dispatch(getCharacteristicsFromCategory(id));
     }
+
+    //#endregion
+
+    //#region Brand
+
+    const handleSelectBrand = (event) =>
+    {
+        const selectedValue = event.target.value;
+        dispatch(setManufacturer(Number(selectedValue)));
+    }
+
+    //#endregion
+
+    //#region Country
+
+    const handleSelectCountry = (event) => 
+    {
+        const selectedValue = event.target.value;
+        dispatch(setManufacturerCountry(Number(selectedValue)));
+    };
+
+    //#endregion
+
+    //#region Color-Quantity-Price
 
     const addColorPrice = () =>
     {
@@ -186,12 +238,13 @@ const ItemAddProduct = () =>
             dispatch(addColorPriceBlock(
                 {
                     blockId: lastBlockId + 1,
-                    colorId: 1,
+                    colorId: allColors[0].id,
                     price: 0,
                     quantity: 0,
                 }
             ))
             productColorsBlocks.productColorPriceBlock = productColorPrice;
+            setColorValidadity(true)
         }
     }
 
@@ -204,8 +257,6 @@ const ItemAddProduct = () =>
         }
     }
 
-
-
     const generateColorBlocks = () =>
     {
         for (let i = 0; i < productColorsBlocks.productColorPriceBlock.length; i++)
@@ -215,21 +266,37 @@ const ItemAddProduct = () =>
                 productColorsBlocks={productColorsBlocks.productColorPriceBlock[i]}
                 key={productColorsBlocks.productColorPriceBlock[i].blockId}
                 deleteColorPriceBlock={deleteBlock}
+                colorValidity={colorValidity}
             />)
         }
 
         return blocks;
     }
 
-    const handlerKeyDown = (event) =>
+    //#endregion
+
+    //#region Sale
+
+    const handlePercentAmountChange = (newPercentAmount) =>
     {
-        if (event.which === 69 || event.which === 189
-            || event.which === 107 || event.which === 109
-            || event.which === 190 || event.which === 187)
-        {
-            event.preventDefault();
-        }
+        setPercentAmount(newPercentAmount);
     }
+
+    const handleStartDateChange = (newStartDate) =>
+    {
+        const formattedStartDate = new Date(newStartDate).toDateString();
+        setStartDiscount(formattedStartDate);
+    }
+
+    const handleEndDateChange = (newEndDate) =>
+    {
+        const formattedStartDate = new Date(newEndDate).toDateString();
+        setEndDiscount(formattedStartDate);
+    }
+
+    //#endregion
+
+    //#region Pictures
 
     const openFileManager = () =>
     {
@@ -239,65 +306,132 @@ const ItemAddProduct = () =>
     const getPicture = (event) =>
     {
         let file = event.target.files[0];
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () =>
+
+        if (file !== undefined)
         {
-            if (mainPicturePath.length > 0)
+            setPictureValidity(true);
+            let id = uuidv4();
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () =>
             {
-                var newPictureBlock = {}
+                if (mainPicturePath.picturePath.length > 0)
+                {
+                    var newPictureBlock = {}
 
-                try
-                {
-                    let lastPictureBlockId = productPictures[productPictures.length - 1].pictureBlockId;
-                    newPictureBlock = {
-                        pictureBlockId: lastPictureBlockId + 1,
-                        picturePath: reader.result,
-                    };
+                    try
+                    {
+                        let lastPictureBlockId = productPictures[productPictures.length - 1].pictureBlockId;
+                        newPictureBlock = {
+                            id: id,
+                            pictureBlockId: lastPictureBlockId + 1,
+                            picturePath: reader.result,
+                        };
+
+                        const updatedPictureFiles = [...pictureFiles, {
+                            id: id,
+                            pictureBlockId: lastPictureBlockId + 2,
+                            pictureFile: file,
+                            isTitle: false,
+                        }];
+
+                        setPictureFiles(updatedPictureFiles)
+                    }
+                    catch
+                    {
+                        newPictureBlock = {
+                            id: id,
+                            pictureBlockId: 0,
+                            picturePath: reader.result,
+                        };
+
+                        const updatedPictureFiles = [...pictureFiles, {
+                            id: id,
+                            pictureBlockId: 1,
+                            pictureFile: file,
+                            isTitle: false,
+                        }];
+
+                        setPictureFiles(updatedPictureFiles)
+                    }
+                    finally
+                    {
+                        setProductPictures([...productPictures, newPictureBlock]);
+                    }
                 }
-                catch
+                else
                 {
-                    newPictureBlock = {
+                    setPicturePath({
+                        pictureId: id,
+                        picturePath: reader.result
+                    })
+
+                    setPictureFiles([{
+                        id: id,
                         pictureBlockId: 0,
-                        picturePath: reader.result,
-                    };
+                        pictureFile: file,
+                        isTitle: true,
+                    }])
                 }
-                finally
-                {
-                    setProductPictures([...productPictures, newPictureBlock]);
-                }
-            }
-            else
-                setPicturePath(reader.result)
 
-            document.getElementById('main-picture-add-product').style.display = "block";
-        };
+                document.getElementById('main-picture-add-product').style.display = "block";
+            };
+        }
     }
 
-    const RemovePicture = (blockId) =>
+    const RemovePicture = (blockId, imageHintId) =>
     {
         const filteredPictures = productPictures.filter((block) => block.pictureBlockId !== blockId);
         setProductPictures(filteredPictures)
+
+        const updatedPictureFiles = pictureFiles.filter(item => item.pictureBlockId !== blockId);
+        setPictureFiles(updatedPictureFiles);
     }
 
-    const setMainPicture = (blockId, srcPath) => 
+    const setMainPicture = (blockId, srcPath, imageHintId) => 
     {
         var pictures = productPictures;
         var index = productPictures.findIndex(x => x.pictureBlockId === blockId);
-        pictures[index].picturePath = mainPicturePath;
+
+        pictures[index].picturePath = mainPicturePath.picturePath;
+        pictures[index].id = mainPicturePath.pictureId;
+
         setProductPictures(pictures)
-        setPicturePath(srcPath);
+
+        setPicturePath({
+            pictureId: imageHintId,
+            picturePath: srcPath,
+        });
+
+        const updatedPictureFile = pictureFiles.map((item, index) =>
+        {
+            if (item.id === imageHintId)
+            {
+                item.isTitle = true;
+            }
+            else
+            {
+                item.isTitle = false;
+            }
+            return item;
+        });
+
+        setPictureFiles(updatedPictureFile);
     }
 
     const generatePicturesBlocks = () =>
     {
         for (let i = 0; i < productPictures.length; i++)
         {
-            images.push(<CommonPicture
-                srcPath={productPictures[i].picturePath}
-                pictureId={productPictures[i].pictureBlockId}
-                onRemove={RemovePicture}
-                onSetMain={setMainPicture} />)
+            images.push(
+                <CommonPicture
+                    keyIndex={i}
+                    imageHintId={productPictures[i].id}
+                    srcPath={productPictures[i].picturePath}
+                    pictureId={productPictures[i].pictureBlockId}
+                    onRemove={RemovePicture}
+                    onSetMain={setMainPicture}
+                />)
         }
 
         return images;
@@ -313,6 +447,9 @@ const ItemAddProduct = () =>
         evt.target.scrollLeft += evt.deltaY;
     }
 
+    //#endregion
+
+
     const goToCharacteristics = async () =>
     {
         dispatch(setProductName(name));
@@ -321,19 +458,61 @@ const ItemAddProduct = () =>
 
         dispatch(setSale({
             percent: percentAmount,
-            startDate: startDiscount,
-            endDate: endDiscount,
+            startDate: new Date(startDiscount).toDateString(),
+            endDate: new Date(endDiscount).toDateString()
         }));
 
-        if (categoryValidation() && nameValidation()
-            && colorIdValidation() && codeValidation()
-            && descriptionValidation())
+        if (categoryValidation() &&
+            nameValidation() &&
+            brandValidation() &&
+            countryValidation() &&
+            colorIdValidation() &&
+            codeValidation() &&
+            picturesValidation() &&
+            descriptionValidation()
+        )
             setProductCharacteristics(true)
     }
+
+    //#region Validations
 
     function isEmpty(obj)
     {
         return Object.keys(obj).length === 0;
+    }
+
+    const brandValidation = () =>
+    {
+        if (manufacturerId === -1)
+        {
+            if (allBrands.length > 0)
+            {
+                dispatch(setManufacturer(allBrands[0].id));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const countryValidation = () =>
+    {
+        if (manufacturerCountryId === -1)
+        {
+            if (allCountries.length > 0)
+            {
+                dispatch(setManufacturerCountry(allCountries[0].id));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     const categoryValidation = () =>
@@ -366,17 +545,24 @@ const ItemAddProduct = () =>
 
     const colorIdValidation = () =>
     {
+        if (productColorsBlocks.productColorPriceBlock[0].colorId === -1)
+        {
+            setColorValidadity(false)
+            return false;
+        }
         const colorIds = productColorsBlocks.productColorPriceBlock.map((block) => block.colorId);
         const uniqueColorIds = new Set(colorIds);
         const areAllUnique = colorIds.length === uniqueColorIds.size;
         if (areAllUnique)
         {
             dispatch(setColorValid(true))
+            setColorValidadity(true)
             return true;
         }
         else
         {
             dispatch(setColorValid(false))
+            setColorValidadity(false)
             return false;
         }
     }
@@ -395,6 +581,20 @@ const ItemAddProduct = () =>
         }
     }
 
+    const picturesValidation = () =>
+    {
+        if (pictureFiles.length > 0)
+        {
+            setPictureValidity(true);
+            return true;
+        }
+        else
+        {
+            setPictureValidity(false);
+            return false;
+        }
+    }
+
     const descriptionValidation = () =>
     {
         if (description.length < 20)
@@ -408,6 +608,11 @@ const ItemAddProduct = () =>
             return true;
         }
     }
+
+    //#endregion 
+
+
+    //#region Descriptions
 
     const generateDescriptionsFromCategoryLeft = () =>
     {
@@ -501,6 +706,8 @@ const ItemAddProduct = () =>
             about: ''
         }));
     }
+    //#endregion
+
 
     const cancelAddProduct = () =>
     {
@@ -510,6 +717,7 @@ const ItemAddProduct = () =>
 
     const confirmAddProduct = async () =>
     {
+        setLoading(true);
         for (let i = 0; i < charachteristicsFromCategory.length; i++)
         {
             if (charachteristicsFromCategory[i].about === undefined || charachteristicsFromCategory[i].about === '')
@@ -527,41 +735,40 @@ const ItemAddProduct = () =>
 
         if (charachteristicsValid)
         {
-            await dispatch(addProduct());
-            navigate('/admin/main/products')
+            var pictures = [];
+            for (var i = 0; i < pictureFiles.length; i++)
+            {
+                let picture = await upload(pictureFiles[i].pictureFile)
+                pictures.push({
+                    address: picture.data.display_url,
+                    deleteURL: picture.data.delete_url,
+                    isTitle: pictureFiles[i].isTitle,
+                })
+            }
+
+            try
+            {
+                await dispatch(addProduct(pictures)).unwrap();
+                setLoading(false);
+
+                navigate('/admin/main/products');
+                setTimeout(() =>
+                {
+                    dispatch(hideSuccessfulAlert());
+                }, 1000);
+            }
+            catch (error)
+            {
+                setLoading(false);
+
+                setTimeout(() =>
+                {
+                    dispatch(hideUnsuccessfulAlert());
+                }, 2000);
+            }
         }
     }
 
-    const handleSelectCountry = (event) =>
-    {
-        const selectedValue = event.target.value;
-        dispatch(setManufacturerCountry(selectedValue));
-    };
-
-    const handleSelectBrand = (event) =>
-    {
-        const selectedValue = event.target.value;
-        dispatch(setManufacturer(selectedValue));
-    }
-
-
-
-    const handlePercentAmountChange = (newPercentAmount) =>
-    {
-        setPercentAmount(newPercentAmount);
-    };
-
-
-
-    const handleStartDateChange = (newStartDate) =>
-    {
-        setStartDiscount(newStartDate)
-    }
-
-    const handleEndDateChange = (newEndDate) =>
-    {
-        setEndDiscount(newEndDate)
-    }
 
     if (loading)
     {
@@ -576,269 +783,248 @@ const ItemAddProduct = () =>
         }} src={LoadingIcon} alt="loading" />
     }
     return (
-        <div className="add-product-main-container">
+        <Fragment>
             {
-                !productCharacteristics && (
-                    <Fragment>
-                        <div className="top-add-product-container">
-                            <div className='add-product-left-side-container-1'>
+                unsuccessfulAlertShow &&
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
+            }
 
-                                <RecursedCombo
+            <div className="add-product-main-container">
+                {
+                    !productCharacteristics && (
+                        <Fragment>
+                            <div className="top-add-product-container">
+                                <div className='add-product-left-side-container-1'>
 
-                                    onCategoryClick={selectCategory}
-                                    mainCategories={mainCategories}
-                                    subCategories={subCategories}
-                                    category={category}
+                                    <RecursedCombo
+                                        onCategoryClick={selectCategory}
+                                        mainCategories={mainCategories}
+                                        subCategories={subCategories}
+                                        category={category}
+                                    />
+
+                                    <div className='add-product-name-container'>
+                                        <label>Бренд</label>
+                                        <select
+                                            id='scrollbar-style-2'
+                                            className='select-option-add-product'
+                                            onChange={handleSelectBrand}
+                                        >
+                                            <option disabled ></option>
+                                            {
+                                                allBrands.map((brand) => (
+                                                    <option
+                                                        selected={brand.id === Number(manufacturerId)}
+                                                        key={brand.id} value={brand.id}>{brand.name}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div className='add-product-right-side-container-1'>
+                                    <div className='add-product-name-container'>
+                                        <label htmlFor="product-name-input">Назва</label>
+                                        <input
+                                            style={{
+                                                border: !nameValid ? '1px solid red' : 'none',
+                                            }}
+                                            className='product-add-name'
+                                            type='text'
+                                            id='product-name-input'
+                                            value={name}
+                                            onChange={(event) =>
+                                            {
+                                                if (!nameValid)
+                                                {
+                                                    dispatch(setNameValid(true))
+                                                }
+                                                setName(event.target.value)
+                                            }}
+                                        />
+                                    </div>
+                                    <div className='add-product-name-container'>
+                                        <label>Країна виробник</label>
+                                        <select
+                                            id='scrollbar-style-2'
+                                            className='select-option-add-product'
+                                            onChange={handleSelectCountry}>
+                                            <option disabled ></option>
+                                            {allCountries.map((country) => (
+                                                <option
+                                                    selected={country.id === Number(manufacturerCountryId)}
+                                                    key={country.id}
+                                                    value={Number(country.id)}
+                                                >{country.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="color-price-add-product-container">
+                                <div className='add-color-price-product-btn-container'>
+                                    <button className="add-color-price-product-btn" onClick={() => addColorPrice()}> + </button>
+                                    {!colorValid && <label>Кольори мають бути унікальними</label>}
+                                </div>
+                                {
+                                    generateColorBlocks()
+                                }
+                            </div>
+
+
+                            <div className='discout-code-add-product-container'>
+
+                                <DiscountAmountInput
+                                    percentAmount={percentAmount}
+                                    onPercentAmountChange={handlePercentAmountChange}
                                 />
 
-                                <div className='add-product-name-container'>
-                                    <label>Бренд</label>
-                                    <select
-                                        id='scrollbar-style-2'
-                                        className='select-option-add-product'
-                                        onChange={handleSelectBrand}
-                                    >
-                                        <option disabled ></option>
-                                        {
-                                            allBrands.map((brand) => (
-                                                <option
-                                                    defaultValue={brand.id === Number(manufacturerId)}
-                                                    key={brand.id} value={brand.id}>{brand.name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
+                                <DiscountRangePicker
+                                    startDiscountDate={startDiscount}
+                                    onStartDateChange={handleStartDateChange}
+                                    endDiscountDate={endDiscount}
+                                    onEndDateChange={handleEndDateChange}
+                                />
 
-
-
-                            </div>
-                            <div className='add-product-right-side-container-1'>
-                                <div className='add-product-name-container'>
-                                    <label htmlFor="product-name-input">Назва</label>
-                                    <input
-                                        style={{
-                                            border: !nameValid ? '1px solid red' : 'none',
-                                        }}
-                                        className='product-add-name'
-                                        type='text'
-                                        id='product-name-input'
-                                        value={name}
-                                        onChange={(event) =>
-                                        {
-                                            if (!nameValid)
+                                <div className='add-product-number-container'>
+                                    <label>Код</label>
+                                    <div className='add-product-number-input-container'>
+                                        <input
+                                            className='add-product-number-input'
+                                            type='number'
+                                            onKeyDown={handlerKeyDown}
+                                            value={code}
+                                            onChange={(event) =>
                                             {
-                                                dispatch(setNameValid(true))
-                                            }
-                                            setName(event.target.value)
-                                        }}
-                                    />
-                                </div>
-                                <div className='add-product-name-container'>
-                                    <label>Країна виробник</label>
-                                    <select
-                                        id='scrollbar-style-2'
-                                        className='select-option-add-product'
-                                        onChange={handleSelectCountry}>
-                                        <option disabled ></option>
-                                        {allCountries.map((country) => (
-                                            <option
-                                                defaultValue={country.id === Number(manufacturerCountryId)}
-                                                key={country.id}
-                                                value={country.id}
-                                            >{country.name}</option>
-                                        ))}
-                                    </select>
+                                                if (!codeValid)
+                                                    dispatch(setCodeValid(true))
+
+                                                setCode(event.target.value);
+                                            }}
+                                            style={{
+                                                border: codeValid ? 'none' : '1px solid red'
+                                            }}
+                                        />
+                                        {!codeValid && <label>Мінімум 4 цифри</label>}
+                                    </div>
+
                                 </div>
 
+                                <div className='add-product-recommend-container'>
+
+                                    <label className="add-product-recommend-custom-checkbox">
+                                        <input type="checkbox" checked={isInBestProducts}
+                                            onChange={() =>
+                                            {
+                                                dispatch(setIsInBestProducts(!isInBestProducts))
+                                            }} />
+                                        <span className="checkmark"><GreenCheckCheckboxIcon /></span>
+                                        <label>Рекомендувати</label>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="color-price-add-product-container">
-                            <div className='add-color-price-product-btn-container'>
-                                <button className="add-color-price-product-btn" onClick={() => addColorPrice()}> + </button>
-                                {!colorValid && <label>Кольори мають бути унікальними</label>}
-                            </div>
-                            {
-                                generateColorBlocks()
-                            }
-                        </div>
+                            <div className='top-add-product-container'>
+                                <div className='add-product-left-side-container-4'>
 
-
-                        <div className='discout-code-add-product-container'>
-
-                            <DiscountAmountInput
-                                percentAmount={percentAmount}
-                                onPercentAmountChange={handlePercentAmountChange}
-                            />
-
-                            <DiscountRangePicker
-                                //discountDates={discountDates}
-                                startDiscountDate={startDiscount}
-                                onStartDateChange={handleStartDateChange}
-                                endDiscountDate={endDiscount}
-                                onEndDateChange={handleEndDateChange}
-                            />
-
-                            <div className='add-product-number-container'>
-                                <label>Код</label>
-                                <div className='add-product-number-input-container'>
-                                    <input
-                                        className='add-product-number-input'
-                                        type='number'
-                                        onKeyDown={handlerKeyDown}
-                                        value={code}
-                                        onChange={(event) =>
-                                        {
-                                            if (!codeValid)
-                                                dispatch(setCodeValid(true))
-
-                                            setCode(event.target.value);
-                                        }}
+                                    <div className='main-picture-div'>
+                                        <img id="main-picture-add-product" className='add-product-main-image' src={mainPicturePath.picturePath}
+                                            onError={hideImg} alt="" />
+                                        <button className='add-product-add-picture-btn' onClick={openFileManager}>Додати світлину</button>
+                                        <input type='file' id='file'
+                                            ref={inputFile}
+                                            style={{ display: 'none' }}
+                                            accept="image/png, image/gif, image/jpeg"
+                                            onChange={getPicture} />
+                                    </div>
+                                    <span
+                                        className='error-label'
                                         style={{
-                                            border: codeValid ? 'none' : '1px solid red'
-                                        }}
-                                    />
-                                    {!codeValid && <label>Мінімум 4 цифри</label>}
-                                </div>
-
-                            </div>
-
-                            <div className='add-product-recommend-container'>
-
-                                <label className="add-product-recommend-custom-checkbox">
-                                    <input type="checkbox" checked={isInBestProducts}
-                                        onChange={() =>
+                                            display: pictureValidity ? 'none' : 'inline'
+                                        }}>Виберіть принаймні одну фотографію!</span>
+                                    <div className='pictures-slider-container' id='scrollbar-style-2' onWheel={(evt) => { scrollHandler(evt) }}>
                                         {
-                                            dispatch(setIsInBestProducts(!isInBestProducts))
-                                        }} />
-                                    <span className="checkmark"><GreenCheckCheckboxIcon /></span>
-                                    <label>Рекомендувати</label>
-                                </label>
-
-
-
-                                {/* <input
-                                    type='checkbox'
-                                    checked={isInBestProducts}
-                                    onChange={() =>
-                                    {
-                                        dispatch(setIsInBestProducts(!isInBestProducts))
-                                    }} />
-                                <label>Рекомендувати</label> */}
-                            </div>
-                        </div>
-
-                        <div className='top-add-product-container'>
-                            <div className='add-product-left-side-container-4'>
-                                <div className='main-picture-div'>
-                                    <img id="main-picture-add-product" className='add-product-main-image' src={mainPicturePath}
-                                        onError={hideImg} alt="" />
-                                    <button className='add-product-add-picture-btn' onClick={openFileManager}>Додати світлину</button>
-                                    <input type='file' id='file'
-                                        ref={inputFile}
-                                        style={{ display: 'none' }}
-                                        accept="image/png, image/gif, image/jpeg"
-                                        onChange={getPicture} />
+                                            generatePicturesBlocks()
+                                        }
+                                    </div>
                                 </div>
+                                <div className='add-product-right-side-container-5'>
+                                    <div className='add-product-description-container'>
+                                        <textarea
+                                            id='scrollbar-style-2'
+                                            value={description}
+                                            className='add-product-description'
+                                            onChange={(event) =>
+                                            {
+                                                if (!descriptionValid)
+                                                    dispatch(setDescriptionValid(true))
+                                                setDescription(event.target.value)
+                                            }}
+                                            placeholder='Опис товару'
 
-                                <div className='pictures-slider-container' id='scrollbar-style-2' onWheel={(evt) => { scrollHandler(evt) }}>
+                                        />
+                                        {!descriptionValid && <label className='error-label'>Опис повинен містити мінімум 20 символів!</label>}
+                                    </div>
+
+                                    <button className='add-product-add-characteristic-btn'
+                                        onClick={goToCharacteristics}>Додати характеристику товару</button>
+                                </div>
+                            </div>
+                        </Fragment>
+                    )
+                }
+
+                {
+                    productCharacteristics && (
+                        <Fragment>
+                            <label className='back-to-main-product-button' onClick={() =>
+                            {
+                                setProductCharacteristics(false)
+
+                            }}><BackIcon /></label>
+                            <h3 className='full-category-path'>{categoryFullPath}</h3>
+
+                            <button className="add-color-price-product-btn" onClick={addCharacteristic}>+</button>
+                            <div className='descriptions-container'>
+                                <div className='descriptions-column-container'>
                                     {
-                                        generatePicturesBlocks()
+                                        generateDescriptionsFromCategoryLeft()
                                     }
                                 </div>
-                            </div>
-                            <div className='add-product-right-side-container-5'>
-                                <div className='add-product-description-container'>
-                                    <textarea
-                                        id='scrollbar-style-2'
-                                        value={description}
-                                        className='add-product-description'
-                                        onChange={(event) =>
-                                        {
-                                            if (!descriptionValid)
-                                                dispatch(setDescriptionValid(true))
-                                            setDescription(event.target.value)
-                                        }}
-                                        placeholder='Опис товару'
-
-                                    />
-                                    {!descriptionValid && <label>Опис повинен містити мінімум 20 символів</label>}
+                                <div className='descriptions-column-container'>
+                                    {
+                                        generateDescriptionsFromCategoryRight()
+                                    }
+                                    <div className='add-product-confirmation-button'>
+                                        <button className='add-product-cancel' onClick={cancelAddProduct}>Скасувати</button>
+                                        <button className='add-product-confirm' onClick={confirmAddProduct}>Підтвердити</button>
+                                    </div>
                                 </div>
 
-                                <button className='add-product-add-characteristic-btn'
-                                    onClick={goToCharacteristics}>Додати характеристику товару</button>
-                            </div>
-                        </div>
-                    </Fragment>
-                )
-            }
-
-            {
-                productCharacteristics && (
-                    <Fragment>
-                        <label className='back-to-main-product-button' onClick={() =>
-                        {
-                            setProductCharacteristics(false)
-
-                        }}><BackIcon /></label>
-                        <h3 className='full-category-path'>{categoryFullPath}</h3>
-
-                        {
-                            successfulAlertShow &&
-                            <Alert variant='filled'
-                                severity="success"
-                                sx={
-                                    {
-                                        width: 'fit-content',
-                                        height: 'fit-content',
-                                        minWidth: '433px',
-                                        marginTop: '7%',
-                                        marginLeft: '60%',
-                                        position: 'absolute'
-                                    }
-                                }
-                                onClose={() => { dispatch(hideSuccessfulAlert()) }}>{actionNotification}</Alert>
-                        }
-                        {
-                            unsuccessfulAlertShow &&
-                            <Alert value='filled'
-                                severity="error"
-                                sx={
-                                    {
-                                        width: 'fit-content',
-                                        minWidth: '433px',
-                                        height: 'fit-content',
-                                        marginTop: '7%',
-                                        marginLeft: '60%',
-                                        position: 'absolute'
-                                    }
-                                }
-                                onClose={() => { dispatch(hideUnsuccessfulAlert()) }}>{actionNotification}</Alert>
-                        }
-
-                        <button className="add-color-price-product-btn" onClick={addCharacteristic}>+</button>
-                        <div className='descriptions-container'>
-                            <div className='descriptions-column-container'>
-                                {
-                                    generateDescriptionsFromCategoryLeft()
-                                }
-                            </div>
-                            <div className='descriptions-column-container'>
-                                {
-                                    generateDescriptionsFromCategoryRight()
-                                }
-                                <div className='add-product-confirmation-button'>
-                                    <button className='add-product-cancel' onClick={cancelAddProduct}>Скасувати</button>
-                                    <button className='add-product-confirm' onClick={confirmAddProduct}>Підтвердити</button>
-                                </div>
                             </div>
 
-                        </div>
-
-                    </Fragment>
-                )
-            }
-        </div>
+                            {
+                                loading && (
+                                    <img style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        position: 'absolute',
+                                        alignSelf: 'center',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                    }} src={LoadingIcon} alt="loading" />
+                                )
+                            }
+                        </Fragment>
+                    )
+                }
+            </div>
+        </Fragment>
     )
 }
 
