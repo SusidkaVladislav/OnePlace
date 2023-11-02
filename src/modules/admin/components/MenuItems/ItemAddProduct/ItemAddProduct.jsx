@@ -50,7 +50,7 @@ import DiscountAmountInput from './add-product-components/add-product-discount/D
 import DiscountRangePicker from './add-product-components/add-product-discount/DiscountRangePicker';
 import DescriptionOfCategory from './add-product-components/add-product-description/DescriptionOfCategory';
 import NewDescription from './add-product-components/add-product-description/NewDescription';
-import Alert from '@mui/material/Alert';
+import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 import ImgBBUpload from '../../../../../services/image-upload-service/ImgBBUpload';
 //#endregion
 
@@ -76,7 +76,7 @@ const ItemAddProduct = () =>
     //#endregion
 
     const { categoriesForSelect } = useSelector(state => state.adminCategories);
-    var [productPictures, setProductPictures] = useState([]);
+    const [productPictures, setProductPictures] = useState([]);
     const [description, setDescription] = useState('');
     const [mainPicturePath, setPicturePath] = useState({
         pictureId: null,
@@ -85,9 +85,6 @@ const ItemAddProduct = () =>
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
     const [productCharacteristics, setProductCharacteristics] = useState(false);
-
-    const [addConfairmation, setAddConfairmation] = useState(false)
-    const [showCancelDialog, setshowCancelDialog] = useState(false)
 
     var mainCategories = useRef([]);
     var subCategories = useRef([]);
@@ -115,7 +112,6 @@ const ItemAddProduct = () =>
         codeValid,
         descriptionValid,
         charachteristicsValid,
-        successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification, } = useSelector(state => state.adminProducts);
 
@@ -148,7 +144,6 @@ const ItemAddProduct = () =>
         dispatch(getAllCountries());
         dispatch(getAllColors());
 
-
         dispatch(getCategoriesForSelect())
             .then(() =>
             {
@@ -174,7 +169,6 @@ const ItemAddProduct = () =>
         if (allBrands.length > 0)
             dispatch(setManufacturer(allBrands[0].id));
 
-
         if (allCountries.length > 0)
             dispatch(setManufacturerCountry(allCountries[0].id));
 
@@ -187,6 +181,19 @@ const ItemAddProduct = () =>
             }))
     }, [allBrands, allCountries, allColors])
 
+
+    const handlerKeyDown = (event) =>
+    {
+        if (event.which === 69 || event.which === 189
+            || event.which === 107 || event.which === 109
+            || event.which === 190 || event.which === 187)
+        {
+            event.preventDefault();
+        }
+    }
+
+    //#region Category
+
     const selectCategory = async (id, name, fullPath) =>
     {
         dispatch(setCategory({ id: id, name: name }))
@@ -195,6 +202,30 @@ const ItemAddProduct = () =>
         dispatch(setCategoryValid(true));
         await dispatch(getCharacteristicsFromCategory(id));
     }
+    
+    //#endregion
+
+    //#region Brand
+
+    const handleSelectBrand = (event) =>
+    {
+        const selectedValue = event.target.value;
+        dispatch(setManufacturer(Number(selectedValue)));
+    }
+
+    //#endregion
+
+    //#region Country
+
+    const handleSelectCountry = (event) => 
+    {
+        const selectedValue = event.target.value;
+        dispatch(setManufacturerCountry(Number(selectedValue)));
+    };
+
+    //#endregion
+
+    //#region Color-Quantity-Price
 
     const addColorPrice = () =>
     {
@@ -226,8 +257,6 @@ const ItemAddProduct = () =>
         }
     }
 
-
-
     const generateColorBlocks = () =>
     {
         for (let i = 0; i < productColorsBlocks.productColorPriceBlock.length; i++)
@@ -244,15 +273,30 @@ const ItemAddProduct = () =>
         return blocks;
     }
 
-    const handlerKeyDown = (event) =>
+    //#endregion
+
+    //#region Sale
+
+    const handlePercentAmountChange = (newPercentAmount) =>
     {
-        if (event.which === 69 || event.which === 189
-            || event.which === 107 || event.which === 109
-            || event.which === 190 || event.which === 187)
-        {
-            event.preventDefault();
-        }
+        setPercentAmount(newPercentAmount);
     }
+
+    const handleStartDateChange = (newStartDate) =>
+    {
+        const formattedStartDate = new Date(newStartDate).toDateString();
+        setStartDiscount(formattedStartDate);
+    }
+
+    const handleEndDateChange = (newEndDate) =>
+    {
+        const formattedStartDate = new Date(newEndDate).toDateString();
+        setEndDiscount(formattedStartDate);
+    }
+
+    //#endregion
+
+    //#region Pictures
 
     const openFileManager = () =>
     {
@@ -403,6 +447,9 @@ const ItemAddProduct = () =>
         evt.target.scrollLeft += evt.deltaY;
     }
 
+    //#endregion
+
+
     const goToCharacteristics = async () =>
     {
         dispatch(setProductName(name));
@@ -426,6 +473,8 @@ const ItemAddProduct = () =>
         )
             setProductCharacteristics(true)
     }
+
+    //#region Validations
 
     function isEmpty(obj)
     {
@@ -464,7 +513,6 @@ const ItemAddProduct = () =>
             }
         }
         return true;
-
     }
 
     const categoryValidation = () =>
@@ -561,6 +609,11 @@ const ItemAddProduct = () =>
         }
     }
 
+    //#endregion 
+
+
+    //#region Descriptions
+
     const generateDescriptionsFromCategoryLeft = () =>
     {
         characteristicFromCategoryLeftSide = [];
@@ -628,7 +681,7 @@ const ItemAddProduct = () =>
             return characteristicFromCategoryRightSide;
         }
     }
-
+    
     const deleteDescriptionFromCategory = (id) =>
     {
         dispatch(deleteCharachteristicFormCategory(id))
@@ -653,7 +706,9 @@ const ItemAddProduct = () =>
             about: ''
         }));
     }
+    //#endregion
 
+    
     const cancelAddProduct = () =>
     {
         dispatch(resetProduct());
@@ -691,49 +746,28 @@ const ItemAddProduct = () =>
                 })
             }
 
-            await dispatch(addProduct(pictures));
-            setLoading(false);
+            try
+            {
+                await dispatch(addProduct(pictures)).unwrap();
+                setLoading(false);
 
-            navigate('/admin/main/products')
-            setTimeout(() =>
+                navigate('/admin/main/products');
+                setTimeout(() =>
+                {
+                    dispatch(hideSuccessfulAlert());
+                }, 1000);
+            } catch (error)
             {
-                dispatch(hideSuccessfulAlert())
-            }, 1000);
-            setTimeout(() =>
-            {
-                dispatch(hideUnsuccessfulAlert())
-            }, 2000);
+                setLoading(false);
+
+                setTimeout(() =>
+                {
+                    dispatch(hideUnsuccessfulAlert());
+                }, 2000);
+            }
         }
     }
 
-    const handleSelectCountry = (event) => 
-    {
-        const selectedValue = event.target.value;
-        dispatch(setManufacturerCountry(Number(selectedValue)));
-    };
-
-    const handleSelectBrand = (event) =>
-    {
-        const selectedValue = event.target.value;
-        dispatch(setManufacturer(Number(selectedValue)));
-    }
-
-    const handlePercentAmountChange = (newPercentAmount) =>
-    {
-        setPercentAmount(newPercentAmount);
-    };
-
-    const handleStartDateChange = (newStartDate) =>
-    {
-        const formattedStartDate = new Date(newStartDate).toDateString();
-        setStartDiscount(formattedStartDate);
-    }
-
-    const handleEndDateChange = (newEndDate) =>
-    {
-        const formattedStartDate = new Date(newEndDate).toDateString();
-        setEndDiscount(formattedStartDate);
-    }
 
     if (loading)
     {
@@ -748,277 +782,249 @@ const ItemAddProduct = () =>
         }} src={LoadingIcon} alt="loading" />
     }
     return (
-        <div className="add-product-main-container">
+        <Fragment>
             {
-                !productCharacteristics && (
-                    <Fragment>
-                        <div className="top-add-product-container">
-                            <div className='add-product-left-side-container-1'>
+                unsuccessfulAlertShow &&
+                <div className='modal-backdrop'>
+                    <UnsuccessfulNotification notifiaction={actionNotification} />
+                </div>
+            }
 
-                                <RecursedCombo
+            <div className="add-product-main-container">
+                {
+                    !productCharacteristics && (
+                        <Fragment>
+                            <div className="top-add-product-container">
+                                <div className='add-product-left-side-container-1'>
 
-                                    onCategoryClick={selectCategory}
-                                    mainCategories={mainCategories}
-                                    subCategories={subCategories}
-                                    category={category}
+                                    <RecursedCombo
+                                        onCategoryClick={selectCategory}
+                                        mainCategories={mainCategories}
+                                        subCategories={subCategories}
+                                        category={category}
+                                    />
+
+                                    <div className='add-product-name-container'>
+                                        <label>Бренд</label>
+                                        <select
+                                            id='scrollbar-style-2'
+                                            className='select-option-add-product'
+                                            onChange={handleSelectBrand}
+                                        >
+                                            <option disabled ></option>
+                                            {
+                                                allBrands.map((brand) => (
+                                                    <option
+                                                        selected={brand.id === Number(manufacturerId)}
+                                                        key={brand.id} value={brand.id}>{brand.name}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div className='add-product-right-side-container-1'>
+                                    <div className='add-product-name-container'>
+                                        <label htmlFor="product-name-input">Назва</label>
+                                        <input
+                                            style={{
+                                                border: !nameValid ? '1px solid red' : 'none',
+                                            }}
+                                            className='product-add-name'
+                                            type='text'
+                                            id='product-name-input'
+                                            value={name}
+                                            onChange={(event) =>
+                                            {
+                                                if (!nameValid)
+                                                {
+                                                    dispatch(setNameValid(true))
+                                                }
+                                                setName(event.target.value)
+                                            }}
+                                        />
+                                    </div>
+                                    <div className='add-product-name-container'>
+                                        <label>Країна виробник</label>
+                                        <select
+                                            id='scrollbar-style-2'
+                                            className='select-option-add-product'
+                                            onChange={handleSelectCountry}>
+                                            <option disabled ></option>
+                                            {allCountries.map((country) => (
+                                                <option
+                                                    selected={country.id === Number(manufacturerCountryId)}
+                                                    key={country.id}
+                                                    value={Number(country.id)}
+                                                >{country.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="color-price-add-product-container">
+                                <div className='add-color-price-product-btn-container'>
+                                    <button className="add-color-price-product-btn" onClick={() => addColorPrice()}> + </button>
+                                    {!colorValid && <label>Кольори мають бути унікальними</label>}
+                                </div>
+                                {
+                                    generateColorBlocks()
+                                }
+                            </div>
+
+
+                            <div className='discout-code-add-product-container'>
+
+                                <DiscountAmountInput
+                                    percentAmount={percentAmount}
+                                    onPercentAmountChange={handlePercentAmountChange}
                                 />
 
-                                <div className='add-product-name-container'>
-                                    <label>Бренд</label>
-                                    <select
-                                        id='scrollbar-style-2'
-                                        className='select-option-add-product'
-                                        onChange={handleSelectBrand}
-                                    >
-                                        <option disabled ></option>
-                                        {
-                                            allBrands.map((brand) => (
-                                                <option
-                                                    selected={brand.id === Number(manufacturerId)}
-                                                    key={brand.id} value={brand.id}>{brand.name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
+                                <DiscountRangePicker
+                                    startDiscountDate={startDiscount}
+                                    onStartDateChange={handleStartDateChange}
+                                    endDiscountDate={endDiscount}
+                                    onEndDateChange={handleEndDateChange}
+                                />
 
-
-
-                            </div>
-                            <div className='add-product-right-side-container-1'>
-                                <div className='add-product-name-container'>
-                                    <label htmlFor="product-name-input">Назва</label>
-                                    <input
-                                        style={{
-                                            border: !nameValid ? '1px solid red' : 'none',
-                                        }}
-                                        className='product-add-name'
-                                        type='text'
-                                        id='product-name-input'
-                                        value={name}
-                                        onChange={(event) =>
-                                        {
-                                            if (!nameValid)
+                                <div className='add-product-number-container'>
+                                    <label>Код</label>
+                                    <div className='add-product-number-input-container'>
+                                        <input
+                                            className='add-product-number-input'
+                                            type='number'
+                                            onKeyDown={handlerKeyDown}
+                                            value={code}
+                                            onChange={(event) =>
                                             {
-                                                dispatch(setNameValid(true))
-                                            }
-                                            setName(event.target.value)
-                                        }}
-                                    />
-                                </div>
-                                <div className='add-product-name-container'>
-                                    <label>Країна виробник</label>
-                                    <select
-                                        id='scrollbar-style-2'
-                                        className='select-option-add-product'
-                                        onChange={handleSelectCountry}>
-                                        <option disabled ></option>
-                                        {allCountries.map((country) => (
-                                            <option
-                                                selected={country.id === Number(manufacturerCountryId)}
-                                                key={country.id}
-                                                value={Number(country.id)}
-                                            >{country.name}</option>
-                                        ))}
-                                    </select>
+                                                if (!codeValid)
+                                                    dispatch(setCodeValid(true))
+
+                                                setCode(event.target.value);
+                                            }}
+                                            style={{
+                                                border: codeValid ? 'none' : '1px solid red'
+                                            }}
+                                        />
+                                        {!codeValid && <label>Мінімум 4 цифри</label>}
+                                    </div>
+
                                 </div>
 
+                                <div className='add-product-recommend-container'>
+
+                                    <label className="add-product-recommend-custom-checkbox">
+                                        <input type="checkbox" checked={isInBestProducts}
+                                            onChange={() =>
+                                            {
+                                                dispatch(setIsInBestProducts(!isInBestProducts))
+                                            }} />
+                                        <span className="checkmark"><GreenCheckCheckboxIcon /></span>
+                                        <label>Рекомендувати</label>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="color-price-add-product-container">
-                            <div className='add-color-price-product-btn-container'>
-                                <button className="add-color-price-product-btn" onClick={() => addColorPrice()}> + </button>
-                                {!colorValid && <label>Кольори мають бути унікальними</label>}
-                            </div>
-                            {
-                                generateColorBlocks()
-                            }
-                        </div>
+                            <div className='top-add-product-container'>
+                                <div className='add-product-left-side-container-4'>
 
-
-                        <div className='discout-code-add-product-container'>
-
-                            <DiscountAmountInput
-                                percentAmount={percentAmount}
-                                onPercentAmountChange={handlePercentAmountChange}
-                            />
-
-                            <DiscountRangePicker
-                                //discountDates={discountDates}
-                                startDiscountDate={startDiscount}
-                                onStartDateChange={handleStartDateChange}
-                                endDiscountDate={endDiscount}
-                                onEndDateChange={handleEndDateChange}
-                            />
-
-                            <div className='add-product-number-container'>
-                                <label>Код</label>
-                                <div className='add-product-number-input-container'>
-                                    <input
-                                        className='add-product-number-input'
-                                        type='number'
-                                        onKeyDown={handlerKeyDown}
-                                        value={code}
-                                        onChange={(event) =>
-                                        {
-                                            if (!codeValid)
-                                                dispatch(setCodeValid(true))
-
-                                            setCode(event.target.value);
-                                        }}
+                                    <div className='main-picture-div'>
+                                        <img id="main-picture-add-product" className='add-product-main-image' src={mainPicturePath.picturePath}
+                                            onError={hideImg} alt="" />
+                                        <button className='add-product-add-picture-btn' onClick={openFileManager}>Додати світлину</button>
+                                        <input type='file' id='file'
+                                            ref={inputFile}
+                                            style={{ display: 'none' }}
+                                            accept="image/png, image/gif, image/jpeg"
+                                            onChange={getPicture} />
+                                    </div>
+                                    <span
+                                        className='error-label'
                                         style={{
-                                            border: codeValid ? 'none' : '1px solid red'
-                                        }}
-                                    />
-                                    {!codeValid && <label>Мінімум 4 цифри</label>}
-                                </div>
-
-                            </div>
-
-                            <div className='add-product-recommend-container'>
-
-                                <label className="add-product-recommend-custom-checkbox">
-                                    <input type="checkbox" checked={isInBestProducts}
-                                        onChange={() =>
+                                            display: pictureValidity ? 'none' : 'inline'
+                                        }}>Виберіть принаймні одну фотографію!</span>
+                                    <div className='pictures-slider-container' id='scrollbar-style-2' onWheel={(evt) => { scrollHandler(evt) }}>
                                         {
-                                            dispatch(setIsInBestProducts(!isInBestProducts))
-                                        }} />
-                                    <span className="checkmark"><GreenCheckCheckboxIcon /></span>
-                                    <label>Рекомендувати</label>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className='top-add-product-container'>
-                            <div className='add-product-left-side-container-4'>
-
-                                <div className='main-picture-div'>
-                                    <img id="main-picture-add-product" className='add-product-main-image' src={mainPicturePath.picturePath}
-                                        onError={hideImg} alt="" />
-                                    <button className='add-product-add-picture-btn' onClick={openFileManager}>Додати світлину</button>
-                                    <input type='file' id='file'
-                                        ref={inputFile}
-                                        style={{ display: 'none' }}
-                                        accept="image/png, image/gif, image/jpeg"
-                                        onChange={getPicture} />
+                                            generatePicturesBlocks()
+                                        }
+                                    </div>
                                 </div>
-                                <span
-                                    className='error-label'
-                                    style={{
-                                        display: pictureValidity ? 'none' : 'inline'
-                                    }}>Виберіть принаймні одну фотографію!</span>
-                                <div className='pictures-slider-container' id='scrollbar-style-2' onWheel={(evt) => { scrollHandler(evt) }}>
+                                <div className='add-product-right-side-container-5'>
+                                    <div className='add-product-description-container'>
+                                        <textarea
+                                            id='scrollbar-style-2'
+                                            value={description}
+                                            className='add-product-description'
+                                            onChange={(event) =>
+                                            {
+                                                if (!descriptionValid)
+                                                    dispatch(setDescriptionValid(true))
+                                                setDescription(event.target.value)
+                                            }}
+                                            placeholder='Опис товару'
+
+                                        />
+                                        {!descriptionValid && <label className='error-label'>Опис повинен містити мінімум 20 символів!</label>}
+                                    </div>
+
+                                    <button className='add-product-add-characteristic-btn'
+                                        onClick={goToCharacteristics}>Додати характеристику товару</button>
+                                </div>
+                            </div>
+                        </Fragment>
+                    )
+                }
+
+                {
+                    productCharacteristics && (
+                        <Fragment>
+                            <label className='back-to-main-product-button' onClick={() =>
+                            {
+                                setProductCharacteristics(false)
+
+                            }}><BackIcon /></label>
+                            <h3 className='full-category-path'>{categoryFullPath}</h3>
+
+                            <button className="add-color-price-product-btn" onClick={addCharacteristic}>+</button>
+                            <div className='descriptions-container'>
+                                <div className='descriptions-column-container'>
                                     {
-                                        generatePicturesBlocks()
+                                        generateDescriptionsFromCategoryLeft()
                                     }
                                 </div>
-                            </div>
-                            <div className='add-product-right-side-container-5'>
-                                <div className='add-product-description-container'>
-                                    <textarea
-                                        id='scrollbar-style-2'
-                                        value={description}
-                                        className='add-product-description'
-                                        onChange={(event) =>
-                                        {
-                                            if (!descriptionValid)
-                                                dispatch(setDescriptionValid(true))
-                                            setDescription(event.target.value)
-                                        }}
-                                        placeholder='Опис товару'
-
-                                    />
-                                    {!descriptionValid && <label className='error-label'>Опис повинен містити мінімум 20 символів!</label>}
+                                <div className='descriptions-column-container'>
+                                    {
+                                        generateDescriptionsFromCategoryRight()
+                                    }
+                                    <div className='add-product-confirmation-button'>
+                                        <button className='add-product-cancel' onClick={cancelAddProduct}>Скасувати</button>
+                                        <button className='add-product-confirm' onClick={confirmAddProduct}>Підтвердити</button>
+                                    </div>
                                 </div>
 
-                                <button className='add-product-add-characteristic-btn'
-                                    onClick={goToCharacteristics}>Додати характеристику товару</button>
-                            </div>
-                        </div>
-                    </Fragment>
-                )
-            }
-
-            {
-                productCharacteristics && (
-                    <Fragment>
-                        <label className='back-to-main-product-button' onClick={() =>
-                        {
-                            setProductCharacteristics(false)
-
-                        }}><BackIcon /></label>
-                        <h3 className='full-category-path'>{categoryFullPath}</h3>
-
-                        {
-                            successfulAlertShow &&
-                            <Alert variant='filled'
-                                severity="success"
-                                sx={
-                                    {
-                                        width: 'fit-content',
-                                        height: 'fit-content',
-                                        minWidth: '433px',
-                                        marginTop: '7%',
-                                        marginLeft: '60%',
-                                        position: 'absolute'
-                                    }
-                                }
-                                onClose={() => { dispatch(hideSuccessfulAlert()) }}>{actionNotification}</Alert>
-                        }
-                        {
-                            unsuccessfulAlertShow &&
-                            <Alert value='filled'
-                                severity="error"
-                                sx={
-                                    {
-                                        width: 'fit-content',
-                                        minWidth: '433px',
-                                        height: 'fit-content',
-                                        marginTop: '7%',
-                                        marginLeft: '60%',
-                                        position: 'absolute'
-                                    }
-                                }
-                                onClose={() => { dispatch(hideUnsuccessfulAlert()) }}>{actionNotification}</Alert>
-                        }
-
-                        <button className="add-color-price-product-btn" onClick={addCharacteristic}>+</button>
-                        <div className='descriptions-container'>
-                            <div className='descriptions-column-container'>
-                                {
-                                    generateDescriptionsFromCategoryLeft()
-                                }
-                            </div>
-                            <div className='descriptions-column-container'>
-                                {
-                                    generateDescriptionsFromCategoryRight()
-                                }
-                                <div className='add-product-confirmation-button'>
-                                    <button className='add-product-cancel' onClick={cancelAddProduct}>Скасувати</button>
-                                    <button className='add-product-confirm' onClick={confirmAddProduct}>Підтвердити</button>
-                                </div>
                             </div>
 
-                        </div>
+                            {
+                                loading && (
+                                    <img style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        position: 'absolute',
+                                        alignSelf: 'center',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                    }} src={LoadingIcon} alt="loading" />
+                                )
+                            }
 
-                        {
-                            loading && (
-                                <img style={{
-                                    width: '100px',
-                                    height: '100px',
-                                    position: 'absolute',
-                                    alignSelf: 'center',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                }} src={LoadingIcon} alt="loading" />
-                            )
-                        }
-
-                    </Fragment>
-                )
-            }
-        </div>
+                        </Fragment>
+                    )
+                }
+            </div>
+        </Fragment>
     )
 }
 

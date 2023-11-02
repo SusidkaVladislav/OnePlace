@@ -56,11 +56,6 @@ const DiscountAmountInput = (props) =>
                 <div className="discount-amount-arrows-container">
                     <span
                         className='discount-amount-increase-arrow'
-                        onWheel={() =>
-                        {
-                            setDiscountPercent(discountPercent + 1)
-                        }
-                        }
                         onMouseDown={() =>
                         {
                             if (discountPercent < 100)
