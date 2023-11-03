@@ -1,0 +1,26 @@
+div#text{
+    background: var(--gray-1001, #E9ECEC);
+    text-align: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.offersContainer {
+    background: linear-gradient(90deg, rgba(209, 113, 0, 0.20) 1.52%, rgba(233, 236, 236, 0.00) 100.89%);
+    display: flex;
+    justify-content: center;
+}
+
+.offerItem {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4%;
+    padding-bottom: 3%;
+}
+
+.offerText{
+    padding-top: 30px;
+}
+
