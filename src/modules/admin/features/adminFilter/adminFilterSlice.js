@@ -19,7 +19,6 @@ const initialState = {
     loading: false,
 }
 
-
 export const getCountries = createAsyncThunk('adminFilter/getCountries', async (_, { rejectWithValue }) =>
 {
     try
@@ -290,6 +289,18 @@ export const updateCountry = createAsyncThunk('adminFilter/updateCountry', async
 
             return rejectWithValue(customError);
         }
+
+        if (error.response.status === 401)
+        {
+            console.log("Error in slice")
+            const customError = {
+                status: 401,
+                message: "Authentication failed!",
+                detail: "Authentication failed!",
+            };
+            return rejectWithValue(customError)
+        }
+
         if (error.response.status === 400)
         {
             const customError = {
@@ -419,7 +430,8 @@ export const updateBrand = createAsyncThunk('adminFilter/updateBrand', async (br
     }
 })
 
-function sortByName(a, b) {
+function sortByName(a, b)
+{
     return a.name.localeCompare(b.name);
 }
 
@@ -680,7 +692,7 @@ const adminFilterSlice = createSlice({
                     unsuccessfulAlertShow: true,
                     loading: false,
                     actionNotification: payload.detail,
-                }
+                };
             })
             .addCase(createBrand.pending, (state) =>
             {

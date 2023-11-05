@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { adminLogin, getAdminCredentials } from "./adminAuthSlice";
+import { adminLogin } from "./adminAuthSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 //#region Styles
@@ -10,131 +10,90 @@ import './adminLoginStyle.css';
 
 //#region Icons
 import OnePlaceIcon from '../../../../svg/login-icons/OnePlaceIcon';
-import ErrorInputIcon from '../../../../svg/login-icons/ErrorInputIcon';
 import OnePlaceIcon2 from '../../../../svg/login-icons/OnePlaceIcon2';
 import AdminLoginBackground1 from '../../../../svg/login-icons/AdminLoginBackground1';
 //#endregion
 
 
 import { setPassword } from '../servicesState/passwordState';
-
 import PasswordInput from "../../../../services/passwordInputs/PasswordInput";
-
-
-//Тут треба обробити логіку входу і обробку помилок
 
 
 const AdminAuthForm = () =>
 {
-    const dispatch = useDispatch()
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const adminCredentials = useSelector(getAdminCredentials);
     const { password } = useSelector(state => state.passwordInputState)
+    const { error } = useSelector(state => state.adminAuth)
 
-    const [email, setEmail] = useState("");
-
-
-
-    const [errorMessageEmail, setErrorMessageEmail] = useState('');
-    const [errorMessagePassword, setErrorMessagePassword] = useState('');
-    const [EmailErrorIcon, setEmailErrorIcon] = useState(false);
-    const [PasswordErrorIcon, setPasswordErrorIcon] = useState(false);
-    const [EmailBorderColor, setEmailBorderColor] = useState('');
-    const [PasswordBorderColor, setPasswordBorderColor] = useState('');
+    const [email, setEmail] = useState(localStorage.getItem("email"));
+    const [loginError, setLoginError] = useState(error);
 
     const handleEmailChange = (event) =>
     {
+        setLoginError(false);
         setEmail(event.target.value);
-        setEmailErrorIcon(false);
-        setEmailBorderColor('');
-        setErrorMessageEmail('');
     };
 
     const handlePasswordChange = (password) =>
     {
+        setLoginError(false);
         dispatch(setPassword(password));
-
     };
 
-    const handleEnter = async (event) =>
+    const handleEnter = async () =>
     {
-
-        //navigate('main');
-        //try
-        //{
-        //const rememberMe = true;
-        await dispatch(adminLogin(({ email, password })))
+        localStorage.setItem("email", email)
+        if (email !==null  && password !== null)
+            await dispatch(adminLogin(({ email, password })))
         navigate('main');
-        //if (adminCredentials.isAuth === true)
-        //console.log("isAuth is true")
-
-        // } catch (err)
-        // {
-        //     console.error('Failed to save the post', err)
-        // }
-        // finally
-        // {
-        //     //console.log(adminCredentials);
-        // }
     }
 
     return (
-        <div className="admin-template">
-            <div className='change-body'>
-                <div className='change-div'>
-                    <OnePlaceIcon />
 
-                    <div className='change-body-div'>
-                        <div className="left-post">
-                            <label className="label-form">Пошта</label>
-                            <div className="input-wrapper">
-                                <input
-                                    className="input-text-form"
-                                    type="email"
-                                    value={email}
-                                    onChange={handleEmailChange}
-                                    style={{ borderColor: EmailBorderColor }} />
+        <div className='admin-login-container'>
 
-                                {EmailErrorIcon && <span className="error-icon-email"></span>}
-                            </div>
+            <OnePlaceIcon />
 
-                        </div>
+            {loginError ? <label className="login-error-message">*Неправильний логін або пароль</label> : <label className="login-error-message"></label>}
 
-                        <div className='error-email'>
-                            {errorMessageEmail && <label className="error-message">{errorMessageEmail}</label>}
-                        </div>
+            <div className='login-admin-form'>
 
-                        <div className="left-post">
-                            <label className="label-form">Пароль</label>
+                <div>
+                    <label className="label-form">Пошта</label>
+                    <div className="input-wrapper">
+                        <input
+                            className="input-admin-login"
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            style={{ border: loginError ? '2px solid red' : 'none' }} />
 
-                            <PasswordInput onChange={handlePasswordChange} />
-
-                            {PasswordErrorIcon && <label className='error-icon-email'><ErrorInputIcon /></label>}
-                        </div>
-
-                        <div className='change-error-email'>
-                            {errorMessagePassword && <label className="change-error-message">{errorMessagePassword}</label>}
-                        </div>
-
-
-                        <button className='confirm-button' onClick={handleEnter}>Увійти</button>
-
-
-                        <div className='admin-left-forgot'>
-                            <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
-                        </div>
+                        {loginError && <span className="error-icon-email"></span>}
                     </div>
                 </div>
 
-                <div className='hello-icon'>
-                    <AdminLoginBackground1 />
-                </div>
-                <div className='oneplace-icon'>
-                    <OnePlaceIcon2 />
+                <div>
+                    <label className="label-form">Пароль</label>
+                    <PasswordInput isError={loginError} onChange={handlePasswordChange} />
                 </div>
 
+                <span>
+                    <button className='confirm-button' onClick={handleEnter}>Увійти</button>
 
+                    <div className='admin-left-forgot'>
+                        <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
+                    </div>
+                </span>
+
+            </div>
+
+            <div className='hello-icon'>
+                <AdminLoginBackground1 />
+            </div>
+            <div className='oneplace-icon'>
+                <OnePlaceIcon2 />
             </div>
         </div>
     )

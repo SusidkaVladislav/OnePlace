@@ -24,13 +24,10 @@ import
     hideUnsuccessfulAlert
 } from '../../../features/adminReviews/adminReviewsSlice';
 
-import { useNavigate } from "react-router-dom";
-
 const PageSize = 7;
 const ItemReview = () =>
 {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     const [inputValue, setInputValue] = useState('');
     const [currentPage, setCurrentPage] = useState(1);

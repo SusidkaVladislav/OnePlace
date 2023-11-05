@@ -9,11 +9,7 @@ import { instance } from "../../../../api.config.js";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    admin: {},
-    isAuth: false,
-    isAuthInProgress: false,
-    role: '',
-    error: null
+    error: false
 }
 
 
@@ -23,7 +19,7 @@ export const adminLogin = createAsyncThunk('admin/adminLogin', async (login, { r
     {
         const response = await instance.post(REACT_APP_BASE_URL + "/Account/login", login, {
             withCredentials: true
-          })
+        })
         return response.data;
     }
     catch (error)
@@ -56,11 +52,58 @@ export const adminLogin = createAsyncThunk('admin/adminLogin', async (login, { r
     }
 })
 
+export const admiLogout = createAsyncThunk('admin/adminLogout', async (email, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(REACT_APP_BASE_URL + "/Account/logout", email, {
+            withCredentials: true
+        })
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
 
 const adminAuthSlice = createSlice({
     name: 'adminAuth',
     initialState,
-    reducers: {},
+    reducers: {
+        removeError: (state) =>
+        {
+            return {
+                ...state,
+                error: false,
+            }
+        },
+
+    },
     extraReducers(builder)
     {
         builder
@@ -68,48 +111,33 @@ const adminAuthSlice = createSlice({
             {
                 return {
                     ...state,
-                    isAuthInProgress: true,
+                    error: false,
                 }
             })
-            .addCase(adminLogin.fulfilled, (state, action) =>
+            .addCase(adminLogin.fulfilled, (state, { payload }) =>
             {
-                localStorage.setItem("token", action.payload);
-
-                const user = jwt(action.payload);
-                const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-
+                localStorage.setItem("token", payload);
+                const user = jwt(payload);
+                const role = user["Role"];
+                let isInRole = role === 'admin' ? false : true;
                 return {
                     ...state,
-                    isAuth: true,
-                    isAuthInProgress: false,
-                    role: role,
+                    error: isInRole,
                 }
             })
-            .addCase(adminLogin.rejected, (state, { payload }) =>
+            .addCase(adminLogin.rejected, (state) =>
             {
+                localStorage.removeItem("token");
                 return {
                     ...state,
-                    isAuth: false,
-                    isAuthInProgress: false,
+                    error: true,
                 }
             })
-
-        // .addCase(adminLogin.rejected, (state, action) =>
-        // {
-        //     //state.error = action.error.message
-        //     state.admin = { email: "failAdminEmail", password: "failAdminPassword" };
-        //     state.error = "server error";
-        // })
-        // .addCase(HttpStatusCode.BadRequest, (state, action) =>
-        // {
-        //     //state.error = action.error.message
-        //     state.admin = { email: "failAdminEmail", password: "failAdminPassword" };
-        //     state.error = "server error";
-        // })
     }
 })
 
-
-export const getAdminCredentials = (state) => state.admin;
+export const {
+    removeError
+} = adminAuthSlice.actions;
 
 export default adminAuthSlice.reducer
