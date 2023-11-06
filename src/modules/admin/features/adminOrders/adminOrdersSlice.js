@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { instance } from "../../../../api.config";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
@@ -17,6 +17,43 @@ export const getOrders = createAsyncThunk('adminOrders/fetchOrders', async () =>
     //return response.data
 })
 
+export const getOrdersByDate = createAsyncThunk('adminOrders/getOrdersByDate', async (date, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(REACT_APP_BASE_URL + '/Order/getByDate', date);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
 export const getAllOrdersByUserId = createAsyncThunk('adminOrders/getAllOrdersByUserId', async (userId, { rejectWithValue }) =>
 {
     const orderSearchParams = {
@@ -28,7 +65,7 @@ export const getAllOrdersByUserId = createAsyncThunk('adminOrders/getAllOrdersBy
     }
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + '/Order/search', orderSearchParams);
+        const response = await instance.post(REACT_APP_BASE_URL + '/Order/search', orderSearchParams);
         return response.data;
     }
     catch (error)
@@ -130,6 +167,31 @@ const adminOrdersSlice = createSlice({
                     loading: false,
                 }
             })
+
+            .addCase(getOrdersByDate.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getOrdersByDate.fulfilled, (state, { payload }) =>
+            {
+                console.log(payload)
+                return {
+                    ...state,
+                    loading: false,
+                    orders: payload
+                }
+            })
+            .addCase(getOrdersByDate.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+
+                }
+            })
     }
 })
 
@@ -141,6 +203,13 @@ export const getOrdersById = (state, orderId) =>
 
 export const getOrdersByUserId = (state, userId) =>
     state.adminOrders.orders.filter(order => order.userId === userId)
+
+export const getFilteredOrders = (state, inputValue) =>
+    state.adminOrders.orders.filter(order =>
+        [order.initials, order.paymentStatus, order.orderStatus].some(field =>
+            field.toLowerCase().includes(inputValue.toLowerCase())
+        )
+    );
 
 export const {
     hideSuccessfulAlert,
