@@ -1,0 +1,25 @@
+.cs-container1{
+    background-color: var(--gray1);
+    width: 100%;
+    padding-bottom: 2%;
+}
+
+.cs-container2{
+    padding-left: 6%;
+    padding-right: 6%;
+}
+
+.head-container1{
+    justify-content: space-between;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ac{
+    text-decoration: underline;
+    text-underline-offset: 8px;
+}
+
+.cs-container3{
+    justify-content:center;
+}

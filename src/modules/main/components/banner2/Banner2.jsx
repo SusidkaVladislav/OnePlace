@@ -19,6 +19,7 @@ const Banner2 = () => {
   }, [currentDiv]);
 
   return (
+    <div className='bg2'>
     <div className="bg1"> 
       {currentDiv === 0 && (
             <div className='slide slide1'>
@@ -53,6 +54,7 @@ const Banner2 = () => {
        <img className='image' src={slide4}></img>
      </div>
       )}
+    </div>
     </div>
   );
 };

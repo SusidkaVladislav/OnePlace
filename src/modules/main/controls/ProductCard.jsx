@@ -42,7 +42,7 @@ const ProductCard = () => {
                         objectFit: 'contain', 
                         background: 'white', 
                         borderRadius: '4px',
-                        transition: "transform .2s",
+                        transition: "transform .6s",
                         "&:hover":{
                             transform: "scale(1.2)"
                         }}}/>
