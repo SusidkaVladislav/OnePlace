@@ -3,7 +3,7 @@ div.bg1{
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
-    background: var(--gray-1001, #E9ECEC);
+    background: var(--gray1);
     height: 450px;
 }
 
@@ -25,7 +25,7 @@ div.bg1{
 }
 
 .slide3{
-    background: linear-gradient(90deg, #C4A8D3 -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
+    background: linear-gradient(90deg, var(--purple1) -13.41%, rgba(233, 236, 236, 0.00) 110%) ;
 }
 
 .slide4{
