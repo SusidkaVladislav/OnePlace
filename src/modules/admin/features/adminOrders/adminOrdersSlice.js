@@ -6,15 +6,18 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     orders: [],
     loading: null,
+    successfulAlertShow: false,
+    unsuccessfulAlertShow: false,
+    actionNotification: '',
 }
 
-export const fetchOrders = createAsyncThunk('adminOrders/fetchOrders', async () =>
+export const getOrders = createAsyncThunk('adminOrders/fetchOrders', async () =>
 {
     //const response = await axios.get(REACT_APP_BASE_URL );
     //return response.data
 })
 
-export const fetchAllOrdersByUserId = createAsyncThunk('adminOrders/fetchAllOrdersByUserId', async (userId) =>
+export const getAllOrdersByUserId = createAsyncThunk('adminOrders/getAllOrdersByUserId', async (userId, { rejectWithValue }) =>
 {
     const orderSearchParams = {
         UserId: userId,
@@ -23,47 +26,109 @@ export const fetchAllOrdersByUserId = createAsyncThunk('adminOrders/fetchAllOrde
         UserInitials: null,
         PaymentStatus: null
     }
-    const response = await axios.post(REACT_APP_BASE_URL + '/Order/search', orderSearchParams);
-    return response.data
+    try
+    {
+        const response = await axios.post(REACT_APP_BASE_URL + '/Order/search', orderSearchParams);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
 })
 
 const adminOrdersSlice = createSlice({
     name: 'adminOrders',
     initialState,
-    reducers: {},
+    reducers: {
+        hideSuccessfulAlert: (state) =>
+        {
+            return {
+                ...state,
+                successfulAlertShow: false,
+            }
+        },
+        hideUnsuccessfulAlert: (state) =>
+        {
+            return {
+                ...state,
+                unsuccessfulAlertShow: false,
+            }
+        },
+    },
     extraReducers(builder)
     {
         builder
-            .addCase(fetchOrders.pending, (state) =>
+            .addCase(getOrders.pending, (state) =>
             {
-                state.loading = "Loading...";
+                return {
+                    ...state,
+                    loading: true,
+                }
             })
-            .addCase(fetchOrders.fulfilled, (state, { payload }) =>
+            .addCase(getOrders.fulfilled, (state, { payload }) =>
             {
-                state.orders = payload;
+                return {
+                    ...state,
+                    orders: payload,
+                    loading: false
+                }
+                // state.commonOrdersInfo = payload.map(({ id }) =>
+                //     ({ id }))
+            })
+            .addCase(getOrders.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
 
-                state.commonOrdersInfo = payload.map(({ id }) =>
-                    ({ id }))
-
-                state.loading = null;
-            })
-            .addCase(fetchOrders.rejected, (state) =>
+            .addCase(getAllOrdersByUserId.pending, (state) =>
             {
-                state.loading = null;
+                return {
+                    ...state,
+                    loading: true,
+                }
             })
-
-            .addCase(fetchAllOrdersByUserId.pending, (state) =>
+            .addCase(getAllOrdersByUserId.fulfilled, (state, { payload }) =>
             {
-                state.loading = "Loading...";
+                return {
+                    ...state,
+                    orders: payload,
+                    loading: false,
+                }
             })
-            .addCase(fetchAllOrdersByUserId.fulfilled, (state, {payload}) =>
+            .addCase(getAllOrdersByUserId.rejected, (state) =>
             {
-                state.orders = payload;
-                state.loading = null;
-            })
-            .addCase(fetchAllOrdersByUserId.rejected, (state) =>
-            {
-                state.loading = null;
+                return {
+                    ...state,
+                    loading: false,
+                }
             })
     }
 })
@@ -76,5 +141,10 @@ export const getOrdersById = (state, orderId) =>
 
 export const getOrdersByUserId = (state, userId) =>
     state.adminOrders.orders.filter(order => order.userId === userId)
+
+export const {
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
+} = adminOrdersSlice.actions;
 
 export default adminOrdersSlice.reducer

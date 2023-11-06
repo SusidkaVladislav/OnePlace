@@ -1,42 +1,27 @@
-#scrollbar-style-1::-webkit-scrollbar-track 
-{
+#scrollbar-style-1::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #f5f5f5;
     border-radius: 8px;
 }
+
 #scrollbar-style-1::-webkit-scrollbar {
     width: 8px;
     background-color: #f5f5f5;
-    
+
 }
-  
+
 #scrollbar-style-1::-webkit-scrollbar-thumb {
     border-radius: 8px;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.14, rgb(137, 155, 193)),
-        color-stop(0.72, rgb(63, 95, 124)),
-        color-stop(0.86, rgb(23, 48, 76))
-    );
+    background-image: -webkit-gradient(linear,
+            left bottom,
+            left top,
+            color-stop(0.14, rgb(137, 155, 193)),
+            color-stop(0.72, rgb(63, 95, 124)),
+            color-stop(0.86, rgb(23, 48, 76)));
     height: 50px;
 }
 
-.order-label
-{
-    margin-bottom: 15px;
-    font-family:'Montserrat Alternates';
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 23px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: rgba(10, 61, 88, 1);
-}
-
-.order-div-header
-{
+.order-label {
     font-family: 'Montserrat Alternates';
     font-size: 18px;
     font-weight: 500;
@@ -44,11 +29,35 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(10, 61, 88, 1);
-    margin-bottom: 10px;
 }
 
-.order-div-list
-{
+.order-block {
+    width: 100%;
+    height: 95%;
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: 5% 90%;
+    gap: 4%;
+    
+}
+
+.order-div-header {
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 23px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(10, 61, 88, 1);
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20%;
+    gap: 5%;
+    height: fit-content;
+
+}
+
+.order-div-list {
+    height: 100%;
     font-family: 'Montserrat Alternates';
     font-size: 14px;
     font-weight: 500;
@@ -56,35 +65,17 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(10, 61, 88, 1);
-    overflow-y: auto;
+    overflow-y: scroll;
     scrollbar-width: thin;
-    height: 300px;
-}
-.order-div-name
-{
-    width: 130px;
-    margin-left: 10px;
-}
-.order-div-code
-{
-    width: 80px;
-    text-align: center;
 }
 
-.order-div-status{
-    width: 90px;
-    text-align: center;
-}
-
-.order-div-price
-{
-    width: 80px;
-    text-align: center;
-}
-.order-div-row
-{
-    display: flex;
-    border-bottom: 1px solid;
+.order-div-row {
+    height: 30px;
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20%;
+    gap: 5%;
+    align-items: center;
+    border-bottom: 2px solid rgba(105, 104, 104, 0.3);
     font-family: 'Montserrat Alternates';
     font-size: 14px;
     font-weight: 400;
@@ -92,255 +83,151 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(108, 71, 68, 1);
-    padding-bottom: 15px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.order-div-row > div >label {
     cursor: pointer;
 }
 
-.order-div-row:hover{
-    background: rgb(92, 124, 145);
-    color: #f5f5f5;
+.order-div-row>label {
+    height: 20px;
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #6C4744;
+    cursor: pointer;
+    word-break: break-all;
+    overflow: hidden;
 }
 
-.order-div-row div{
-    padding-top: 25px;
-}
-.order-div-img
-{
-    border-radius: 8px;
-}
-.order-div-image
-{
-    margin-top: -10px;
+.order-div-row:hover {
+    background: #f5f5f5;
 }
 
 /*UserReview----------------------------------------------------------------*/
 
 
-.review-div{
-    margin-top: 50px;
-    width: 480px;
-    height: 250px;
-    display: block;
-
+.review-div {
+    width: 41%;
+    height: 100%;
 }
-.review-body
-{
-    margin: 10px;
-    width: 424px;
-    height: 230px;
+
+.review-body {
+    width: 100%;
+    height: 250px;
     border-radius: 10px;
     background: rgba(246, 246, 246, 1);
     overflow-y: auto;
     scrollbar-width: thin;
     padding: 10px;
-
+    display: flex;
+    flex-direction: column;
 }
 
 .code-dropdown-item {
     margin: 8px;
- }
- .review-label
- {
-     display: flex;
- 
- }
- .review-label label
- {
-     width: 75px;
-     height: 23px;
-     top: 555px;
-     left: 396px;
-     font-family: 'Montserrat Alternates';
-     font-size: 18px;
-     font-weight: 500;
-     line-height: 23px;
-     letter-spacing: 0em;
-     text-align: left;
-     color: rgba(10, 61, 88, 1);
-     padding-right: 12px;
- 
- }
- .review-row
- {
-     display: block;
- 
- }
- .review-img
- {
-     height: 35px;
-     width: 35px;
-     border-radius: 6px;
- 
- }
- .review-title
- {
-     font-family: 'Montserrat Alternates';
-     font-size: 14px;
-     font-weight: 400;
-     line-height: 18px;
-     letter-spacing: 0em;
-     text-align: left;
-     color: rgba(108, 71, 68, 1);
-     margin: 8px;
-     width: 325px;
- 
- 
- }
- .review-header{
-     display: flex;
-     margin-top: 10px;
-     margin-bottom: 15px;
- 
- }
- .review-bottom-line
- {
-     border-bottom: 1px solid;
-     margin: 20px;
- }
- .review-review
- {
-     width: 386px;
-     height: 54px;
-     top: 126px;
-     left: 20px;
-     font-family: 'Montserrat Alternates';
-     font-size: 14px;
-     font-weight: 400;
-     line-height: 18px;
-     letter-spacing: 0em;
-     text-align: left;
-     color: rgba(108, 71, 68, 1);
-     margin-top: 15px;
-     margin-bottom: 20px;
-     overflow-y: auto;
-     scrollbar-width: thin;
- 
- }
- .review-date
- {
-     width: 280px;
-     height: 18px;
-     top: 198px;
-     left: 18px;
-     font-family: 'Montserrat Alternates';
-     font-size: 14px;
-     font-weight: 300;
-     line-height: 18px;
-     letter-spacing: 0em;
-     text-align: left;
-     color: rgba(71, 25, 21, 1);
- 
- }
- .msg-from-admin
- {
-     font-family: 'Montserrat Alternates';
-     font-size: 14px;
-     font-weight: 300;
-     line-height: 18px;
-     letter-spacing: 0em;
-     text-align: left;
-     color: rgba(71, 25, 21, 1);
-     background-color: rgb(227, 230, 233);
-     border-radius: 10px;
-     padding: 5px;
-     margin-top: 10px;
-     margin-left: 60px;
-     overflow-y: auto;
-     scrollbar-width: thin;
- 
- }
- .review-fluent
- {
-     cursor: pointer;
- }
- .review-message
- {
-     width: 500px;
-     height: 235px;
-     background: rgba(246, 246, 246, 1);
-     position: absolute;
-     margin-left: 440px;
-     margin-top: -220px;
-     border-top-right-radius: 10px;
-     border-bottom-right-radius: 10px;
-     padding: 15px;
-     display: flex;
- 
- }
- .review-message-label
- {
-     display: flex;
- }
- .textarea-count
- {
-     margin-left: 20px;
- }
- 
- .review-message-input textarea{
-     height: 120px;
-     margin: 10px;
-     border-radius: 8px;
-     width: 435px;
-     resize: none;
-     font-size: 12px;
-     padding: 10px;
- }
- .review-message-send
- {
-     display: flex;
- }
- 
- .review-send
- {
-     height: 35px;
-     width: 130px;
-     background-color: azure;
-     text-align: center;
-     padding-top: 4px;
-     border-radius: 10px;
-     font-size: 16px;
-     cursor: pointer;
-     margin-left: 75px;
-     border: 1px solid;
- }
- .review-send:hover{
-     background-color: rgba(10, 61, 88, 1);
-     color: rgba(246, 246, 246, 1);
- }
- .arrow-toLeft
- {
-     width: 20px;
-     height: 20px;
-     margin-top: 90px;
-     transform: rotate(90deg);
-     cursor: pointer;
- }
+}
 
- .error-review-message
- {
-    display:flex;
-    height: 270px;
- }
- .error-reply
- {
-    width: 250px;
-    height: 25px;
-    color: red;
- }
+.review-label {
+    display: flex;
+}
 
- .order-block
- {
-    width: 424px;
-    height: 310px;
-    border-radius: 10px;
-    background: rgba(246, 246, 246, 1);
+.review-label label {
+    width: 75px;
+    height: 23px;
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 23px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(10, 61, 88, 1);
+    padding-right: 12px;
+}
+
+.review-row {
+    display: grid;
+    grid-template-rows: 35% 20% 40%;
+}
+
+.review-header {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 10% 65% 20%;
+    gap: 20px;
+
+    padding: 10px;
+    margin-bottom: 15px;
+
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(108, 71, 68, 1);
+}
+
+.review-header>label {
+    height: 45%;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.review-img {
+    height: 44px;
+    width: 44px;
+    border-radius: 6px;
+    border-bottom: 2px solid rgba(105, 104, 104, 0.3);
+}
+
+.review-title {
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 23px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #0A3D58;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.review-review {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
     padding: 10px;
 
- }
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(108, 71, 68, 1);
+    overflow-y: auto;
+    scrollbar-width: thin;
+
+    background-color: rgb(237, 232, 226);
+}
+
+.review-info-time {
+    display: flex;
+    flex-direction: row;
+    gap: 75%;
+}
+
+.review-date {
+    width: 50%;
+    height: 18px;
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(71, 25, 21, 1);
+}

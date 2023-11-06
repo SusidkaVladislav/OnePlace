@@ -1,50 +1,62 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllOrdersByUserId } from '../adminOrders/adminOrdersSlice';
+import { getAllOrdersByUserId } from '../adminOrders/adminOrdersSlice';
+import LoadingIcon from '../../../../svg/animations/LoadingAnimation.gif';
 import './userOrderBlock.css';
 
-const UserOrdersBlock = (prop) =>
+const UserOrdersBlock = (props) =>
 {
-    const userId = prop.userId;
+    const {
+        userId
+    } = props;
+
     const dispatch = useDispatch();
 
-    const { orders } = useSelector(state => state.adminOrders)
+    const {
+        orders,
+        loading,
+    } = useSelector(state => state.adminOrders)
 
     useEffect(() =>
     {
-        dispatch(fetchAllOrdersByUserId(userId));
+        dispatch(getAllOrdersByUserId(userId));
     }, [])
+
+
+    if (loading)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
 
     return (
         <div className='order-div'>
             <div className='order-label'>
-                <label>Замовлення </label>
+                <label>Замовлення</label>
             </div>
             <div className='order-block'>
                 <div className='order-div-header'>
-                    <label className='order-div-name'>Номер</label>
-                    <label className='order-div-code'>Оплата</label>
-                    <label className='order-div-status'>Статус</label>
-                    <label className='order-div-price'>Ціна</label>
+                    <label>Номер</label>
+                    <label>Оплата</label>
+                    <label>Статус</label>
+                    <label>Ціна</label>
                 </div>
 
                 <div className='order-div-list' id='scrollbar-style-1'>
                     {orders.map((order) => (
                         <div className='order-div-row' key={order.id}
                             onClick={event => { alert(order.id); }}>
-                            <div className='order-div-name'>
-                                <label>{order.orderNumber}</label>
-                            </div>
-                            <div className='order-div-code'>
-                                <label>{order.paymentStatus}</label>
-                            </div>
-                            <div className='order-div-status'>
-                                <label>{order.orderStatus}</label>
-                            </div>
-                            <div className='order-div-price'>
-                                <label>{order.totalPrice}</label>
-                            </div>
-
+                            <label>{order.orderNumber}</label>
+                            <label>{order.paymentStatus}</label>
+                            <label>{order.orderStatus}</label>
+                            <label>{order.totalPrice}₴</label>
                         </div>
                     ))}
                 </div>

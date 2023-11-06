@@ -19,7 +19,6 @@ import ItemProduct from "./modules/admin/components/MenuItems/ItemProduct/ItemPr
 import ItemCategory from "./modules/admin/components/MenuItems/ItemCategory/ItemCategory";
 import ItemReview from "./modules/admin/components/MenuItems/ItemReview/ItemReview";
 import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilter";
-import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
 import ItemAddProduct from './modules/admin/components/MenuItems/ItemAddProduct/ItemAddProduct';
 import ItemEditProduct from './modules/admin/components/MenuItems/ItemEditProduct/ItemEditProduct';
 //#endregion
@@ -80,7 +79,6 @@ function App()
               </Route>
 
               <Route path="filters" element={<FilerItem />} />
-              <Route path="exit" element={<ItemExit />} />
             </Route>
 
           </Route>

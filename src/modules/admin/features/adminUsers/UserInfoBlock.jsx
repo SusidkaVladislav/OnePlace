@@ -2,31 +2,33 @@ import React from "react";
 
 const UserInfoBlock = (props) =>
 {
-    const user = props.user;
+    const {
+        user
+    } = props;
 
     return (
         <div className='info-body'>
-            <div className='surname-div'>
-                <label className='surname-label-one'>Прізвище</label>
-                <div className='surname-label'>
+            <div>
+                <label className='user-info-label'>Прізвище</label>
+                <div className='user-info-label-2'>
                     <label>{user !== null ? user.surname : 'NotFound'}</label>
                 </div>
             </div>
-            <div className='name-div'>
-                <label className='name-label-one'>Ім'я</label>
-                <div className='name-label'>
+            <div>
+                <label className='user-info-label'>Ім'я</label>
+                <div className='user-info-label-2'>
                     <label>{user !== null ? user.name : 'NotFound'}</label>
                 </div>
             </div>
-            <div className='phone-div'>
-                <label className='phone-label-one'>Номер телефону</label>
-                <div className='phone-label'>
+            <div>
+                <label className='user-info-label'>Номер телефону</label>
+                <div className='user-info-label-2'>
                     <label>{user !== null ? user.phoneNumber : 'NotFound'}</label>
                 </div>
             </div>
-            <div className='email-div'>
-                <label className='email-label-one'>Email</label>
-                <div className='email-label'>
+            <div>
+                <label className='user-info-label'>Email</label>
+                <div className='user-info-label-2'>
                     <label>{user !== null ? user.email : 'NotFound'}</label>
                 </div>
             </div>

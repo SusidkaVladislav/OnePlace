@@ -197,7 +197,11 @@ const HoverIcon = () =>
                 <Link
                     to="exit"
                     className={hoveredIndex === 9 ? 'hovered' : ''}
-                    onClick={() => handleClick(9)}
+                    onClick={() =>
+                    {
+                        localStorage.removeItem("token");
+                        window.location.reload();
+                    }}
                     onMouseEnter={() => handleMouseEnter(9)}
                     onMouseLeave={handleMouseLeave}>
                     {clickedIndex === 9 ? <ExitWithTextActiveIcon /> : (hoveredIndex === 9 ? <ExitWithTextIcon color={HOVER_ICON_COLOR} /> : <ExitWithTextIcon color={DEFAULT_ICON_COLOR} />)}
