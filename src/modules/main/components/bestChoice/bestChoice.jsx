@@ -54,9 +54,6 @@ const BestChoice = () => {
                     <Grid item>
                         <Typography className="t1-light">Товари для дітей</Typography>
                     </Grid>
-                    <Grid item  className="divider">
-                        <Divider/>
-                    </Grid>
                 </Grid>
                 <Grid container className="bcp-container" spacing={6}>
                     <Grid item>
