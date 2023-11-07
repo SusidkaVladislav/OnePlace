@@ -5,6 +5,8 @@ import WhiteSmallToBottomArrow from '../../../../../svg/arrows/WhiteSmallToBotto
 import AdminSearch from '../../../../../services/search//adminSearch';
 import InfoCard from './main-components/InfoCard';
 
+import { useNavigate } from 'react-router-dom'
+
 //#region Redux
 import { useDispatch, useSelector } from 'react-redux';
 import
@@ -28,6 +30,7 @@ const WHITE_COLOR = '#E9ECEC';
 const ItemMain = () =>
 {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [iconUserColor, setIconUserColor] = useState(BLUE_COLOR);
   const [iconOrderColor, setIconOrderColor] = useState(BLUE_COLOR);
@@ -35,17 +38,18 @@ const ItemMain = () =>
   const [iconDollarColor, setIconDollarColor] = useState(BLUE_COLOR);
 
   const [isOpen, setIsOpen] = useState(false);
-  const options = ['День', 'Тиждень', 'Місяць'];
+  const options = ['Сьогодні', 'Тиждень', 'Місяць'];
   const today = new Date();
   const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
   const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-  const optionsValues = [new Date().toDateString(), oneWeekAgo, oneMonthAgo];
+  const optionsValues = [today, oneWeekAgo, oneMonthAgo];
 
   const [selectedItem, setSelectedItem] = useState(options[0]);
   const [inputValue, setInputValue] = useState('');
 
   const {
     loading,
+    orders,
   } = useSelector(state => state.adminOrders);
 
   const filteredData = useSelector(state => getFilteredOrders(state, inputValue));
@@ -89,7 +93,6 @@ const ItemMain = () =>
           onSearchChange={value =>
           {
             setInputValue(value);
-            // setCurrentProductPage(1);
           }}
         />
         <div
@@ -117,8 +120,6 @@ const ItemMain = () =>
         </div>
       </div>
 
-
-
       <div className='info-cards-container'>
         <InfoCard
           onMouseOver={() => { setIconUserColor(WHITE_COLOR) }}
@@ -134,7 +135,7 @@ const ItemMain = () =>
           onMouseLeave={() => { setIconOrderColor(BLUE_COLOR) }}
           text={'Замовлень'}
           icon={<OrdersIcon color={iconOrderColor} />}
-          value={'+60'}
+          value={'+' + orders.length}
           color={iconOrderColor}
         />
 
@@ -172,7 +173,12 @@ const ItemMain = () =>
             filteredData.map((order, index) =>
             {
               return (
-                <div className='main-body-orders-table-row' key={index}>
+                <div className='main-body-orders-table-row' key={index}
+                  onClick={() =>
+                  {
+                    navigate('/admin/main/orders/order/' + order.id)
+                  }}
+                >
                   <label>{order.initials}</label>
                   <label>{order.totalPrice} грн.</label>
                   <label>
@@ -190,10 +196,12 @@ const ItemMain = () =>
                       'borderRadius': '10px',
                       'paddingLeft': '10px',
                     }}
-                  >{
+                  >
+                    {
                       order.orderStatus === 'Registered' ? 'Нове' : order.orderStatus === 'Processing' ? 'Очікування' :
                         order.orderStatus === 'Shipped' ? 'Відправлено' : order.orderStatus === 'Done' ? 'Виконано' : 'Анульовано'
-                    }</label>
+                    }
+                  </label>
                 </div>
               )
             })

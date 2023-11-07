@@ -1,27 +1,58 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../../../api.config";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
     orders: [],
+    order: {},
     loading: null,
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
 }
 
-export const getOrders = createAsyncThunk('adminOrders/fetchOrders', async () =>
+export const getOrders = createAsyncThunk('adminOrders/getOrders', async (_, { rejectWithValue }) =>
 {
-    //const response = await axios.get(REACT_APP_BASE_URL );
-    //return response.data
+    try
+    {
+        const response = await instance.get(REACT_APP_BASE_URL + '/Order/getAll');
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
 })
 
 export const getOrdersByDate = createAsyncThunk('adminOrders/getOrdersByDate', async (date, { rejectWithValue }) =>
 {
     try
     {
-        const response = await instance.get(REACT_APP_BASE_URL + '/Order/getByDate', date);
+        const response = await instance.get(REACT_APP_BASE_URL + '/Order/getByDate', { params: { date: new Date(date).toISOString() } });
         return response.data;
     }
     catch (error)
@@ -98,6 +129,160 @@ export const getAllOrdersByUserId = createAsyncThunk('adminOrders/getAllOrdersBy
     }
 })
 
+export const getOrderById = createAsyncThunk('adminOrders/getOrderById', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(REACT_APP_BASE_URL + '/Order', { params: { id: Number(id) } });
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const updateOrderStatus = createAsyncThunk('adminOrders/updateOrderStatus', async (orderChangeState, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(REACT_APP_BASE_URL + '/Order/changeOrderState', orderChangeState);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const updateOrderPaymentStatus = createAsyncThunk('adminOrders/updateOrderPaymentStatus', async (paymentStatePayload, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(REACT_APP_BASE_URL + '/Order/changePaymentStatus', paymentStatePayload);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const deleteOrder = createAsyncThunk('adminOrders/deleteOrder', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.delete(REACT_APP_BASE_URL + '/Order/deleteOrder', { params: { id: Number(id) } });
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+
+function sortByNumber(a, b)
+{
+    return b.orderNumber - a.orderNumber;
+}
+
 const adminOrdersSlice = createSlice({
     name: 'adminOrders',
     initialState,
@@ -129,9 +314,10 @@ const adminOrdersSlice = createSlice({
             })
             .addCase(getOrders.fulfilled, (state, { payload }) =>
             {
+                console.log(payload)
                 return {
                     ...state,
-                    orders: payload,
+                    orders: payload.sort(sortByNumber),
                     loading: false
                 }
                 // state.commonOrdersInfo = payload.map(({ id }) =>
@@ -156,7 +342,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    orders: payload,
+                    orders: payload.sort(sortByNumber),
                     loading: false,
                 }
             })
@@ -177,11 +363,10 @@ const adminOrdersSlice = createSlice({
             })
             .addCase(getOrdersByDate.fulfilled, (state, { payload }) =>
             {
-                console.log(payload)
                 return {
                     ...state,
                     loading: false,
-                    orders: payload
+                    orders: payload.sort(sortByNumber)
                 }
             })
             .addCase(getOrdersByDate.rejected, (state, { payload }) =>
@@ -190,6 +375,101 @@ const adminOrdersSlice = createSlice({
                     ...state,
                     loading: false,
 
+                }
+            })
+
+            .addCase(getOrderById.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getOrderById.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    order: payload
+                }
+            })
+            .addCase(getOrderById.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(updateOrderStatus.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(updateOrderStatus.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+            .addCase(updateOrderStatus.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(updateOrderPaymentStatus.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(updateOrderPaymentStatus.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+            .addCase(updateOrderPaymentStatus.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+
+            .addCase(deleteOrder.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(deleteOrder.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: true,
+                    unsuccessfulAlertShow: false,
+                    loading: false,
+                    actionNotification: 'Замовлення видалено!'
+                }
+            })
+            .addCase(deleteOrder.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    successfulAlertShow: false,
+                    unsuccessfulAlertShow: true,
+                    loading: false,
+                    actionNotification: payload.detail,
                 }
             })
     }

@@ -68,8 +68,6 @@
     color: rgba(246, 246, 246, 1);
     animation-timing-function: ease-out;
     animation-duration: 10ms;
-
-
 }
 
 .menu-name {
@@ -104,10 +102,10 @@
 
 .body-by-item {
     /* height: 872px; */
-    min-height: 100vh;
+    /* min-height: 100vh; */
+    min-height: 860px;
     height: fit-content;
-    top: 15px;
-    left: 24px;
+
     border-top-right-radius: 11px;
     border-bottom-right-radius: 11px;
     background: rgba(233, 236, 236, 1);
