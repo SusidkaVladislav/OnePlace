@@ -56,7 +56,7 @@ const SpecialOffers = () => {
         
         setTimeout(() => {
                 setImageSrc5(secure_static); 
-        }, 4000); 
+        }, 4100); 
     }
 
  
