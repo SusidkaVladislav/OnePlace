@@ -1,0 +1,40 @@
+.footer-container1{
+    background: var(--blue6);
+}
+
+.footer-container2{
+    padding-left: 6%;
+    padding-right: 6%;
+    margin-top: 0;
+    padding-bottom: 3%;
+    justify-content:center;
+}
+
+.headtxt{
+    padding-bottom: 10%;
+}
+
+.ftxt{
+    padding-bottom: 8%;
+}
+
+.ftxt:hover{
+    font-weight: 600;
+}
+
+.vl{
+    border-left: 2px solid var(--orange1);
+    height: 100%;
+}
+
+.footer-container3{
+    padding-top: 15%;
+    align-items: center;
+    justify-items: center;
+}
+
+.footer-container4{
+    justify-content: space-between;
+    padding-left: 6%;
+    padding-right: 6%;
+}

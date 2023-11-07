@@ -1,0 +1,3 @@
+.svgHover2:hover > path{
+    fill: var(--orange1);
+}
