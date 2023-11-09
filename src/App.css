@@ -62,6 +62,15 @@
     font-weight: 500;
     line-height: 130%; 
   }
+
+  h4.blue{
+    color: var(--blue1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
   
   h5.light{
     color: var(--brown1);
@@ -74,6 +83,15 @@
   
   h5.bold{
     color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+
+  h5.bold-orange{
+    color: var(--orange1);
     font-family: 'Montserrat Alternates';
     font-size: 18px;
     font-style: normal;
@@ -99,6 +117,24 @@
     line-height: 130%; 
   }
   
+  .t1-bold-red{
+    color: var(--red);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+
+  .t1-bold-blue{
+    color: var(--blue1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+
   .t2-light{
     color: var(--brown1);
     font-family: 'Montserrat Alternates';
@@ -110,6 +146,33 @@
   
   .t2-medium{
     color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+
+  .t2-medium-orange{
+    color: var(--orange1);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+
+  .t2-medium-green{
+    color: var(--green);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+
+  .t2-medium-blue{
+    color: var(--blue1);
     font-family: 'Montserrat Alternates';
     font-size: 14px;
     font-style: normal;

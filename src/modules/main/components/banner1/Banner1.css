@@ -1,5 +1,5 @@
 div.background{
-    background: var(--gray-1001, #E9ECEC) url('./art.png') right center / contain no-repeat;
+    background: var(--gray1) url('./art.png') right center / contain no-repeat;
     background-position: 80%;
     background-size: 30% auto;
     width: 100%;

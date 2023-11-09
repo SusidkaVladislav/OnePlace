@@ -18,10 +18,12 @@ const Banner1 = () => {
                     <Button variant="outlined" size="large"  
                     sx={{
                         '&:hover': {
-                            backgroundColor: '#D17100',
-                            border: '4px solid #D17100',
-                            color: 'white'
+                            backgroundColor: 'var(--orange2)',
+                            border: 'var(--orange2)',
+                            color: 'white',
+                            transform: "scale(1.05)"
                           },
+                        transition: "transform .3s",
                         borderRadius: '26px',
                         border: '2px solid var(--brown-100, #471915)',
                         textTransform: 'initial',
