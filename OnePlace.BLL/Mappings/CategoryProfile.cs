@@ -27,7 +27,9 @@ namespace OnePlace.BLL.Mappings
                 .ForMember(d=>d.ParentCategoryId, p=>p.MapFrom(s=>s.ParentId));
 
             CreateMap<Category, PureCategory>(MemberList.Destination)
-                .ForMember(d => d.HasProducts, p => p.MapFrom(s => s.Products.Count > 0));
+                .ForMember(d => d.HasProducts, p => p.MapFrom(s => s.Products.Count > 0))
+                .ForMember(d => d.PictureURL, p => p.MapFrom(s => s.Picture.Address))
+                .ForMember(d => d.DeletePictureURL, p => p.MapFrom(s => s.Picture.DeleteAddress));
 
         }
     }

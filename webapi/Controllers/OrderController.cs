@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BOL.Enums;
@@ -31,16 +32,18 @@ namespace webapi.Controllers
         }
 
         [HttpPost("ChangePaymentStatus")]
-        public async Task<IActionResult> ChangePaymentStatus([FromBody] int orderId, PaymentStatus paymentStatus)
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> ChangePaymentStatus(OrderChangePaymentStatePayload paymentStatePayload)
         {
-            var res = await _orderService.ChangePaymentStatus(orderId, paymentStatus);
+            var res = await _orderService.ChangePaymentStatus(paymentStatePayload.orderId, paymentStatePayload.paymentStatus);
             return Ok(res);
         }
 
         [HttpPost("ChangeOrderState")]
-        public async Task<IActionResult> ChangeOrderState([FromBody] int orderId, OrderState orderState )
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ChangeOrderState(OrderChangeStatePayload orderChangeState)
         {
-            var res = await _orderService.ChangeOrderState(orderId, orderState);
+            var res = await _orderService.ChangeOrderState(orderChangeState.orderId, orderChangeState.orderState);
             return Ok(res);
         }
 
@@ -48,6 +51,30 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetFilteredOrders([FromBody] OrderSearchParams orderSearchParams)
         {
             var res = await _orderService.FilterOrders(orderSearchParams);
+            return Ok(res);
+        }
+
+        [HttpGet("getByDate")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetOrdersByDate(DateTime? date)
+        {
+            var res = await _orderService.GetOrdersByDate(date);
+            return Ok(res);
+        }
+
+        [HttpGet("getAll")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var res = await _orderService.GetAllOrders();
+            return Ok(res);
+        }
+
+        [HttpDelete("deleteOrder")]
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            var res = await _orderService.DeleteOrer(id);
             return Ok(res);
         }
     }

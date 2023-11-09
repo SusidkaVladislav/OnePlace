@@ -119,10 +119,17 @@ namespace OnePlace.BLL.Services
 
             Review review = _mapper.Map<Review>(reviewDTO);
 
-            var userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c=>c.Type == "UserId").Value);
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (user is not null)
+            {
+                var userId = Int32.Parse(user.Value);
+                review.UserId = userId;
 
-            review.UserId = userId;
-
+            }
+            else
+            {
+                throw new ArgumentException("Користувач не авторизований");
+            }
             _unitOfWork.Reviews.Create(review);
 
             await _unitOfWork.SaveAsync();
@@ -285,7 +292,7 @@ namespace OnePlace.BLL.Services
 
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             User userEntity = await _unitOfWork.Users.GetAsync(user.Id);
-            userEntity.PictureAddress = pictureDTO.PictureAddress;
+            userEntity.PictureURL = pictureDTO.PictureAddress;
             _unitOfWork.Users.Update(userEntity);
 
             await _unitOfWork.SaveAsync();

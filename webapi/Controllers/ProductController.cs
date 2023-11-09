@@ -70,5 +70,12 @@ namespace webapi.Controllers
             var result = await _productService.GetAllProducts(categoryId);
             return Ok(result);
         }
+
+        [HttpGet("getProductReviewsAnalitic/{id}")]
+        public async Task<IActionResult> GetProductReviewsAnalitic(int id)
+        {
+            var result = await _productService.GetProductReviewsAnalitic(id);
+            return Ok(result);
+        }
     }
 }

@@ -8,6 +8,6 @@ namespace OnePlace.BLL.Interfaces
         Task<IdentityResult> RegisterAsync(RegisterPayload registerPayload);
         Task<string> LoginAsync(LoginPayload loginPayload);
         Task<string> RefreshToken(string accessToken);
-        Task LogoutAsync();
+        Task LogoutAsync(string email);
     }
 }

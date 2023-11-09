@@ -63,8 +63,8 @@ namespace OnePlace.BLL.Services
             categoryDTO.Name = categoryDTO.Name.ToLower().Trim();
 
             //Перевірка фотографії категорії
-            if (string.IsNullOrEmpty(categoryDTO.PictureAddress))
-                throw new ArgumentException("некоректне фото категорії");
+           // if (string.IsNullOrEmpty(categoryDTO.PictureURL))
+             //   throw new ArgumentException("некоректне фото категорії");
 
             //Назви категорій мають бути унікальними (перевіряєтсья чи є вже категорія з потрібним іменем)  
             if (!await validation.IsUnique(categoryDTO.Name)) 
@@ -85,17 +85,22 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException(nameof(CategoryCreateDTO) + " в категорію з id={" + categoryDTO.ParentId + "} " +
                     " не можна добавляти під-категорії");
 
-            //Зберегти фотографію 
-            Picture picture = new Picture
-            {
-                Address= categoryDTO.PictureAddress
-            };
-            _unitOfWork.Pictures.Create(picture);
-            await _unitOfWork.SaveAsync();
-
             //Приведення до типу категорії Entity
             Category category = _mapper.Map<Category>(categoryDTO);
-            category.PictureId = picture.Id;
+
+            if (!string.IsNullOrEmpty(categoryDTO.PictureURL))
+            {
+                //Зберегти фотографію 
+                Picture picture = new Picture
+                {
+                    Address = categoryDTO.PictureURL
+                };
+                _unitOfWork.Pictures.Create(picture);
+                await _unitOfWork.SaveAsync();
+
+                category.PictureId = picture.Id;
+            }
+
 
             _unitOfWork.Categories.Create(category);
             
@@ -127,7 +132,9 @@ namespace OnePlace.BLL.Services
             if(category.Products.Count() > 0)
                 throw new BusinessException("Категорію неможливо видалити, бо вона містить продукти");
 
-            await _unitOfWork.Pictures.DeleteAsync(category.PictureId);
+            if(category.PictureId.HasValue)
+            await _unitOfWork.Pictures.DeleteAsync(category.PictureId.Value);
+
             await _unitOfWork.Categories.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
 
@@ -141,9 +148,7 @@ namespace OnePlace.BLL.Services
         public async Task<List<PureCategory>> GetCategories()
         {
             var mainCategories = await _unitOfWork.Categories.FindAsync(c=>c.ParentCategoryId == null);
-
             List<PureCategory> res = _mapper.Map<List<PureCategory>>(mainCategories);
-            
             return res;
         }
 
@@ -194,28 +199,35 @@ namespace OnePlace.BLL.Services
             categoryUpdate.Name = categoryUpdate.Name.ToLower().Trim();
             
             //Перевірка фотографії категорії
-            if (string.IsNullOrEmpty(categoryUpdate.PictureAddress))
-                throw new ArgumentException("некоректне фото категорії");
+            //if (string.IsNullOrEmpty(categoryUpdate.PictureURL))
+                //throw new ArgumentException("некоректне фото категорії");
 
             Category updateCategory = await _unitOfWork.Categories.GetAsync(categoryUpdate.Id);
 
             updateCategory.Name = categoryUpdate.Name;
 
             #region Update category picture
-            Picture picture = _unitOfWork.Pictures.FindAsync(p => p.Id == updateCategory.PictureId)
+            if (!string.IsNullOrEmpty(categoryUpdate.PictureURL))
+            {
+                Picture picture = _unitOfWork.Pictures.FindAsync(p => p.Id == updateCategory.PictureId)
                 .Result.FirstOrDefault();
-            
-            if(picture != null)
-            {
-                picture.Address = categoryUpdate.PictureAddress;
-                _unitOfWork.Pictures.Update(picture);
-            }
-            else
-            {
-                _unitOfWork.Pictures.Create(picture = new Picture
+
+                if (picture != null)
                 {
-                    Address= categoryUpdate.PictureAddress
-                });
+                    picture.Address = categoryUpdate.PictureURL;
+                    picture.DeleteAddress = categoryUpdate.DeletePictureURL;
+                    _unitOfWork.Pictures.Update(picture);
+                }
+                else
+                {
+                    _unitOfWork.Pictures.Create(picture = new Picture
+                    {
+                        Address = categoryUpdate.PictureURL,
+                        DeleteAddress= categoryUpdate.DeletePictureURL,
+                    });
+                }
+
+                updateCategory.Picture = picture;
             }
             #endregion
 

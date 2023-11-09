@@ -9,13 +9,14 @@ namespace OnePlace.BOL.CategoryPayload
         [MaxLength(100)]
         [MinLength(2)]
         [DataType(DataType.Text)]
-        [DisplayName("Назва")]
         public string Name { get; set; }
         
-        [Required]
-        [DataType(DataType.Text)]
-        public string PictureAddress { get; set; }
-        
+
+        public string? PictureURL { get; set; }
+
+        public string? DeletePictureURL { get; set; }
+
+
         public int? ParentId { get; set; }
     }
 }

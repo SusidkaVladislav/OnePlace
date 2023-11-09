@@ -14,5 +14,7 @@ namespace OnePlace.BOL.ProductDTO
         public decimal Price { get; set; }
         public string Color { get; set; }
         public int Quantity { get; set; }
+        public string Picture { get; set; }
+        public int DiscountPercent { get; set; }
     }
 }

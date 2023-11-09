@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL;
+using OnePlace.BOL.AdminDTO;
+using OnePlace.BOL.AdminPayload;
 using OnePlace.BOL.Description;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.Message;
@@ -13,8 +15,6 @@ using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
-using System.Diagnostics.Metrics;
-using System.Drawing;
 
 namespace OnePlace.BLL.Services
 {
@@ -237,7 +237,10 @@ namespace OnePlace.BLL.Services
         public async Task<IEnumerable<PureUser>> GetUsers()
         {
             var users = await _unitOfWork.Users.GetAllAsync();
-            IEnumerable<PureUser> res = _mapper.Map<IEnumerable<PureUser>>(users);
+            List<PureUser> res = _mapper.Map<List<PureUser>>(users);
+
+            //Видалити користувача з ІД 1 (адмін) тимчасовий варіант
+            res.Remove(res.Where(u => u.Id == 1).FirstOrDefault());
 
             foreach (var user in res)
             {
@@ -448,6 +451,99 @@ namespace OnePlace.BLL.Services
                 return updatedBrand.Id;
             }
             throw new BusinessException("Неіснуючий виробник!");
+        }
+    
+        public async Task<List<ProductSaleStatisticDTO>> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload)
+        {
+            if (saleStatisticPayload is null)
+                throw new ArgumentNullException("Передані невірні дані!");
+
+            var productSaleStatisticDTO = _mapper.Map<GetProductSaleStatisticDTO>(saleStatisticPayload);
+
+            if (productSaleStatisticDTO.CategoryId <= 0)
+                throw new BusinessException("Неіснуюча категорія!");
+            if (saleStatisticPayload.Period.Date.AddDays(1) > DateTime.Now.Date)
+                throw new BusinessException("Дата не може бути новіша ніж сьогоднішня!");
+
+            var allProductsIdsFromCategory = _unitOfWork.Products
+                .FindAsync(p=>p.CategoryId == saleStatisticPayload.CategoryId).Result.Select(p=>p.Id).ToList();
+            
+            var allOrdersIdByDate = _unitOfWork.Orders.FindAsync(
+                o => o.Date >= saleStatisticPayload.Period.Date.AddDays(1) &&
+                o.State == OrderState.Done && o.PaymentStatus == PaymentStatus.Approved).Result.Select(o=>o.Id).ToList();
+
+            List<ProductSaleStatisticDTO> productSaleStatistic = new List<ProductSaleStatisticDTO>();
+
+            foreach (var orderId in allOrdersIdByDate)
+            {
+
+               var ordersProducts = _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId 
+                                        && allProductsIdsFromCategory.Contains(o.ProductId)).Result.ToList();
+
+                //Якщо замовлення містить мінімум 1 товар з потрібної категорії
+                if(ordersProducts is not null)
+                {
+                    //Тільки ті замовлення які точно містять товар з потрібної категорії
+                    foreach (var orderProduct in ordersProducts)
+                    {
+
+                        var product = await _unitOfWork.Products.GetAsync(orderProduct.ProductId);
+                        
+                        //Якщо замовлений товар ще існує
+                        if(product is not null)
+                        {
+                            //Колір товару із замовлення
+                            var productColor = await _unitOfWork.ProductColors.GetAsync(new Composite2Key
+                            {
+                                Column1 = product.Id,
+                                Column2 = orderProduct.ColorId
+                            });
+
+                            if(productColor is not null)
+                            {
+                                var existedProductSaleStatisticElement = productSaleStatistic.Where(p => p.Id == product.Id).FirstOrDefault();
+                                
+                                if(existedProductSaleStatisticElement is null) 
+                                {
+                                    var picture = await _unitOfWork.ProductPictures.GetAsync(new Composite2Key
+                                    {
+                                        Column1= product.Id,
+                                        Column2 = product.ProductPictures.Where(p => p.IsTitle == true).FirstOrDefault().PictureId
+                                    });
+
+                                    //Створити новий елемент статистики 
+                                    ProductSaleStatisticDTO saledProduct = new ProductSaleStatisticDTO
+                                    {
+                                        Id = product.Id,
+                                        Color = productColor.Color.Name,
+                                        Quantity = productColor.Quantity,
+                                        Price = orderProduct.Price,
+                                        Code = product.Code,
+                                        Name = product.Name,
+                                        Picture = picture.Picture.Address,
+                                        Sold = orderProduct.Quantity
+                                    };
+                                    productSaleStatistic.Add(saledProduct);
+                                }
+                                else
+                                {
+                                    int index = productSaleStatistic.IndexOf(existedProductSaleStatisticElement);
+                                    existedProductSaleStatisticElement.Sold += orderProduct.Quantity;
+                                    productSaleStatistic[index] = existedProductSaleStatisticElement;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return productSaleStatistic;
+        }
+    
+        public async Task<int> GetUsersCountByRegistrateDate(DateTime date)
+        {
+            var count = _unitOfWork.Users.FindAsync(u => u.RegistrationDate.Date >= date.Date).Result.ToList().Count();
+            return count;
         }
     }
 }

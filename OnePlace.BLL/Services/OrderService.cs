@@ -14,6 +14,7 @@ using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
 using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 
 namespace OnePlace.BLL.Services
@@ -71,7 +72,16 @@ namespace OnePlace.BLL.Services
             }
 
             //Авторизований користувач
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            //var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+            int? userId = null;
+
+
+            if (_httpContextAccessor.HttpContext.User.Claims.Count() > 0)
+            {
+                userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
+            }
+
 
             #endregion
 
@@ -86,7 +96,7 @@ namespace OnePlace.BLL.Services
                 State = DAL.Enums.OrderState.Registered,
                 PaymentMethod = _mapper.Map<DAL.Enums.PaymentMethod>(createOrderDTO.PaymentMethod),
                 Comment = createOrderDTO.Comment,
-                UserId = user is null?  null : user.Id
+                UserId = userId
             };
 
             if (!_unitOfWork.Orders.GetAllAsync().Result.Any())
@@ -156,6 +166,7 @@ namespace OnePlace.BLL.Services
                 OrderState = order.State.ToString(),
                 PaymentMethod = order.PaymentMethod.ToString(),
                 PaymentStatus = order.PaymentStatus.ToString(),
+                //DeliveryCompany = 
                 PhoneNumber= order.PhoneNumber,
                 UserId= order.UserId,
                 UserInitials = order.Name + " " + order.Surname,
@@ -166,19 +177,22 @@ namespace OnePlace.BLL.Services
             var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId);
             foreach (var product in productsOrder)
             {
-
+                string productName = _unitOfWork.Products.FindAsync(p => p.Id == product.ProductId).Result.Select(p => p.Name).FirstOrDefault();
                 //Підтягнути титульну картинку товару
                 var picture = await _unitOfWork.ProductPictures.FindAsync(pp=>pp.ProductId == product.ProductId
                 && pp.IsTitle == true);
 
                 OrderedProduct orderedProduct = new OrderedProduct
                 {
+                    Id = product.ProductId,
+                    Name = productName,
                     Quantity = product.Quantity,
+                    ColorId = product.ColorId,
                     Picture = picture.Select(p => p.Picture.Address).FirstOrDefault(),
                     Price = product.Price //Ціна вже зі знижкою
                 };
 
-                orderDetails.TotalPrice += product.Price;
+                orderDetails.TotalPrice += product.Price * product.Quantity;
 
                 orderDetails.Products.Add(orderedProduct);
             }
@@ -281,13 +295,110 @@ namespace OnePlace.BLL.Services
             throw new NotImplementedException();
         }
 
+        public async Task<List<OrderListModel>> GetOrdersByDate(DateTime? date)
+        {
+            List<OrderListModel> orderList = new List<OrderListModel>();
+            var orders = new List<Order>();
+            if (date is not null)
+            {
+                orders = _unitOfWork.Orders.FindAsync(o=>o.Date >= date.Value.Date).Result.ToList();
+            }
+            else
+            {
+                orders = _unitOfWork.Orders.FindAsync(o => o.Date.Date >= new DateTime().Date).Result.ToList();
+            }
+
+            foreach (var order in orders)
+            {
+                OrderListModel orderListModel = new OrderListModel
+                {
+                    Id = order.Id,
+                    Initials = order.Name + " " + order.Surname,
+                    OrderNumber = order.Number,
+                    OrderStatus = order.State.ToString(),
+                    PaymentStatus = order.PaymentStatus.ToString()
+                };
+
+                var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == order.Id);
+                foreach (var product in productsOrder)
+                    orderListModel.TotalPrice += product.Price * product.Quantity;
+
+                orderList.Add(orderListModel);
+            }
+
+            return orderList;
+        }
+
+
+        public async Task<List<OrderListModel>> GetAllOrders()
+        {
+            List<OrderListModel> orderList = new List<OrderListModel>();
+
+            var orders = await _unitOfWork.Orders.GetAllAsync();
+            foreach (var order in orders)
+            {
+                OrderListModel orderListModel = new OrderListModel
+                {
+                    Id = order.Id,
+                    Initials = order.Name + " " + order.Surname,
+                    OrderNumber = order.Number,
+                    OrderStatus = order.State.ToString(),
+                    PaymentStatus = order.PaymentStatus.ToString()
+                };
+
+                var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == order.Id);
+                foreach (var product in productsOrder)
+                    orderListModel.TotalPrice += product.Price * product.Quantity;
+
+                orderList.Add(orderListModel);
+            }
+
+            return orderList;
+        }
+
+        public async Task<int> DeleteOrer(int id)
+        {
+            if (id <= 0)
+                throw new BusinessException("Некоректне id!");
+            //var order = _unitOfWork.Orders.FindAsync(o => o.Id == id).Result.FirstOrDefault();
+
+            var order = await _unitOfWork.Orders.GetAsync(id);
+
+            if (order is null)
+                throw new BusinessException("Неіснуюче замовлення!");
+
+            //Якщо замовлення не виконано і не оплачено, то всі товари повертаються "на склад"
+            if (order.State != DAL.Enums.OrderState.Done && order.PaymentStatus != DAL.Enums.PaymentStatus.Approved)
+            {
+                //Повернення замовлених товарів товарів 
+                foreach (var product in order.OrderProducts)
+                {
+                    var productColor = await _unitOfWork.ProductColors.GetAsync(
+                     new Composite2Key
+                     {
+                         Column1 = product.ProductId,
+                         Column2 = product.ColorId
+                     });
+
+                    productColor.Quantity += product.Quantity;
+
+                    _unitOfWork.ProductColors.Update(productColor);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+            await _unitOfWork.Orders.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+            return id;
+        }
+
         //Формування інформації про доставку (допоміжний метод)
         private string ExtractDeliveryInfo(OrderCreateDTO orderCreateDTO)
         {
             StringBuilder deliveryInfo = new StringBuilder();
 
             deliveryInfo.Append(orderCreateDTO.ServiceName.ToString());
-            deliveryInfo.Append(" {" + orderCreateDTO.DeliveryMethod.ToString() + " }. ");
+            deliveryInfo.Append(" {" + orderCreateDTO.DeliveryMethod.ToString().TrimEnd() + "}. ");
             deliveryInfo.Append(orderCreateDTO.City);
             deliveryInfo.Append(", ");
 

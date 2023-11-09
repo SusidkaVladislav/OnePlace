@@ -134,6 +134,11 @@ namespace OnePlace.BLL.Services
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<int> AddProduct(ProductCreatePayload product)
         {
+            if(product.Sale is not null)
+            {
+                product.Sale.StartDate = product.Sale.StartDate.AddDays(1);
+                product.Sale.EndDate = product.Sale.EndDate.AddDays(1);
+            }
 
             if (product is null)
                 throw new ArgumentNullException(nameof(product));
@@ -178,7 +183,8 @@ namespace OnePlace.BLL.Services
             {
                 Picture newPicture = new Picture()
                 {
-                    Address = picture.Address
+                    Address = picture.Address,
+                    DeleteAddress = picture.DeleteURL
                 };
 
                 _unitOfWork.Pictures.Create(newPicture);
@@ -379,6 +385,7 @@ namespace OnePlace.BLL.Services
                     product.ProductPictures.ElementAt(i).PictureId);
                 details.Pictures[i].Address = pict.Address;
                 details.Pictures[i].Id = pict.Id;
+                details.Pictures[i].DeleteURL = pict.DeleteAddress;
             }
             #endregion
             #region Sale
@@ -431,6 +438,12 @@ namespace OnePlace.BLL.Services
         public async Task<int> UpdateProduct(ProductUpdatePayload productPayload)
         {
             if (productPayload is null) throw new ArgumentNullException("Некоректні дані");
+
+            if (productPayload.Sale is not null)
+            {
+                productPayload.Sale.StartDate = productPayload.Sale.StartDate.AddDays(1);
+                productPayload.Sale.EndDate = productPayload.Sale.EndDate.AddDays(1);
+            }
 
             ProductUpdateDTO updatedProduct = _mapper.Map<ProductUpdateDTO>(productPayload);
 
@@ -528,6 +541,8 @@ namespace OnePlace.BLL.Services
                     if (updatePicture.Address != picture.Address)
                     {
                         updatePicture.Address = picture.Address;
+                        updatePicture.DeleteAddress = picture.DeleteURL;
+                        
                         _unitOfWork.Pictures.Update(updatePicture);
                     }
                 }
@@ -535,7 +550,8 @@ namespace OnePlace.BLL.Services
                 {
                     updatePicture = new Picture
                     {
-                        Address = picture.Address
+                        Address = picture.Address,
+                        DeleteAddress= picture.DeleteURL
                     };
                     _unitOfWork.Pictures.Create(updatePicture);
                 }
@@ -769,7 +785,7 @@ namespace OnePlace.BLL.Services
             List <Product> products = new List<Product>();
             if (categoryId != null)
             {
-                products = _unitOfWork.Products.FindAsync(product => product.CategoryId == categoryId).Result.ToList();
+                products = _unitOfWork.Products.FindAsync(product => product.CategoryId == categoryId).Result.ToList(); 
             }
             else
             {
@@ -781,12 +797,19 @@ namespace OnePlace.BLL.Services
 
             foreach (var product in products)
             {
+                var pictureId = product.ProductPictures.Where(p => p.ProductId == product.Id && p.IsTitle == true)
+                    .FirstOrDefault().PictureId;
+                var discountPercent = _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id).Result.FirstOrDefault();
+
+                var picture = await _unitOfWork.Pictures.FindAsync(p => p.Id == pictureId);
 
                 ProductToReturnAllDTO tmp = new ProductToReturnAllDTO
                 {
                     Id = product.Id,
                     Code = product.Code,
                     Name = product.Name,
+                    DiscountPercent = discountPercent is null? 0 : discountPercent.DiscountPercent,
+                    Picture = picture.FirstOrDefault().Address
                 };
                 foreach (var colorPrice in product.ProductColors)
                 {
@@ -798,9 +821,11 @@ namespace OnePlace.BLL.Services
                         Id=tmp.Id,
                         Code = tmp.Code,
                         Name = tmp.Name,
+                        DiscountPercent = tmp.DiscountPercent,
                         Color = color.Name,
                         Price = colorPrice.Price,
                         Quantity = colorPrice.Quantity,
+                        Picture= tmp.Picture,
                     };
 
                     res.Add(productToReturnAll);
@@ -808,6 +833,33 @@ namespace OnePlace.BLL.Services
             }
 
             return res;
+        }
+
+        public async Task<ProductReviewAnalitic> GetProductReviewsAnalitic(int id)
+        {
+            if (id <= 0)
+                throw new BusinessException("Не коректне id товару!");
+
+            var productReviews = _unitOfWork.Reviews.FindAsync(r => r.ProductId == id).Result.ToList();
+        
+            if(productReviews.Count() == 0)
+            {
+                return new ProductReviewAnalitic
+                {
+                    AverageValue = 0,
+                    ReviewsCount = 0,
+                    StartsCount = 0
+                };
+            }
+            else
+            {
+                return new ProductReviewAnalitic
+                {
+                    StartsCount = productReviews.Sum(r => r.NumberOfStars) / productReviews.Count(),
+                    ReviewsCount = productReviews.Count(),
+                    AverageValue = productReviews.Sum(r => r.NumberOfStars) / productReviews.Count()
+                };
+            }
         }
 
         private async Task DeleteUnusedDescriptions(int categoryId)

@@ -42,9 +42,9 @@ namespace webapi.Controllers
 
         [HttpPost("logout")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(string email)
         {
-            await _accountService.LogoutAsync();
+            await _accountService.LogoutAsync(email);
             return Ok();
         }
     }

@@ -49,5 +49,16 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// <returns></returns>
         Task CardPay();
+
+        /// <summary>
+        /// Повертає всі замовлення за певний період
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        Task<List<OrderListModel>> GetOrdersByDate(DateTime? date);
+
+        Task<List<OrderListModel>> GetAllOrders();
+
+        Task<int> DeleteOrer(int id);
     }
 }

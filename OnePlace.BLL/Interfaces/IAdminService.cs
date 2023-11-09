@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.ObjectPool;
 using OnePlace.BOL;
+using OnePlace.BOL.AdminDTO;
+using OnePlace.BOL.AdminPayload;
 using OnePlace.BOL.Description;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
@@ -45,5 +47,7 @@ namespace OnePlace.BLL.Interfaces
         Task<int> CreateBrand (string brandName);
         Task<int> DeleteBrand(int id);
         Task<int> UpdateBrand(ManufacturerDTO brand);
+        Task<List<ProductSaleStatisticDTO>> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload);
+        Task<int> GetUsersCountByRegistrateDate(DateTime date);
     }
 }

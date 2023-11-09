@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL;
+using OnePlace.BOL.AdminPayload;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.OrderPayload;
 using OnePlace.BOL.ReviewReply;
@@ -235,6 +236,23 @@ namespace webapi.Controllers
         public async Task<IActionResult> UpdateBrand(ManufacturerDTO brand)
         {
             var result = await _adminService.UpdateBrand(brand);
+            return Ok(result);
+        }
+
+        [HttpPost("productSaleInfo")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload)
+        {
+            var result = await _adminService.GetProductSalingInfo(saleStatisticPayload);
+            return Ok(result);
+        }
+
+
+        [HttpGet("getUsersCount/{date}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetUsersCountByRegistrateDate(DateTime date)
+        {
+            var result = await _adminService.GetUsersCountByRegistrateDate(date);
             return Ok(result);
         }
     }

@@ -53,7 +53,8 @@ namespace OnePlace.BLL.Services
                 Surname = registerDTO.Surname,
                 PhoneNumber = registerDTO.PhoneNumber,
                 Email = registerDTO.Email,
-                UserName = registerDTO.Email
+                UserName = registerDTO.Email,
+                RegistrationDate = DateTime.Now,
             };
 
             // Валідація
@@ -112,7 +113,7 @@ namespace OnePlace.BLL.Services
                 _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
                 user.RefreshToken = refreshToken;
-                user.TokenExpires = DateTime.Now.AddDays(refreshTokenValidityInDays);
+                user.RefreshTokenExpires = DateTime.Now.AddDays(refreshTokenValidityInDays);
 
                 await _userManager.UpdateAsync(user);
 
@@ -147,14 +148,13 @@ namespace OnePlace.BLL.Services
 
         public async Task<string> RefreshToken(string accessToken)
         {
-
             if (accessToken is null)
             {
-                throw new BusinessException("Токен не валідний!");
+                throw new BusinessException("access-token error!");
             }
-
+            
             if (!_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken))
-                throw new BusinessException("Токен не валідний!");
+                throw new BusinessException("refresh-token error!");
 
             var principal = GetPrincipalFromExpiredToken(accessToken);
 
@@ -166,7 +166,7 @@ namespace OnePlace.BLL.Services
             var userEmail = principal.Identity.Name;
             var user = await _userManager.FindByNameAsync(userEmail);
 
-            if (user == null || user.RefreshToken != refreshToken || user.TokenExpires <= DateTime.Now)
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpires <= DateTime.Now)
             {
                 throw new BusinessException("Невалідний токен!");
             }
@@ -187,12 +187,28 @@ namespace OnePlace.BLL.Services
 
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refresh-token", newRefreshToken, cookie);
 
-            return new JwtSecurityTokenHandler().WriteToken(newAccessToken);
+            try
+            {
+                var result = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
+                return result;
+            }
+            catch(SecurityTokenEncryptionFailedException ex)
+            {
+                throw ex;
+            }
         }
 
-        public async Task LogoutAsync()
+        public async Task LogoutAsync(string email)
         {
-            await _signInManager.SignOutAsync();
+            var user = await _userManager.FindByEmailAsync(email);
+            
+            if (user == null) 
+                throw new BusinessException("Invalid user name");
+
+            user.RefreshToken = null;
+            await _userManager.UpdateAsync(user);
+
+    
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
@@ -207,12 +223,19 @@ namespace OnePlace.BLL.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+                if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                    throw new SecurityTokenException("Invalid token");
 
-            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
-
-            return principal;
+                return principal;
+            }
+            catch(Exception ex)
+            {
+                throw new BusinessException("Не валідний токен!");
+            }
+            
         }
 
         public JwtSecurityToken GetToken(List<Claim> claims)
