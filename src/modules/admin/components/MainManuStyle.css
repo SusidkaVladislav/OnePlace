@@ -5,74 +5,30 @@
 
 .admin-body {
     background: rgba(10, 61, 88, 1);
-
-    display: flex;
     padding: 15px;
-    min-height: 100vh;
-    /* height: 508px; */
     height: fit-content;
+    min-width: 100vh;
+    display: grid;
 }
 
 .left-menu {
-    /* height: 872px; */
-    /* min-height: 100vh;
-    height: fit-content; */
-
-
-    padding: 12px 10px 123px 42px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     border-top-left-radius: 11px;
     border-bottom-left-radius: 11px;
-    gap: 10px;
     background: rgba(246, 246, 246, 1);
-    position: static;
 }
 
 .menu-item-user {
-    height: 60px;
-    margin-top: 65px;
-    border-radius: 0px 11px 0px 0px;
     background: rgba(10, 61, 88, 1);
-    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
     display: flex;
-    margin-left: -55px;
-    z-index: 2;
-
-}
-
-.menu-img-icon {
-    background-color: bisque;
-    height: 36px;
-    width: 36px;
-    border-radius: 18px;
-    margin-left: 60px;
-    margin-top: 10px;
-    margin-right: 20px;
-    position: absolute;
-}
-
-.menu-labels {
-    width: 55px;
-    text-align: left;
-    margin-left: 140px;
-}
-
-.menu-email {
-    width: 141px;
-    height: 18px;
-    font-family: 'Montserrat Alternates';
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: rgba(246, 246, 246, 1);
-    animation-timing-function: ease-out;
-    animation-duration: 10ms;
+    height: 70px;
+    align-items: center;
+    padding-left: 6px;
 }
 
 .menu-name {
-    width: 108px;
-    height: 23px;
     font-family: 'Montserrat Alternates';
     font-size: 18px;
     font-weight: 400;
@@ -80,77 +36,53 @@
     letter-spacing: 0em;
     text-align: center;
     color: rgba(246, 246, 246, 1);
-    animation-timing-function: ease-out;
-    animation-duration: 10ms;
-    margin-top: 10px;
-
+    margin-left: 5px;
 }
-
-/*-------------------------------------*/
-
 
 .menu-arrow-icon {
-    padding-top: 15px;
+    position: sticky;
+    margin-left: 45%;
+    height: 100%;
     background: rgba(10, 61, 88, 1);
     cursor: pointer;
-    z-index: 2;
-    width: 35px;
-    border-radius: 0px 11px 0px 0px;
+    display: flex;
+    align-items: center;
+    border-radius: 0px 10px 0px 0px;
 }
 
-/*------------------------------------------*/
 
 .body-by-item {
-    /* height: 872px; */
-    /* min-height: 100vh; */
-    min-height: 860px;
     height: fit-content;
-
+    min-height: 100vh;
     border-top-right-radius: 11px;
     border-bottom-right-radius: 11px;
     background: rgba(233, 236, 236, 1);
-    position: absolute;
     padding: 30px;
-    z-index: 1;
+}
+
+.left-menu-items {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding-left: 10%;
 }
 
 .menu-item-main {
-    height: 60px;
+    height: 50px;
     display: flex;
     padding-top: 13px;
     align-items: center;
 }
 
-
-.left-menu-items {
-    padding-left: 16px;
-    min-height: 450px;
-    height: fit-content;
-    margin-left: -7px;
-}
-
-li {
-    list-style-type: none;
-    cursor: pointer;
-}
-
-
 .main-logo {
-    font-size: 16px;
-    height: 75px;
-    width: 250px;
     padding: 10px;
-    padding-left: 50px;
-    position: absolute;
-}
-
-.header_top a {
-    color: bisque;
+    margin-left: 10px;
 }
 
 .menu-item-product-container {
     width: 100%;
     display: flex;
-    gap: 40%;
+    gap: 30%;
     align-items: center;
 }

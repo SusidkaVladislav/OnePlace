@@ -1121,12 +1121,19 @@ export const {
 
 export const getFilteredProducts = createSelector(
     state => state.adminProducts.allProducts,
-    (_, inputValue) => inputValue.toLowerCase(),
-    (allProducts, inputValue) =>
+    (_, { inputValue }) => inputValue.toLowerCase(),
+    (_, { discount }) => discount,
+    (allProducts, inputValue, discount) =>
     {
-        return allProducts.filter(product =>
-            [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
-        );
+        const discountFilter = allProducts.filter(product =>
+        {
+            return discount === 2 ? product.discountPercent === 0 : discount === 3 ? product.discountPercent > 0 : product.discountPercent >= 0
+        });
+
+        return discountFilter.filter(product =>
+        {
+            return [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
+        })
     }
 );
 

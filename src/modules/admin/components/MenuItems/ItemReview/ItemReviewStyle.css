@@ -1,5 +1,6 @@
 .message-main {
     width: 100%;
+    min-height: 100vh;
 }
 
 .review-table-head {

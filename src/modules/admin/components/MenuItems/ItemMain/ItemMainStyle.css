@@ -34,6 +34,10 @@
     justify-content: center;
 }
 
+.dropdown-header>label{
+    cursor: pointer;
+}
+
 .dropdown-list {
     position: absolute;
     background-color: rgba(246, 246, 246, 1);
@@ -42,7 +46,7 @@
     max-height: 200px;
     
     overflow-y: auto;
-    width: 10%;
+    width: 8%;
     border-radius: 10px 0px 10px 10px;
 }
 
@@ -81,8 +85,8 @@
 .info-cards-container {
     height: 200px;
     display: grid;
-    grid-template-columns: 20% 20% 20% 20%;
-    gap: 5%;
+    grid-template-columns: 26% 26% 26%;
+    gap: 10%;
     align-items: center;
 }
 

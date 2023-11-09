@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../../../api.config.js";
 
 const { REACT_APP_BASE_URL } = process.env;
@@ -319,7 +318,6 @@ const adminReviewsSlice = createSlice({
     }
 })
 
-//export const getAllReviews = (state) => state.adminReviews.reviews;
 export const getAllReviewReplies = (state) => state.adminReviews.replies;
 
 
@@ -333,10 +331,10 @@ export const getFilteredReviews = (state, inputValue) =>
 export const getReviewById = (state, reviewId) =>
     state.adminReviews.reviews.find(review => review.id === reviewId)
 
-    export const {
-        hideSuccessfulAlert,
-        hideUnsuccessfulAlert,
-    
-    } = adminReviewsSlice.actions;
+export const {
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
+
+} = adminReviewsSlice.actions;
 
 export default adminReviewsSlice.reducer

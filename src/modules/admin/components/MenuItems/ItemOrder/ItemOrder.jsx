@@ -62,7 +62,7 @@ const ItemOrder = () =>
     }
 
     return (
-        <Fragment>
+        <div className='orders-main-container'>
             <AdminSearch
                 onSearchChange={value =>
                 {
@@ -130,18 +130,18 @@ const ItemOrder = () =>
                         })
                     }
                 </div>
+
+                <div className='pag'>
+                    <CustomPagination
+                        className="pagination-bar"
+                        currentPage={currentPage}
+                        totalCount={filteredData.length}
+                        pageSize={PageSize}
+                        onPageChange={page => setCurrentPage(page)} />
+                </div>
             </div>
 
-
-            <div className='pag'>
-                <CustomPagination
-                    className="pagination-bar"
-                    currentPage={currentPage}
-                    totalCount={filteredData.length}
-                    pageSize={PageSize}
-                    onPageChange={page => setCurrentPage(page)} />
-            </div>
-        </Fragment>
+        </div>
     );
 }
 

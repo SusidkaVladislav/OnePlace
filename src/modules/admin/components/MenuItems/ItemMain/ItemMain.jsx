@@ -16,6 +16,11 @@ import
 } from '../../../features/adminOrders/adminOrdersSlice.js';
 //#endregion
 
+import
+{
+  getUsersCount,
+} from '../../../features/adminUsers/adminUsersSlice.js';
+
 //#region Icons
 import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
 import UsersIcon from '../../../../../svg/shared-icons/UsersIcon';
@@ -52,11 +57,16 @@ const ItemMain = () =>
     orders,
   } = useSelector(state => state.adminOrders);
 
+  const {
+    usersCountByDate
+  } = useSelector(state => state.adminUsers);
+
   const filteredData = useSelector(state => getFilteredOrders(state, inputValue));
 
   useEffect(() =>
   {
     dispatch(getOrdersByDate(today));
+    dispatch(getUsersCount(today))
   }, [])
 
   const handleToggleDropdown = () =>
@@ -68,6 +78,7 @@ const ItemMain = () =>
   {
     setSelectedItem(item);
     await dispatch(getOrdersByDate(value));
+    await dispatch(getUsersCount(value));
     setIsOpen(false);
   };
 
@@ -126,7 +137,7 @@ const ItemMain = () =>
           onMouseLeave={() => { setIconUserColor(BLUE_COLOR) }}
           text={'Користувачів'}
           icon={<UsersIcon color={iconUserColor} />}
-          value={'+20'}
+          value={'+'+ usersCountByDate}
           color={iconUserColor}
         />
 
@@ -140,20 +151,13 @@ const ItemMain = () =>
         />
 
         <InfoCard
-          onMouseOver={() => { setIconProductColor(WHITE_COLOR) }}
-          onMouseLeave={() => { setIconProductColor(BLUE_COLOR) }}
-          text={'Товарів'}
-          icon={<ProductsIcon color={iconProductColor} />}
-          value={'+30'}
-          color={iconProductColor}
-        />
-
-        <InfoCard
           onMouseOver={() => { setIconDollarColor(WHITE_COLOR) }}
           onMouseLeave={() => { setIconDollarColor(BLUE_COLOR) }}
           text={'Прибуток'}
           icon={<DollarIcon color={iconDollarColor} />}
-          value={'+20'}
+          value={'+' + orders.reduce((accumulator, currentValue) =>
+            accumulator + (currentValue?.paymentStatus === 'Approved'? currentValue.totalPrice : 0), 0)
+          }
           color={iconDollarColor}
         />
       </div>
@@ -207,10 +211,7 @@ const ItemMain = () =>
             })
           }
         </div>
-
       </div>
-
-
     </div>
   );
 };

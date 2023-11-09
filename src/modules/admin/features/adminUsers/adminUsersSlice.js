@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { instance } from "../../../../api.config.js";
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -9,6 +8,7 @@ const initialState = {
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
+    usersCountByDate: 0,
 }
 
 export const getUsers = createAsyncThunk('adminUsers/getUsers', async (_, { rejectWithValue }) =>
@@ -54,6 +54,43 @@ export const deleteUser = createAsyncThunk('adminUsers/deleteUser', async (userI
     try
     {
         const response = await instance.delete(`${REACT_APP_BASE_URL}/Admin/user/${Number(userId)}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const getUsersCount = createAsyncThunk('adminUsers/getUsersCount', async (date, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(`${REACT_APP_BASE_URL}/Admin/getUsersCount/${new Date(date).toISOString()}`);
         return response.data;
     }
     catch (error)
@@ -156,7 +193,31 @@ const adminUsersSlice = createSlice({
                     loading: false,
                     actionNotification: payload.detail,
                 }
-            });
+            })
+
+            .addCase(getUsersCount.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getUsersCount.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    usersCountByDate: payload
+                }
+            })
+            .addCase(getUsersCount.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: false
+                }
+            })
+
     }
 })
 

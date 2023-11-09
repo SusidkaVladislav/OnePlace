@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../../../api.config.js";
 
 const { REACT_APP_BASE_URL } = process.env;
@@ -173,16 +173,6 @@ const adminMessagesSlice = createSlice({
       })
       .addCase(updateMessage.fulfilled, (state, { payload }) =>
       {
-        // console.log(state.messages)
-        // const updatedMessageIndex = state.messages.findIndex(
-        //   (msg) => msg.id === payload.id
-        // );
-
-        // if (updatedMessageIndex !== -1)
-        // {
-        //   state.messages[updatedMessageIndex] = payload;
-        // }
-
         return {
           ...state,
           unsuccessfulAlertShow: false,

@@ -14,6 +14,7 @@ const AdminPrivateRoute = () =>
     useEffect(() =>
     {
         const accessToken = localStorage.getItem("token");
+        
         if (accessToken)
         {
             try

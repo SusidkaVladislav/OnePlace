@@ -97,6 +97,7 @@ export const ViewEditOrder = () =>
             default:
                 setSelectedPaymentStatus(paymentStatusoptions[2])
         }
+       
     }, [order])
 
 
@@ -201,7 +202,7 @@ export const ViewEditOrder = () =>
 
                             <div className='order-product-info' id='scrollbar-style-1'>
                                 {
-                                    order.products.map((product, index) =>
+                                    order.products?.map((product, index) =>
                                     {
                                         return (
                                             <div className='order-product-info-product-row' key={index}>
@@ -235,7 +236,7 @@ export const ViewEditOrder = () =>
                                 <label>Доставка</label>
                                 <div >
                                     {
-                                        order.deliveryInfo.includes('UkrPoshta') ?
+                                        order.deliveryInfo?.includes('UkrPoshta') ?
                                             (
                                                 <div className='order-view-delivery-company'>
                                                     <img width={15} height={25} src={UkrPoshtaLogo} alt='logo' />

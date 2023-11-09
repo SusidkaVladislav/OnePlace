@@ -101,7 +101,7 @@ const ItemUser = () =>
                             <div className={`table-row ${index % 2 === 0 ? 'even-row' : ''}`}
                                 onClick={async event => { navigate(`user/${user.id}`); }}
                                 style={{
-                                    'borderRadius': ((((index + 1) % PageSize) === 0) || filteredAndPaginatedData.length === index + 1) ? '0px 0px 10px 10px' : '0px'
+                                    borderRadius: ((((index + 1) % PageSize) === 0) || filteredAndPaginatedData.length === index + 1) ? '0px 0px 10px 10px' : '0px',
                                 }}>
                                 <label>{user.surname}</label>
                                 <label>{user.name}</label>

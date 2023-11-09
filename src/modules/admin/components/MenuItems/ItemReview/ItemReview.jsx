@@ -192,6 +192,7 @@ const ItemReview = () =>
                         filteredAndPaginatedData.map((review, index) => (
 
                             <ReviewRow
+                                key={index}
                                 index={index}
                                 reviewId={review.id}
                                 reviewProductPictureAddress={review.productPictureAddress}

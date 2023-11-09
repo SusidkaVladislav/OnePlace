@@ -250,6 +250,7 @@ const ItemMessage = () =>
                     <div className='msg-user-list'>
                         {filteredAndPaginatedData.map((msg) => (
                             <MessageRow
+                                key={msg.id}
                                 id={msg.id}
                                 name={msg.name}
                                 email={msg.email}
@@ -343,16 +344,19 @@ const ItemMessage = () =>
                         ) : null
                     ) : null}
                 </div>
+
+                <div className='pag'>
+                    <CustomPagination
+                        className="pagination-bar"
+                        currentPage={currentPage}
+                        totalCount={filteredData.length}
+                        pageSize={PageSize}
+                        onPageChange={page => setCurrentPage(page)} />
+                </div>
+
             </div>
 
-            <div className='pag'>
-                <CustomPagination
-                    className="pagination-bar"
-                    currentPage={currentPage}
-                    totalCount={filteredData.length}
-                    pageSize={PageSize}
-                    onPageChange={page => setCurrentPage(page)} />
-            </div>
+
 
             {isConfirmDialogVisible && (
                 <div className='modal-backdrop'>

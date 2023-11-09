@@ -66,7 +66,9 @@ instance.interceptors.response.use(
         }
         catch (error)
         {
-          localStorage.removeItem("token");
+          localStorage.clear();
+          localStorage.removeItem('persist:adminProduct')
+          localStorage.removeItem('persist:root')
           window.location.reload();
         }
       } else

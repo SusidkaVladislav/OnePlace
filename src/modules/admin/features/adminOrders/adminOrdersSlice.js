@@ -314,14 +314,11 @@ const adminOrdersSlice = createSlice({
             })
             .addCase(getOrders.fulfilled, (state, { payload }) =>
             {
-                console.log(payload)
                 return {
                     ...state,
                     orders: payload.sort(sortByNumber),
                     loading: false
                 }
-                // state.commonOrdersInfo = payload.map(({ id }) =>
-                //     ({ id }))
             })
             .addCase(getOrders.rejected, (state) =>
             {

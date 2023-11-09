@@ -3,86 +3,77 @@ import React, { useState } from 'react';
 import "./MainManuStyle.css";
 
 //#region Icons
+import MainSiteLogoWithText from '../../../svg/shared-icons/MainSiteLogoWithText';
 import MainSiteLogo from '../../../svg/shared-icons/MainSiteLogo';
 import WhiteLeftWithGapArrow from "../../../svg/arrows/WhiteLeftWithGapArrow";
 import WhiteRightWithGapArrow from "../../../svg/arrows/WhiteRightWithGapArrow";
+import AdminLogoIcon from '../../../svg/main-panel-icons/AdminLogoIcon.jpg'
 //#endregion
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import HoverIcon from './HoverIcons';
 
-import { Outlet, Routes, Route, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 
 const Main = () =>
 {
-    //const [email, setEmail] = useState("");
-    //const [body_count, setBodyCount] = useState("");
-    const [clickedArrow, setClickedArrow] = useState(true);
-    const [isDivWide, setIsDivWide] = useState(false);
-    const [isArrowWide, setIsArrowWide] = useState(false);
-    const [isMenuWide, setIsMenuWide] = useState(false);
-    const [isBodyWide, setIsBodyWide] = useState(false);
-    const [isDivSize, setIsDivSize] = useState(null);
-
+    const [isPanelOpened, setIsPanelOpened] = useState(true);
 
     const handleShowArrow = () =>
     {
-        setClickedArrow(!clickedArrow);
-        setIsDivWide(!isDivWide);
-        setIsArrowWide(!isArrowWide);
-        setIsMenuWide(!isMenuWide);
-        setIsBodyWide(!isBodyWide);
-        setIsDivSize(!isDivSize);
+        setIsPanelOpened(!isPanelOpened);
     }
 
-    const divStyle = {
-        width: isDivWide ? '140px' : '339px',
-    };
-    const arrowStyle = {
-        marginLeft: isArrowWide ? '-87px' : '110px',
-    };
-    const menuStyle = {
-        width: isMenuWide ? '107px' : '326px',
-    };
-    const bodyStyle = {
-        width: isBodyWide ? '1379px' : '1160px',
-        marginLeft: isBodyWide ? '98px' : '317px',
-    };
-
-    const divSize = isArrowWide ? '239px' : '20px';
-
     return (
-        <div className='admin-body'>
-            <div>
-                <header>
-                    <div className='main-logo'>
-                        <MainSiteLogo />
-                    </div>
-                </header>
-            </div>
-            <div className='left-menu' style={menuStyle} >
-                <div className='menu-item-user' style={divStyle}>
-                    <div className='menu-img-icon'></div>
-                    <div className='menu-labels'>
-                        <label className='menu-name'>Admin admin</label>
-                        {/* <label className='menu-email'>{email}</label> */}
-                    </div>
-                    <label className='menu-arrow-icon' style={arrowStyle}
+        <div className='admin-body' style={{
+            gridTemplateColumns: isPanelOpened ? '17% 83%' : '5% 95%'
+        }}>
+
+            <div className='left-menu'>
+
+                <span className='main-logo'>
+                    {
+                        !isPanelOpened ? <MainSiteLogo /> : <MainSiteLogoWithText />
+                    }
+                </span>
+
+                <div className='menu-item-user' style={{
+                    borderRadius: isPanelOpened ? ' 0px 10px 0px 0px' : '0px'
+                }}>
+
+                    <img width={45} height={45} src={AdminLogoIcon} style={{
+                        borderRadius: '90px',
+                        marginLeft: !isPanelOpened ? '13px' : '3px',
+                    }} />
+
+                    <label className='menu-name'
+                        style={{
+                            display: isPanelOpened ? 'inline' : 'none',
+                        }}
+                    >Admin</label>
+
+                    <label className='menu-arrow-icon'
+                        style={{
+                            marginLeft: isPanelOpened ? '41%' : '8%'
+                        }}
                         onClick={handleShowArrow}>
-                        {clickedArrow ? <WhiteRightWithGapArrow /> : <WhiteLeftWithGapArrow />}
+                        {isPanelOpened ? <WhiteRightWithGapArrow /> : <WhiteLeftWithGapArrow />}
                     </label>
                 </div>
-                <HoverIcon />
+
+                <HoverIcon isPanelOpened={isPanelOpened} />
+
             </div>
-            <div className='body-by-item' style={bodyStyle}>
+
+
+            <div className='body-by-item'>
                 <Outlet />
             </div>
         </div>
-
-
     )
 }
 
 export default Main;
+

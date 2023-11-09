@@ -38,7 +38,6 @@
     display: grid;
     grid-template-rows: 5% 90%;
     gap: 4%;
-    
 }
 
 .order-div-header {
@@ -53,7 +52,6 @@
     grid-template-columns: 20% 20% 20% 20%;
     gap: 5%;
     height: fit-content;
-
 }
 
 .order-div-list {
@@ -65,7 +63,7 @@
     letter-spacing: 0em;
     text-align: left;
     color: rgba(10, 61, 88, 1);
-    overflow-y: scroll;
+    overflow-y: auto;
     scrollbar-width: thin;
 }
 
@@ -97,7 +95,7 @@
     color: #6C4744;
     cursor: pointer;
     word-break: break-all;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .order-div-row:hover {

@@ -1,8 +1,8 @@
 .add-country-filter-container{
     position: absolute;
     top: 22%;
-    left: 5%;
-    width: 30%;
+    left: 16%;
+    width: 24%;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
 .add-country-header{
     display: flex;
     flex-direction: row;
-    gap: 43%;
+    gap: 46%;
 }
 
 .add-country-header>span {

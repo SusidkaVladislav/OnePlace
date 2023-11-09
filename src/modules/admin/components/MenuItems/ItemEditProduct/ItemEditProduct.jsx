@@ -268,7 +268,7 @@ const ItemEditProduct = () =>
         setProductPictures(productImages)
 
         let mainPicture = productImages.filter(img => img.isTitle === true);
-        setPicturePath(mainPicture[0].address)
+        setPicturePath(mainPicture[0]?.address)
         productAddedCharacteristics = {
             productCharacteristic: charachteristics
         }
@@ -784,7 +784,7 @@ const ItemEditProduct = () =>
             }
             {
                 productCharacteristics && (
-                    <Fragment>
+                    <div className="characteristics-container">
                         <label className='back-to-main-product-button' onClick={() => { setProductCharacteristics(false) }}><BackIcon /></label>
                         <button
                             className="add-color-price-product-btn"
@@ -807,7 +807,7 @@ const ItemEditProduct = () =>
                                 </div>
                             </div>
                         </div>
-                    </Fragment>
+                    </div>
                 )}
 
         </div>

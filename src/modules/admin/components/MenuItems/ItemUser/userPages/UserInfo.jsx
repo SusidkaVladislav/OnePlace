@@ -112,7 +112,7 @@ const UserInfo = () =>
                     </div>
                     {user !== null ? (
                         <span>
-                            <label className='user-name'>{user !== null ? user.name : 'NotFound'} {user !== null ? user.surname : 'NotFound'}</label>
+                            <label className='user-name'>{user !== null ? user?.name : 'NotFound'} {user !== null ? user?.surname : 'NotFound'}</label>
                             <label className='remove-button' onClick={handleRemoveButtonClick}> <RemoveIcon /></label>
 
                         </span>
@@ -122,11 +122,11 @@ const UserInfo = () =>
 
                 <div className='user-div-info'>
                     <UserInfoBlock user={user} />
-                    <UserOrdersBlock userId={user.id} />
+                    <UserOrdersBlock userId={user?.id} />
                 </div>
                 
                 <div className="user-div-reviews">
-                    <UserReviewBlock userId={user.id} />
+                    <UserReviewBlock userId={user?.id} />
                 </div>
 
             </div>

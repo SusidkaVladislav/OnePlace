@@ -1,8 +1,8 @@
 .add-brand-filter-container{
     position: absolute;
     top: 22%;
-    left: 35%;
-    width: 30%;
+    left: 40%;
+    width: 25%;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
 .add-brand-header{
     display: flex;
     flex-direction: row;
-    gap: 40%;
+    gap: 45%;
 }
 
 .add-brand-header>span {

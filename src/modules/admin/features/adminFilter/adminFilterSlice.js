@@ -292,7 +292,6 @@ export const updateCountry = createAsyncThunk('adminFilter/updateCountry', async
 
         if (error.response.status === 401)
         {
-            console.log("Error in slice")
             const customError = {
                 status: 401,
                 message: "Authentication failed!",
