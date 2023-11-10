@@ -71,6 +71,15 @@
     font-weight: 500;
     line-height: 130%; 
   }
+
+  h4.orange{
+    color: var(--orange1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
   
   h5.light{
     color: var(--brown1);
