@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './PasswordInputStyle.css';
+import ErrorInputIcon from '../../svg/login-icons/ErrorInputIcon';
 
 import { useSelector } from 'react-redux';
 
 const PasswordInput = (props) =>
 {
     const {
-        onChange
+        onChange,
+        isError
     } = props;
 
     const { hasErrors, errorMatch, errorMessage } = useSelector(state => state.passwordInputState);
@@ -23,13 +25,13 @@ const PasswordInput = (props) =>
             <input className="input-text-form" type={showPassword ? 'text' : 'password'}
                 onChange={handlePasswordChange}
                 style={
-                    (hasErrors || errorMatch) && errorMessage.length > 0?
-                        { borderColor: 'red' }
+                    ((hasErrors || errorMatch) && errorMessage.length > 0) || isError ?
+                        { border: '2px solid red' }
                         :
                         { borderColor: 'black' }
                 }
             />
-
+            {isError && <label className='pass-error-icon'><ErrorInputIcon /></label>}
             {showPassword ? (
                 <span
                     className="no-eye-icon-password eye-icon"

@@ -21,6 +21,8 @@ import
 } from '../../../features/adminProduct/adminProductSlice';
 //#endregion
 
+import WhiteSmallToBottomArrow from '../../../../../svg/arrows/WhiteSmallToBottomArrow';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
 import './ItemProductStyles.css';
@@ -35,11 +37,18 @@ const ItemProduct = () =>
     const [inputValue, setInputValue] = useState('');
     const [currentProductPage, setCurrentProductPage] = useState(1);
 
-    const { categoriesForSelect } = useSelector(state => state.adminCategories);
+    const [isOpen, setIsOpen] = useState(false);
+    const options = ['Всі', 'Без знижки', 'Зі знижкою'];
+    const optionsValues = [1, 2, 3];
+    const [selectedItem, setSelectedItem] = useState(options[0]);
+    const [selectedOptionValue, setSelectedOptionValue] = useState(optionsValues[0])
 
     const [categoryLoading, setCategoryLoading] = useState(false)
 
-    const filteredData = useSelector(state => getFilteredProducts(state, inputValue));
+    const filteredData = useSelector(state => getFilteredProducts(state,
+        { inputValue: inputValue, discount: selectedOptionValue })
+    );
+
 
     const {
         category,
@@ -55,28 +64,37 @@ const ItemProduct = () =>
 
     useEffect(() =>
     {
-        dispatch(resetProduct())
+        dispatch(resetProduct());
         dispatch(getCategoriesForSelect())
-            .then(() =>
+            .then((response) =>
             {
-                mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
-                subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
-
+                const categoriesForSelect = response.payload;
+                mainCategories.current = categoriesForSelect.filter(
+                    (category) => category.parentCategoryId === null
+                );
+                subCategories.current = categoriesForSelect.filter(
+                    (category) => category.parentCategoryId !== null
+                );
                 setCategoryLoading(true);
             })
             .catch((error) =>
             {
-                console.error('Failed to fetch data', error);
+                console.error("Failed to fetch data", error);
                 setCategoryLoading(true);
                 navigate(-1);
             });
 
         if (category.id !== null)
         {
-            dispatch(setCategory({ id: category.id, name: category.name.charAt(0).toUpperCase() + category.name.slice(1) }))
+            dispatch(
+                setCategory({
+                    id: category.id,
+                    name: category.name.charAt(0).toUpperCase() + category.name.slice(1),
+                })
+            );
             dispatch(getAllProducts(category.id));
         }
-    }, [])
+    }, []);
 
     const selectCategory = async (id, name) =>
     {
@@ -90,8 +108,20 @@ const ItemProduct = () =>
         const firstPageIndex = (currentProductPage - 1) * PageSize;
         const lastPageIndex = firstPageIndex + PageSize;
         return filteredData.slice(firstPageIndex, lastPageIndex);
-    }, [currentProductPage, inputValue, allProducts]);
+    }, [currentProductPage, inputValue, selectedOptionValue, allProducts]);
 
+
+    const handleToggleDropdown = () =>
+    {
+        setIsOpen(!isOpen);
+    };
+
+    const handleItemClick = async (item, value) =>
+    {
+        setSelectedItem(item);
+        setSelectedOptionValue(value);
+        setIsOpen(false);
+    };
 
     if (!categoryLoading)
     {
@@ -132,23 +162,37 @@ const ItemProduct = () =>
                 </div>
             }
             <div className='item-product-main-container'>
-                <div className='item-product-row-1'>
-                    <span style={{
-                        width: '400px',
-                    }}>
-                        <AdminSearch
-                            onSearchChange={value =>
-                            {
-                                setInputValue(value);
-                                setCurrentProductPage(1);
-                            }}
-                        />
-                    </span>
-                    <select className='item-product-sale-select-filter'>
-                        <option>Всі</option>
-                        <option>Без знижки</option>
-                        <option>Зі знижкою</option>
-                    </select>
+                <div className='main-body-header' >
+                    <AdminSearch
+                        onSearchChange={value =>
+                        {
+                            setInputValue(value);
+                            setCurrentProductPage(1);
+                        }}
+                    />
+                    <div
+                        onClick={handleToggleDropdown}>
+                        <div className={`dropdown-header ${isOpen ? 'open' : ''}`}>
+                            <label>{selectedItem}</label>
+                            <label><WhiteSmallToBottomArrow /></label>
+                        </div>
+                        {
+                            isOpen && (
+                                <div className="dropdown-list-product-sale-filter">
+                                    {
+                                        options.map((item, index) => (
+                                            <label
+                                                key={index}
+                                                className={`dropdown-item-product-sale-filter ${selectedItem === item ? 'selected' : ''}`}
+                                                onClick={() => handleItemClick(item, optionsValues[index])}>
+                                                {item}
+                                            </label>
+                                        ))
+                                    }
+                                </div>
+                            )
+                        }
+                    </div>
                 </div>
 
                 <div className='item-product-row-2'>

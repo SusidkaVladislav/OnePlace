@@ -980,7 +980,7 @@ const ItemAddProduct = () =>
 
                 {
                     productCharacteristics && (
-                        <Fragment>
+                        <div className='characteristics-container'>
                             <label className='back-to-main-product-button' onClick={() =>
                             {
                                 setProductCharacteristics(false)
@@ -1020,7 +1020,7 @@ const ItemAddProduct = () =>
                                     }} src={LoadingIcon} alt="loading" />
                                 )
                             }
-                        </Fragment>
+                        </div>
                     )
                 }
             </div>

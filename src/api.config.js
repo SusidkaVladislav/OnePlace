@@ -1,14 +1,15 @@
 import axios from "axios";
-
 const { REACT_APP_BASE_URL } = process.env;
+
 
 export const instance = axios.create({
   withCredentials: true,
   baseURL: REACT_APP_BASE_URL,
 });
 
-let isRefreshing = false; // Flag to track if refresh token request is in progress
-let refreshSubscribers = []; // Array to hold all the subscribers waiting for the token refresh
+
+let isRefreshing = false;
+let refreshSubscribers = [];
 
 const subscribeTokenRefresh = (cb) =>
 {
@@ -31,16 +32,13 @@ instance.interceptors.response.use(
   {
     return response;
   },
+
   async (error) =>
   {
     const originalRequest = { ...error.config };
     originalRequest._isRetry = true;
 
-    if (
-      error.response.status === 401 &&
-      error.config &&
-      !error.config._isRetry
-    )
+    if (error.response.status === 401 && error.config && !error.config._isRetry)
     {
       if (!isRefreshing)
       {
@@ -65,9 +63,13 @@ instance.interceptors.response.use(
           refreshSubscribers = [];
           isRefreshing = false;
           return instance.request(originalRequest);
-        } catch (error)
+        }
+        catch (error)
         {
-          console.log("AUTH ERROR");
+          localStorage.clear();
+          localStorage.removeItem('persist:adminProduct')
+          localStorage.removeItem('persist:root')
+          window.location.reload();
         }
       } else
       {

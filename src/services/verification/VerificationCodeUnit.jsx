@@ -1,5 +1,4 @@
 import React from 'react';
-
 import './verificationCodeStyle.css'
 import { useSelector } from 'react-redux';
 

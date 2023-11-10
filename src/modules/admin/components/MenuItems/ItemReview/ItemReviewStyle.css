@@ -1,5 +1,6 @@
 .message-main {
     width: 100%;
+    min-height: 100vh;
 }
 
 .review-table-head {
@@ -52,7 +53,6 @@
     gap: 1%;
     padding: 0px 10px 0px 10px;
     align-items: center;
-
     border-radius: 10px;
     border-bottom: 1px solid #9DB1BC;
 }
@@ -79,8 +79,6 @@
     overflow: hidden;
     color: rgba(10, 61, 88, 1);
 }
-
-
 
 .review-comment {
     width: 100%;
@@ -178,7 +176,6 @@
     float: right;
     margin-top: 30px;
     display: flex;
-    
 }
 
 .review-item-by-admin-msg img {

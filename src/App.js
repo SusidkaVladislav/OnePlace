@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { Helmet} from 'react-helmet';
+import { Helmet } from 'react-helmet';
 
 //#region Main routes
 import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
@@ -19,9 +19,9 @@ import ItemProduct from "./modules/admin/components/MenuItems/ItemProduct/ItemPr
 import ItemCategory from "./modules/admin/components/MenuItems/ItemCategory/ItemCategory";
 import ItemReview from "./modules/admin/components/MenuItems/ItemReview/ItemReview";
 import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilter";
-import ItemExit from "./modules/admin/components/MenuItems/ItemExit/ItemExit";
 import ItemAddProduct from './modules/admin/components/MenuItems/ItemAddProduct/ItemAddProduct';
 import ItemEditProduct from './modules/admin/components/MenuItems/ItemEditProduct/ItemEditProduct';
+import ViewEditOrder from './modules/admin/components/MenuItems/ItemOrder/order-components/ViewEditOrder';
 //#endregion
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
@@ -57,7 +57,11 @@ function App()
             <Route path="" element={<AdminManePanel />}>
               <Route index element={<ItemMane />} />
               <Route path="sales" element={<ItemSale />} />
-              <Route path="orders" element={<ItemOrder />} />
+
+              <Route path="orders" >
+                <Route index element={<ItemOrder />} />
+                <Route path='order/:id' element={<ViewEditOrder />} />
+              </Route>
 
               <Route path="users" >
                 <Route index element={<ItemUser />} />
@@ -80,7 +84,6 @@ function App()
               </Route>
 
               <Route path="filters" element={<FilerItem />} />
-              <Route path="exit" element={<ItemExit />} />
             </Route>
 
           </Route>
