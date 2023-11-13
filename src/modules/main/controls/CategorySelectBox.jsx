@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import
 {
@@ -13,6 +14,9 @@ import './CategorySelectBoxStyles.css';
 const CategorySelectBox = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+
 
     const [secondLevelCategories, setSecondLevelCategories] = useState([]);
     const [categoriesOfSubcategories, setCategoriesOfSubcategories] = useState([]);
@@ -70,6 +74,21 @@ const CategorySelectBox = () =>
         })
 
         setCategoriesOfSubcategories(subSecondLevelCategories)
+    }
+
+    const goToClickedCategoryPage = (id) =>
+    {
+        let hasSubCategories = categoriesForSelect.find(c => c.parentCategoryId === Number(id))
+
+        if (hasSubCategories !== undefined)
+        {
+            dispatch(setIsCategoryOpen(false));
+            navigate('/category/' + id);
+        }
+        else
+        {
+
+        }
     }
 
     return (
@@ -195,7 +214,11 @@ const CategorySelectBox = () =>
                                                 marginBottom={'2%'}
                                             >
                                                 {
-                                                    <span className='category-title'>
+                                                    <span className='category-title'
+                                                        onClick={
+                                                            () => { goToClickedCategoryPage(category.id) }
+                                                        }
+                                                    >
                                                         {category.name}
                                                     </span>
                                                 }
@@ -221,6 +244,7 @@ const CategorySelectBox = () =>
                                                                                 color: 'var(--orange1)'
                                                                             },
                                                                         }}
+                                                                        onClick={() => { goToClickedCategoryPage(subCategory.value.id) }}
                                                                     >
                                                                         {
                                                                             subCategory.value.name
@@ -231,8 +255,14 @@ const CategorySelectBox = () =>
                                                             else if (subCategory.count === 5)
                                                             {
                                                                 return (
-                                                                    <p key={subCategory.count + index * 234}
-                                                                        className='t2-medium-500 category-title'>більше</p>
+                                                                    <p
+                                                                        key={subCategory.count + index * 234}
+                                                                        className='t2-medium-500 category-title'
+                                                                        onClick={() =>
+                                                                        {
+                                                                            goToClickedCategoryPage(category.id);
+                                                                        }}
+                                                                    >більше</p>
                                                                 )
                                                             }
                                                             else

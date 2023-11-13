@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
 import UserLoginForm from './modules/main/features/login/UserLoginForm';
 import UserRegisterForm from './modules/main/features/register/UserRegisterForm';
+import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 //#endregion
 
 //#region Admin routes
@@ -48,6 +49,8 @@ function App()
         <Route path="user-login" element={<UserLoginForm />} />
         <Route path="register" element={<UserRegisterForm />} />
         <Route path="change-password" element={<ChangePassword />} />
+
+        <Route path='category/:id' element={<CategoryPage />} />
 
         <Route path="admin">
 

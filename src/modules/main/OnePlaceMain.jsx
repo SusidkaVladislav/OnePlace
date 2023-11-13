@@ -7,20 +7,21 @@ import BestChoice from './components/bestChoice/bestChoice';
 import CategorySelection from './components/category_selection/CategorySelection';
 import Footer from './components/footer/Footer';
 
-const OnePlaceMain = () => {
+const OnePlaceMain = () =>
+{
     return (
         <div>
-        <Header/>
-        <Banner1/>
-        <BestChoice/>
-        <CategorySelection/>
-        <CategorySelection/>
-        <Banner2/>
-        <CategorySelection/>
-        <CategorySelection/>
-        <CategorySelection/>
-        <SpecialOffers/>
-        <Footer/>
+            <Header />
+            <Banner1 />
+            <BestChoice />
+            <CategorySelection />
+            <CategorySelection />
+            <Banner2 />
+            <CategorySelection />
+            <CategorySelection />
+            <CategorySelection />
+            <SpecialOffers />
+            <Footer />
         </div>
     )
 }

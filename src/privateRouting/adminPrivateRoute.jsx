@@ -51,7 +51,7 @@ const AdminPrivateRoute = () =>
                         }
 
                     })
-                    .catch((error) =>
+                    .catch(() =>
                     {
                         if (localStorage.getItem("token"))
                         {

@@ -1,0 +1,4 @@
+.category-hover:hover{
+    cursor: pointer;
+    color: var(--orange1);
+}
