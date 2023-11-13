@@ -14,6 +14,7 @@ import
 } from 'redux-persist';
 import storage from "redux-persist/lib/storage";
 
+//#region  Admin Reducers
 import adminAuthReducer from "../modules/admin/features/adminAuth/adminAuthSlice";
 import adminUsersReducer from "../modules/admin/features/adminUsers/adminUsersSlice";
 import adminOrdersReducer from "../modules/admin/features/adminOrders/adminOrdersSlice";
@@ -26,12 +27,18 @@ import adminCategoryReducer from "../modules/admin/features/adminCategory/adminC
 import adminProductsReducer from "../modules/admin/features/adminProduct/adminProductSlice";
 import adminFilterReducer from "../modules/admin/features/adminFilter/adminFilterSlice";
 import adminSalesReducer from "../modules/admin/features/adminSale/adminSaleSlice";
+//endregion
+
+//#region User Reducers
+import userCategoryReducer from "../modules/main/features/categories/userCategorySlice";
+//#endregion
+
 
 const persistConfig = {
     key: 'root',
     storage: storage,
     blacklist: ['verificationCode', 'passwordInputState', 'userRegister', 'adminFilter',
-'adminOrders', 'adminMessages', 'adminSales', 'adminReviews', ],
+        'adminOrders', 'adminMessages', 'adminSales', 'adminReviews',],
     stateReconciler: autoMergeLevel2,
 }
 
@@ -53,7 +60,10 @@ const rootReducer = combineReducers({
     adminSales: adminSalesReducer,
     verificationCode: verificationCodeReducer,
     passwordInputState: passwordInputReducer,
+
     userRegister: userRegisterReducer,
+    userCategories: userCategoryReducer,
+
 })
 
 
@@ -67,7 +77,6 @@ const store = configureStore({
             serializableCheck: {
                 ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
             },
-            //serializableCheck: false,
         }),
 })
 

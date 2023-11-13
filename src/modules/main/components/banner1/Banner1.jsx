@@ -1,38 +1,55 @@
 import React from "react";
 import "./Banner1.css";
-import Button from '@mui/material/Button';
 
-const Banner1 = () => {
+import { useSelector } from "react-redux";
+
+import Button from '@mui/material/Button';
+import CategorySelectBox from '../../controls/CategorySelectBox';
+
+const Banner1 = () =>
+{
+    const {
+        isCategoryOpen
+    } = useSelector(state => state.userCategories);
+
+    const buttonStyles = {
+        '&:hover': {
+            backgroundColor: 'var(--orange2)',
+            border: '2px solid var(--orange2)',
+            color: 'white',
+            transform: !isCategoryOpen? "scale(1.05)" : 'none',
+        },
+        transition: "transform .3s",
+        borderRadius: '26px',
+        border: '2px solid var(--brown-100, #471915)',
+        textTransform: 'initial',
+        color: '#471915',
+        fontFamily: 'Montserrat Alternates',
+        fontSize: '20px',
+        fontStyle: 'normal',
+        fontWeight: 500,
+        position: 'initial',
+    };
+
     return (
         <div className="background">
+            {
+                isCategoryOpen && (
+                    <CategorySelectBox />
+                )
+            }
             <div className="content">
                 <div className="text1">
-                    <h1>Приєднуйся до</h1>
-                    <h1>One Place</h1>
+                    <h1 className="unselectable">Приєднуйся до</h1>
+                    <h1 className="unselectable">One Place</h1>
                 </div>
                 <div className="text2">
-                    <h2>забудь про пошуки тут ти знайдеш</h2>
-                    <h2>все, що потрібно в одному місці!</h2>
+                    <h2 className="unselectable">забудь про пошуки тут ти знайдеш</h2>
+                    <h2 className="unselectable">все, що потрібно в одному місці!</h2>
                 </div>
                 <div className="button-container">
-                    <Button variant="outlined" size="large"  
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'var(--orange2)',
-                            border: 'var(--orange2)',
-                            color: 'white',
-                            transform: "scale(1.05)"
-                          },
-                        transition: "transform .3s",
-                        borderRadius: '26px',
-                        border: '2px solid var(--brown-100, #471915)',
-                        textTransform: 'initial',
-                        color: '#471915',
-                        fontFamily: 'Montserrat Alternates',
-                        fontSize: '20px',
-                        fontStyle: 'normal',
-                        fontWeight: 500
-                    }}>Усі товари</Button>
+                    <Button size="large"
+                        sx={buttonStyles}>Усі товари</Button>
                 </div>
             </div>
         </div>
