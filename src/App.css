@@ -91,6 +91,41 @@ h5.bold {
   font-weight: 500;
   line-height: 130%;
 }
+  h4.blue{
+    color: var(--blue1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+
+  h4.orange{
+    color: var(--orange1);
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
+  
+  h5.light{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; 
+  }
+  
+  h5.bold{
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; 
+  }
 
 h5.bold-brown2 {
   color: var(--brown2);
