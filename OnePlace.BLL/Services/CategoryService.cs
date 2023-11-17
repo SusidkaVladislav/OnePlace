@@ -22,18 +22,28 @@ namespace OnePlace.BLL.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<CategoryWitoutPicture>> GetAllForSelectCategories()
+        public async Task<List<CategoryWithPicture>> GetAllForSelectCategories()
         {
             var res = _unitOfWork.Categories.GetAllAsync().Result.ToList();
 
-            List<CategoryWitoutPicture> categoriesWithoutPicture = new List<CategoryWitoutPicture>();
+            List<CategoryWithPicture> categoriesWithoutPicture = new List<CategoryWithPicture>();
+
+            string? picture = null;
+
             foreach (var category in res)
             {
-                categoriesWithoutPicture.Add(new CategoryWitoutPicture
+                if (category.PictureId.HasValue)
+                    picture = _unitOfWork.Pictures.GetAsync(category.PictureId.Value).Result.Address;
+                else
+                    picture = null;
+
+
+                categoriesWithoutPicture.Add(new CategoryWithPicture
                 {
                     Id= category.Id,
                     Name= category.Name,
-                    ParentCategoryId = category.ParentCategoryId
+                    ParentCategoryId = category.ParentCategoryId,
+                    PictureURL = picture
                 });
             }
             

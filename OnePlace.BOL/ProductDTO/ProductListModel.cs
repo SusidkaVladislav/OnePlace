@@ -11,5 +11,6 @@ namespace OnePlace.BOL.ProductDTO
         public decimal Price { get; set; }
         public bool IsInCart { get; set; }
         public int DiscountPercent { get; set; }
+        public bool IsInStock { get; set; }
     }
 }

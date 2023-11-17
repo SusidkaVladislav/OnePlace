@@ -17,6 +17,7 @@ using OnePlace.BOL.Sale;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace OnePlace.BLL.Services
 {
@@ -64,7 +65,7 @@ namespace OnePlace.BLL.Services
             //Отримання користувача
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
 
-            //Перебір всіх продуктів
+            //Перебір всіх з сторінки продуктів
             foreach (var product in products.Items)
             {
                 //Створення моделі, яка представляє собою товар (головні характеристики)
@@ -76,27 +77,29 @@ namespace OnePlace.BLL.Services
 
                 productListModel.Price = product.ProductColors.First().Price;
 
-                //Головна фотографія
+                #region Головна фотографія
                 var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
                 .Where(p => p.IsTitle == true && p.ProductId == product.Id)
                     .Select(p => p.PictureId).FirstOrDefault());
 
                 productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                #endregion
 
-
-
-                //Чи є цей товар в улуюблених товарах користувача
+                #region Чи є цей товар в улуюблених товарах користувача
                 var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
                 l.ProductId == product.Id);
 
                 productListModel.IsInLiked = likedProducts.Any();
+                #endregion
 
-                //Чи є цей товар в корзині користувача
+                #region Чи є цей товар в корзині користувача
                 var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == user.Id &&
                 c.ProductId == product.Id);
 
                 productListModel.IsInCart = productsInCart.Any();
+                #endregion
 
+                #region Перевірка знижки
                 var sale = await _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id);
                 if (sale.Any())
                 {
@@ -112,19 +115,27 @@ namespace OnePlace.BLL.Services
                 }
                 else
                     productListModel.DiscountPercent = 0;
+                #endregion
+
+                #region Перевірка наявності
+                var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
+                productListModel.IsInStock = isInStock;
+                #endregion
 
                 productListModels.Add(productListModel);
             }
 
+            
             //Створення пагінованого списку з продуктів
             var result = new PaginatedList<ProductListModel>
             {
                 Items = productListModels,
-                Total = productListModels.Count
+                TotalCountFromPage = productListModels.Count,
+                TotalCount = products.TotalCount,    
             };
 
             return result;
-        }
+        } 
 
         /// <summary>
         /// Додати новий товар

@@ -19,16 +19,6 @@ namespace OnePlace.BLL
             //    .WriteTo.Console()
             //    .CreateLogger();
 
-            //MapperConfiguration config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.AddProfile(new CategoryProfile());  //mapping between Web and Business layer objects
-            //    //cfg.AddProfile(new BLProfile());  // mapping between Business and DB layer objects
-            //});
-
-            //services.AddAutoMapper(cfg => config.CreateMapper());
-
-            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
             services.AddAutoMapper(typeof(CategoryProfile));
             services.AddAutoMapper(typeof(ProductProfile));
             services.AddAutoMapper(typeof(AccountProfile));
@@ -43,6 +33,7 @@ namespace OnePlace.BLL
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAnaliticService, AnaliticService>();
         }
     }
 }

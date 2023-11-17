@@ -126,17 +126,22 @@ namespace OnePlace.DAL.Repositories
                     predicate = predicate.And(p => !sales.Contains(p.Id));
                 }
 
-
-
                 query = query.Include(o => o.ProductPictures)
-                    .Include(o => o.ProductColors);
+                    .Include(o => o.ProductColors)
+                    .Include(o=>o.ProductDescriptions)
+                    .Include(o=>o.Manufacturer)
+                    .Include(o=>o.ManufacturerCountry);
 
                 //Виконання предикату
-                query = query.Where(predicate).Skip((searchParams.Page.Value - 1) * searchParams.Limit.Value)
+                query = query.Where(predicate);
+
+                var totalCount = query.Count();
+
+                query = query.Skip((searchParams.Page.Value - 1) * searchParams.Limit.Value)
                     .Take(searchParams.Limit.Value);
 
                 //Всіх продуктів для повернення
-                var totalCount = await query.CountAsync();
+                var totalCountFromPage = await query.CountAsync();
 
                 //Перетворення query в список
                 var products = await query.ToListAsync();
@@ -145,7 +150,8 @@ namespace OnePlace.DAL.Repositories
                 PaginatedList<Product> paginatedList = new PaginatedList<Product>
                 {
                     Items = products,
-                    Total = totalCount
+                    TotalCountFromPage = totalCountFromPage,
+                    TotalCount = totalCount
                 };
 
                 return paginatedList;

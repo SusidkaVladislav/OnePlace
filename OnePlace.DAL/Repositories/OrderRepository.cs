@@ -104,7 +104,7 @@ namespace OnePlace.DAL.Repositories
                 PaginatedList<Order> paginatedList = new PaginatedList<Order>
                 {
                     Items = orders,
-                    Total = totalCount
+                    TotalCountFromPage = totalCount
                 };
 
                 return paginatedList;
