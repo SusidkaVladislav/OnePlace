@@ -8,16 +8,15 @@ import axios from "axios";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    isCategoryOpen: false,
-    categoriesForSelect: [],   
-    loading: false,
+    productInfoFilters: [],
+    analiticLoading: false,
 }
 
-export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSelect', async (args, { rejectWithValue }) =>
+export const getCategoryProductsInfo = createAsyncThunk('user/getCategoryProductsInfo', async (categoryId, { rejectWithValue }) =>
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Category/forSelect');
+        const response = await axios.get(REACT_APP_BASE_URL + '/Analitic/getCategoryProductsInfo/' + Number(categoryId));
         return response.data;
     }
     catch (error)
@@ -41,53 +40,40 @@ export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSel
     }
 })
 
-const userCategorySlice = createSlice({
-    name: 'userCategories',
+const userAnaliticSlice = createSlice({
+    name: 'userAnalitic',
     initialState,
-    reducers: {
-        setIsCategoryOpen: (state, { payload }) =>
-        {
-            return {
-                ...state,
-                isCategoryOpen: payload,
-            }
-        }
-    },
+    reducers: {},
     extraReducers(builder)
     {
         builder
-            .addCase(getCategoriesForSelect.pending, (state) =>
+            .addCase(getCategoryProductsInfo.pending, (state) =>
             {
                 return {
                     ...state,
-                    loading: true,
+                    analiticLoading: true,
                 }
             })
-            .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
+            .addCase(getCategoryProductsInfo.fulfilled, (state, { payload }) =>
             {
-                for (let i = 0; i < payload.length; i++)
-                {
-                    payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
-                }
-
                 return {
                     ...state,
-                    categoriesForSelect: payload,
-                    loading: false,
+                    productInfoFilters: payload,
+                    analiticLoading: false,
                 }
             })
-            .addCase(getCategoriesForSelect.rejected, (state) =>
+            .addCase(getCategoryProductsInfo.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    analiticLoading: false,
                 }
             })
     }
 })
 
 export const {
-    setIsCategoryOpen
-} = userCategorySlice.actions;
 
-export default userCategorySlice.reducer;
+} = userAnaliticSlice.actions;
+
+export default userAnaliticSlice.reducer;

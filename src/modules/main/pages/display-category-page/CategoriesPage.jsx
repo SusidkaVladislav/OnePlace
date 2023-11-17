@@ -1,19 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Divider, Grid, Stack } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom'
-import Header from '../../components/header/Header';
-import Footer from '../../components/footer/Footer'
 import './CategoriesPageStyles.css';
 
+//#region Components&Controls
+import Footer from '../../components/footer/Footer'
 import CategorySelectBox from '../../controls/CategorySelectBox';
+import CategoryCard from '../../controls/CategoryCard';
+import Header from '../../components/header/Header';
+//#endregion
+
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
     getCategoriesForSelect,
-    //setIsCategoryOpen,
 } from '../../features/categories/userCategorySlice';
 
-import CategoryCard from '../../controls/CategoryCard';
+import { getFullPath } from '../../services/CategoryService';
 
 const CategoriesPage = () =>
 {
@@ -37,34 +40,10 @@ const CategoriesPage = () =>
         setCategoryId(params.id);
         categoryPath.current = [];
         dispatch(getCategoriesForSelect())
-        getFullPath(Number(params.id));
+        getFullPath(Number(params.id), categoriesForSelect, categoryPath);
         categoryPath.current = categoryPath.current.reverse();
         getSubCategories(Number(params.id));
     }, [params.id])
-
-
-    const getFullPath = (id) =>
-    {
-        let category = categoriesForSelect.find(c => c.id === Number(id));
-
-        if (category !== undefined)
-        {
-            categoryPath.current.push({
-                id: category.id,
-                name: category.name
-            });
-        }
-        else
-            return categoryPath;
-
-        let parentCategory = categoriesForSelect.find(c => c.id === Number(category.parentCategoryId));
-        if (parentCategory !== undefined)
-        {
-            getFullPath(parentCategory.id)
-        }
-        else
-            return categoryPath;
-    }
 
     const getSubCategories = (id) =>
     {
@@ -82,23 +61,23 @@ const CategoriesPage = () =>
         }
         else
         {
-
+            navigate('/products/' + id);
         }
     }
 
     return (
-        <Grid>
+        <div>
             <Header />
             {
                 isCategoryOpen && (
                     <CategorySelectBox />
                 )
             }
+
             <Grid
                 container
                 marginTop={'1.5%'}
                 paddingLeft={'7%'}
-
             >
                 {
                     <Grid
@@ -171,6 +150,8 @@ const CategoriesPage = () =>
                 container
                 columnSpacing={6}
                 rowSpacing={2}
+                justifyContent="center"
+                alignItems="center"
                 padding='3% 9% 5% 9%'
             >
                 {
@@ -200,7 +181,7 @@ const CategoriesPage = () =>
             </Grid>
 
             <Footer />
-        </Grid>
+        </div>
     )
 }
 

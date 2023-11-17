@@ -17,7 +17,7 @@ const Banner1 = () =>
             backgroundColor: 'var(--orange2)',
             border: '2px solid var(--orange2)',
             color: 'white',
-            transform: !isCategoryOpen? "scale(1.05)" : 'none',
+            transform: "scale(1.05)",
         },
         transition: "transform .3s",
         borderRadius: '26px',
@@ -32,7 +32,7 @@ const Banner1 = () =>
     };
 
     return (
-        <div className="background">
+        <div className="background" >
             {
                 isCategoryOpen && (
                     <CategorySelectBox />

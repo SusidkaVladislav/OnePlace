@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 
 const VerificationCodeUnit = (props) =>
-{    
+{
     const {
         getValue,
         index
@@ -32,7 +32,7 @@ const VerificationCodeUnit = (props) =>
     {
         if (event.which === 69 || event.which === 189
             || event.which === 107 || event.which === 109
-            || event.which === 190)
+            || event.which === 190 || event.which === 187)
         {
             event.preventDefault();
         }
@@ -40,7 +40,7 @@ const VerificationCodeUnit = (props) =>
 
     return (<input
         key={index}
-        style={{borderColor: useSelector(state => state.verificationCode.codeUnitColor)}}
+        style={{ borderColor: useSelector(state => state.verificationCode.codeUnitColor) }}
         type='number'
         className='code-piece'
         onChange={handleChange}

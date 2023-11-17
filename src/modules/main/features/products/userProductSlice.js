@@ -8,18 +8,20 @@ import axios from "axios";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    isCategoryOpen: false,
-    categoriesForSelect: [],   
     loading: false,
+    products: [],
+    isErrorProduct: false,
+
+    productErrorModel: {},
 }
 
-export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSelect', async (args, { rejectWithValue }) =>
+export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters', async (filter, { rejectWithValue }) =>
 {
     try
     {
-        const response = await axios.get(REACT_APP_BASE_URL + '/Category/forSelect');
+        const response = await axios.post(REACT_APP_BASE_URL + '/Product/search', filter);
         return response.data;
-    }
+    } 
     catch (error)
     {
         if (error.code === 'ERR_NETWORK')
@@ -39,55 +41,55 @@ export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSel
         };
         return rejectWithValue(customError)
     }
-})
+});
 
-const userCategorySlice = createSlice({
-    name: 'userCategories',
+
+const userProductSlice = createSlice({
+    name: 'userProducts',
     initialState,
     reducers: {
-        setIsCategoryOpen: (state, { payload }) =>
+        resetErrorProduct: ((state) =>
         {
             return {
                 ...state,
-                isCategoryOpen: payload,
+                isError: false,
             }
-        }
+        })
     },
     extraReducers(builder)
     {
         builder
-            .addCase(getCategoriesForSelect.pending, (state) =>
+            .addCase(getProductsByFilters.pending, (state) =>
             {
                 return {
                     ...state,
                     loading: true,
+                    isError: false,
                 }
             })
-            .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
-            {
-                for (let i = 0; i < payload.length; i++)
-                {
-                    payload[i].name = payload[i].name.charAt(0).toUpperCase() + payload[i].name.slice(1)
-                }
-
-                return {
-                    ...state,
-                    categoriesForSelect: payload,
-                    loading: false,
-                }
-            })
-            .addCase(getCategoriesForSelect.rejected, (state) =>
+            .addCase(getProductsByFilters.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
                     loading: false,
+                    products: payload,
+                    isError: false,
+                }
+            })
+            .addCase(getProductsByFilters.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    isErrorProduct: true,
+                    //productErrorModel: payload,
                 }
             })
     }
 })
 
 export const {
-    setIsCategoryOpen
-} = userCategorySlice.actions;
+    resetErrorProduct
+} = userProductSlice.actions;
 
-export default userCategorySlice.reducer;
+export default userProductSlice.reducer;

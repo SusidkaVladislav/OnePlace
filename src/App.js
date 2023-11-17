@@ -6,6 +6,7 @@ import ChangePassword from "./modules/main/features/changePassword/ChangePasswor
 import UserLoginForm from './modules/main/features/login/UserLoginForm';
 import UserRegisterForm from './modules/main/features/register/UserRegisterForm';
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
+import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
 //#endregion
 
 //#region Admin routes
@@ -23,6 +24,10 @@ import FilerItem from "./modules/admin/components/MenuItems/ItemFilter/ItemFilte
 import ItemAddProduct from './modules/admin/components/MenuItems/ItemAddProduct/ItemAddProduct';
 import ItemEditProduct from './modules/admin/components/MenuItems/ItemEditProduct/ItemEditProduct';
 import ViewEditOrder from './modules/admin/components/MenuItems/ItemOrder/order-components/ViewEditOrder';
+//#endregion
+
+//#region 
+import NoServerConnection from './error-pages/NoServerConnection';
 //#endregion
 
 import OnePlaceMain from "./modules/main/OnePlaceMain";
@@ -44,13 +49,17 @@ function App()
       </Helmet>
 
       <Routes>
+
         <Route path="/" element={<OnePlaceMain />} />
+
+        <Route path='/server-connection-error' element={<NoServerConnection />} />
 
         <Route path="user-login" element={<UserLoginForm />} />
         <Route path="register" element={<UserRegisterForm />} />
         <Route path="change-password" element={<ChangePassword />} />
 
         <Route path='category/:id' element={<CategoryPage />} />
+        <Route path='products/:id' element={<ProductsByCategoryPage />} />
 
         <Route path="admin">
 
