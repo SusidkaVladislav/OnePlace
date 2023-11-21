@@ -38,14 +38,16 @@ const VerificationCodeUnit = (props) =>
         }
     }
 
-    return (<input
-        key={index}
-        style={{ borderColor: useSelector(state => state.verificationCode.codeUnitColor) }}
-        type='number'
-        className='code-piece'
-        onChange={handleChange}
-        onKeyDown={handlerKeyDown}
-    />)
+    return (
+        <input
+            key={index}
+            style={{ borderColor: useSelector(state => state.verificationCode.codeUnitColor) }}
+            type='number'
+            className='code-piece'
+            onChange={handleChange}
+            onKeyDown={handlerKeyDown}
+        />
+    )
 }
 
 export default VerificationCodeUnit;

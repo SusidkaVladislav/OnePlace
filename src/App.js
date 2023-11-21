@@ -7,6 +7,8 @@ import UserLoginForm from './modules/main/features/login/UserLoginForm';
 import UserRegisterForm from './modules/main/features/register/UserRegisterForm';
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
+
+import Basket from "./modules/main/pages/basket/Basket";
 //#endregion
 
 //#region Admin routes
@@ -40,6 +42,7 @@ import AdminPrivateRoute from './privateRouting/adminPrivateRoute';
 import "./App.css";
 
 
+
 function App()
 {
   return (
@@ -52,11 +55,12 @@ function App()
 
         <Route path="/" element={<OnePlaceMain />} />
 
+        <Route path="basket" element={<Basket />} />
         <Route path='/server-connection-error' element={<NoServerConnection />} />
 
-        <Route path="user-login" element={<UserLoginForm />} />
-        <Route path="register" element={<UserRegisterForm />} />
-        <Route path="change-password" element={<ChangePassword />} />
+        {/* <Route path="/user-login" element={<UserLoginForm />} /> */}
+        {/* <Route path="register" element={<UserRegisterForm />} /> */}
+        {/* <Route path="change-password" element={<ChangePassword />} /> */}
 
         <Route path='category/:id' element={<CategoryPage />} />
         <Route path='products/:id' element={<ProductsByCategoryPage />} />

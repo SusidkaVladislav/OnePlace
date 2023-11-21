@@ -21,12 +21,13 @@ const PasswordInput = (props) =>
     }
 
     return (
-        <div className="input-wrapper">
-            <input className="input-text-form" type={showPassword ? 'text' : 'password'}
+        <div
+            className="input-wrapper">
+            <input className="login-user-text-input" type={showPassword ? 'text' : 'password'}
                 onChange={handlePasswordChange}
                 style={
                     ((hasErrors || errorMatch) && errorMessage.length > 0) || isError ?
-                        { border: '2px solid red' }
+                        { border: '1px solid red' }
                         :
                         { borderColor: 'black' }
                 }
@@ -34,12 +35,13 @@ const PasswordInput = (props) =>
             {isError && <label className='pass-error-icon'><ErrorInputIcon /></label>}
             {showPassword ? (
                 <span
-                    className="no-eye-icon-password eye-icon"
+                    className="eye-icon-password eye-icon"
                     onClick={() => setShowPassword(!showPassword)}
                 ></span>
             ) : (
+
                 <span
-                    className="eye-icon-password eye-icon"
+                    className="no-eye-icon-password eye-icon"
                     onClick={() => setShowPassword(!showPassword)}
                 ></span>
             )}

@@ -8,9 +8,9 @@
     display: flex;
 }
 
-.code-piece + .code-piece{
+/* .code-piece + .code-piece{
     margin-left: 15px;
-}
+} */
 
 .code-piece{
     width: 45px;
@@ -20,5 +20,6 @@
     font-size: 30px;
     font-weight: bold;
     background: rgba(225, 227, 227, 1);
+    border: none;
     box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
 }

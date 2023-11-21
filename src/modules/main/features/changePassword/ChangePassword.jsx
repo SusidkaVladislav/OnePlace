@@ -4,7 +4,7 @@ import '../../../admin/features/adminAuth/AuthStyles.css';
 import './ChangePasswordStyles.css'
 
 import { useNavigate } from 'react-router-dom';
-
+import { Stack, Grid } from '@mui/material';
 import OnePlaceIcon from '../../../../svg/login-icons/OnePlaceIcon';
 import BackTextAndArrowIcon from '../../../../svg/arrows/BackTextAndArrowIcon';
 
@@ -16,11 +16,15 @@ import { useSelector } from 'react-redux/es/hooks/useSelector';
 import { useDispatch } from 'react-redux';
 import { setPassword, setConfirmPassword, isPasswordStrong, isMatched, resetPasswordState } from '../../../admin/features/servicesState/passwordState';
 import { reset } from '../../../admin/features/servicesState/verificationCodeState';
-
+import
+{
+    setIsLoginFormOpen,
+    setIsRenewPasswordFormOpen,
+} from '../../features/userAuth/userAuthSlice';
 
 const AdminChangePassword = () =>
 {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const isCodValid = useSelector(state => state.verificationCode.isCodeValid);
@@ -78,75 +82,147 @@ const AdminChangePassword = () =>
 
             //Зміна паролю
 
-            dispatch(reset());
-            dispatch(resetPasswordState())
-            navigate(-1);
+            //dispatch(reset());
+            //dispatch(resetPasswordState())
+            //navigate(-1);
         }
 
     }, [hasErrors, errorMatch]);
 
     return (
-        <div className='change-body'>
-            <span className='go-back-icon' onClick={() =>
-            {
-                dispatch(reset());
-                dispatch(resetPasswordState());
-                navigate(-1)
-            }}>
-                <BackTextAndArrowIcon />
-            </span>
 
-            <div className='change-pass-div'>
-                <OnePlaceIcon />
+        <div
+            className='modal-backdrop'
+        >
+            <Stack
+                className='change-pass-div '
+                width={'28%'}
+                minWidth={'250px'}
+                height={'fit-content'}
+                padding={'2%'}
+                top={'20%'}
+                left={'38%'}
+            >
+                <span
+                    className='go-back-icon'
+                    onClick={() =>
+                    {
+                        dispatch(setIsLoginFormOpen(true));
+                        dispatch(setIsRenewPasswordFormOpen(false));
+
+                        //dispatch(reset());
+                        //dispatch(resetPasswordState());
+                        // navigate(-1)
+                    }}>
+                    <BackTextAndArrowIcon />
+                </span>
+
+                {/* <div className='change-pass-div'> */}
+
 
                 {!isEmailCorrect && !isCodValid &&
-                    <div className='change-body-div'>
-                        <div className="left-post">
-                            <label className="label-form">Пошта</label>
+                    // <div className='change-body-div'>
+                    <Grid
+                        container
+                        padding={'2%'}
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        item
+                        justifyContent="center"
+                    >
+                        <Stack
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            marginBottom={'5%'}
+                            sx={{
+                                width: '100%'
+                            }}
+                        >
+                            <label className="t2-medium">Пошта</label>
                             <div className="input-wrapper">
-                                <input className="input-text-form" type="email"
+                                <input
+                                    className="login-user-text-input"
+                                    type="email"
                                     onChange={handleEmailChange}
-                                    style={{ borderColor: EmailBorderColor }} />
+                                    style={{
+                                        borderColor: EmailBorderColor,
+                                    }} />
 
                                 {EmailErrorIcon && <span className="error-icon-email"></span>}
                             </div>
-                        </div>
-                        <div className='change-button'>
-                            <button className='confirm-button' onClick={handleGetCode}>Отримати код</button>
-                        </div>
-                    </div>
+                        </Stack>
+
+                        <button
+                            className='confirm-button'
+                            onClick={handleGetCode}
+                        >
+                            Отримати код
+                        </button>
+                    </Grid>
+
                 }
                 {isEmailCorrect && !isCodValid &&
-                    <div className='change-body-div'>
-                        <VerificationLogic />
-                    </div>
+                    <VerificationLogic />
                 }
                 {isCodValid &&
-                    <div className='change-body-div'>
-                        <div className="left-post">
-                            <label className="label-form">Новий пароль</label>
+                    // <div className='change-body-div'>
+                    <Grid
+                        container
+                        justifyContent={'center'}
+                    >
+                        <Stack
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            sx={{
+                                marginBottom: '1%',
+                                width: '100%'
+                            }}
+                        >
+                            <label className="t2-medium">Новий пароль</label>
                             <PasswordInput onChange={handlePasswordChange} />
-                        </div>
+                            {(hasErrors && errorMessage.length > 0) && <label className="error-text">{errorMessage}</label>}
+                        </Stack>
 
-                        {(hasErrors && errorMessage.length > 0) && <label className="error-text">{errorMessage}</label>}
-
-                        <div className="left-post">
-                            <label className="label-form">Підтвердіть новий пароль</label>
+                        <Stack
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            sx={{
+                                marginBottom: '1%',
+                                width: '100%'
+                            }}
+                        >
+                            <label className="t2-medium">Підтвердіть новий пароль</label>
                             <PasswordInput onChange={handlePasswordConfirmChange} />
-                        </div>
-
-                        <div className='error-text-wrapper'>
                             {(errorMatch && !hasErrors) && <label className="error-text">Паролі не співпадають</label>}
-                        </div>
+                        </Stack>
 
-                        <div className='change-button'>
-                            <button className='confirm-button' onClick={handleConfirm}>Підтвердити</button>
-                        </div>
-                    </div>
+                        <button className='confirm-button' onClick={handleConfirm}>Підтвердити</button>
+{/* 
+                        <div className='error-text-wrapper'>
+                            
+                        </div> */}
+
+                        {/* <div className='change-button'> */}
+                            
+                        {/* </div> */}
+                    </Grid>
+
+                    // </div>
                 }
-            </div>
 
-        </div>
+
+                {/* 
+
+
+                     */}
+                {/* </div> */}
+
+            </Stack>
+        </div >
     )
 }
 

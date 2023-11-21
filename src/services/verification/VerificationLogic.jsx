@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import VerificationCodeUnit from './VerificationCodeUnit';
 import { changeBorderStyle, setValidCode } from '../../modules/admin/features/servicesState/verificationCodeState';
 import { useDispatch, useSelector } from 'react-redux';
+import { Stack, Grid } from '@mui/material';
 
 const VerificationLogic = () =>
 {
@@ -34,22 +35,56 @@ const VerificationLogic = () =>
     }
 
     return (
-        <>
-            <div className="left-post">
-                <label className="label-form">Введіть код:</label>
-                <div className='confirm-code-wrapper'>
+        <Grid
+            container
+            padding={'2%'}
+            md={12}
+            sm={12}
+            xs={12}
+            justifyContent={'center'}
+        >
+            <Stack
+                md={12}
+                sm={12}
+                xs={12}
+                marginBottom={'5%'}
+                sx={{
+                    width: '100%',
+                }}
+            >
+                <label className="t2-medium">Введіть код:</label>
+                <Grid
+                    container
+                    md={12}
+                    justifyContent={'center'}
+                    gap={'4%'}
+                >
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(0, value)} index={0} />
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(1, value)} index={1} />
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(2, value)} index={2} />
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(3, value)} index={3} />
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(4, value)} index={4} />
                     <VerificationCodeUnit getValue={value => handleGetCodeUnit(5, value)} index={5} />
-                </div>
-            </div>
-            <div className='change-button'>
-                <button className='confirm-button' onClick={handleCheckCode}>Перевірити</button>
-            </div>
-        </>
+                </Grid>
+
+            </Stack>
+            
+            <span
+                className='t1-bold'
+                style={{
+                    display: 'flex',
+                    justifySelf: 'right',
+                    marginBottom: '2%',
+                }}
+            >00:00</span>
+
+            <button
+                className='confirm-button'
+                onClick={handleCheckCode}
+                style={{
+                }}
+            >Перевірити</button>
+        </Grid>
     )
 }
 

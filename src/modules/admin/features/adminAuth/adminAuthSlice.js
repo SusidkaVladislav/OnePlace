@@ -92,7 +92,7 @@ export const admiLogout = createAsyncThunk('admin/adminLogout', async (email, { 
 })
 
 const adminAuthSlice = createSlice({
-    name: 'adminAuth',
+    name: 'userLogin',
     initialState,
     reducers: {
         removeError: (state) =>

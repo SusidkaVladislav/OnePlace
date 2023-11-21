@@ -1,44 +1,114 @@
-.enter-body {
-  width: auto;
-  height: 685px;
-  top: 40px;
-  left: 57px;
-  padding: 50px 70px 50px 70px;
+.user-login-form {
+  position: fixed;
   border-radius: 10px;
-  gap: 10px;
   background: rgba(246, 246, 246, 1);
   box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+  z-index: 1;
+}
+
+.login-user-text-input {
+  height: 46px;
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  background-color: rgba(225, 227, 227, 1);
+  padding: 10px;
+
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 25px;
+  letter-spacing: 0em;
+  color: rgba(71, 25, 21, 1);
+}
+
+.enter-button {
+  width: 100%;
+  height: 52px;
+  padding: 13px 50px 13px 50px;
+  border-radius: 12px;
+
+  background: var(--orange2);
+  border: none;
+  cursor: pointer;
+
+  color: white;
+  font-family: 'Montserrat Alternates';
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: 0em;
   text-align: center;
+
+}
+
+.google-facebook-button {
+  height: fit-content;
+  border: none;
+  background: rgba(246, 246, 246, 1);
+}
+
+.cross-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 27px;
+  height: 27px;
+  margin-left: 85%;
+}
+
+@media screen and (max-width: 1150px) {
+  .cross-button {
+    margin-left: 65%;
+  }
+}
+
+
+
+.enter-body {
+  /* max-width: 750px;
+  height: 471px;
+  top: 25%;
+  left: 25%; */
+  /* padding: 50px 70px 50px 70px; */
+  /* border-radius: 10px; */
+  /* gap: 10px; */
+  /* background: rgba(246, 246, 246, 1);
+  box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+  text-align: center;
+
+  position: absolute;
+  z-index: 1; */
 }
 
 .enter-body-cart {
-  width: 640px;
+  /* width: 640px;
   height: 405px;
   gap: 24px;
   text-align: center;
   margin-left: 350px;
   margin-top: 100px;
   padding: 10px;
-  border: 2px solid rgba(218, 141, 51, 1);
-  border-radius: 20px;
+  /* border: 2px solid rgba(218, 141, 51, 1); */
+  /* border-radius: 20px;  */
 }
 
 .enter-body-head {
-  width: 610px;
+  /* width: 610px;
   height: 46px;
   gap: 520px;
-  display: flex;
+  display: flex; */
 }
 
 .enter-body-foot {
-  width: 593px;
+  /* width: 593px;
   height: 311px;
   gap: 78px;
-  display: flex;
+  display: flex; */
 }
 
 .enter-body-head-text {
-  width: 54px;
+  /* width: 54px;
   height: 31px;
   font-family: 'Montserrat Alternates';
   font-size: 24px;
@@ -46,36 +116,26 @@
   line-height: 31px;
   letter-spacing: 0em;
   text-align: left;
-  color: rgba(71, 25, 21, 1);
+  color: rgba(71, 25, 21, 1); */
 }
 
 .enter-body-head-btn {
-  width: 36px;
+  /* width: 36px;
   height: 36px;
-  padding: 10.5px;
+  padding: 10.5px; */
 }
 
-.cross-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  fill: #000;
-}
+
 
 
 
 .enter-body-foot-left {
-  width: 309px;
+  /* width: 309px;
   height: 311px;
-  gap: 39px;
+  gap: 39px; */
 }
 
-.text-left-post,
+/* .text-left-post,
 .text-left-pswrd {
   width: 163px;
   height: 18px;
@@ -160,10 +220,10 @@
   cursor: pointer;
   text-decoration: none;
   color: #000;
-}
+} */
 
 /*----------------------------------------------*/
-.enter-body-foot-right {
+/* .enter-body-foot-right {
   width: 206px;
   height: 204px;
   padding: 33px 0px 33px 0px;
@@ -215,11 +275,11 @@
 .facebook-button {
   border: none;
   cursor: pointer;
-}
+} */
 
 /*----------------------------------------------------------------------*/
 
-.error-message {
+/* .error-message {
   color: red;
   margin-top: 5px;
   text-align: left;
@@ -240,4 +300,4 @@
 .vertical-line {
   position: absolute;
   margin-left: 355px;
-}
+} */

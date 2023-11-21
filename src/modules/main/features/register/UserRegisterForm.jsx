@@ -2,71 +2,110 @@ import React, { useState, useEffect } from 'react';
 import './UserRegisterFormStyles.css';
 
 import BrownCloseCrossIcon from '../../../../svg/shared-icons/BrownCloseCrossIcon.svg';
-import VerticalLine from '../../../../svg/login-icons/VerticalLine';
 import GoogleIcon from '../../../../svg/login-icons/GoogleIcon';
 import FacebookIcon from '../../../../svg/login-icons/FacebookIcon';
-
-import { useNavigate, Link } from 'react-router-dom';
+import PasswordInput from '../../../../services/passwordInputs/PasswordInput';
+import GreenCheckCheckboxIcon from '../../../../svg/shared-icons/GreenCheckCheckboxIcon';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setName, setSurname, setEmail, setPhoneNumber, setPassword, setIsAgree, registerUser, reset } from './userRegisterSlice';
+import { Stack, Grid } from '@mui/material';
 
+import
+{
+    registerUser,
+} from './userRegisterSlice';
+import
+{
+    setIsRegisterFormOpen,
+    setIsLoginFormOpen,
+} from '../userAuth/userAuthSlice';
+import axios from 'axios';
+import { useGoogleLogin } from '@react-oauth/google';
+const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PHONE_PATTERN = /^\d*$/;
+const MIN_PASSWORD_LENGTH = 8;
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]+$/;
 const UserRegisterForm = () =>
 {
+    const errorsDefaultList = [
+        { message: '', isError: false },
+        { message: '', isError: false },
+        { message: '', isError: false },
+        { message: '', isError: false },
+        { message: '', isError: false },
+        { message: '', isError: false },
+    ]
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [showPassword, setShowPassword] = useState(false);
+    const [name, setName] = useState('')
+    const [surname, setSurname] = useState('')
+    const [email, setEmail] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [password, setPassword] = useState('')
+    const [isAgree, setIsAgree] = useState(false)
 
-    const { name,
-        surname,
-        password,
-        email,
-        phoneNumber,
-        isAgree,
-        nameError,
-        surnameError,
-        emailError,
-        phoneNumberError,
-        passwordError,
-        isAgreeError,
+    const [errorsList, setErrorsList] = useState(errorsDefaultList);
+    const [dataValidated, setDataValidated] = useState(false);
+    const {
         errorFromServer,
-        messageFromServer } = useSelector(state => state.userRegister);
+        messageFromServer
+    } = useSelector(state => state.userRegister);
+
+    useEffect(() =>
+    {
+        
+    }, [dataValidated]);
 
     const handleClose = () =>
     {
-        dispatch(reset());
-        navigate(-1);
+        dispatch(setIsRegisterFormOpen(false))
+    }
+
+    const resetError = (index) =>
+    {
+        var errors = errorsList;
+        errors[index].message = '';
+        errors[index].isError = false;
+        setErrorsList(errors);
     }
 
     const handleNameChange = (event) =>
     {
-        dispatch(setName(event.target.value));
+        setName(event.target.value)
+        resetError(0);
     }
 
     const handleSurnameChange = (event) =>
     {
-        dispatch(setSurname(event.target.value));
+        setSurname(event.target.value)
+        resetError(1);
     }
 
     const handleEmailChange = (event) =>
     {
-        dispatch(setEmail(event.target.value));
+        setEmail(event.target.value)
+        resetError(2);
     }
 
     const handlePhoneChange = (event) =>
     {
-        dispatch(setPhoneNumber(event.target.value));
+        setPhoneNumber(event.target.value)
+        resetError(3);
     }
 
-    const handlePasswordChange = (event) =>
+    const handlePasswordChange = (password) =>
     {
-        dispatch(setPassword(event.target.value));
+        setPassword(password)
+        resetError(4);
     }
 
     const handleCheckboxChange = (event) =>
     {
-        dispatch(setIsAgree(event.target.checked));
+        setIsAgree(event.target.checked)
+        resetError(5);
     }
 
     const handleGoogle = () =>
@@ -81,29 +120,128 @@ const UserRegisterForm = () =>
 
     const handleRegister = async () =>
     {
-        try
-        {
-            await dispatch(registerUser()).unwrap();
-            dispatch(reset());
-            navigate('/user-login');
+        validateData();
+        setDataValidated(!dataValidated);
 
-        } catch (rejectedValueOrSerializedError) { }
+        if (errorsList.every((error) => error.isError === false))
+        {
+            const register = {
+                name: name,
+                surname: surname,
+                phoneNumber: phoneNumber,
+                email: email,
+                password: password
+            }
+        
+            await dispatch(registerUser(register));
+        }
     }
 
+    const validateData = () =>
+    {
+        var errors = errorsList;
+        if (name.length < 2)
+        {
+            errors[0].message = "Введіть своє ім'я";
+            errors[0].isError = true;
+        }
+        if (surname.length < 1)
+        {
+            errors[1].message = "Введіть своє прізвище";
+            errors[1].isError = true;
+        }
+        if (email.length < 1)
+        {
+            errors[2].message = "Введіть пошту";
+            errors[2].isError = true;
+        }
+        else if (!EMAIL_PATTERN.test(email))
+        {
+            errors[2].message = "Пошту введено некоректно";
+            errors[2].isError = true;
+        }
+        if (phoneNumber.length < 9)
+        {
+            errors[3].message = "Введіть номер телефону";
+            errors[3].isError = true;
+        }
+        else if (!PHONE_PATTERN.test(phoneNumber))
+        {
+            errors[3].message = "Некоректний номер";
+            errors[3].isError = true;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH)
+        {
+            errors[4].message = `Пароль повинен містити мінімум ${MIN_PASSWORD_LENGTH} символів`;
+            errors[4].isError = true;
+        }
+        else if (!PASSWORD_PATTERN.test(password))
+        {
+            errors[4].message = 'Занадто слабкий пароль';
+            errors[4].isError = true;
+        }
+        if (!isAgree)
+        {
+            errors[5].message = "Ви не погодилися на використання даних";
+            errors[5].isError = true;
+        }
+        setErrorsList(errors);
+    }
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (response) => 
+        {
+            try
+            {
+                const res = await axios.get(
+                    "https://www.googleapis.com/oauth2/v3/userinfo",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${response.access_token}`,
+                        },
+                    }
+                );
+                
+                setName(res.data.given_name)
+                setSurname(res.data.family_name)
+                setEmail(res.data.email)
+            } catch (err)
+            {
+                console.log(err);
+            }
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
+
     return (
-        <div className='register-body'>
-            <div className='register-div'>
-                <div className='register-label'>
-                    <label className='register-label-h'>Реєстрація</label>
+        <div
+            className='modal-backdrop'
+        >
+
+            <Stack
+                className='register-body'
+                width={'70%'}
+                height={'fit-content'}
+                padding={'2%'}
+                top={'10%'}
+                left={'15%'}
+            >
+
+                <Stack
+                    direction={'row'}
+                    padding={'2%'}
+                >
+                    <h3>Реєстрація</h3>
                     <button
-                        className="cross-button "
+                        className="close-register-form "
                         onClick={handleClose}
                         style={{
                             backgroundImage: `url(${BrownCloseCrossIcon})`,
                             backgroundRepeat: 'no-repeat',
+                            alignSelf: 'center',
                         }}
                     />
-                </div>
+                </Stack>
 
                 <label
                     className={errorFromServer ?
@@ -111,196 +249,369 @@ const UserRegisterForm = () =>
                     }
                 >{messageFromServer}</label>
 
-                <div className='register-body-h'>
-                    <div className='register-body-left'>
-                        <div className='left-one'>
-                            <div className="left-post">
-                                <label className="text-left-post">Ім'я</label>
+                <Grid
+                    container
+                    direction={'row'}
+                    md={12}
+                    sm={12}
+                    xs={12}
+                >
+                    <Grid
+                        container
+                        padding={'2%'}
+                        md={8}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                            borderRight: '1px solid  #CED8DE',
+                            '@media screen and (max-width: 900px)': {
+                                border: 'none',
+                            },
+                        }}
+                    >
+
+                        <Grid
+                            container
+                            md={6}
+                            sm={12}
+                            xs={12}
+                            padding={'2%'}
+                        >
+                            <Stack
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '5%',
+                                        },
+                                        width: '100%'
+                                    }
+                                }
+                            >
+                                <label className="t2-medium">Ім'я</label>
                                 <div className="input-wrapper">
                                     <input
-                                        className="input-left-post"
+                                        className="register-user-text-input"
                                         type="text"
                                         value={name}
                                         onChange={handleNameChange}
                                         style={
-                                            nameError.isError ?
-                                                { borderColor: 'red' } :
-                                                { borderColor: 'black' }
+                                            {
+                                                border: errorsList[0].isError ? '1px  solid red' : 'none'
+                                            }
                                         }
                                     />
-                                    {nameError.isError && <span className="error-icon"></span>}
+                                    {errorsList[0].isError && <span className="error-icon"></span>}
                                 </div>
-                            </div>
 
-                            <div className='error-email'>
-                                {nameError.isError && <label className="error-message">{nameError.message}</label>}
-                            </div>
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[0].isError ? 'visible' : 'hidden',
+                                        }}
 
-                            <div className="left-post">
-                                <label className="text-left-post">Прізвище</label>
+                                    >{errorsList[0].message}</span>
+                                </div>
+
+                            </Stack>
+
+                            <Stack
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '5%',
+                                        },
+                                        width: '100%',
+                                    }
+                                }
+                            >
+                                <label className="t2-medium">Прізвище</label>
                                 <div className="input-wrapper">
                                     <input
-                                        className="input-left-post"
+                                        className="register-user-text-input"
                                         type="text"
                                         value={surname}
                                         onChange={handleSurnameChange}
                                         style={
-                                            surnameError.isError ?
-                                                { borderColor: 'red' } :
-                                                { borderColor: 'black' }
+                                            {
+                                                border: errorsList[1].isError ? '1px  solid red' : 'none'
+                                            }
                                         }
                                     />
-                                    {surnameError.isError && <span className="error-icon"></span>}
+                                    {errorsList[1].isError && <span className="error-icon"></span>}
                                 </div>
-                            </div>
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[1].isError ? 'visible' : 'hidden',
+                                        }}
+
+                                    >{errorsList[1].message}</span>
+                                </div>
+                            </Stack>
+
 
                             <div className='error-email'>
-                                {surnameError.isError && <label className="error-message">{surnameError.message}</label>}
                             </div>
-
-                            <div className="left-post">
-                                <label className="text-left-post">Ел.пошта</label>
+                            <Stack
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '2%',
+                                        },
+                                        width: '100%',
+                                    }
+                                }
+                            >
+                                <label className="t2-medium">Ел.пошта</label>
                                 <div className="input-wrapper">
                                     <input
-                                        className="input-left-post"
+                                        className="register-user-text-input"
                                         type="email"
                                         value={email}
                                         onChange={handleEmailChange}
                                         style={
-                                            emailError.isError ?
-                                                { borderColor: 'red' } :
-                                                { borderColor: 'black' }
+                                            {
+                                                border: errorsList[2].isError ? '1px  solid red' : 'none'
+                                            }
                                         }
                                     />
-                                    {emailError.isError && <span className="error-icon"></span>}
+                                    {errorsList[2].isError && <span className="error-icon"></span>}
                                 </div>
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[2].isError ? 'visible' : 'hidden',
+                                        }}
 
-                            </div>
-
-                            <div className='error-email'>
-                                {emailError.isError && <label className="error-message">{emailError.message}</label>}
-                            </div>
-
-                        </div>
-                        <div>
-                            <div className="left-post">
-                                <label className="text-left-post">Номер телефону</label>
-                                <div className="code-country">
-                                    <div className='code-dropdown-header'>
-                                        <div
-                                            className={`code-main-select-item `}
-                                        >
-                                            <img src={'../../../../svg/loginIcons/flag.png'} title='ukraine-flag' alt='flag'></img>
-                                            <label>+380</label>
-                                        </div>
-                                        <div className='input-wrapper'>
-                                            <input
-                                                className="input-right-phone"
-                                                type="text"
-                                                placeholder='00 00-00-000'
-                                                value={phoneNumber}
-                                                onChange={handlePhoneChange}
-                                                style={
-                                                    phoneNumberError.isError ?
-                                                        { borderColor: 'red' } :
-                                                        { borderColor: 'black' }
-                                                }
-                                            />
-                                            {phoneNumberError.isError && <span className="error-icon"></span>}
-                                        </div>
-
-                                    </div>
+                                    >{errorsList[2].message}</span>
                                 </div>
-                            </div>
-                            <div className='error-email'>
-                                {phoneNumberError.isError && <label className="error-message">{phoneNumberError.message}</label>}
-                            </div>
-                            <div className="left-pswrd">
+                            </Stack>
+                        </Grid>
 
-                                <label className="text-left-pswrd">Пароль</label>
-                                <div className='input-wrapper'>
+                        <Grid
+                            container
+                            md={6}
+                            padding={'2%'}
+                        >
+                            <Stack
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '5%',
+                                        },
+                                        width: '100%',
+                                    }
+                                }
+                            >
+                                <label className="t2-medium">Номер телефону</label>
+                                <div className="input-wrapper">
                                     <input
-                                        className="input-left-post"
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={password}
-                                        onChange={handlePasswordChange}
+                                        className="register-user-text-input"
+                                        type="text"
+                                        placeholder='+38'
+                                        value={phoneNumber}
+                                        onChange={handlePhoneChange}
                                         style={
-                                            passwordError.isError ?
-                                                { borderColor: 'red' } :
-                                                { borderColor: 'black' }
+                                            {
+                                                border: errorsList[3].isError ? '1px  solid red' : 'none'
+                                            }
                                         }
                                     />
-
-                                    {showPassword ? (
-                                        <span
-                                            className="no-eye-icon-password eye-icon"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        ></span>
-                                    ) : (
-                                        <span
-                                            className="eye-icon-password eye-icon"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        ></span>
-                                    )}
+                                    {errorsList[3].isError && <span className="error-icon"></span>}
                                 </div>
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[3].isError ? 'visible' : 'hidden',
+                                        }}
 
-                            </div>
+                                    >{errorsList[3].message}</span>
+                                </div>
+                            </Stack>
 
-                            <div className='error-pswrd'>
-                                {passwordError.isError && <label className="reg-error-message">{passwordError.message}</label>}
-                            </div>
+                            <Stack
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '5%',
+                                        },
+                                        width: '100%'
+                                    }
+                                }
+                            >
 
-                            <div className='check-register'>
-                                <div className='check-register-input'>
+                                <label className="t2-medium">Пароль</label>
+
+                                <PasswordInput
+                                    style={
+                                        {
+                                            height: '46px'
+                                        }
+                                    }
+                                    onChange={handlePasswordChange}
+                                    isError={errorsList[4].isError}
+                                />
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[4].isError ? 'visible' : 'hidden',
+                                        }}
+
+                                    >{errorsList[4].message}</span>
+                                </div>
+                            </Stack>
+
+                            <Grid
+                                container
+                                md={12}
+                                sm={12}
+                                xs={12}
+                                direction={'row'}
+                                gap={'4%'}
+                                alignItems={'center'}
+                                sx={
+                                    {
+                                        '@media screen and (max-width: 900px)': {
+                                            marginBottom: '5%',
+                                        },
+                                        width: '100%'
+                                    }
+                                }
+                            >
+                                <label className="filter-message-custom-checkbox"
+                                    style={{
+                                        width: '6%',
+                                    }}
+                                >
                                     <input
-                                        type='checkbox'
+                                        type="checkbox"
                                         checked={isAgree}
-                                        onChange={handleCheckboxChange} />
-                                </div>
-                                <label>
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    <span className='filter-message-custom-checkbox-checkmark'><GreenCheckCheckboxIcon /></span>
+                                </label>
+                                <label
+                                    className='t3-light'
+                                    style={{
+                                        width: '90%'
+                                    }}
+                                >
                                     Реєструючись, ви погоджуєтесь з
                                     обробкою і захистом персональних
                                     даних та угодою користувача
                                 </label>
 
-                            </div>
-                            <div className='error-pswrd'>
-                                {isAgreeError.isError && <label className="error-message">{isAgreeError.message}</label>}
-                            </div>
-                        </div>
-                        <div className="reg-vertical-line">
-                            <VerticalLine />
-                        </div>
-                        <div className="enter-body-foot-right">
-                            <label className='text-right-enter'>Увійти як користувач</label>
-                            <div className='icons-right-enter'>
-                                <div className='google-right-enter'>
-                                    <button className="google-button" onClick={handleGoogle}>
-                                        <GoogleIcon />
-                                    </button>
-                                    <label className='label-google'>Google</label>
-                                </div>
-                                <div className='facebook-right-enter'>
-                                    <button className="facebook-button" onClick={handleFacebook}>
-                                        <FacebookIcon />
-                                    </button>
-                                    <label className='label-facebook'>Facebook</label>
+                                <div
+                                    className="t2-medium-red error-register"
+                                >
+                                    <span
+                                        style={{
+                                            visibility: errorsList[5].isError ? 'visible' : 'hidden',
+                                        }}
 
+                                    >{errorsList[5].message}</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='div-register-button-two'>
-                        <div>
-                            <button className='register-button-two' onClick={handleRegister}>Зареєструватися</button>
-                        </div>
-                        <div>
-                            <Link to='/user-login' className='text-back-tologin'>Я вже зареєстрований</Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            </Grid>
+
+                        </Grid>
+                        <Grid
+                            container
+                            direction={'column'}
+                        >
+                            <button
+                                className='enter-button'
+                                onClick={handleRegister}
+                                style={{
+                                    width: '50%',
+                                    alignSelf: 'center',
+                                    marginBottom: '2%',
+                                }}
+                            >Зареєструватися</button>
+                            <h5
+                                className='light-blue'
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() =>
+                                {
+                                    dispatch(setIsRegisterFormOpen(false));
+                                    dispatch(setIsLoginFormOpen(true));
+                                }}
+                            >Я вже зареєстрований</h5>
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid
+                        container
+                        md={4}
+                        sm={12}
+                        xs={12}
+                        padding={'2%'}
+                        justifyContent={'center'}
+                    >
+                        <label
+                            style={{
+                                alignSelf: 'center'
+                            }}
+                            className='t1-bold'>Увійти як користувач</label>
+                        <Grid
+                            container
+                            direction={'row'}
+                            justifyContent={'center'}
+                        >
+                            <button
+                                className="google-facebook-button"
+                                style={{
+                                    borderRight: '1px solid  #CED8DE',
+                                    paddingRight: '10%'
+                                }}
+                                onClick={() => { googleLogin() }}
+                            >
+                                <GoogleIcon />
+                            </button>
+
+                            <button
+                                className="google-facebook-button"
+                                onClick={handleFacebook}
+                                style={{
+                                    paddingLeft: '10%'
+                                }}
+                            >
+                                <FacebookIcon />
+                            </button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Stack>
+        </div >
     );
 }
 

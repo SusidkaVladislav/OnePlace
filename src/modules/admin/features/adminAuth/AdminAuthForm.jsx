@@ -27,7 +27,7 @@ const AdminAuthForm = () =>
     const { password } = useSelector(state => state.passwordInputState)
     const { error } = useSelector(state => state.adminAuth)
 
-    const [email, setEmail] = useState(localStorage.getItem("email"));
+    const [email, setEmail] = useState(localStorage.getItem("email") !== 'null'? localStorage.getItem("email") : '');
     const [loginError, setLoginError] = useState(error);
 
     const handleEmailChange = (event) =>
@@ -45,8 +45,9 @@ const AdminAuthForm = () =>
     const handleEnter = async () =>
     {
         localStorage.setItem("email", email)
-        if (email !==null  && password !== null)
+        if (email !== null && password !== null)
             await dispatch(adminLogin(({ email, password })))
+
         navigate('main');
     }
 
@@ -68,23 +69,23 @@ const AdminAuthForm = () =>
                             type="email"
                             value={email}
                             onChange={handleEmailChange}
-                            style={{ border: loginError ? '2px solid red' : 'none' }} />
+                            style={{ border: loginError ? '1px solid red' : 'none' }} />
 
                         {loginError && <span className="error-icon-email"></span>}
                     </div>
                 </div>
 
-                <div>
+                <div
+                    style={{
+                        width: '100%',
+                    }}
+                >
                     <label className="label-form">Пароль</label>
                     <PasswordInput isError={loginError} onChange={handlePasswordChange} />
                 </div>
 
                 <span>
                     <button className='confirm-button' onClick={handleEnter}>Увійти</button>
-
-                    <div className='admin-left-forgot'>
-                        <Link to='/change-password' className='admin-forgot'>Забули пароль?</Link>
-                    </div>
                 </span>
 
             </div>

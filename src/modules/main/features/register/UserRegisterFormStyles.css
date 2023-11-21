@@ -1,294 +1,119 @@
-.register-body {
-    width: 1, 094px;
-    height: 685px;
-    left: 75px;
-    padding: 50px 70px 50px 70px;
-    border-radius: 10px;
-    gap: 10px;
-    background: var(--gray3);
-    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+ .register-body {
+     position: fixed;
+     border-radius: 10px;
+     background: rgba(246, 246, 246, 1);
+     box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+     z-index: 1;
+     overflow-y: auto;
+ }
 
-}
+ .close-register-form {
+     background-color: transparent;
+     border: none;
+     cursor: pointer;
+     width: 27px;
+     height: 27px;
+     margin-left: 80%;
+ }
 
-.register-div {
-    width: 954px;
-    height: 451px;
-    margin-left: 230px;
-    margin-top: 50px;
-}
+ .error-register {
+     width: 100%;
+     height: 35px;
+ }
 
-.register-label {
-    display: flex;
-}
+ @media screen and (max-width: 1400px) {
+     .close-register-form {
+         margin-left: 75%;
+     }
 
-.register-label-h {
-    width: 920px;
-    height: 31px;
-    font-family: 'Montserrat Alternates';
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 31px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: var(--brown1);
+     .enter-button {
+         width: 100% !important;
+     }
+ }
 
-}
+ @media screen and (max-width: 1150px) {
+     .close-register-form {
+         margin-left: 60%;
+     }
 
-.register-body-h {
-    width: 954px;
-    height: 391px;
-    gap: 40px;
-    margin-top: 20px;
+     .error-register {
+         display: none;
+     }
+ }
 
-}
+ @media screen and (max-width: 1003px) {
+     .google-facebook-button {
+         border: none !important;
+         padding-right: '0' !important;
+         padding-left: '0' !important;
+     }
+ }
 
-.register-body-left {
-    width: 668px;
-    height: 300px;
-    gap: 35px;
-    display: flex;
+ @media screen and (max-width: 900px) {
+     .close-register-form {
+         margin-left: 55%;
+     }
 
-}
+     .enter-button {
+         width: 100% !important;
+     }
 
-.code-country {
-    display: flex;
-}
+     .register-body {
+         position: absolute !important;
+         top: 0;
+     }
 
-.code-dropdown-header {
-    width: 120px;
-    height: 46px;
-    background: var(--gray3);
-    color: var(--blue1);
-    font-family: 'Montserrat Alternates';
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 21px;
-    letter-spacing: 0em;
-    text-align: center;
-    display: flex;
-    border: 0.5px solid;
-    border-radius: 12px;
-    gap: 5px;
-    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
-    align-items: center;
-}
+ }
 
-.code-main-select-item {
-    width: 50px;
-    height: 23px;
-    margin-left: 10px;
-    display: flex;
-}
+ @media screen and (max-width: 700px) {
+     .close-register-form {
+         margin-left: 40%;
+     }
 
-.code-main-select-item label {
-    margin-left: 10px;
-}
+     .register-body {
+         position: absolute !important;
+         top: 0;
+     }
+ }
 
-.code-main-arrow-down {
-    cursor: pointer;
-    width: 20px;
-}
+ .register-user-text-input {
+     height: 46px;
+     width: 100%;
+     border-radius: 12px;
+     border: none;
+     background-color: rgba(225, 227, 227, 1);
+     padding: 10px;
 
-.code-dropdown-list {
-    margin-top: 2px;
-    background-color: var(--gray3);
-    border: 1px solid #ccc;
-    border-top: none;
-    max-height: 200px;
-    overflow-y: auto;
-    width: 110px;
-    border-top-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    color: var(--blue1);
-    position: absolute;
-    margin-top: 67px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-}
+     font-family: 'Montserrat Alternates';
+     font-size: 18px;
+     font-weight: 400;
+     line-height: 25px;
+     letter-spacing: 0em;
+     color: rgba(71, 25, 21, 1);
+ }
 
-.code-dropdown-item {
-    padding: 7px;
-    width: 80px;
-    color: var(--blue1);
-    font-family: 'Montserrat Alternates';
-    font-size: 14px;
-    text-align: left;
-    font-weight: 400;
-    line-height: 18px;
-    letter-spacing: 0em;
-    border-top: 1px solid #ccc;
-    margin-left: 2px;
 
-}
 
-.code-dropdown-item:hover {
-    font-size: 16px;
-    color: var(--blue1);
 
-}
+ .error-message {
+     margin-top: 5px;
+     margin-left: 3%;
+     color: var(--red);
+     font-family: 'Montserrat Alternates';
+     font-size: 16px;
+     font-style: normal;
+     font-weight: 500;
+     line-height: 130%;
+ }
 
-.code-dropdown-item label {
-    font-family: 'Montserrat Alternates';
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 18px;
-    letter-spacing: 0em;
-    text-align: left;
+ .success-message {
+     margin-top: 5px;
+     margin-left: 3%;
 
-}
-
-.input-left-post {
-    width: 310px;
-    height: 46px;
-    padding: 11px 20px 11px 20px;
-    border-radius: 12px;
-    gap: 10px;
-    background: var(--gray2);
-    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.05) inset;
-}
-
-.input-right-phone {
-    width: 175px;
-    height: 46px;
-    padding: 11px 4px 11px 20px;
-    border: 0.5px solid;
-    border-radius: 12px;
-    background: var(--gray1);
-    margin-left: 70px;
-}
-
-.check-register {
-    display: flex;
-}
-
-.check-register-input {
-    width: 50px;
-}
-
-.check-register input[type=checkbox] {
-    height: 20px;
-    width: 20px;
-    margin-top: 30px;
-}
-
-.check-register label {
-    font-family: 'Montserrat Alternates';
-    font-size: 12px;
-    font-weight: 300;
-    line-height: 16px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: var(--brown1);
-    margin-top: 20px;
-    margin-left: 30px;
-    margin-right: 15px;
-}
-
-.register-button-two {
-    width: 309px;
-    height: 52px;
-    padding: 13px 50px 13px 50px;
-    border-radius: 12px;
-    gap: 10px;
-    background: var(--orange2);
-    animation-duration: 0ms;
-    cursor: pointer;
-    margin-bottom: 10px;
-    color: var(--gray1);
-    font-family: "Montserrat Alternates";
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 26px;
-    letter-spacing: 0em;
-
-}
-
-.text-back-tologin {
-    cursor: pointer;
-    font-family: 'Montserrat Alternates';
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 23px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: var(--blue1);
-    text-decoration: none;
-    height: 50px;
-
-}
-
-.div-register-button-two {
-    text-align: center;
-    width: 670PX;
-
-}
-
-.reg-vertical-line {
-    position: absolute;
-    margin-left: 680px;
-}
-
-.enter-body-foot-right {
-    width: 206px;
-    height: 204px;
-    padding: 33px 0px 33px 25px;
-    gap: 38px;
-}
-
-.error-icon-phone {
-    position: absolute;
-    margin-left: 272px;
-    margin-top: 12px;
-}
-
-.reg-error-message {
-    line-height: 14px;
-    color: var(--red);
-    margin-top: 5px;
-    font-size: 12px;
-}
-
-.success-message {
-    line-height: 14px;
-    color: var(--green);
-    margin-top: 5px;
-    font-size: 12px;
-}
-
-.error-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    background-image: url(/src/svg/login-icons/ErrorInputIcon.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.eye-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    border: none;
-}
-
-.no-eye-icon-password {
-    background-image: url(/src/svg/login-icons/HidePasswordIcon.svg);
-}
-
-.eye-icon-password {
-    background-image: url(/src/svg/login-icons/ShowPasswordIcon.svg);
-}
-
-.input-wrapper {
-    position: relative;
-}
+     color: var(--green);
+     font-family: 'Montserrat Alternates';
+     font-size: 16px;
+     font-style: normal;
+     font-weight: 500;
+     line-height: 130%;
+ }
