@@ -99,7 +99,7 @@ const userLoginSlice = createSlice({
             })
             .addCase(userLogin.rejected, (state, { payload }) =>
             {
-                localStorage.removeItem("token");
+                localStorage.removeItem("access-token");
                 return {
                     ...state,
                     errorFromServer: true,

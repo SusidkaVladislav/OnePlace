@@ -25,6 +25,7 @@
   --gray3: #F6F6F6;
   --red: #B31D21;
   --green: #3FB914;
+  --white: #FFFFFF;
 }
 
 h1 {
@@ -85,6 +86,15 @@ h5.light {
 
 h5.bold {
   color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+h5.bold-white {
+  color: var(--white);
   font-family: 'Montserrat Alternates';
   font-size: 18px;
   font-style: normal;
@@ -173,6 +183,15 @@ h5.bold-orange {
   line-height: 130%;
 }
 
+.t1-bold-brown2 {
+  color: var(--brown2);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
 .t1-bold-red {
   color: var(--red);
   font-family: 'Montserrat Alternates';
@@ -211,6 +230,15 @@ h5.bold-orange {
 
 .t2-medium {
   color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
+.t2-medium-white {
+  color: var(--white);
   font-family: 'Montserrat Alternates';
   font-size: 14px;
   font-style: normal;

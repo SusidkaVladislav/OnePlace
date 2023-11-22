@@ -7,7 +7,6 @@ import Badge from '@mui/material/Badge';
 import HeartIcon from '../../../svg/client-icons/header/HeartIcon';
 import FilledHeartIcon from '../../../svg/client-icons/header/FilledHeartIcon';
 import CartIcon from '../../../svg/client-icons/header/CartIcon';
-import Img from './81d590461560bfa45e34827c68dd276c.png';
 
 const ProductCard = (props) =>
 {

@@ -7,6 +7,9 @@ const initialState = {
     isLoginFormOpen: false,
     isRegisterFormOpen: false,
     isRenewPasswordFormOpen: false,
+
+    isAuthState: false,
+    beforeAuthPath: '',
 }
 
 
@@ -35,7 +38,21 @@ const userAuthSlice = createSlice({
                 ...state,
                 isRenewPasswordFormOpen: payload
             }
-        }
+        },
+        setIsAuthState: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                isAuthState: payload,
+            }
+        },
+        setBeforeAuthPath: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                beforeAuthPath: payload
+            }
+        },
     }
 })
 
@@ -43,6 +60,9 @@ export const {
     setIsLoginFormOpen,
     setIsRegisterFormOpen,
     setIsRenewPasswordFormOpen,
+
+    setIsAuthState,
+    setBeforeAuthPath,
 } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;

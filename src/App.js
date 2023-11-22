@@ -2,11 +2,16 @@ import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 //#region Main routes
-import ChangePassword from "./modules/main/features/changePassword/ChangePassword";
-import UserLoginForm from './modules/main/features/login/UserLoginForm';
-import UserRegisterForm from './modules/main/features/register/UserRegisterForm';
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
+import MainCabinetLayer from './modules/client-area/cabinet/MainCabinetLayer';
+
+import MyChats from './modules/client-area/cabinet/my-chats/MyChats';
+import MyDesires from './modules/client-area/cabinet/my-desires/MyDesires';
+import MyOrders from './modules/client-area/cabinet/my-orders/MyOrders';
+import MyPersonalData from './modules/client-area/cabinet/my-personal-data/MyPersonalData';
+import MyPurse from './modules/client-area/cabinet/my-purse/MyPurse';
+import MyReviews from './modules/client-area/cabinet/my-reviews/MyReviews';
 
 import Basket from "./modules/main/pages/basket/Basket";
 //#endregion
@@ -38,6 +43,7 @@ import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/Us
 import ReviewInfo from "./modules/admin/components/MenuItems/ItemReview/reviewPages/ReviewInfo";
 
 import AdminPrivateRoute from './privateRouting/adminPrivateRoute';
+import UserPrivateRoute from './privateRouting/userPrivateRoute';
 
 import "./App.css";
 
@@ -58,17 +64,23 @@ function App()
         <Route path="basket" element={<Basket />} />
         <Route path='/server-connection-error' element={<NoServerConnection />} />
 
-        {/* <Route path="/user-login" element={<UserLoginForm />} /> */}
-        {/* <Route path="register" element={<UserRegisterForm />} /> */}
-        {/* <Route path="change-password" element={<ChangePassword />} /> */}
-
         <Route path='category/:id' element={<CategoryPage />} />
         <Route path='products/:id' element={<ProductsByCategoryPage />} />
 
+        <Route path="user" element={<UserPrivateRoute />}>
+          <Route path="" element={<MainCabinetLayer />}>
+            <Route index element={<MyOrders />} />
+            <Route path='desires' element={<MyDesires />} />
+            <Route path='purse' element={<MyPurse />} />
+            <Route path='reviews' element={<MyReviews />} />
+            <Route path='chats' element={<MyChats />} />
+            <Route path='personal-data' element={<MyPersonalData />} />
+          </Route>
+        </Route>
+
+
         <Route path="admin">
-
           <Route index element={<AdminAuthForm />} />
-
           <Route path="main" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminManePanel />}>
               <Route index element={<ItemMane />} />

@@ -93,6 +93,7 @@ const UserLoginForm = () =>
                 password: password
             }
             await dispatch(userLogin(login));
+            navigate('/user');
         }
     }
 

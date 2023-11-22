@@ -25,7 +25,7 @@ import
 import
 {
   setIsLoginFormOpen,
-  setIsRegisterFormOpen
+  setBeforeAuthPath,
 } from '../../features/userAuth/userAuthSlice';
 const Header = () =>
 {
@@ -43,6 +43,7 @@ const Header = () =>
     isLoginFormOpen,
     isRegisterFormOpen,
     isRenewPasswordFormOpen,
+    isAuthState,
   } = useSelector(state => state.userAuth);
 
   const handleMouseEnter = () =>
@@ -138,7 +139,13 @@ const Header = () =>
             }}
             onClick={() =>
             {
-              dispatch(setIsLoginFormOpen(true))
+              dispatch(setBeforeAuthPath(window.location.pathname))
+
+              navigate('/user')
+
+              if (!isAuthState)
+                dispatch(setIsLoginFormOpen(true))
+
             }}>
             <UserIcon /></span>
 
@@ -158,7 +165,7 @@ const Header = () =>
 
 
       {
-        isLoginFormOpen && (
+        isLoginFormOpen && !isAuthState && (
           <UserLoginForm />
         )
       }
