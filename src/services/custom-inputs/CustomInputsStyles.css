@@ -1,0 +1,29 @@
+.custom-radio {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 90px;
+    border: 1px solid #9DB1BC;
+}
+
+.custom-radio-checkmark {
+    position: absolute;
+    display: none;
+}
+
+.custom-radio input:checked+.custom-radio-checkmark {
+    display: block;
+    margin-top: -21%;
+}
+
+.custom-radio input[type="radio"] {
+    display: none;
+}
+
+.bg-img {
+    background-image: url(/src/svg/arrows/BrownSmallToBottomArrowIcon.svg);
+}

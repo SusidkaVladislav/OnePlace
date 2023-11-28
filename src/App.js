@@ -4,8 +4,9 @@ import { Helmet } from 'react-helmet';
 //#region Main routes
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
-import MainCabinetLayer from './modules/client-area/cabinet/MainCabinetLayer';
+import CheckoutPage from './modules/main/pages/checkout/CheckoutPage';
 
+import MainCabinetLayer from './modules/client-area/cabinet/MainCabinetLayer';
 import MyChats from './modules/client-area/cabinet/my-chats/MyChats';
 import MyDesires from './modules/client-area/cabinet/my-desires/MyDesires';
 import MyOrders from './modules/client-area/cabinet/my-orders/MyOrders';
@@ -13,7 +14,6 @@ import MyPersonalData from './modules/client-area/cabinet/my-personal-data/MyPer
 import MyPurse from './modules/client-area/cabinet/my-purse/MyPurse';
 import MyReviews from './modules/client-area/cabinet/my-reviews/MyReviews';
 
-import Basket from "./modules/main/pages/basket/Basket";
 //#endregion
 
 //#region Admin routes
@@ -60,12 +60,11 @@ function App()
       <Routes>
 
         <Route path="/" element={<OnePlaceMain />} />
-
-        <Route path="basket" element={<Basket />} />
         <Route path='/server-connection-error' element={<NoServerConnection />} />
 
         <Route path='category/:id' element={<CategoryPage />} />
         <Route path='products/:id' element={<ProductsByCategoryPage />} />
+        <Route path='checkout' element={<CheckoutPage />} />
 
         <Route path="user" element={<UserPrivateRoute />}>
           <Route path="" element={<MainCabinetLayer />}>

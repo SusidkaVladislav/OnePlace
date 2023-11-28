@@ -2,11 +2,12 @@ import React from "react";
 import './Footer.css';
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography";
-import MainSiteLogo from "../../../../svg/shared-icons/MainSiteLogo";
+import MainSiteLogoWithText from "../../../../svg/shared-icons/MainSiteLogoWithText";
 import InstagramIcon from '../../../../svg/client-icons/footer/InstagramIcon';
 import TelegramIcon from "../../../../svg/client-icons/footer/TelegramIcon";
 import FacebookIcon from "../../../../svg/client-icons/footer/FacebookIcon";
 import Toolbar from "@mui/material/Toolbar";
+
 
 const Footer = () => {
     return (
@@ -41,7 +42,7 @@ const Footer = () => {
                     <Typography className="t1-bold-blue ftxt">Довідка</Typography>
                 </Grid>
                 <Grid item>
-                    <MainSiteLogo/>
+                    <MainSiteLogoWithText/>
                     <Grid container className="footer-container3" spacing={4}>
                         <Grid item>
                             <TelegramIcon/>
