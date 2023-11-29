@@ -73,6 +73,15 @@ h4.blue {
   line-height: 130%;
 }
 
+h4.brown2 {
+  color: var(--brown2);
+  font-family: 'Montserrat Alternates';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
 h4.red {
   color: var(--red);
   font-family: 'Montserrat Alternates';
@@ -91,8 +100,6 @@ h5.light {
   font-weight: 400;
   line-height: 130%;
 }
-
-
 
 h5.bold {
   color: var(--brown1);
@@ -319,6 +326,15 @@ h5.bold-orange {
   line-height: 130%;
 }
 
+.t2-medium-blue3 {
+  color: var(--blue3);
+  font-family: 'Montserrat Alternates';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
 .t2-bold {
   color: var(--brown1);
   font-family: 'Montserrat Alternates';
@@ -353,4 +369,90 @@ h5.bold-orange {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+
+/* ------------------------------------------- */
+
+
+.h2-md-brown2 {
+  color: var(--brown2);
+  font-family: 'Montserrat Alternates';
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
+.h5-bold-brown2 {
+  color: var(--brown2);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.h4-lg-gray3 {
+  color: var(--gray3);
+  font-family: 'Montserrat Alternates';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.h4-red {
+  color: var(--red);
+  font-family: 'Montserrat Alternates';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.t2-medium-500-red {
+  color: var(--red);
+  font-family: 'Montserrat Alternates';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.t2-medium-500-brown2 {
+  color: var(--brown2);
+  font-family: 'Montserrat Alternates';
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.t2-medium-500-orange2 {
+  color: var(--orange2);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.light-h5 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
+
+.brown1-400-20{
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
 }

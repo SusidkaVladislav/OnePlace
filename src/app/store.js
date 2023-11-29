@@ -35,6 +35,7 @@ import userProductReducer from "../modules/main/features/products/userProductSli
 import userAnaliticReducer from "../modules/main/features/analitics/userAnaliticSlice";
 import userAuthReducer from "../modules/main/features/userAuth/userAuthSlice";
 import userLoginReducer from "../modules/main/features/login/userLoginSlice";
+import userOrderReducer from "../modules/main/features/order/userOrderSlice";
 //#endregion
 
 
@@ -76,6 +77,7 @@ const rootReducer = combineReducers({
     userAnalitic: userAnaliticReducer,
     userAuth: userAuthReducer,
     userLogin: userLoginReducer,
+    userOrder: userOrderReducer,
 })
 
 

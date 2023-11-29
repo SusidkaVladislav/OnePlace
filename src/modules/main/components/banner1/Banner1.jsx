@@ -1,16 +1,22 @@
 import React from "react";
 import "./Banner1.css";
 
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import SuccessfulCheckout from '../../pages/checkout/successful-checkout/SuccessfulCheckout'
 import Button from '@mui/material/Button';
 import CategorySelectBox from '../../controls/CategorySelectBox';
 
 const Banner1 = () =>
 {
+    const dispatch = useDispatch();
+
     const {
         isCategoryOpen
     } = useSelector(state => state.userCategories);
+
+    const {
+        showSuccessfulOrderAlert
+    } = useSelector(state => state.userOrder);
 
     const buttonStyles = {
         '&:hover': {
@@ -52,7 +58,19 @@ const Banner1 = () =>
                         sx={buttonStyles}>Усі товари</Button>
                 </div>
             </div>
+            {
+                showSuccessfulOrderAlert && (
+                    <span
+                        className="modal-backdrop"
+                    >
+                        <SuccessfulCheckout />
+                    </span>
+                )
+            }
+
         </div>
+
+
     )
 }
 

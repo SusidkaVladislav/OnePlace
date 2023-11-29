@@ -1,0 +1,36 @@
+.stepper-navigation-btn {
+    border-radius: 0px 90px 90px 0px;
+}
+
+.contact-data-input {
+    border: none;
+    background-color: var(--gray2);
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.06) inset;
+    border-radius: 10px;
+}
+
+.contact-data-input-inside-check-icon {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.comment-text-area {
+    display: inline-flex;
+    height: 353px;
+    width: 100%;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background-color: #F6F6F6;
+    border: none;
+    resize: none;
+}
+
+.comment-text-area::-webkit-scrollbar{
+    width: 0px;
+}

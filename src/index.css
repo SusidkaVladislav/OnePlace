@@ -8,7 +8,11 @@
   font-family: 'Montserrat Alternates';
   font-weight: 500;
   src: url('/public/fonts/MontserratAlternates-Medium.ttf')
-  
+}
+
+@font-face {
+  font-family: 'JejuGothic';
+  src: url('/public/fonts/JejuGothic-Regular.ttf');
 }
 
 html,

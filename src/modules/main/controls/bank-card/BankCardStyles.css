@@ -1,0 +1,9 @@
+.number-input {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    border-radius: 6px;
+    padding: 8px;
+    background-color: var(--gray1);
+    border: none;
+}
