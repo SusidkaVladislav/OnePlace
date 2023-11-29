@@ -1,0 +1,138 @@
+.changeBtn {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 27px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: transparent;
+    border: 1px solid #ccc;
+}
+.BasketStripeStyle{
+    color: var(--brown-100, #471915);
+    font-family: Montserrat Alternates;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; /* 41.6px */
+   
+}
+.totalPriceStyle{
+    display: flex;
+    width: 359px;
+    height: 206px;
+    padding: 25px 20px 40px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 19px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #F8F8F8;
+
+/* shadow/cards */
+box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+
+
+
+}
+.itemStyle{
+    
+    align-items: flex-start;
+    gap: 100px;
+    overflow: scroll;
+    max-width: 250px;
+    
+}
+.input {
+    width: 38px;
+    height: 32px;
+    line-height: 27px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-left: none;
+}
+
+.price {
+    text-align: right;
+}
+.quantity-container {
+    display: flex;
+    align-items: center;
+}
+
+.quantityStyle {
+    /* Додайте стилізацію для блоку 'quantityStyle' за вашими потребами */
+    width: 50px; /* Наприклад, встановіть бажану ширину */
+    margin: 0 10px; /* Наприклад, встановіть бажаний відступ */
+    border-width: 0cap;
+    text-align: center;
+    color: var(--blue-100, #0A3D58);
+    text-align: center;
+    font-family: Montserrat Alternates;
+    font-size: 22px;
+    font-style: bold;
+    
+}
+
+.buttonQuatity{
+    display: block;
+    text-align: center;
+    width: 24px; 
+    height: 24px;
+    padding: 10px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 26px;
+    background: var(--gray-light-2, #E1E3E3);
+    fill: var(--blue-100, #0A3D58);
+    font-weight: 'bold';
+
+}
+.makeOrderButton{
+    display:block;
+    width: 360px;
+    height: 50px;
+    justify-content: center;
+    align-items: bottom;
+    gap: 5px;
+    flex-shrink: 0;
+    border-radius: 0px 26px 26px 0px;
+    border-bottom: 1px solid var(--orange-100, #D17100);
+    background: var(--orange-100, #D17100);
+    /* shadow/cards */
+    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+    color: #FFF;
+
+    /* H4/Med20px */
+    font-family: Montserrat Alternates;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; /* 26px */
+}
+.goToStoreButton{
+    display: inline-flex;
+    padding: 10px 10px 10px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid var(--brown-100, #471915);
+    color: var(--brown-100, #471915);
+    /* H4/Med20px */
+    font-family: Montserrat Alternates;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; /* 26px */
+}
+.cartItemContainer {
+    max-height: 200px; /* Set a maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
