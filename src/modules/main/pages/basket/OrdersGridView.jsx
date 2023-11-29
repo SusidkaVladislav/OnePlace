@@ -2,9 +2,7 @@ import React, { Fragment } from 'react';
 
 import
 {
-    Table,
     Button,
-    Stack,
     Grid,
     Typography,
     Divider,
@@ -30,24 +28,22 @@ const OrdersGridView = (props) =>
         }
     ];
 
-    const xs = useMediaQuery('(min-width: 0px)');
     const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
 
 
-    const cart = Data;
 
-    const totalPrice = Data.reduce((acc, item) =>
-    {
-        const itemTotalPrice = item.price * item.quantity;
-        return acc + itemTotalPrice;
-    }, 0);
-    const totalDiscountPrice = Data.reduce((acc, item) =>
-    {
-        const itemTotalPrice = (item.price - item.discount) * item.quantity;
-        return acc + itemTotalPrice;
-    }, 0);
+    // const totalPrice = Data.reduce((acc, item) =>
+    // {
+    //     const itemTotalPrice = item.price * item.quantity;
+    //     return acc + itemTotalPrice;
+    // }, 0);
+    // const totalDiscountPrice = Data.reduce((acc, item) =>
+    // {
+    //     const itemTotalPrice = (item.price - item.discount) * item.quantity;
+    //     return acc + itemTotalPrice;
+    // }, 0);
 
     return (
         <Grid
@@ -355,6 +351,7 @@ const OrdersGridView = (props) =>
                 </Grid>
 
                 <Grid
+                    item
                     order={1}
                     display={sm && 'none'}
                     xs={12}

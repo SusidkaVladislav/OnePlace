@@ -11,11 +11,11 @@ import
 import { useDispatch, useSelector } from "react-redux"
 import
 {
-    removeItem,
-    updateQuantity,
-    incrementTotalPrice,
-    decrementTotalPrice,
-    updateDiscountPrice
+    // removeItem,
+    // updateQuantity,
+    // incrementTotalPrice,
+    // decrementTotalPrice,
+    // updateDiscountPrice
 
 } from "../../features/basket_features/cartSlice";
 
@@ -38,41 +38,41 @@ const PhoneCartItem = () =>
         }
     ];
 
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
+    // const xs = useMediaQuery('(min-width: 0px)');
+    // const sm = useMediaQuery('(min-width: 600px)');
+    // const md = useMediaQuery('(min-width: 900px)');
+    // const lg = useMediaQuery('(min-width: 1200px)');
 
-    const dispatch = useDispatch();
-    const [quantity, setQuantity] = useState(Data.quantity);
-    const [totalPrice, setTotalPrice] = useState(0);
+    // const dispatch = useDispatch();
+    // const [quantity, setQuantity] = useState(Data.quantity);
+    // const [totalPrice, setTotalPrice] = useState(0);
 
-    const handleChange = (e) =>
-    {
-        const value = parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1;
-        setQuantity(value);
-    };
+    // const handleChange = (e) =>
+    // {
+    //     const value = parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1;
+    //     setQuantity(value);
+    // };
 
-    const handleRemove = () =>
-    {
-        dispatch(removeItem({ id: Data.id }));
-    };
+    // const handleRemove = () =>
+    // {
+    //     dispatch(removeItem({ id: Data.id }));
+    // };
 
-    useEffect(() =>
-    {
-        // Update totalPrice whenever quantity changes
-        const newTotalPrice = Data.price * quantity - Data.discount;
-        // Data.reduce((acc, item) => {
-        //     const itemTotalPrice = (item.price - item.discount) * item.quantity;
-        //     return acc + itemTotalPrice;
-        //   }, 0);
-        setTotalPrice(newTotalPrice);
+    // useEffect(() =>
+    // {
+    //     // Update totalPrice whenever quantity changes
+    //     const newTotalPrice = Data.price * quantity - Data.discount;
+    //     // Data.reduce((acc, item) => {
+    //     //     const itemTotalPrice = (item.price - item.discount) * item.quantity;
+    //     //     return acc + itemTotalPrice;
+    //     //   }, 0);
+    //     setTotalPrice(newTotalPrice);
 
-        // Dispatch the necessary actions
-        dispatch(updateQuantity({ id: Data?.id, quantity }));
-        dispatch(incrementTotalPrice(newTotalPrice));
-        dispatch(decrementTotalPrice(newTotalPrice));
-    }, [quantity, Data?.price, Data?.id, dispatch, Data.discount]);
+    //     // Dispatch the necessary actions
+    //     dispatch(updateQuantity({ id: Data?.id, quantity }));
+    //     dispatch(incrementTotalPrice(newTotalPrice));
+    //     dispatch(decrementTotalPrice(newTotalPrice));
+    // }, [quantity, Data?.price, Data?.id, dispatch, Data.discount]);
 
 
     return (

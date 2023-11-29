@@ -19,9 +19,13 @@ export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters'
 {
     try
     {
-        const response = await axios.post(REACT_APP_BASE_URL + '/Product/search', filter);
+        const response = await axios.post(REACT_APP_BASE_URL + '/Product/search', filter, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access-token")}`
+            }
+        });
         return response.data;
-    } 
+    }
     catch (error)
     {
         if (error.code === 'ERR_NETWORK')

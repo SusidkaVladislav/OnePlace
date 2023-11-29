@@ -33,6 +33,12 @@ import
 {
     getCategoryProductsInfo
 } from '../../features/analitics/userAnaliticSlice';
+
+import
+{
+    getUserCart,
+} from '../../features/basket_features/cartSlice';
+
 //#endregion
 
 //#region Icons
@@ -59,6 +65,8 @@ const ProductsByCategoryPage = () =>
     const [filtersSet, setFiltersSet] = useState({});
     const [minPrice, setMinPrice] = useState(Number(filtersSet.minPrice) > 0 && filtersSet.minPrice !== null ? Number(filtersSet.minPrice) : null)
     const [maxPrice, setMaxPrice] = useState(Number(filtersSet.maxPrice) > 0 && filtersSet.maxPrice !== null ? Number(filtersSet.maxPrice) : null)
+
+    const [productsInCart, setProductsInCart] = useState([]);
 
     const {
         isCategoryOpen,
@@ -92,7 +100,12 @@ const ProductsByCategoryPage = () =>
 
     useEffect(() =>
     {
-        dispatch(resetErrorProduct())
+        dispatch(resetErrorProduct());
+
+        //Якщо користувач авторизований, то з БД підтягуєтсья корзина того коритсувача,
+        // якщо не авторизований, то нічого не міняєтсья 
+        dispatch(getUserCart());
+
         var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY));
         if (filters !== null && filters.category === Number(params.id))
         {
@@ -104,6 +117,17 @@ const ProductsByCategoryPage = () =>
             setFiltersSet(filters)
             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filters));
         }
+
+        let cart = [];
+        let cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'));
+        if (cartFromLocalStorage !== null)
+        {
+            Object.values(cartFromLocalStorage).forEach(item =>
+            {
+                cart.push(item);
+            });
+        }
+        setProductsInCart(cart);
 
         setCategoryId(params.id)
         categoryPath.current = [];
@@ -747,15 +771,22 @@ const ProductsByCategoryPage = () =>
                                 justifyContent="center"
                                 alignItems="center"
                             >
+
                                 <ProductCard
                                     id={product.id}
                                     picture={product.picture}
-                                    isInCart={product.isInCart}
+                                    isInCart={
+                                        productsInCart.length > 0 ?
+                                            productsInCart.some(item => item.productId === product.id)
+                                            :
+                                            product.isInCart
+                                    }
                                     isInLiked={product.isInLiked}
                                     name={product.name}
                                     discountPercent={product.discountPercent}
                                     price={product.price}
                                     isInStock={product.isInStock}
+                                    colorId={product.colorId}
                                 />
                             </Grid>
                         )
@@ -779,6 +810,7 @@ const ProductsByCategoryPage = () =>
                         pageSize={PAGE_SIZE}
                         onPageChange={(page) =>
                         {
+
                             var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY))
                             filters.page = page;
                             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filters));

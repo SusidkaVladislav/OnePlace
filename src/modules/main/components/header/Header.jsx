@@ -1,7 +1,13 @@
 import React, { Fragment, useState } from 'react';
 import './Header.css';
 
-import { AppBar, Toolbar, Stack } from '@mui/material';
+import
+{
+  AppBar,
+  Toolbar,
+  Stack,
+  Badge,
+} from '@mui/material';
 
 import SearchBar from '../../controls/SearchBar';
 
@@ -27,6 +33,24 @@ import
   setIsLoginFormOpen,
   setBeforeAuthPath,
 } from '../../features/userAuth/userAuthSlice';
+
+import { styled } from '@mui/material/styles';
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    minWidth: '20px',
+    right: -4,
+    top: 2,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+    background: '#B31D21',
+    color: '#FFF',
+    textHeight: '10.5px',
+    fontWeight: 500,
+    fontFamily: 'Montserrat Alternates',
+  },
+}));
+
 const Header = () =>
 {
   const dispatch = useDispatch();
@@ -34,6 +58,9 @@ const Header = () =>
 
   const [isMouseOverCategory, setIsMouseOverCategory] = useState(false);
 
+  const {
+    cartCount
+  } = useSelector(state => state.userBasket)
 
   const {
     isCategoryOpen
@@ -59,6 +86,16 @@ const Header = () =>
   const onShowCategoryClickHandler = () =>
   {
     dispatch(setIsCategoryOpen(!isCategoryOpen))
+  }
+
+  const onAuth = () =>
+  {
+    dispatch(setBeforeAuthPath(window.location.pathname))
+
+    navigate('/user')
+
+    if (!isAuthState)
+      dispatch(setIsLoginFormOpen(true));
   }
 
   return (
@@ -137,26 +174,32 @@ const Header = () =>
             style={{
               cursor: 'pointer'
             }}
-            onClick={() =>
-            {
-              dispatch(setBeforeAuthPath(window.location.pathname))
-
-              navigate('/user')
-
-              if (!isAuthState)
-                dispatch(setIsLoginFormOpen(true))
-
-            }}>
+            onClick={onAuth}>
             <UserIcon /></span>
 
+          <span
+            style={{
+              cursor: 'pointer'
+            }}
+          >
+            <HeartIcon />
+          </span>
 
-          <HeartIcon onClick={() => {/* Navigate to a different page */ }}>
-            {/* Your icon component for another page navigation */}
-          </HeartIcon>
 
-          <CartIcon onClick={() => {/* Navigate to a different page */ }}>
-            {/* Your icon component for yet another page navigation */}
-          </CartIcon>
+          <StyledBadge
+            badgeContent={cartCount}
+            style={{
+              cursor: 'pointer'
+            }}
+            onClick={() =>
+            {
+              navigate('/basket')
+            }}
+          >
+            <CartIcon />
+          </StyledBadge>
+
+
         </Toolbar>
 
 

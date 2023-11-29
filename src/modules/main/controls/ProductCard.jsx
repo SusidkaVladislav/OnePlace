@@ -7,9 +7,27 @@ import Badge from '@mui/material/Badge';
 import HeartIcon from '../../../svg/client-icons/header/HeartIcon';
 import FilledHeartIcon from '../../../svg/client-icons/header/FilledHeartIcon';
 import CartIcon from '../../../svg/client-icons/header/CartIcon';
+import { useNavigate } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
+import
+{
+    addToCart,
+    getUserCart,
+    deleteFromCart,
+    setCartCount,
+} from '../features/basket_features/cartSlice';
+
+
+const LOCAL_STORAGE_CART_KEY = 'cart';
 const ProductCard = (props) =>
 {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {
+        isAuth,
+    } = useSelector(state => state.userBasket);
+
     const {
         id,
         name,
@@ -19,6 +37,7 @@ const ProductCard = (props) =>
         isInLiked,
         price,
         isInStock,
+        colorId,
     } = props;
 
     const [filled, setFilled] = useState(isInLiked);
@@ -29,10 +48,161 @@ const ProductCard = (props) =>
         setFilled(!filled);
     }
 
-    function AddToCart()
+    async function onCartAdd()
     {
         setInCart(!inCart);
+
+        //Якщо користувач авторизований і треба додати в корзину
+        if (isInCart === false && isAuth)
+        {
+            let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+            if (cartFromLocalStorage !== null)
+            {
+                if (cartFromLocalStorage.every(item => item.productId !== id || item.colorId !== colorId))
+                    await dispatch(addToCart(
+                        {
+                            productId: Number(id),
+                            colorId: Number(colorId),
+                        }
+                    ))
+                        .then(() =>
+                        {
+                            dispatch(getUserCart());
+                        })
+                else
+                {
+                    await dispatch(deleteFromCart(
+                        {
+                            productId: Number(id),
+                            colorId: Number(colorId),
+                        }
+                    ))
+                        .then(() =>
+                        {
+                            dispatch(getUserCart());
+                        })
+                }
+            }
+            else
+            {
+                await dispatch(addToCart(
+                    {
+                        productId: Number(id),
+                        colorId: Number(colorId),
+                    }
+                ))
+                    .then(() =>
+                    {
+                        dispatch(getUserCart());
+                    })
+            }
+        }
+
+        //Якщо користувач авторизований і треба видалити з корзини
+        else if (isInCart && isAuth)
+        {
+            let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+            if (cartFromLocalStorage !== null)
+            {
+
+                if (cartFromLocalStorage.some(item => item.productId === id || item.colorId === colorId))
+                {
+                    await dispatch(deleteFromCart(
+                        {
+                            productId: Number(id),
+                            colorId: Number(colorId),
+                        }
+                    ))
+                        .then(() =>
+                        {
+                            dispatch(getUserCart());
+                        })
+                }
+
+                else
+                {
+                    await dispatch(addToCart(
+                        {
+                            productId: Number(id),
+                            colorId: Number(colorId),
+                        }
+                    ))
+                        .then(() =>
+                        {
+                            dispatch(getUserCart());
+                        })
+                }
+            }
+            else
+            {
+                await dispatch(deleteFromCart(
+                    {
+                        productId: Number(id),
+                        colorId: Number(colorId),
+                    }
+                ))
+                    .then(() =>
+                    {
+                        dispatch(getUserCart());
+                    })
+            }
+
+        }
+
+        // Якщо користувач не авторизований і треба добавити в корзину
+        else if (isInCart === false && !isAuth)
+        {
+            var cart = [];
+
+            let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+            if (cartFromLocalStorage !== null)
+            {
+                if (cartFromLocalStorage.every(item => item.productId !== id || item.colorId !== colorId))
+                    cart.push({
+                        productId: Number(id),
+                        colorId: Number(colorId),
+                    });
+
+                Object.values(cartFromLocalStorage).forEach(item =>
+                {
+                    if (item.productId !== id || item.colorId !== colorId)
+                        cart.push(item);
+                });
+            }
+            dispatch(setCartCount(cart.length));
+            localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cart));
+        }
+        //Якщо користувач не авторизований і треба видалити з корзини
+        else
+        {
+            let cart = [];
+            let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+            if (cartFromLocalStorage !== null)
+            {
+                if (cartFromLocalStorage.some(item => item.productId === id || item.colorId === colorId))
+                    cartFromLocalStorage = cartFromLocalStorage.filter(item => item.productId !== id || item.colorId !== colorId);
+                else
+                {
+                    cartFromLocalStorage = cartFromLocalStorage.filter(item => item.productId !== id || item.colorId !== colorId);
+                    cart.push({
+                        productId: Number(id),
+                        colorId: Number(colorId),
+                    });
+                }
+
+                Object.values(cartFromLocalStorage).forEach(item =>
+                {
+                    cart.push(item);
+                });
+            }
+            dispatch(setCartCount(cart.length));
+            localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cart));
+        }
     }
+
 
     return (
         <Card sx={{
@@ -84,7 +254,7 @@ const ProductCard = (props) =>
                     </Typography>
                     {/* Можна виикориствоувати t2-medium-orange і t2-medium-green */}
                     <Typography id="availability" className={isInStock ? 't2-medium-green' : 't2-medium-orange'} sx={{ paddingTop: '12px' }}>
-                        {isInStock? 'В наявності' : 'Немає в наявності'}
+                        {isInStock ? 'В наявності' : 'Немає в наявності'}
                     </Typography>
                     <Typography id="price" className='t1-bold-red' sx={{ paddingTop: '12px' }}>
                         {Number(price) - Number(price) * Number(discountPercent) / 100} грн
@@ -97,10 +267,17 @@ const ProductCard = (props) =>
                         ) : (<></>)
                     }
 
-
-                    <div style={{ position: "absolute", bottom: "35px", right: "12px" }} onClick={AddToCart}>
+                    <div
+                        style={{
+                            position: "absolute",
+                            bottom: "35px",
+                            right: "12px",
+                            cursor: "pointer"
+                        }}
+                        onClick={onCartAdd}
+                    >
                         <Badge color="primary" badgeContent=" " variant="dot" overlap="circular" invisible={!inCart} >
-                            <CartIcon onClick={() => {/* Navigate to a different page */ }}></CartIcon>
+                            <CartIcon></CartIcon>
                         </Badge>
                     </div>
                 </CardContent>

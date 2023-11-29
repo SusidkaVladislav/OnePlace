@@ -1,28 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Header from '../../components/header/Header';
-
-import
-    {
-        Container,
-        Table, Button,
-        Stack,
-    } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux"
-import "./BasketStyle.css";
+import
+{
+    getCategoriesForSelect
+} from '../../features/categories/userCategorySlice';
 
+import "./BasketStyle.css";
+import CategorySelectBox from '../../controls/CategorySelectBox';
 
 import OrdersGridView from "./OrdersGridView"
 
 
 const Basket = () =>
 {
+    const dispatch = useDispatch();
+
+    const {
+        isCategoryOpen,
+    } = useSelector(state => state.userCategories);
+
+    useEffect(() =>
+    {
+        dispatch(getCategoriesForSelect())
+    }, [])
 
     return (
-        <div>
-            
+        <Fragment>
             <Header />
+            {
+                isCategoryOpen && (
+                    <CategorySelectBox />
+                )
+            }
             <OrdersGridView />
-        </div>
+        </Fragment>
     )
 
 }
