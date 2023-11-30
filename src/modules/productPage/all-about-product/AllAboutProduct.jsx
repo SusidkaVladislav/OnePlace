@@ -88,7 +88,7 @@ const AllAboutBroduct = () => {
 
     return(
         <Grid container>
-            <Grid item className="product-gallery-root" xs={12} xl={4.7}>
+            <Grid item className="product-gallery-root" xs={12} md={4.7} xl={4.7}>
             <Card>
             <div className='product-gallery-cardmedia-container'>
               <CardMedia
@@ -122,8 +122,8 @@ const AllAboutBroduct = () => {
           </Grid>
 
 
-          <Grid item xl={0.3}></Grid>
-            <Grid item className='aap-container1' xs={12} xl={7}>
+          <Grid item md = {0.3} xl={0.3}></Grid>
+            <Grid item className='aap-container1' xs={12} md={7} xl={7}>
               <div className='aap-container2'>
                 <h4>Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)</h4>
 

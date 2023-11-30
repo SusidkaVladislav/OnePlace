@@ -14,8 +14,6 @@ import MyPersonalData from './modules/client-area/cabinet/my-personal-data/MyPer
 import MyPurse from './modules/client-area/cabinet/my-purse/MyPurse';
 import MyReviews from './modules/client-area/cabinet/my-reviews/MyReviews';
 
-import Basket from "./modules/main/pages/basket/Basket";
-
 import ProductPage from './modules/productPage/productPage';
 //#endregion
 
@@ -66,7 +64,6 @@ function App()
 
         <Route path="/product-page" element={<ProductPage/>}/>
 
-        <Route path="basket" element={<Basket />} />
         <Route path='/server-connection-error' element={<NoServerConnection />} />
 
         <Route path='category/:id' element={<CategoryPage />} />

@@ -6,9 +6,17 @@ import Typography from "@mui/material/Typography";
 import BlueRightLongArrow from '../../../svg/arrows/BlueRightLongArrow';
 import Divider from "../../../svg/shared-icons/Divider";
 import AllAboutBroduct from '../all-about-product/AllAboutProduct';
+import ProductCharacteristics from "../product-characteristics/ProductCharacteristics";
+import Reviews from "../reviews/Reviews";
+import CouldInterest from '../could-interest/CouldInterest';
 
 const ProductInfo = () => {
-    const [selectedInfoPage, setSelectedInfoPage] = useState(null);
+    const [activeMenuItem, setActiveMenuItem] = useState('allAboutProduct'); 
+
+    const handleMenuItemClick = (menuItem) => {
+      setActiveMenuItem(menuItem);
+    };
+  
 
     return(
         <div className='pi-container1'>
@@ -36,25 +44,34 @@ const ProductInfo = () => {
                     </Grid>
                 </Grid>
                 <Grid container className="pi-menu-container">
-                    <Grid item>
-                        <Typography className="t1-bold-orange1">Усе про товар</Typography>
+                    <Grid item className="pi-menu-item"  onClick={() => handleMenuItemClick('allAboutProduct')}>
+                        <Typography className={activeMenuItem === 'allAboutProduct' ? 't1-bold-orange1' : 't1-light'}>Усе про товар</Typography>
                     </Grid>
                     <Grid item  className="pi-divider-container">
                         <Divider/>
                     </Grid>
-                    <Grid item>
-                        <Typography className="t1-light">Характеристики</Typography>
+                    <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('characteristics')}>
+                        <Typography  className={activeMenuItem === 'characteristics' ? 't1-bold-orange1' : 't1-light'}>Характеристики</Typography>
                     </Grid>
                     <Grid item  className="pi-divider-container">
-                        <Divider/>
+                    <Divider/>
                     </Grid>
-                    <Grid item>
-                        <Typography className="t1-light">Відгуки</Typography>
+                    <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('reviews')}>
+                        <Typography className={activeMenuItem === 'reviews' ? 't1-bold-orange1' : 't1-light'}>Відгуки</Typography>
                     </Grid>
                 </Grid>
                 <div className='pi-info-container'>
+                    <div className={activeMenuItem === 'allAboutProduct' ? 'visible' : 'hidden'}>
                     <AllAboutBroduct/>
+                    </div>
+                    <div className={activeMenuItem === 'characteristics' ? 'visible' : 'hidden'}>
+                    <ProductCharacteristics/>
+                    </div>
+                    <div className={activeMenuItem === 'reviews' ? 'visible' : 'hidden'}>
+                    <Reviews/>
+                    </div>
                 </div>
+                <CouldInterest/>
         </div>
     )
 }

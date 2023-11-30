@@ -1,0 +1,28 @@
+.review-container1{
+    border-radius: 15px;
+    border: 1px solid var(--brown-40, #B5A3A1);
+    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.review-container2{
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.review-container3{
+    display: flex;
+    justify-content: space-between;
+}
+
+.review-container4{
+    justify-content: flex-end;
+}
+
+.review-description{
+    padding-top: 20px;
+}
