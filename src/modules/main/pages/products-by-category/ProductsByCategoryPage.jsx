@@ -100,6 +100,9 @@ const ProductsByCategoryPage = () =>
 
     useEffect(() =>
     {
+        if (localStorage.getItem("cart") === null)
+            localStorage.setItem("cart", JSON.stringify([]));
+
         dispatch(resetErrorProduct());
 
         //Якщо користувач авторизований, то з БД підтягуєтсья корзина того коритсувача,

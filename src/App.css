@@ -388,6 +388,15 @@ h5.bold-orange {
   line-height: 130%;
 }
 
+.red-400-12 {
+  color: var(--red);
+  font-family: 'Montserrat Alternates';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

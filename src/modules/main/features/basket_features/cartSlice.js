@@ -4,13 +4,18 @@ import { instance } from '../../../../api.config';
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    list: [],
-    total: 0,
-    totalPrice: 0,
+    products: [],
+
+    checkedProductIds: [],
+
+    productPriceSum: 0,
+    totalOrderPrice: 0,
     discountPrice: 0,
-    loading: false,
+
     isAuth: false,
     cartCount: 0,
+
+    loading: false,
 };
 
 export const addToCart = createAsyncThunk('user/addToCart', async (cart, { rejectWithValue }) =>
@@ -97,6 +102,34 @@ export const deleteFromCart = createAsyncThunk('user/deleteFromCart', async (car
     }
 })
 
+export const getProductsFromCart = createAsyncThunk('user/getProductsFromCart', async (ids, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(`${REACT_APP_BASE_URL}/Product/getProductsFromCart`, ids);
+        return response.data;
+    }
+    catch (error) 
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
@@ -107,63 +140,35 @@ const cartSlice = createSlice({
                 ...state,
                 cartCount: payload
             }
-        }
-        // addToCart: (state, action) =>
-        // {
-        //     const check = state.list.findIndex(book => book.id === action.payload.id)
-        //     if (check !== -1)
-        //     {
-        //         state.list[check].quantity += action.payload.quantity
-        //     } else
-        //     {
-        //         state.list.push(action.payload)
-        //     }
-
-        //     state.total = state.list.reduce((sum, book) => sum + +book?.price * book?.quantity, 0)
-        // },
-        // updateQuantity: (state, action) =>
-        // {
-        //     const check = state.list.findIndex(book => book.id === action.payload.id)
-        //     if (check !== -1)
-        //     {
-        //         state.list[check].quantity = action.payload.quantity
-        //     }
-        //     state.total = state.list.reduce((sum, book) => sum + +book?.price * book?.quantity, 0)
-        // },
-        // removeItem: (state, action) =>
-        // {
-        //     state.list = state.list.filter(book => book.id !== action.payload.id)
-        //     state.total = state.list.reduce((sum, book) => sum + +book?.price * book?.quantity, 0)
-        // },
-        // incrementTotalPrice: (state, action) =>
-        // {
-        //     let price = action.payload + state.totalPrice;
-
-        //     return {
-        //         ...state,
-        //         totalPrice: price,
-
-        //     }
-
-        // },
-        // decrementTotalPrice: (state, action) =>
-        // {
-        //     let price = state.totalPrice - action.payload;
-
-        //     return {
-        //         ...state,
-        //         totalPrice: price,
-
-        //     }
-
-        // },
-        // updateDiscountPrice: (state, { payload }) =>
-        // {
-        //     return {
-        //         ...state,
-        //         discountPrice: payload,
-        //     }
-        // }
+        },
+        changeProductPriceSum: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                productPriceSum: payload,
+            }
+        },
+        changeTotalOrderPrice: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                totalOrderPrice: payload,
+            }
+        },
+        changeDiscountPrice: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                discountPrice: payload
+            }
+        },
+        setCheckedIds: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                checkedProductIds: payload,
+            }
+        },
     },
     extraReducers(builder)
     {
@@ -249,15 +254,38 @@ const cartSlice = createSlice({
                     loading: false,
                 }
             })
+
+            .addCase(getProductsFromCart.pending, (state,) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getProductsFromCart.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    products: payload
+                }
+            })
+            .addCase(getProductsFromCart.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
     }
 })
 
-//const { actions, reducer } = cartSlice
-
-
 export const {
     setCartCount,
-    // addToCart, updateQuantity, removeItem, decrementTotalPrice, incrementTotalPrice, discountPrice 
+    changeProductPriceSum,
+    changeTotalOrderPrice,
+    changeDiscountPrice,
+    setCheckedIds,
 } = cartSlice.actions
 
 export default cartSlice.reducer

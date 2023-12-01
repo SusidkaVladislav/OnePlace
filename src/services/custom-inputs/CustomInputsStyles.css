@@ -53,3 +53,24 @@
 .custom-checkbox-1 input[type="checkbox"] {
     display: none;
 }
+
+.custom-checkbox-2 {
+    position: relative;
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 90px;
+    border: 2px solid var(--brown3);
+}
+
+.custom-checkbox-2 input:checked+.custom-checkbox-checkmark-1 {
+    display: block;
+    margin-top: -25%;
+}
+
+.custom-checkbox-2 input[type="checkbox"] {
+    display: none;
+}

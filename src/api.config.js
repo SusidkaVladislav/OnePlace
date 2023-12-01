@@ -66,14 +66,16 @@ instance.interceptors.response.use(
           isRefreshing = false;
 
           return instance.request(originalRequest);
-        } catch (error)
+        } 
+        catch (error)
         {
           localStorage.clear();
           localStorage.removeItem('persist:adminProduct');
           localStorage.removeItem('persist:root');
           window.location.reload();
         }
-      } else
+      } 
+      else
       {
         return new Promise((resolve) =>
         {
@@ -84,7 +86,8 @@ instance.interceptors.response.use(
           });
         });
       }
-    } else if (error.response.status === 400)
+    } 
+    else if (error.response.status === 400)
     {
       return Promise.reject(error);
     }
@@ -92,71 +95,3 @@ instance.interceptors.response.use(
     throw error;
   }
 );
-
-
-
-
-
-
-// instance.interceptors.response.use(
-//   (response) =>
-//   {
-//     return response;
-//   },
-
-//   async (error) =>
-//   {
-//     const originalRequest = { ...error.config };
-//     originalRequest._isRetry = true;
-
-//     if (error.response.status === 401 && error.config && !error.config._isRetry)
-//     {
-//       if (!isRefreshing)
-//       {
-//         isRefreshing = true;
-
-//         try
-//         {
-//           const accessToken = localStorage.getItem("access-token");
-
-//           const resp = await instance.post(
-//             `${REACT_APP_BASE_URL}/Account/refresh`,
-//             null,
-//             {
-//               params: {
-//                 accessToken: accessToken,
-//               },
-//               withCredentials: true,
-//             }
-//           );
-
-//           localStorage.setItem("access-token", resp.data);
-//           onTokenRefreshed(resp.data);
-//           refreshSubscribers = [];
-//           isRefreshing = false;
-//           return instance.request(originalRequest);
-//         }
-//         catch (error)
-//         {
-//           localStorage.clear();
-//           localStorage.removeItem('persist:adminProduct')
-//           localStorage.removeItem('persist:root')
-//           window.location.reload();
-
-//         }
-//       }
-//       else
-//       {
-//         return new Promise((resolve) =>
-//         {
-//           subscribeTokenRefresh((token) =>
-//           {
-//             originalRequest.headers.Authorization = `Bearer ${token}`;
-//             resolve(instance.request(originalRequest));
-//           });
-//         });
-//       }
-//     }
-//     throw error;
-//   }
-// );

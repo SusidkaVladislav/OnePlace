@@ -1,260 +1,450 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import
 {
     Button,
     Typography,
     Grid,
-    useMediaQuery,
-
 } from "@mui/material";
+
 import { useDispatch, useSelector } from "react-redux"
 import
 {
-    // removeItem,
-    // updateQuantity,
-    // incrementTotalPrice,
-    // decrementTotalPrice,
-    // updateDiscountPrice
-
+    changeProductPriceSum,
+    changeTotalOrderPrice,
+    changeDiscountPrice,
+    setCheckedIds,
+    deleteFromCart,
+    setCartCount,
+    getProductsFromCart,
 } from "../../features/basket_features/cartSlice";
 
 import ButtonMinusXS from '../../../../svg/basket-icons/ButtonMinusXS';
 import ButtonPlusXS from '../../../../svg/basket-icons/ButtonPlusXS';
 import ButtonTrash from '../../../../svg/basket-icons/trash';
+import CustomCheckbox from '../../../../services/custom-inputs/CustomCheckbox2';
 
-
-const PhoneCartItem = () =>
+const PhoneCartItem = (props) =>
 {
-    const Data = [
+    const dispatch = useDispatch();
+
+    const {
+        id,
+        name,
+        imageURL,
+        price,
+        availableQuantity,
+        discount,
+        colorId,
+    } = props;
+
+    const {
+        productPriceSum,
+        discountPrice,
+        checkedProductIds,
+    } = useSelector(state => state.userBasket)
+
+    const onSelectProduct = (value) =>
+    {
+        //Якщо товар вибраний, то значить його ціну треба додати до загальної
+        if (availableQuantity > 0)
         {
-            id: 1,
-            quantity: 10,
-            price: 100,
-            discount: 10,
-            available: 'В наявності',
-            imageURL: 'data:image/jpeg;base64,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',
-            name: 'Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)',
+            if (value)
+            {
+                let ids = [];
+                ids.push({
+                    id: id,
+                    count: 1
+                })
+                checkedProductIds.map(item =>
+                {
+                    ids.push(item);
+                })
+                dispatch(setCheckedIds(ids));
+
+                dispatch(changeProductPriceSum(productPriceSum + price))
+                dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
+                dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
+            }
+            else
+            {
+                let ids = [];
+                let count = 0;
+                checkedProductIds.map(item =>
+                {
+                    if (item.id !== id)
+                        ids.push(item);
+                    else
+                        count = item.count;
+                })
+                dispatch(setCheckedIds(ids));
+
+                dispatch(changeProductPriceSum(productPriceSum - price * count))
+                dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * count))
+                dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
+            }
         }
-    ];
+    }
 
-    // const xs = useMediaQuery('(min-width: 0px)');
-    // const sm = useMediaQuery('(min-width: 600px)');
-    // const md = useMediaQuery('(min-width: 900px)');
-    // const lg = useMediaQuery('(min-width: 1200px)');
+    const incrementCount = () =>
+  {
+    let ids = [];
+    let isAvaliableQuantity = true;
+    
+    if (availableQuantity > 0)
+    {
+      //Якщо цей товар не вибраний чекбоксом
+      if (checkedProductIds.every(item => item.id !== id))
+      {
+        if (availableQuantity >= 1)
+        {
+          ids.push({
+            id: id,
+            count: 1
+          })
+          checkedProductIds.map(item =>
+          {
+            ids.push(item);
+          })
+        }
+        else
+        {
+          isAvaliableQuantity = false;
+        }
+      }
+      else
+      {
+        checkedProductIds.map(item =>
+        {
+          if (item.id !== id)
+          {
+            ids.push(item);
+          }
+          else
+          {
+            if ((item.count + 1) <= availableQuantity)
+            {
+              ids.push({
+                id: item.id,
+                count: item.count + 1
+              })
+            }
+            else 
+            {
+              ids.push({
+                id: item.id,
+                count: item.count
+              })
 
-    // const dispatch = useDispatch();
-    // const [quantity, setQuantity] = useState(Data.quantity);
-    // const [totalPrice, setTotalPrice] = useState(0);
+              isAvaliableQuantity = false;
+            }
+          }
+        })
+      }
+      dispatch(setCheckedIds(ids));
+      if (isAvaliableQuantity)
+      {
+        dispatch(changeProductPriceSum(productPriceSum + price))
+        dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
+        dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
+      }
+    }
+  }
 
-    // const handleChange = (e) =>
-    // {
-    //     const value = parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1;
-    //     setQuantity(value);
-    // };
+    const decrementCount = () =>
+    {
+        let ids = [];
+        //Якщо цей товар не вибраний чекбоксом
+        if (checkedProductIds.some(item => item.id === id))
+        {
+            checkedProductIds.map(item =>
+            {
+                if (item.id === id && item.count > 1)
+                    ids.push(
+                        {
+                            id: item.id,
+                            count: item.count - 1,
+                        }
+                    );
+                else if (item.id !== id)
+                {
+                    ids.push(item);
+                }
+            })
+            dispatch(setCheckedIds(ids));
 
-    // const handleRemove = () =>
-    // {
-    //     dispatch(removeItem({ id: Data.id }));
-    // };
+            dispatch(changeProductPriceSum(productPriceSum - price))
+            dispatch(changeDiscountPrice(discountPrice - price * discount / 100))
+            dispatch(changeTotalOrderPrice((productPriceSum - price) - (discountPrice - price * discount / 100)))
+        }
+    }
 
-    // useEffect(() =>
-    // {
-    //     // Update totalPrice whenever quantity changes
-    //     const newTotalPrice = Data.price * quantity - Data.discount;
-    //     // Data.reduce((acc, item) => {
-    //     //     const itemTotalPrice = (item.price - item.discount) * item.quantity;
-    //     //     return acc + itemTotalPrice;
-    //     //   }, 0);
-    //     setTotalPrice(newTotalPrice);
+    const onDeleteFromCart = async () =>
+    {
+        let cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'));
 
-    //     // Dispatch the necessary actions
-    //     dispatch(updateQuantity({ id: Data?.id, quantity }));
-    //     dispatch(incrementTotalPrice(newTotalPrice));
-    //     dispatch(decrementTotalPrice(newTotalPrice));
-    // }, [quantity, Data?.price, Data?.id, dispatch, Data.discount]);
+        if (cartFromLocalStorage !== null)
+        {
+            if (cartFromLocalStorage.some(item => item.productId === id || item.colorId === colorId))
+            {
+                await dispatch(deleteFromCart(
+                    {
+                        productId: Number(id),
+                        colorId: Number(colorId),
+                    }
+                ))
+                if (cartFromLocalStorage.some(item => item.productId === id || item.colorId === colorId))
+                    cartFromLocalStorage = cartFromLocalStorage.filter(item => item.productId !== id || item.colorId !== colorId);
 
+                localStorage.setItem('cart', JSON.stringify(cartFromLocalStorage));
+                dispatch(setCartCount(cartFromLocalStorage.length));
+
+                const product = checkedProductIds.find(item => item.id === id);
+                if (product !== undefined)
+                {
+                    dispatch(changeProductPriceSum(productPriceSum - price * product.count))
+                    dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * product.count))
+                    dispatch(changeTotalOrderPrice(((productPriceSum - price * product.count) - (discountPrice - (price * discount / 100) * product.count))))
+                }
+
+                if (cartFromLocalStorage !== null)
+                {
+                    await dispatch(getProductsFromCart(cartFromLocalStorage))
+                }
+            }
+        }
+    }
 
     return (
-
         <Grid
             container
-            item
-            xs={12}
             sx={{
                 height: '117px',
                 marginTop: '25px',
                 borderBottom: '1px solid #B5A3A1',
                 paddingBottom: '25px',
             }}
-            justifyContent={'space-between'}
-            alignContent={'space-between'}
         >
-
             <Grid
                 container
                 item
-                xs={12}
-                height={'52.76px'}
+                xs={0.8}
+                alignItems={'center'}
             >
-                <Grid
-                    container
-                    item
-                    xs={1.5}
-                    alignItems={'center'}
-                >
-                    <img
-                        height={49}
-                        width={47}
-                        style={{
-                            borderRadius: '10px',
-                            boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
-                        }}
-                        src={Data[0].imageURL}
-                        alt='product'
-                    />
-                </Grid>
-
-                <Grid
-                    item
-                    container
-                    xs={9.5}
-                    height='100%'
-                    sx={{
-                        paddingLeft: '1%'
-                    }}
-                >
-                    <Grid
-                        item
-                        xs={12}
-                        sx={{
-                            height: '30%',
-                            overflow: 'hidden',
-                            wordWrap: 'break-word'
-                        }}
-                    >
-                        <Typography
-                            className={'t3-bold'}
-                        >{Data[0].name}</Typography>
-                    </Grid>
-
-                    <Grid
-                        item
-                        xs={12}
-                        sx={{
-                            height: '15%',
-                        }}
-                    >
-                        <Typography
-                            className={'green-400-12'}
-                        >
-                            {Data[0].available}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid
-                    item
-                    container
-                    xs={1}
-                    alignItems={'center'}
-                >
-                    <Button
-                        sx={{
-                            height: 'fit-content',
-                            minWidth: '100%',
-                            ":hover": {
-                                backgroundColor: 'initial',
-                            }
-                        }}
-                    >
-                        <ButtonTrash height={19} width={18} color={'#6C4744'} />
-                    </Button>
-                </Grid>
-
+                <CustomCheckbox
+                    onChange={(value) => { onSelectProduct(value) }}
+                    value={checkedProductIds.some(item => item.id === id)}
+                    productId={id}
+                />
             </Grid>
 
             <Grid
                 container
                 item
-                xs={12}
-                height={39}
+                xs={11.2}
+
+                justifyContent={'space-between'}
+                alignContent={'space-between'}
             >
 
                 <Grid
                     container
                     item
-                    xs={6}
-                    gap={1}
-                    alignContent={'center'}
+                    xs={12}
+                    height={'52.76px'}
                 >
                     <Grid
                         container
                         item
-                        xs={12}
-                        justifyContent={'left'}
+                        xs={1.5}
+                        alignItems={'center'}
                     >
-                        <Button
-                            sx={{
-                                height: '21px',
-                                width: '20px',
-                                minWidth: '22px',
-                                borderRadius: '90px',
-                                padding: '0',
+                        <img
+                            height={49}
+                            width={47}
+                            style={{
+                                borderRadius: '10px',
+                                boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
                             }}
-                        >
-                            <ButtonMinusXS />
-                        </Button>
-                        <Typography
-                            className={'brown2-500-20'}
-                            sx={{
-                                paddingRight: '5%',
-                                paddingLeft: '5%',
-                            }}
-                        >1</Typography>
-                        <Button
-                            sx={{
-                                height: '21px',
-                                width: '20px',
-                                minWidth: '22px',
-                                borderRadius: '90px',
-                                padding: '0',
-                            }}
-                        >
-                            <ButtonPlusXS />
-                        </Button>
+                            src={imageURL}
+                            alt='product'
+                        />
                     </Grid>
-                </Grid>
-                <Grid
-                    item
-                    container
-                    xs={6}
-                    justifyContent={'right'}
-                    alignContent={'top'}
-                >
-                    <Typography
-                        className='t3-bold'
+
+                    <Grid
+                        item
+                        container
+                        xs={9.5}
+                        height='100%'
                         sx={{
-                            alignSelf: 'center',
-                            paddingTop: '10px',
-                            paddingRight: '10px',
+                            paddingLeft: '1%'
                         }}
                     >
-                        До сплати
-                    </Typography>
-                    <Grid>
-                        <Typography
-                            className='t3-bold'
+                        <Grid
+                            item
+                            xs={12}
                             sx={{
-                                textDecoration: 'line-through',
+                                height: '30%',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word'
                             }}
-                        >3 299 грн</Typography>
-                        <Typography
-                            className={Data[0].discount > 0 ? 't2-medium-500-red' : 't2-medium-500-brown2'}
-                        >2 449 грн</Typography>
+                        >
+                            <Typography
+                                className={'t3-bold'}
+                            >{name}</Typography>
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                height: '15%',
+                            }}
+                        >
+                            <Typography
+                                className={availableQuantity > 0 ? 'green-400-12' : 'red-400-12'}
+                            >
+                                {availableQuantity > 0 ? 'В наявності' : 'Немає'}
+                            </Typography>
+                        </Grid>
                     </Grid>
+                    <Grid
+                        item
+                        container
+                        xs={1}
+                        alignItems={'center'}
+                    >
+                        <Button
+                            sx={{
+                                height: 'fit-content',
+                                minWidth: '100%',
+                                ":hover": {
+                                    backgroundColor: 'initial',
+                                }
+                            }}
+                            onClick={() => { onDeleteFromCart() }}
+                        >
+                            <ButtonTrash height={19} width={18} color={'#6C4744'} />
+                        </Button>
+                    </Grid>
+
                 </Grid>
+
+                <Grid
+                    container
+                    item
+                    xs={12}
+                    height={39}
+                >
+
+                    <Grid
+                        container
+                        item
+                        xs={6}
+                        gap={1}
+                        alignContent={'center'}
+                    >
+                        <Grid
+                            container
+                            item
+                            xs={12}
+
+                            justifyContent={'left'}
+                        >
+                            <Button
+                                sx={{
+                                    height: '21px',
+                                    width: '20px',
+                                    minWidth: '22px',
+                                    borderRadius: '90px',
+                                    padding: '0',
+                                }}
+                                onClick={() => { decrementCount() }}
+                            >
+                                <ButtonMinusXS />
+                            </Button>
+                            <Typography
+                                className={'brown2-500-20'}
+                                sx={{
+                                    paddingRight: '5%',
+                                    paddingLeft: '5%',
+                                }}
+                            >
+                                {
+                                    checkedProductIds.some(item => item.id === id) ? checkedProductIds.map(item =>
+                                    {
+                                        if (item.id === id)
+                                            return item.count
+                                    }) : 0
+                                }
+                            </Typography>
+                            <Button
+                                sx={{
+                                    height: '21px',
+                                    width: '20px',
+                                    minWidth: '22px',
+                                    borderRadius: '90px',
+                                    padding: '0',
+                                }}
+                                onClick={() => { incrementCount() }}
+                            >
+                                <ButtonPlusXS />
+                            </Button>
+                        </Grid>
+                    </Grid>
+
+                    <Grid
+                        item
+                        container
+                        xs={6}
+                    >
+                        <Grid
+                            item
+                            container
+                            xs={6}
+                            justifyContent={'center'}
+                            alignContent={'end'}
+                        >
+                            <Typography
+                                className='t3-bold'
+                                sx={{
+                                    paddingBottom: '2%',
+                                }}
+                            >
+                                До сплати
+                            </Typography>
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={6}
+                        >
+                            <Grid
+                                height={'50%'}
+                                container
+                                alignContent={'center'}
+                            >
+                                <Typography
+                                    className='t3-bold'
+                                    sx={{
+                                        textDecoration: 'line-through',
+                                    }}
+                                >{discount > 0 ? price + ' грн' : ''}</Typography>
+                            </Grid>
+                            <Grid
+                                height={'50%'}
+                                alignContent={'center'}
+                            >
+                                <Typography
+                                    className={'t2-medium-500-red'}
+                                >{price - (price * discount / 100)} грн</Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid >
             </Grid >
-        </Grid >
+        </Grid>
+
     );
 };
 

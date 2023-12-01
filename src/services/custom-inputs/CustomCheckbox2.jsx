@@ -2,7 +2,7 @@ import React from 'react';
 import GreenCheckCheckboxIcon from '../../svg/shared-icons/GreenCheckCheckboxIcon';
 import './CustomInputsStyles.css';
 
-const CustomCheckbox = (props) =>
+const CustomCheckbox2 = (props) =>
 {
     const {
         onChange,
@@ -11,7 +11,7 @@ const CustomCheckbox = (props) =>
     } = props;
 
     return (
-        <label className="custom-checkbox-1">
+        <label className="custom-checkbox-2">
             <input
                 type="checkbox"
                 value={productId}
@@ -26,4 +26,4 @@ const CustomCheckbox = (props) =>
     )
 }
 
-export default CustomCheckbox;
+export default CustomCheckbox2;

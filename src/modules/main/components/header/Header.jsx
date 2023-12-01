@@ -34,6 +34,14 @@ import
   setBeforeAuthPath,
 } from '../../features/userAuth/userAuthSlice';
 
+import
+{
+  setCheckedIds,
+  changeDiscountPrice,
+  changeProductPriceSum,
+  changeTotalOrderPrice,
+} from '../../features/basket_features/cartSlice';
+
 import { styled } from '@mui/material/styles';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -193,19 +201,17 @@ const Header = () =>
             }}
             onClick={() =>
             {
+              dispatch(setCheckedIds([]));
+              dispatch(changeProductPriceSum(0))
+              dispatch(changeDiscountPrice(0))
+              dispatch(changeTotalOrderPrice(0))
               navigate('/basket')
             }}
           >
             <CartIcon />
           </StyledBadge>
-
-
         </Toolbar>
-
-
-
       </AppBar>
-
 
       {
         isLoginFormOpen && !isAuthState && (
@@ -223,7 +229,7 @@ const Header = () =>
         )
       }
 
-    </Fragment>
+    </Fragment >
   )
 }
 

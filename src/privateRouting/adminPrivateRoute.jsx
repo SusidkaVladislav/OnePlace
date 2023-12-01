@@ -13,7 +13,7 @@ const AdminPrivateRoute = () =>
 
     useEffect(() =>
     {
-        const accessToken = localStorage.getItem("token");
+        const accessToken = localStorage.getItem("access-token");
         
         if (accessToken)
         {
@@ -29,7 +29,7 @@ const AdminPrivateRoute = () =>
                     })
                     .then((response) =>
                     {
-                        var oldToken = localStorage.getItem("token")
+                        var oldToken = localStorage.getItem("access-token")
                         if (oldToken)
                         {
                             localStorage.removeItem("token");
@@ -40,7 +40,7 @@ const AdminPrivateRoute = () =>
                         {
                             setIsAdmin(true)
                             localStorage.removeItem("email");
-                            localStorage.setItem("token", response.data);
+                            localStorage.setItem("access-token", response.data);
                             setIsAuthInProgress(false)
                             setIsAuth(true);
                         }
@@ -53,9 +53,9 @@ const AdminPrivateRoute = () =>
                     })
                     .catch(() =>
                     {
-                        if (localStorage.getItem("token"))
+                        if (localStorage.getItem("access-token"))
                         {
-                            localStorage.removeItem("token");
+                            localStorage.removeItem("access-token");
                         }
                         setIsAuthInProgress(false)
                         setIsAuth(false);

@@ -59,6 +59,13 @@ const adminProductPersistConfig = {
     blacklist: ['allProducts']
 }
 
+// const userBasketPersistConfig = {
+//     key: 'userBasket',
+//     storage,
+//     blacklist: ['productPriceSum', 'totalOrderPrice', 'discountPrice'],
+// }
+
+
 const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
     adminUsers: adminUsersReducer,
@@ -79,7 +86,7 @@ const rootReducer = combineReducers({
     userAuth: userAuthReducer,
     userLogin: userLoginReducer,
     userOrder: userOrderReducer,
-    userBasket: userBasketReducer,
+    userBasket: userBasketReducer,//persistReducer(userBasketPersistConfig, userBasketReducer),
 })
 
 
