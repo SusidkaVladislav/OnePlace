@@ -1,0 +1,24 @@
+.pc-container1{
+    background-color: var(--gray1);
+    box-shadow: none;
+}
+
+.pc-name-cell{
+    border-bottom: none;
+    color: var(--brown1);
+    font-family: 'Montserrat Alternates';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+}
+
+.pc-desc-cell{
+    border-bottom: none;
+    color: var(--blue1, #0A3D58);
+    font-family: 'Montserrat Alternates';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+}

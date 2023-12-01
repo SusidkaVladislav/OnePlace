@@ -1,0 +1,46 @@
+.ci-container1{
+    padding-top: 40px;
+}
+
+.ci-container2{
+    padding-left: 6%;
+    padding-right: 6%;
+}
+
+.ci-head-container{
+    justify-content: space-between;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.ci-arrow-container{
+    justify-content: space-between;
+    padding-left: 0;
+    padding-right: 0;
+    width: 8%
+}
+
+.ci-bcp-container{
+    padding-top: 20px;
+    justify-content:center;
+}
+
+.mp-button{
+    border-radius: 0px 40px 40px 0px;
+    background: var(--blue2);
+    height: 66px;
+    width: 264px;
+    margin-top: 50%;
+    margin-bottom: 50%;
+    font-family: 'Montserrat Alternates';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    color: var(--gray-1001, #E9ECEC);
+    text-transform: initial;
+}
+
+.mp-button:hover{
+    background: var(--blue1);
+}

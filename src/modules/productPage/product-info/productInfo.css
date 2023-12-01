@@ -1,0 +1,52 @@
+.pi-container1{
+    background-color: var(--gray1);
+    width: 100%;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.pi-categories-container{
+    padding-left: 6%;
+    padding-right: 6%;
+}
+
+.pi-arrow-container{
+    padding-left: 1%;
+    padding-right: 1%;
+    display: flex;
+    align-items: center;
+}
+
+.pi-menu-container{
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 30px;
+}
+
+.pi-divider-container{
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.pi-info-container{
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 20px;
+}
+
+.hidden{
+    visibility: hidden;
+    display: none;
+}
+
+.visible{
+    visibility: visible;
+    display: block;
+}
+
+.pi-menu-item{
+    cursor: pointer;
+}
+
+
+

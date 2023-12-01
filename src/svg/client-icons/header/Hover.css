@@ -1,3 +1,4 @@
 .svgHover:hover {
     stroke: #D17100;
+    cursor: pointer;
 } 
