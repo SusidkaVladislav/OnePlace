@@ -8,6 +8,11 @@ import
     setIsAuthState
 } from '../modules/main/features/userAuth/userAuthSlice';
 
+import
+    {
+        getUserCart
+    } from '../modules/main/features/basket_features/cartSlice';
+
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";
 
@@ -57,6 +62,7 @@ const UserPrivateRoute = () =>
                             setIsAuthInProgress(false)
                             setIsAuth(true);
                             dispatch(setIsAuthState(true));
+                            dispatch(getUserCart());
                         }
                         else
                         {

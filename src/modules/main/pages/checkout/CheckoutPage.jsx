@@ -533,7 +533,8 @@ const CheckoutPage = () =>
                             },
                             marginTop: {
                                 lg: '50px'
-                            }
+                            },
+                            textTransform: 'initial',
                         }}
                         className={lg ? 'h4-lg-gray3 stepper-navigation-btn' : 'stepper-navigation-btn'}
                         variant='contained'
@@ -551,12 +552,6 @@ const CheckoutPage = () =>
                 </Grid>
 
             </Grid>
-
-            {/* {
-                showSuccessfulOrderAlert && (
-                    <SuccessfulCheckout />
-                )
-            } */}
 
         </Stack>
     )

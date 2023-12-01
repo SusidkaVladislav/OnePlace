@@ -23,9 +23,10 @@ const onTokenRefreshed = (token) =>
 
 instance.interceptors.request.use((config) =>
 {
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  config.headers.Authorization = `Bearer ${localStorage.getItem("access-token")}`;
   return config;
 });
+
 
 instance.interceptors.response.use(
   (response) =>
@@ -38,7 +39,7 @@ instance.interceptors.response.use(
     const originalRequest = { ...error.config };
     originalRequest._isRetry = true;
 
-    if (error.response.status === 401 && error.config && !error.config._isRetry)
+    if (error.response.status === 401 && !originalRequest._isRetry)
     {
       if (!isRefreshing)
       {
@@ -46,7 +47,8 @@ instance.interceptors.response.use(
 
         try
         {
-          const accessToken = localStorage.getItem("token");
+          const accessToken = localStorage.getItem("access-token");
+
           const resp = await instance.post(
             `${REACT_APP_BASE_URL}/Account/refresh`,
             null,
@@ -58,20 +60,22 @@ instance.interceptors.response.use(
             }
           );
 
-          localStorage.setItem("token", resp.data);
+          localStorage.setItem("access-token", resp.data);
           onTokenRefreshed(resp.data);
           refreshSubscribers = [];
           isRefreshing = false;
+
           return instance.request(originalRequest);
-        }
+        } 
         catch (error)
         {
           localStorage.clear();
-          localStorage.removeItem('persist:adminProduct')
-          localStorage.removeItem('persist:root')
+          localStorage.removeItem('persist:adminProduct');
+          localStorage.removeItem('persist:root');
           window.location.reload();
         }
-      } else
+      } 
+      else
       {
         return new Promise((resolve) =>
         {
@@ -82,7 +86,12 @@ instance.interceptors.response.use(
           });
         });
       }
+    } 
+    else if (error.response.status === 400)
+    {
+      return Promise.reject(error);
     }
+
     throw error;
   }
 );

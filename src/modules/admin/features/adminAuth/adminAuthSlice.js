@@ -116,7 +116,7 @@ const adminAuthSlice = createSlice({
             })
             .addCase(adminLogin.fulfilled, (state, { payload }) =>
             {
-                localStorage.setItem("token", payload);
+                localStorage.setItem("access-token", payload);
                 const user = jwt(payload);
                 const role = user["Role"];
                 let isInRole = role === 'admin' ? false : true;
@@ -127,7 +127,7 @@ const adminAuthSlice = createSlice({
             })
             .addCase(adminLogin.rejected, (state) =>
             {
-                localStorage.removeItem("token");
+                localStorage.removeItem("access-token");
                 return {
                     ...state,
                     error: true,

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 //#region Main routes
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
+import Basket from './modules/main/pages/basket/Basket';
 import CheckoutPage from './modules/main/pages/checkout/CheckoutPage';
 
 import MainCabinetLayer from './modules/client-area/cabinet/MainCabinetLayer';
@@ -68,6 +69,7 @@ function App()
 
         <Route path='category/:id' element={<CategoryPage />} />
         <Route path='products/:id' element={<ProductsByCategoryPage />} />
+        <Route path='basket' element={<Basket />} />
         <Route path='checkout' element={<CheckoutPage />} />
 
         <Route path="user" element={<UserPrivateRoute />}>

@@ -36,6 +36,7 @@ import userAnaliticReducer from "../modules/main/features/analitics/userAnalitic
 import userAuthReducer from "../modules/main/features/userAuth/userAuthSlice";
 import userLoginReducer from "../modules/main/features/login/userLoginSlice";
 import userOrderReducer from "../modules/main/features/order/userOrderSlice";
+import userBasketReducer from "../modules/main/features/basket_features/cartSlice";
 //#endregion
 
 
@@ -43,10 +44,10 @@ const persistConfig = {
     key: 'root',
     storage: storage,
     blacklist: [
-//admin        
+        //admin        
         'verificationCode', 'passwordInputState', 'adminFilter',
         'adminOrders', 'adminMessages', 'adminSales', 'adminReviews', 'adminUsers',
-// user
+        // user
         'userAnalitic', 'userProducts', 'userRegister', 'userAuth', 'userLogin',
     ],
     stateReconciler: autoMergeLevel2,
@@ -57,6 +58,13 @@ const adminProductPersistConfig = {
     storage,
     blacklist: ['allProducts']
 }
+
+// const userBasketPersistConfig = {
+//     key: 'userBasket',
+//     storage,
+//     blacklist: ['productPriceSum', 'totalOrderPrice', 'discountPrice'],
+// }
+
 
 const rootReducer = combineReducers({
     adminAuth: adminAuthReducer,
@@ -78,6 +86,7 @@ const rootReducer = combineReducers({
     userAuth: userAuthReducer,
     userLogin: userLoginReducer,
     userOrder: userOrderReducer,
+    userBasket: userBasketReducer,//persistReducer(userBasketPersistConfig, userBasketReducer),
 })
 
 
