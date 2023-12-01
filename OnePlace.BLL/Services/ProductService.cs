@@ -63,7 +63,7 @@ namespace OnePlace.BLL.Services
             List<ProductListModel> productListModels = new List<ProductListModel>();
 
             //Отримання користувача
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
 
             //Перебір всіх з сторінки продуктів
             foreach (var product in products.Items)
@@ -86,17 +86,31 @@ namespace OnePlace.BLL.Services
                 #endregion
 
                 #region Чи є цей товар в улуюблених товарах користувача
-                var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
-                l.ProductId == product.Id);
+                if (user is not null)
+                {
+                    var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                    l.ProductId == product.Id);
 
-                productListModel.IsInLiked = likedProducts.Any();
+                    productListModel.IsInLiked = likedProducts.Any();
+                }
+                else
+                {
+                    productListModel.IsInLiked = false;
+                }
+                    
                 #endregion
 
                 #region Чи є цей товар в корзині користувача
-                var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == user.Id &&
-                c.ProductId == product.Id);
-
-                productListModel.IsInCart = productsInCart.Any();
+                if(user is not null)
+                {
+                    var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                    c.ProductId == product.Id);
+                    productListModel.IsInCart = productsInCart.Any();
+                }
+                else
+                {
+                    productListModel.IsInCart = false;
+                }
                 #endregion
 
                 #region Перевірка знижки
@@ -120,6 +134,10 @@ namespace OnePlace.BLL.Services
                 #region Перевірка наявності
                 var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
                 productListModel.IsInStock = isInStock;
+                #endregion
+
+                #region Отримання першрої фотографії товару
+                productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
                 #endregion
 
                 productListModels.Add(productListModel);
@@ -872,6 +890,48 @@ namespace OnePlace.BLL.Services
                 };
             }
         }
+
+        public async Task<List<ProductFromCartDTO>> GetProductsFromCart(List<PayloadProductIdColorId> ids)
+        {
+            List<ProductFromCartDTO> result = new List<ProductFromCartDTO>();
+            if (ids is null)
+            {
+                  return result;
+            }
+            List<ProductIdColorId> ts = _mapper.Map<List<ProductIdColorId>>(ids);
+
+            foreach (var item in ts)
+            {
+                ProductFromCartDTO product = new ProductFromCartDTO();
+                var p = await _unitOfWork.Products.GetAsync(item.ProductId);
+
+                product.Id = p.Id;
+                product.Name = p.Name;
+                
+                var color = p.ProductColors.Where(p=>p.ProductId == item.ProductId && p.ColorId == item.ColorId).FirstOrDefault();
+                product.ColorId = item.ColorId;
+                product.Price = color.Price;
+                product.Quantity = color.Quantity;
+
+                int i = p.ProductPictures.Where(c => c.IsTitle == true).FirstOrDefault().PictureId;
+                product.Picture = _unitOfWork.Pictures.GetAsync(i).Result.Address;
+
+                var sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == item.ProductId).Result.FirstOrDefault();
+                if (sale is not null)
+                {
+                    product.Discount = sale.DiscountPercent;
+                }
+                else
+                {
+                    product.Discount = 0;
+                }
+
+                result.Add(product);
+            }
+
+            return result;
+        }
+            
 
         private async Task DeleteUnusedDescriptions(int categoryId)
         {
