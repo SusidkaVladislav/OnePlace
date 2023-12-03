@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BOL.ProductPayload;
@@ -76,13 +75,6 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetProductReviewsAnalitic(int id)
         {
             var result = await _productService.GetProductReviewsAnalitic(id);
-            return Ok(result);
-        }
-
-        [HttpPost("getProductsFromCart")]
-        public async Task<IActionResult> GetProductsFromCart(List<PayloadProductIdColorId> ids)
-        {
-            var result = await _productService.GetProductsFromCart(ids);
             return Ok(result);
         }
     }

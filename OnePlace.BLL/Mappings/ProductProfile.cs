@@ -34,8 +34,6 @@ namespace OnePlace.BLL.Mappings
 
             CreateMap<Color, ColorDTO>().ReverseMap();
 
-            CreateMap<PayloadProductIdColorId, ProductIdColorId>().ReverseMap();
-
             #region Updating
             CreateMap<ProductUpdatePayload, ProductUpdateDTO>(MemberList.None);
             CreateMap<ProductUpdateDTO, Product>();
