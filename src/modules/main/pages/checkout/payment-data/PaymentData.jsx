@@ -15,9 +15,6 @@ const PaymentData = () =>
     const [paymantMethod, setPaymentMethod] = useState(1);
 
     const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
 
     return (
         <Grid
@@ -38,7 +35,6 @@ const PaymentData = () =>
                         sm: '20px 0px 20px 15px',
                         xs: '10px 0px 0px 0px',
                     },
-
                 }}
             >
                 <Grid
@@ -50,7 +46,7 @@ const PaymentData = () =>
                     alignItems={'center'}
                 >
                     <CustomRadio
-                        name="delivery-company"
+                        name="payment-method"
                         checked={paymantMethod === 1}
                         onChange={() => { setPaymentMethod(1) }}
                     />
@@ -67,7 +63,7 @@ const PaymentData = () =>
                     alignItems={'center'}
                 >
                     <CustomRadio
-                        name="delivery-company"
+                        name="payment-method"
                         checked={paymantMethod === 2}
                         onChange={() => { setPaymentMethod(2) }}
                     />

@@ -20,9 +20,8 @@ const citiesInit = [
 const DeliveryData = () =>
 {
     const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
+
+    const [deliveryCompany, setDeliveryCompany] = useState(1);
 
     const [cities, setCities] = useState(citiesInit)
     const [departments, setDetartments] = useState([]);
@@ -149,7 +148,11 @@ const DeliveryData = () =>
                     gap={1}
                     alignItems={'center'}
                 >
-                    <CustomRadio name="delivery-company" checked={true} />
+                    <CustomRadio
+                        name="delivery-company"
+                        checked={deliveryCompany === 1}
+                        onChange={() => { setDeliveryCompany(1) }}
+                    />
                     <Typography
                         className={xs ? 't2-medium-500-brown2' : ''}
                     >Нова пошта</Typography>
@@ -162,7 +165,11 @@ const DeliveryData = () =>
                     gap={1}
                     alignItems={'center'}
                 >
-                    <CustomRadio name="delivery-company" />
+                    <CustomRadio
+                        name="delivery-company"
+                        checked={deliveryCompany === 2}
+                        onChange={() => { setDeliveryCompany(2) }}
+                    />
                     <Typography
                         className={xs ? 't2-medium-500-brown2' : ''}
                     >Укрпошта</Typography>

@@ -542,7 +542,7 @@ const CheckoutPage = () =>
                                         md: '12px 0px 10px 0px',
                                     },
                                     borderBottom: {
-                                        md: '2px solid #DAD1D0'
+                                        md: '1px solid #DAD1D0'
                                     },
                                 }}
                                 justifyContent={'space-between'}
@@ -569,7 +569,7 @@ const CheckoutPage = () =>
                                         md: '12px 0px 10px 0px',
                                     },
                                     borderBottom: {
-                                        md: '2px solid #DAD1D0'
+                                        md: '1px solid #DAD1D0'
                                     }
                                 }}
                                 justifyContent={'space-between'}
@@ -594,7 +594,7 @@ const CheckoutPage = () =>
                                         md: '12px 0px 10px 0px',
                                     },
                                     borderBottom: {
-                                        md: '2px solid #DAD1D0',
+                                        md: '1px solid #DAD1D0',
                                     }
                                 }}
                                 justifyContent={'space-between'}
@@ -661,6 +661,7 @@ const CheckoutPage = () =>
 
 
                 <Grid
+                    item
                     sx={{
                         display: {
                             md: 'none',
@@ -679,7 +680,7 @@ const CheckoutPage = () =>
                                 xs: '19px 0px 8px 0px',
                             },
                             borderBottom: {
-                                xs: '2px solid #DAD1D0'
+                                xs: '1px solid #DAD1D0'
                             },
                         }}
                         justifyContent={'space-between'}
@@ -705,7 +706,7 @@ const CheckoutPage = () =>
                                 xs: '8px 0px 8px 0px',
                             },
                             borderBottom: {
-                                xs: '2px solid #DAD1D0'
+                                xs: '1px solid #DAD1D0'
                             }
                         }}
                         justifyContent={'space-between'}
@@ -729,7 +730,7 @@ const CheckoutPage = () =>
                                 xs: '8px 0px 8px 0px',
                             },
                             borderBottom: {
-                                xs: '2px solid #DAD1D0',
+                                xs: '1px solid #DAD1D0',
                             }
                         }}
                         justifyContent={'space-between'}
@@ -780,7 +781,6 @@ const CheckoutPage = () =>
                         }
                     }}
                 >{activeStep === 2 ? 'Підтвердити замовлення' : 'Продовжити'}</Button>
-
 
             </Grid>
         </Stack>
