@@ -75,11 +75,11 @@ export default function UseAutocomplete(props)
     return (
         <Grid
             item
-            lg={12}
+            xs={12}
         >
             <Grid {...getRootProps()}>
                 <Input {...getInputProps()}
-                    className={lg ? 't1-bold-brown2 bg-img' : ''}
+                    className={xs ? 't1-bold-brown2 bg-img' : ''}
                     value={value}
                     onChange={({ target }) =>
                     {
@@ -92,12 +92,18 @@ export default function UseAutocomplete(props)
             <Grid
                 container
                 item
-                lg={12}
+                xs={12}
                 position={'absolute'}
                 sx={{
                     width: {
-                        lg: '46.5%'
+                        lg: '46.5%',
+                        md: '47.5%',
+                        sm: '95%',
+                        xs: '94%',
                     },
+                    zIndex: {
+                        xs: 1
+                    }
                 }}
             >
                 {
@@ -109,13 +115,13 @@ export default function UseAutocomplete(props)
                                 <li style={{
                                     height: '44px',
                                     padding:
-                                        lg ? '5px 10px 5px 10px' : '',
+                                        xs ? '5px 10px 5px 10px' : '',
                                     borderBottom: '1px solid #DAD1D0',
                                     display: 'flex',
                                     alignItems: 'center',
                                 }}
                                     {...getOptionProps({ option, index })}
-                                    className={lg ? 't1-bold-brown3' : ' '}
+                                    className={xs ? 't1-bold-brown3' : ''}
                                     onClick={() =>
                                     {
                                         setValue(option)

@@ -25,12 +25,17 @@ const BankCard = (props) =>
         <Grid
             container
             item
-            lg={12}
+            xs={12}
             height={{
                 lg: '156px',
+                md: '380px',
+                sm: '370px',
+                xs: '370px',
             }}
             gap={{
-                lg: 5
+                lg: 5,
+                md: 4,
+                xs: '10%',
             }}
             justifyContent={'center'}
         >
@@ -39,12 +44,23 @@ const BankCard = (props) =>
                 container
                 item
                 lg={5}
+                md={9}
+                sm={7}
+                xs={8}
+
                 bgcolor='#3D393F'
                 sx={{
-                    borderRadius: '12px'
+                    borderRadius: '12px',
+                    height: {
+                        lg: '100%',
+                        xs: '45%'
+                    }
                 }}
                 padding={{
-                    lg: '18px 14px 18px 14px'
+                    lg: '18px 14px 18px 14px',
+                    md: '9px 7px 9px 7px',
+                    sm: '9px 14px 18px 9px',
+                    xs: '9px 14px 18px 9px',
                 }}
             >
                 <Grid
@@ -75,18 +91,18 @@ const BankCard = (props) =>
                     height='35%'
                 >
                     <Typography
-                        className={lg ? 't2-medium-blue3 unselectable' : ''}
+                        className={xs ? 't2-medium-blue3 unselectable' : ''}
                     >
                         Номер картки
                     </Typography>
                     <input
                         type='text'
-                        className={lg ? 'h5-bold-brown2 number-input' : 'number-input'}
+                        className={xs ? 'h5-bold-brown2 number-input' : 'number-input'}
                         placeholder='XXXX XXXX XXXX XXXX'
                         style={{
-                            height: lg ? '24px' : '',
-                            width: lg ? '75%' : '',
-                            padding: lg ? '8px' : ''
+                            height: xs ? '24px' : '',
+                            width: xs ? '75%' : '',
+                            padding: xs ? '8px' : ''
                         }}
                     />
                 </Grid>
@@ -98,7 +114,7 @@ const BankCard = (props) =>
 
                 >
                     <Typography
-                        className={lg ? 't2-medium-blue3 unselectable' : ''}
+                        className={xs ? 't2-medium-blue3 unselectable' : ''}
                     >
                         Термін дії
                     </Typography>
@@ -109,26 +125,26 @@ const BankCard = (props) =>
                     >
                         <input
                             style={{
-                                height: lg ? '24px' : '',
-                                width: lg ? '23%' : '',
-                                padding: lg ? '8px' : ''
+                                height: xs ? '24px' : '',
+                                width: xs ? '23%' : '',
+                                padding: xs ? '8px' : ''
                             }}
-                            className={lg ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
                             placeholder='ММ'
                         />
                         <Typography
                             sx={{
                                 fontWeight: 500,
                             }}
-                            className={lg ? 't2-medium-blue3 unselectable' : 'unselectable'}
+                            className={xs ? 't2-medium-blue3 unselectable' : 'unselectable'}
                         >/</Typography>
                         <input
                             style={{
-                                height: lg ? '24px' : '',
-                                width: lg ? '23%' : '',
-                                padding: lg ? '8px' : ''
+                                height: xs ? '24px' : '',
+                                width: xs ? '23%' : '',
+                                padding: xs ? '8px' : ''
                             }}
-                            className={lg ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
                             placeholder='РР'
                             unselectable
                         />
@@ -140,16 +156,25 @@ const BankCard = (props) =>
                 container
                 item
                 lg={5}
+                md={9}
+                sm={7}
+                xs={8}
                 bgcolor='#3D393F'
                 sx={{
                     borderRadius: '12px',
-                    paddingTop: '8%'
+                    paddingTop: '8%',
+                    height: {
+                        lg: '100%',
+                        xs: '45%'
+                    },
                 }}
             >
                 <Grid
                     bgcolor='#E9ECEC'
                     height={{
-                        lg: '24px'
+                        lg: '24px',
+                        md: '28px',
+                        xs: '24px',
                     }}
                     width={'100%'}
                 />
@@ -162,23 +187,25 @@ const BankCard = (props) =>
                         container
                         direction={'column'}
                         padding={{
-                            lg: '3px 10px 10px 10px'
+                            lg: '3px 10px 10px 10px',
+                            md: '3px 5px 5px 5px',
+                            xs: '3px 10px 10px 10px',
                         }}
                         gap={0.5}
                     >
                         <Typography
-                            className={lg ? 't2-medium-blue3 unselectable' : ''}
+                            className={xs ? 't2-medium-blue3 unselectable' : ''}
                             alignItems={'center'}
                         >
                             CVV <InfoIcon />
                         </Typography>
                         <input
                             style={{
-                                height: lg ? '24px' : '',
-                                width: lg ? '23%' : '',
-                                padding: lg ? '8px' : ''
+                                height: md ? '24px' : xs ? '30px' : '',
+                                width: xs ? '23%' : '',
+                                padding: xs ? '8px' : ''
                             }}
-                            className={lg ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
                         />
 
                     </Grid>

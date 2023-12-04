@@ -33,7 +33,7 @@ const DeliveryDataRow = (props) =>
             container
         >
             <Typography
-                className={lg ? 't2-medium' : ''}
+                className={xs ? 't2-medium' : ''}
             >{title}</Typography>
 
             <UseAutoComplete

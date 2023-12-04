@@ -20,7 +20,7 @@ const Banner2 = () => {
 
   return (
     <div className='bg2'>
-    <div className="bg1"> 
+    <div className="bg1 unselectable"> 
       {currentDiv === 0 && (
             <div className='slide slide1'>
               <div className='text'>

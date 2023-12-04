@@ -22,10 +22,13 @@ const ContactDataRow = (props) =>
     return (
         <Grid
             item
-            lg={12}
+            xs={12}
+            sx={{
+                
+            }}
         >
             <Typography
-                className={lg ? 't2-medium' : ''}
+                className={xs ? 't2-medium' : ''}
             >
                 {title}
             </Typography>
@@ -33,10 +36,10 @@ const ContactDataRow = (props) =>
                 <input
                     style={{
                         width: '100%',
-                        height: lg ? '46px' : '46px',
-                        padding: lg ? '1% 15px 1% 15px' : '',
+                        height: lg ? '46px' : md ? '40px' : xs ? '46px' : '',
+                        padding: lg ? '1% 15px 1% 15px' : md ? '1% 10px 1% 10px' : xs ? '1% 15px 1% 15px' : '',
                     }}
-                    className={lg ? 't1-bold contact-data-input' : 'contact-data-input'}
+                    className={xs ? 't1-bold contact-data-input' : 'contact-data-input'}
                     type="text"
                 />
                 <span className='contact-data-input-inside-check-icon' >

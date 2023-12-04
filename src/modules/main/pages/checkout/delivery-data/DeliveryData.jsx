@@ -114,42 +114,57 @@ const DeliveryData = () =>
         <Grid
             container
             item
-            lg={12}
+            xs={12}
             gap={'34px'}
+            sx={{
+                borderBottom: {
+                    md: 'none',
+                    xs: '1px solid #DAD1D0',
+                },
+                paddingBottom: {
+                    md: '0px',
+                    xs: '15px'
+                }
+            }}
         >
             <Grid
                 container
                 item
-                lg={12}
+                xs={12}
                 direction={'row'}
                 sx={{
                     padding: {
-                        lg: '0px 0px 46px 15px'
-                    }
+                        lg: '0px 0px 46px 15px',
+                        md: '0px 0px 6px 15px',
+                        sm: '20px 0px 20px 15px',
+                        xs: '10px 0px 0px 0px',
+                    },
                 }}
             >
                 <Grid
                     container
                     item
-                    lg={4}
+                    md={4}
+                    xs={6}
                     gap={1}
                     alignItems={'center'}
                 >
                     <CustomRadio name="delivery-company" checked={true} />
                     <Typography
-                        className={lg ? 't2-medium-500-brown2' : ''}
+                        className={xs ? 't2-medium-500-brown2' : ''}
                     >Нова пошта</Typography>
                 </Grid>
                 <Grid
                     container
                     item
-                    lg={4}
+                    md={4}
+                    xs={6}
                     gap={1}
                     alignItems={'center'}
                 >
                     <CustomRadio name="delivery-company" />
                     <Typography
-                        className={lg ? 't2-medium-500-brown2' : ''}
+                        className={xs ? 't2-medium-500-brown2' : ''}
                     >Укрпошта</Typography>
                 </Grid>
             </Grid>
@@ -167,11 +182,6 @@ const DeliveryData = () =>
                 options={departments}
                 onInput={selectDepartment}
             />
-
-
-            {/* <button
-                onClick={() => { onGetCitiesClick() }}
-            >Get cities</button> */}
 
         </Grid>
 

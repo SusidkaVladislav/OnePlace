@@ -17,8 +17,18 @@ const ContactData = () =>
         <Grid
             container
             item
-            lg={12}
+            xs={12}
             gap={'34px'}
+            sx={{
+                borderBottom: {
+                    md: 'none',
+                    xs: '1px solid #DAD1D0',
+                },
+                paddingBottom: {
+                    md: '0px',
+                    xs: '15px'
+                }
+            }}
         >
             <ContactDataRow title='Прізвище' />
             <ContactDataRow title="Ім'я" />

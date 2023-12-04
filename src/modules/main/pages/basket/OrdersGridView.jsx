@@ -12,14 +12,12 @@ import
 import CartItem from "./CartItem";
 import PhoneCartItem from "./PhoneCartItem";
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from 'react-router-dom';
 
-const OrdersGridView = (props) =>
+const OrdersGridView = () =>
 {
-    const {
-        onReload
-    } = props;
-
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         products,
@@ -334,7 +332,7 @@ const OrdersGridView = (props) =>
                             variant='contained'
                             onClick={() =>
                             {
-
+                                navigate('/checkout')
                             }}
                         >Оформити замовлення</Button>
                     </Grid>
@@ -362,7 +360,7 @@ const OrdersGridView = (props) =>
                         variant='contained'
                         onClick={() =>
                         {
-
+                            navigate('/checkout')
                         }}
                     >Оформити замовлення</Button>
                 </Grid>

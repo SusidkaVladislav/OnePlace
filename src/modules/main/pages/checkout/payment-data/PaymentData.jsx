@@ -23,24 +23,29 @@ const PaymentData = () =>
         <Grid
             container
             item
-            lg={12}
+            xs={12}
             gap={'34px'}
         >
             <Grid
                 container
                 item
-                lg={12}
+                xs={12}
                 direction={'row'}
                 sx={{
                     padding: {
-                        lg: '0px 0px 20px 15px'
-                    }
+                        lg: '0px 0px 20px 15px',
+                        md: '0px 0px 10px 15px',
+                        sm: '20px 0px 20px 15px',
+                        xs: '10px 0px 0px 0px',
+                    },
+
                 }}
             >
                 <Grid
                     container
                     item
-                    lg={4}
+                    md={4}
+                    xs={6}
                     gap={1}
                     alignItems={'center'}
                 >
@@ -50,13 +55,14 @@ const PaymentData = () =>
                         onChange={() => { setPaymentMethod(1) }}
                     />
                     <Typography
-                        className={lg ? 't2-medium-500-brown2' : ''}
+                        className={xs ? 't2-medium-500-brown2' : ''}
                     >Готівка</Typography>
                 </Grid>
                 <Grid
                     container
                     item
-                    lg={4}
+                    md={4}
+                    xs={6}
                     gap={1}
                     alignItems={'center'}
                 >
@@ -66,7 +72,7 @@ const PaymentData = () =>
                         onChange={() => { setPaymentMethod(2) }}
                     />
                     <Typography
-                        className={lg ? 't2-medium-500-brown2' : ''}
+                        className={xs ? 't2-medium-500-brown2' : ''}
                     >Карта</Typography>
                 </Grid>
             </Grid>
@@ -75,9 +81,18 @@ const PaymentData = () =>
                 paymantMethod === 2 && (
                     <Grid
                         container
+                        sx={{
+                            borderBottom: {
+                                md: 'none',
+                                xs: '1px solid #DAD1D0',
+                            },
+                            paddingBottom: {
+                                md: '0px',
+                                xs: '15px'
+                            }
+                        }}
                     >
                         <BankCard />
-
                     </Grid>
                 )
             }
@@ -85,16 +100,25 @@ const PaymentData = () =>
             <Grid
                 container
                 item
-                lg={12}
-
+                xs={12}
+                sx={{
+                    borderBottom: {
+                        md: 'none',
+                        xs: '1px solid #DAD1D0',
+                    },
+                    paddingBottom: {
+                        md: '0px',
+                        xs: '15px'
+                    }
+                }}
             >
                 <Typography
-                    className={lg ? 't2-medium' : ''}
+                    className={'t2-medium'}
                 >
                     Коментар до замовлення
                 </Typography>
                 <textarea
-                    className={lg ? 'light-h5 comment-text-area' : 'comment-text-area'}
+                    className={xs ? 'light-h5 comment-text-area' : 'comment-text-area'}
                     style={{}} />
             </Grid>
 
