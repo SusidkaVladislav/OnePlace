@@ -60,7 +60,12 @@ const CartItem = (props) =>
         let ids = [];
         ids.push({
           id: id,
-          count: 1
+          count: 1,
+          colorId: colorId,
+          name: name,
+          imageURL: imageURL,
+          price: price,
+          discount: discount,
         })
         checkedProductIds.map(item =>
         {
@@ -107,7 +112,12 @@ const CartItem = (props) =>
         {
           ids.push({
             id: id,
-            count: 1
+            count: 1,
+            colorId: colorId,
+            name: name,
+            imageURL: imageURL,
+            price: price,
+            discount: discount,
           })
           checkedProductIds.map(item =>
           {
@@ -133,14 +143,24 @@ const CartItem = (props) =>
             {
               ids.push({
                 id: item.id,
-                count: item.count + 1
+                count: item.count + 1,
+                colorId: colorId,
+                name: name,
+                imageURL: imageURL,
+                price: price,
+                discount: discount,
               })
             }
             else 
             {
               ids.push({
                 id: item.id,
-                count: item.count
+                count: item.count,
+                colorId: colorId,
+                name: name,
+                imageURL: imageURL,
+                price: price,
+                discount: discount,
               })
 
               isAvaliableQuantity = false;
@@ -172,6 +192,11 @@ const CartItem = (props) =>
             {
               id: item.id,
               count: item.count - 1,
+              colorId: colorId,
+              name: name,
+              imageURL: imageURL,
+              price: price,
+              discount: discount,
             }
           );
         else if (item.id !== id)
@@ -210,6 +235,8 @@ const CartItem = (props) =>
         const product = checkedProductIds.find(item => item.id === id);
         if (product !== undefined)
         {
+          let ids = checkedProductIds.filter(item => item.id !== id)
+          dispatch(setCheckedIds(ids));
           dispatch(changeProductPriceSum(productPriceSum - price * product.count))
           dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * product.count))
           dispatch(changeTotalOrderPrice(((productPriceSum - price * product.count) - (discountPrice - (price * discount / 100) * product.count))))
@@ -319,14 +346,14 @@ const CartItem = (props) =>
           >
             <Typography
               className={
-                availableQuantity > 0 
-                  ? (lg ? 't2-medium-orange1' 
-                      : md ? 't2-medium-orange' 
-                        : 't2-medium-orange1') 
-                  : (lg ? 't2-medium-red' 
-                      : md ? 't2-medium-red' 
-                        : 't2-medium-red')
-              }              
+                availableQuantity > 0
+                  ? (lg ? 't2-medium-orange1'
+                    : md ? 't2-medium-orange'
+                      : 't2-medium-orange1')
+                  : (lg ? 't2-medium-red'
+                    : md ? 't2-medium-red'
+                      : 't2-medium-red')
+              }
             >
               {availableQuantity > 0 ? 'В наявності' : 'Немає'}
             </Typography>

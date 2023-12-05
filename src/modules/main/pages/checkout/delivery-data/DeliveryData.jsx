@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import
 {
     Grid,
-    useMediaQuery,
     Typography,
 } from '@mui/material'
 import DeliveryDataRow from './DeliveryDataRow';
 import CustomRadio from '../../../../../services/custom-inputs/CutomRadio';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import
+{
+    setCity,
+    setDepartment,
+    setErrorList,
+} from '../../../features/order/userOrderSlice';
 
 const citiesInit = [
     "Івано-Франківськ", "Вінниця", "Дніпро", "Житомир",
@@ -19,15 +25,18 @@ const citiesInit = [
 
 const DeliveryData = () =>
 {
-    const xs = useMediaQuery('(min-width: 0px)');
+    const dispatch = useDispatch();
+
+    const {
+        city,
+        department,
+
+        errorList,
+    } = useSelector(state => state.userOrder);
 
     const [deliveryCompany, setDeliveryCompany] = useState(1);
-
     const [cities, setCities] = useState(citiesInit)
     const [departments, setDetartments] = useState([]);
-
-    const [selectedDepartment, setSelectedDepartment] = useState('');
-    const [city, setCity] = useState('');
 
     const selectCity = async (value) =>
     {
@@ -49,26 +58,10 @@ const DeliveryData = () =>
             }
             setCities(c);
 
-            const dep = await axios.post('https://api.novaposhta.ua/v2.0/json/',
-                {
-                    apiKey: "bfb9c83d670e006bf220a681e0d085f7",
-                    modelName: "Address",
-                    calledMethod: "getWarehouses",
-                    "methodProperties": {
-                        CityName: c[0],
-                        Language: "UA",
-                        TypeOfWarehouseRef: "841339c7-591a-42e2-8233-7a0a00f0ed6f"
-                    }
-                })
-
-            let d = [];
-
-            for (let i = 0; i < dep.data.data.length; i++)
-            {
-                d.push(dep.data.data[i].Description)
-            }
-
-            setDetartments(d)
+            const updatedErrorList = [...errorList];
+            updatedErrorList[4] = false;
+            dispatch(setErrorList(updatedErrorList));
+            dispatch(setDepartment(''))
         }
         else
         {
@@ -91,22 +84,38 @@ const DeliveryData = () =>
             }
         }
 
-        setCity(value)
+        dispatch(setCity(value))
     }
 
-    const selectDepartment = (department) =>
+    const selectDepartment = async (department) =>
     {
-        let d = departments;
+        if (city.length > 0)
+        {
+            const dep = await axios.post('https://api.novaposhta.ua/v2.0/json/',
+                {
+                    apiKey: "bfb9c83d670e006bf220a681e0d085f7",
+                    modelName: "Address",
+                    calledMethod: "getWarehouses",
+                    "methodProperties": {
+                        CityName: city,
+                        Language: "UA",
+                        TypeOfWarehouseRef: "841339c7-591a-42e2-8233-7a0a00f0ed6f"
+                    }
+                })
 
-        setSelectedDepartment(department)
-    }
+            let d = [];
 
-    const onGetCitiesClick = async () =>
-    {
-        // const url = `https://www.ukrposhta.ua/address-classifier-ws/get_districts_by_region_id_and_district_ua?region_id=270&district_ua=Броварсь
-        // кий
-        // `
-        // const resp = await axios.get(url)
+            for (let i = 0; i < dep.data.data.length; i++)
+            {
+                d.push(dep.data.data[i].Description)
+            }
+            setDetartments(d)
+
+            dispatch(setDepartment(department))
+            const updatedErrorList = [...errorList];
+            updatedErrorList[5] = false;
+            dispatch(setErrorList(updatedErrorList));
+        }
     }
 
     return (
@@ -152,11 +161,13 @@ const DeliveryData = () =>
                         name="delivery-company"
                         checked={deliveryCompany === 1}
                         onChange={() => { setDeliveryCompany(1) }}
+                        disabled={false}
                     />
                     <Typography
-                        className={xs ? 't2-medium-500-brown2' : ''}
+                        className={'t2-medium-500-brown2 unselectable'}
                     >Нова пошта</Typography>
                 </Grid>
+
                 <Grid
                     container
                     item
@@ -164,34 +175,38 @@ const DeliveryData = () =>
                     xs={6}
                     gap={1}
                     alignItems={'center'}
+                    style={{ opacity: 0.5 }}
                 >
                     <CustomRadio
                         name="delivery-company"
                         checked={deliveryCompany === 2}
                         onChange={() => { setDeliveryCompany(2) }}
+                        disabled={true}
                     />
                     <Typography
-                        className={xs ? 't2-medium-500-brown2' : ''}
+                        className={'t2-medium-500-brown2 unselectable'}
                     >Укрпошта</Typography>
                 </Grid>
-            </Grid>
 
+            </Grid>
 
             <DeliveryDataRow
                 title={'Місто'}
                 options={cities}
                 onInput={selectCity}
+                outsideValue={city}
+                isError={errorList[4]}
             />
 
             <DeliveryDataRow
-
-                title={' Відділення'}
+                title={'Відділення'}
                 options={departments}
                 onInput={selectDepartment}
+                outsideValue={department}
+                isError={errorList[5]}
             />
 
         </Grid>
-
     )
 }
 

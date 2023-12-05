@@ -24,6 +24,7 @@ const OrdersGridView = () =>
         productPriceSum,
         totalOrderPrice,
         discountPrice,
+        checkedProductIds,
     } = useSelector(state => state.userBasket)
 
     const sm = useMediaQuery('(min-width: 600px)');
@@ -289,7 +290,6 @@ const OrdersGridView = () =>
                                 }
                             >{totalOrderPrice} грн.</Typography>
                         </Grid>
-
                     </Grid>
 
                     <Grid
@@ -298,7 +298,9 @@ const OrdersGridView = () =>
                         justifyContent={'center'}
                     >
                         <Button
+                            disabled={checkedProductIds?.length === 0}
                             sx={{
+
                                 width: {
                                     lg: '100%',
                                     md: '100%',

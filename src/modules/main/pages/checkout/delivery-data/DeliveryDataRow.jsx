@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import
 {
     Grid,
     Typography,
-    Select,
-    MenuItem,
-    FormControl,
-    InputBase,
-    useMediaQuery,
-    Autocomplete,
-    TextField,
 } from '@mui/material'
 
-import CustomTextInput from '../../../../../services/custom-inputs/CustomTextInput';
 import UseAutoComplete from '../../../../../services/custom-inputs/UseAutoComplete';
 
 const DeliveryDataRow = (props) =>
@@ -21,24 +13,23 @@ const DeliveryDataRow = (props) =>
         title,
         options,
         onInput,
+        outsideValue,
+        isError,
     } = props;
-
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
 
     return (
         <Grid
             container
         >
             <Typography
-                className={xs ? 't2-medium' : ''}
+                className={'t2-medium'}
             >{title}</Typography>
 
             <UseAutoComplete
                 options={options}
                 onInput={onInput}
+                outsideValue={outsideValue}
+                isError={isError}
             />
 
         </Grid>

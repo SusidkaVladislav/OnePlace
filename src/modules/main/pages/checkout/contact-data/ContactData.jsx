@@ -1,17 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import
 {
     Grid,
-    useMediaQuery,
 } from '@mui/material'
+
 import ContactDataRow from './ContactDataRow';
+
+import { useDispatch, useSelector } from 'react-redux'
+import
+{
+    getUserPersonalData
+} from '../../../features/userAuth/userAuthSlice';
+
+import
+{
+    setName,
+    setSurname,
+    setEmail,
+    setPhone,
+
+    setErrorList,
+} from '../../../features/order/userOrderSlice';
+
+const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 const ContactData = () =>
 {
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
+    const dispatch = useDispatch();
+
+    const {
+        userName,
+        userSurname,
+        userEmail,
+        userPhone,
+
+        errorList,
+    } = useSelector(state => state.userOrder);
+
+    useEffect(() =>
+    {
+        dispatch(getUserPersonalData())
+            .then(({ payload }) =>
+            {
+                if (userName.length === 0)
+                    dispatch(setName(payload?.data?.name !== undefined ? payload?.data?.name : ''))
+                if (userSurname.length === 0)
+                    dispatch(setSurname(payload?.data?.surname ? payload?.data?.surname : ''))
+                if (userEmail.length === 0)
+                    dispatch(setEmail(payload?.data?.email ? payload?.data?.email : ''))
+                if (userPhone.length === 0)
+                    dispatch(setPhone(payload?.data?.phoneNumber ? payload?.data?.phoneNumber : ''))
+            })
+    }, [])
 
     return (
         <Grid
@@ -30,10 +71,64 @@ const ContactData = () =>
                 }
             }}
         >
-            <ContactDataRow title='Прізвище' />
-            <ContactDataRow title="Ім'я" />
-            <ContactDataRow title='Ел. пошта' />
-            <ContactDataRow title='Номер телефону' />
+            <ContactDataRow
+                title='Прізвище*'
+                onInput={(value) =>
+                {
+                    dispatch(setSurname(value))
+                    if (value.length <= 2)
+                    {
+                        const updatedErrorList = [...errorList];
+                        updatedErrorList[0] = false;
+                        dispatch(setErrorList(updatedErrorList));
+                    }
+                }}
+                value={userSurname}
+                isError={errorList[0]}
+                isValid={userSurname.length >= 2 ? true : false}
+            />
+            <ContactDataRow
+                title="Ім'я*"
+                onInput={(value) => 
+                {
+                    dispatch(setName(value))
+                    if (value.length <= 2)
+                    {
+                        const updatedErrorList = [...errorList];
+                        updatedErrorList[1] = false;
+                        dispatch(setErrorList(updatedErrorList));
+                    }
+                }}
+                value={userName}
+                isError={errorList[1]}
+                isValid={userName.length >= 2 ? true : false}
+            />
+            <ContactDataRow
+                title='Ел. пошта'
+                onInput={(value) => 
+                {
+                    dispatch(setEmail(value))
+                    const updatedErrorList = [...errorList];
+                    updatedErrorList[2] = false;
+                    dispatch(setErrorList(updatedErrorList));
+                }}
+                value={userEmail}
+                isError={errorList[2]}
+                isValid={EMAIL_PATTERN.test(userEmail) ? true : false}
+            />
+            <ContactDataRow
+                title='Номер телефону*'
+                onInput={(value) => 
+                {
+                    dispatch(setPhone(value))
+                    const updatedErrorList = [...errorList];
+                    updatedErrorList[3] = false;
+                    dispatch(setErrorList(updatedErrorList));
+                }}
+                value={userPhone}
+                isError={errorList[3]}
+                isValid={userPhone.length <= 11 && PHONE_PATTERN.test(userPhone) ? true : false}
+            />
         </Grid>
     )
 }

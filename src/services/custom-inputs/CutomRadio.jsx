@@ -8,15 +8,22 @@ const CustomRadio = (props) =>
         name,
         checked,
         onChange,
+        disabled,
     } = props;
 
     return (
-        <label className="custom-radio">
+        <label className="custom-radio"
+            style={{
+                cursor: disabled ? 'default' : 'pointer'
+            }}
+        >
             <input
                 type="radio"
                 name={name}
-                checked={checked}
+                defaultChecked={checked}
                 onClick={onChange}
+                disabled={disabled}
+
             />
             <span className='custom-radio-checkmark'>
                 <GreenRadioCheckIcon />

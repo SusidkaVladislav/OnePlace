@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAutocomplete } from '@mui/base/useAutocomplete';
 import
 {
     Grid,
-    useMediaQuery,
 } from '@mui/material'
 import { styled } from '@mui/system';
 import './CustomInputsStyles.css';
-import BrownSmallToBottomArrow from '../../svg/arrows/BrownSmallToBottomArrow';
 
 const Input = styled('input')(({ theme }) => ({
     width: '100%',
@@ -46,13 +44,9 @@ export default function UseAutocomplete(props)
     const {
         options,
         onInput,
+        outsideValue,
+        isError,
     } = props;
-
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
-
 
     const {
         getRootProps,
@@ -69,21 +63,30 @@ export default function UseAutocomplete(props)
         }
     );
 
-    const [value, setValue] = useState('');
-
+    const [value, setValue] = useState(outsideValue);
 
     return (
         <Grid
             item
             xs={12}
+            sx={{
+                border: isError ? '1px solid red' : 'none',
+                borderRadius: '10px',
+            }}
         >
-            <Grid {...getRootProps()}>
-                <Input {...getInputProps()}
-                    className={xs ? 't1-bold-brown2 bg-img' : ''}
+            <Grid
+                {...getRootProps()}
+            >
+                <Input
+                    {...getInputProps()}
+                    className={'t1-bold-brown2 bg-img'}
                     value={value}
                     onChange={({ target }) =>
                     {
                         setValue(target.value)
+                        onInput(target.value)
+                    }}
+                    onClick={({ target })=>{
                         onInput(target.value)
                     }}
                 />
@@ -114,14 +117,13 @@ export default function UseAutocomplete(props)
                             {groupedOptions.map((option, index) => (
                                 <li style={{
                                     height: '44px',
-                                    padding:
-                                        xs ? '5px 10px 5px 10px' : '',
+                                    padding: '5px 10px 5px 10px',
                                     borderBottom: '1px solid #DAD1D0',
                                     display: 'flex',
                                     alignItems: 'center',
                                 }}
                                     {...getOptionProps({ option, index })}
-                                    className={xs ? 't1-bold-brown3' : ''}
+                                    className={'t1-bold-brown3'}
                                     onClick={() =>
                                     {
                                         setValue(option)

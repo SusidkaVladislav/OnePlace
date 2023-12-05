@@ -25,15 +25,15 @@ import PaymentData from './payment-data/PaymentData';
 import BigBrownLeftArrow from '../../../../svg/arrows/BigBrownLeftArrow';
 import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon';
 
-
-import SuccessfulCheckout from './successful-checkout/SuccessfulCheckout';
-
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
-    setShowSuccessfulOrerAlert
+    setShowSuccessfulOrerAlert,
+    setErrorList,
+    setCardErrorList,
 } from '../../features/order/userOrderSlice';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 //Налаштування лінії
 const QontoConnector = styled(StepConnector)(() => ({
@@ -132,7 +132,8 @@ QontoStepIcon.propTypes = {
     onClick: PropTypes.func,
 };
 
-
+const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const CheckoutPage = () =>
 {
     const dispatch = useDispatch();
@@ -144,51 +145,153 @@ const CheckoutPage = () =>
     const lg = useMediaQuery('(min-width: 1200px)');
 
     const {
+        productPriceSum,
+        discountPrice,
+        checkedProductIds,
+    } = useSelector(state => state.userBasket)
+
+    const {
         showSuccessfulOrderAlert,
+        userName,
+        userSurname,
+        userEmail,
+        userPhone,
+
+        city,
+        department,
+
+        paymentMethod,
+        cardNumber,
+        expireMonth,
+        expireYear,
+        cvv,
+
+        errorList,
+        cardErrorList,
     } = useSelector(state => state.userOrder);
 
-    const steps = [
-        'Контактні дані',
-        'Доставка',
-        'Оплата',
-    ];
+    const steps =
+        [
+            'Контактні дані',
+            'Доставка',
+            'Оплата',
+        ];
 
-    const [activeStep, setActiveStep] = useState(2);
-
-
-    const products = [
-        {
-            name: 'Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)',
-            price: '2 499',
-            discount: '3 299',
-            imgPath:
-                'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-        },
-        {
-            name: 'Hello World',
-            price: '24 499',
-            discount: '39',
-            imgPath:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBBgPuolchqmbFUqosIXWDXIWwvywhQCBNvA&usqp=CAU',
-        },
-        {
-            name: 'Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)',
-            price: '2 499',
-            discount: '3 299',
-            imgPath:
-                'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-        },
-        {
-            name: 'Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)',
-            price: '2 499',
-            discount: '3 299',
-            imgPath:
-                'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-        },
-    ];
+    const [activeStep, setActiveStep] = useState(0);
 
     const [activeProductStep, setActiveProductStep] = useState(0);
-    const maxSteps = products.length;
+    const maxSteps = checkedProductIds?.length;
+
+    const onGoToNextStep = () =>
+    {
+        if (activeStep === 0)
+        {
+            //Перевірка персональних даних покупця
+            let isValidPersonalData = validatePersonalData();
+            if (isValidPersonalData)
+            {
+                setActiveStep(activeStep + 1)
+            }
+        }
+        if (activeStep === 1)
+        {
+            //Перевірка інформації про доставку
+            axios.post('https://api.novaposhta.ua/v2.0/json/',
+                {
+                    apiKey: "bfb9c83d670e006bf220a681e0d085f7",
+                    modelName: "Address",
+                    calledMethod: "getWarehouses",
+                    "methodProperties": {
+                        CityName: city,
+                        Language: "UA",
+                        TypeOfWarehouseRef: "841339c7-591a-42e2-8233-7a0a00f0ed6f"
+                    }
+                })
+                .then((res) =>
+                {
+                    const updatedErrorList = [...errorList];
+
+                    if (res.data.data.length === 0)
+                    {
+                        updatedErrorList[4] = true;
+                    }
+                    else if (res.data.data.every(d => d.Description !== department))
+                    {
+                        updatedErrorList[5] = true;
+                    }
+                    else
+                    {
+                        setActiveStep(activeStep + 1)
+                    }
+                    dispatch(setErrorList(updatedErrorList));
+                })
+        }
+        if (activeStep === 2)
+        {
+            const updatedCardErrorList = [...cardErrorList];
+
+            if (paymentMethod === 1)
+            {
+                if (cardNumber.length !== 19)
+                {
+                    updatedCardErrorList[0] = true;
+                }
+                if (expireMonth.length !== 2)
+                {
+                    updatedCardErrorList[1] = true;
+                }
+                if (expireYear.length !== 2)
+                {
+                    updatedCardErrorList[2] = true;
+                }
+                if (cvv.length !== 3)
+                {
+                    updatedCardErrorList[3] = true;
+                }
+
+                dispatch(setCardErrorList(updatedCardErrorList))
+            }
+
+            if (updatedCardErrorList.every(e => e === false))
+            {
+                //все провалідовано, можна формувати запит на оформлення замовлення
+            }
+        }
+
+        //dispatch(setShowSuccessfulOrerAlert(true))
+        //navigate('/')
+    }
+
+    const validatePersonalData = () =>
+    {
+        let isValid = true;
+        const updatedErrorList = [...errorList];
+
+        if (userSurname.length < 2)
+        {
+            updatedErrorList[0] = true;
+            isValid = false;
+        }
+        if (userName.length < 2)
+        {
+            updatedErrorList[1] = true;
+            isValid = false;
+        }
+        if (userEmail.length > 0 && !EMAIL_PATTERN.test(userEmail))
+        {
+            updatedErrorList[2] = true;
+            isValid = false;
+        }
+        if (!PHONE_PATTERN.test(userPhone))
+        {
+            updatedErrorList[3] = true;
+            isValid = false;
+        }
+
+        dispatch(setErrorList(updatedErrorList));
+
+        return isValid;
+    }
 
     return (
 
@@ -197,7 +300,6 @@ const CheckoutPage = () =>
                 padding: {
                     lg: '2% 0% 3% 7%',
                     md: '2% 0% 3% 5%',
-                    //sm: '2%',
                 }
             }}
         >
@@ -306,7 +408,6 @@ const CheckoutPage = () =>
                             xs: '15px',
                         }
                     }}
-
                 >
                     {
                         // Заповнення контактних даних
@@ -331,7 +432,6 @@ const CheckoutPage = () =>
                 <Grid
                     order={!md && -1}
                     md={5}
-                    //sm={12}
                     xs={12}
                     item
                     height='fit-content'
@@ -381,7 +481,7 @@ const CheckoutPage = () =>
                                     }}
                                     className={md ? 't2-medium-500' : sm ? 'brown1-400-20' : 't1-bold'}
                                 >
-                                    Ваше замовлення __ товар
+                                    Ваше замовлення {checkedProductIds?.length} товар
                                 </Typography>
                                 <Typography
                                     sx={{
@@ -392,7 +492,7 @@ const CheckoutPage = () =>
                                             : sm ? 'h5-bold-red' :
                                                 't2-medium-500-red'
                                     }
-                                >2 449 грн</Typography>
+                                >{productPriceSum - discountPrice} грн</Typography>
                             </Grid>
 
                             <Grid
@@ -412,7 +512,8 @@ const CheckoutPage = () =>
                                 <span
                                     style={{
                                         color: activeProductStep === 0 ? 'var(--brown3)' : 'var(--brown2)',
-                                        cursor: activeProductStep === 0 ? 'default' : 'pointer'
+                                        cursor: activeProductStep === 0 ? 'default' : 'pointer',
+                                        display: checkedProductIds?.length > 1 ? 'flex' : 'none'
                                     }}
                                     onClick={() =>
                                     {
@@ -423,7 +524,8 @@ const CheckoutPage = () =>
                                 <span
                                     style={{
                                         color: activeProductStep === maxSteps - 1 ? 'var(--brown3)' : 'var(--brown2)',
-                                        cursor: activeProductStep === maxSteps - 1 ? 'default' : 'pointer'
+                                        cursor: activeProductStep === maxSteps - 1 ? 'default' : 'pointer',
+                                        display: checkedProductIds?.length > 1 ? 'flex' : 'none',
                                     }}
                                     onClick={() =>
                                     {
@@ -460,7 +562,7 @@ const CheckoutPage = () =>
                                                 height: md ? '69px' : sm ? '100px' : '69px',
                                                 width: md ? '72px' : sm ? '112px' : '72px',
                                             }}
-                                            src={products[activeProductStep].imgPath}
+                                            src={checkedProductIds[activeProductStep]?.imageURL}
                                             alt='product'
                                         />
 
@@ -489,7 +591,7 @@ const CheckoutPage = () =>
                                             }}
                                             className={md ? 't2-medium-500' : sm ? 'brown1-500-18' : 't1-bold'}
                                         >
-                                            {products[activeProductStep].name}
+                                            {checkedProductIds[activeProductStep]?.name}
                                         </Typography>
                                         <Grid
                                             container
@@ -501,10 +603,11 @@ const CheckoutPage = () =>
                                                 width="fit-content"
                                                 className={sm ? 'h4-red' : 't2-medium-500-red'}
                                             >
-                                                {products[activeProductStep].price} грн.
+                                                {checkedProductIds[activeProductStep]?.price} грн.
                                             </Typography>
 
                                             <Typography
+                                                display={checkedProductIds[activeProductStep]?.discount > 0 ? 'flex' : 'none'}
                                                 width="fit-content"
                                                 className={sm ? 't2-medium' : 't2-medium'}
                                                 sx={{
@@ -514,7 +617,7 @@ const CheckoutPage = () =>
                                                     }
                                                 }}
                                             >
-                                                {products[activeProductStep].discount} грн.
+                                                {checkedProductIds[activeProductStep]?.price * checkedProductIds[activeProductStep]?.discount / 100} грн.
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -556,7 +659,7 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500' : ''}
                                 >
-                                    3 299 грн.
+                                    {productPriceSum} грн.
                                 </Typography>
 
                             </Grid>
@@ -582,7 +685,7 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500-red' : ''}
                                 >
-                                    -850 грн.
+                                    {discountPrice} грн.
                                 </Typography>
                             </Grid>
 
@@ -607,7 +710,7 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500' : ''}
                                 >
-                                    2 449 грн.
+                                    {productPriceSum - discountPrice} грн.
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -647,13 +750,7 @@ const CheckoutPage = () =>
                         variant='contained'
                         onClick={() =>
                         {
-                            if (activeStep < 2)
-                                setActiveStep(activeStep + 1)
-                            else
-                            {
-                                dispatch(setShowSuccessfulOrerAlert(true))
-                                navigate('/')
-                            }
+                            onGoToNextStep()
                         }}
                     >{activeStep === 2 ? 'Підтвердити замовлення' : 'Продовжити'}</Button>
                 </Grid>
@@ -694,7 +791,7 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500' : ''}
                         >
-                            3 299 грн.
+                            {productPriceSum} грн.
                         </Typography>
 
                     </Grid>
@@ -719,7 +816,7 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500-red' : ''}
                         >
-                            -850 грн.
+                            {discountPrice} грн.
                         </Typography>
                     </Grid>
 
@@ -743,7 +840,7 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500' : ''}
                         >
-                            2 449 грн.
+                            {productPriceSum - discountPrice} грн.
                         </Typography>
                     </Grid>
                 </Grid>
@@ -772,15 +869,77 @@ const CheckoutPage = () =>
                     variant='contained'
                     onClick={() =>
                     {
-                        if (activeStep < 2)
-                            setActiveStep(activeStep + 1)
-                        else
+
+                        //Перевірка персональних даних покупця
+                        let isValidPersonalData = validatePersonalData();
+                        let isValidDeliveryData = true;
+
+                        //Перевірка інформації про доставку
+                        axios.post('https://api.novaposhta.ua/v2.0/json/',
+                            {
+                                apiKey: "bfb9c83d670e006bf220a681e0d085f7",
+                                modelName: "Address",
+                                calledMethod: "getWarehouses",
+                                "methodProperties": {
+                                    CityName: city,
+                                    Language: "UA",
+                                    TypeOfWarehouseRef: "841339c7-591a-42e2-8233-7a0a00f0ed6f"
+                                }
+                            })
+                            .then((res) =>
+                            {
+                                const updatedErrorList = [...errorList];
+
+                                if (res.data.data.length === 0)
+                                {
+                                    updatedErrorList[4] = true;
+                                    isValidDeliveryData = false;
+                                }
+                                else if (res.data.data.every(d => d.Description !== department))
+                                {
+                                    updatedErrorList[5] = true;
+                                    isValidDeliveryData = false;
+                                }
+
+                                dispatch(setErrorList(updatedErrorList));
+                            })
+
+                        const updatedCardErrorList = [...cardErrorList];
+
+                        if (paymentMethod === 1)
                         {
-                            dispatch(setShowSuccessfulOrerAlert(true))
-                            navigate('/')
+                            if (cardNumber.length !== 19)
+                            {
+                                updatedCardErrorList[0] = true;
+                            }
+                            if (expireMonth.length !== 2)
+                            {
+                                updatedCardErrorList[1] = true;
+                            }
+                            if (expireYear.length !== 2)
+                            {
+                                updatedCardErrorList[2] = true;
+                            }
+                            if (cvv.length !== 3)
+                            {
+                                updatedCardErrorList[3] = true;
+                            }
+
+                            dispatch(setCardErrorList(updatedCardErrorList))
+
+                            console.log(isValidPersonalData)
+                            console.log(isValidDeliveryData)
+                            console.log(updatedCardErrorList.every(e => e === false))
+
+                            if (isValidPersonalData && isValidDeliveryData && updatedCardErrorList.every(e => e === false))
+                            {
+                                alert('OK!!!')
+                                //все провалідовано, можна формувати запит на оформлення замовлення
+                            }
                         }
-                    }}
-                >{activeStep === 2 ? 'Підтвердити замовлення' : 'Продовжити'}</Button>
+                    }
+                    }
+                >{'Підтвердити замовлення'}</Button>
 
             </Grid>
         </Stack>

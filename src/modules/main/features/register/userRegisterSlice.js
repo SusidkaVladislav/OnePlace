@@ -12,7 +12,6 @@ export const registerUser = createAsyncThunk('user/registerUser', async (registe
 {
     try
     {
-        //const response = await axios.post(REACT_APP_BASE_URL + '/Account/register', register);
         const response = await axios.post(REACT_APP_BASE_URL + '/Account/register', register, {
             withCredentials: true
         });

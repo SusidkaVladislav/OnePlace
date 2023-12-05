@@ -12,14 +12,109 @@ import InfoIcon from '../../../../svg/shared-icons/InfoIcon';
 const BankCard = (props) =>
 {
     const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
 
     const {
+        number,
+        expireMonth,
+        expireYear,
+        cvv,
 
+        numberInput,
+        expireMonthInput,
+        expireYearInput,
+        cvvInput,
+
+        numberError,
+        expireMonthError,
+        expireYearError,
+        cvvError,
     } = props;
 
+    const onNumberInput = (event) =>
+    {
+        //Перевірка на цифру
+        if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode === 8)
+        {
+            if (event.keyCode === 8)
+            {
+                numberInput(number.slice(0, -1));
+            }
+            else if (number.length < 19)
+            {
+                if (number.length > 0 && ((number.length + 1) % 5 === 0))
+                {
+                    numberInput(number + " " + event.key);
+                } else
+                {
+                    numberInput(number + event.key);
+                }
+            }
+        }
+    }
+
+    const onMonthInput = (event) =>
+    {
+        if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode === 8)
+        {
+            if (event.keyCode === 8)
+            {
+                if (Number(expireMonth) >= 10)
+                    expireMonthInput(expireMonth.slice(0, -1));
+                else
+                    expireMonthInput('')
+            }
+            else if (expireMonth.length === 0 && Number(event.key) > 1)
+            {
+                if (Number(event.key) !== 0)
+                    expireMonthInput(0 + event.key)
+            }
+            else if (expireMonth.length < 2)
+            {
+                let tmp = expireMonth + event.key;
+
+                if (Number(tmp) > 0)
+                    if (Number(tmp) <= 12)
+                    {
+                        expireMonthInput(expireMonth + event.key)
+                    }
+                    else
+                        if (Number(event.key) !== 0)
+                            expireMonthInput(0 + event.key)
+            }
+        }
+    }
+
+    const onYearInput = (event) =>
+    {
+        if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode === 8)
+        {
+            if (event.keyCode === 8)
+            {
+                expireYearInput(expireYear.slice(0, -1));
+            }
+            else if (expireYear.length < 2)
+            {
+                if (expireYear.length !== 0 || Number(event.key) !== 0)
+                    expireYearInput(expireYear + event.key);
+            }
+        }
+    }
+
+    const onCvvInput = (event) =>
+    {
+        if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode === 8)
+        {
+            if (event.keyCode === 8)
+            {
+                cvvInput(cvv.slice(0, -1));
+            }
+            else if (cvv.length < 3)
+            {
+                cvvInput(cvv + event.key)
+            }
+        }
+    }
 
     return (
         <Grid
@@ -91,19 +186,22 @@ const BankCard = (props) =>
                     height='35%'
                 >
                     <Typography
-                        className={xs ? 't2-medium-blue3 unselectable' : ''}
+                        className={'t2-medium-blue3 unselectable'}
                     >
                         Номер картки
                     </Typography>
                     <input
                         type='text'
-                        className={xs ? 'h5-bold-brown2 number-input' : 'number-input'}
+                        className={'h5-bold-brown2 number-input'}
                         placeholder='XXXX XXXX XXXX XXXX'
                         style={{
-                            height: xs ? '24px' : '',
-                            width: xs ? '75%' : '',
-                            padding: xs ? '8px' : ''
+                            height: '24px',
+                            width: '75%',
+                            padding: '8px',
+                            border: numberError ? '2px solid red' : 'none',
                         }}
+                        onKeyDown={(event) => { onNumberInput(event) }}
+                        value={number}
                     />
                 </Grid>
 
@@ -111,10 +209,9 @@ const BankCard = (props) =>
                     container
                     width='100%'
                     height='35%'
-
                 >
                     <Typography
-                        className={xs ? 't2-medium-blue3 unselectable' : ''}
+                        className={'t2-medium-blue3 unselectable'}
                     >
                         Термін дії
                     </Typography>
@@ -125,28 +222,53 @@ const BankCard = (props) =>
                     >
                         <input
                             style={{
-                                height: xs ? '24px' : '',
-                                width: xs ? '23%' : '',
-                                padding: xs ? '8px' : ''
+                                height: '24px',
+                                width: '23%',
+                                padding: '8px 15px',
+                                border: expireMonthError ? '2px solid red' : 'none',
                             }}
-                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={'h5-bold-brown2 number-input unselectable'}
                             placeholder='ММ'
+                            onKeyDown={(event) => { onMonthInput(event) }}
+                            value={expireMonth}
+                            onBlur={() =>
+                            {
+                                if (Number(expireMonth) === 1)
+                                {
+                                    expireMonthInput('0' + '1')
+                                }
+                            }}
                         />
                         <Typography
                             sx={{
                                 fontWeight: 500,
                             }}
-                            className={xs ? 't2-medium-blue3 unselectable' : 'unselectable'}
+                            className={'t2-medium-blue3 unselectable'}
                         >/</Typography>
                         <input
                             style={{
-                                height: xs ? '24px' : '',
-                                width: xs ? '23%' : '',
-                                padding: xs ? '8px' : ''
+                                height: '24px',
+                                width: '23%',
+                                padding: '8px 15px',
+                                border: expireYearError ? '2px solid red' : 'none',
                             }}
-                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={'h5-bold-brown2 number-input unselectable'}
                             placeholder='РР'
-                            unselectable
+                            value={expireYear}
+                            onKeyDown={(event) =>
+                            {
+                                onYearInput(event)
+                            }}
+                            onBlur={() =>
+                            {
+                                if (expireYear.length === 1)
+                                {
+                                    if (Number(expireYear) !== 0)
+                                        expireYearInput('0' + expireYear);
+                                    else
+                                        expireYearInput('')
+                                }
+                            }}
                         />
                     </Grid>
                 </Grid>
@@ -194,7 +316,7 @@ const BankCard = (props) =>
                         gap={0.5}
                     >
                         <Typography
-                            className={xs ? 't2-medium-blue3 unselectable' : ''}
+                            className={'t2-medium-blue3 unselectable'}
                             alignItems={'center'}
                         >
                             CVV <InfoIcon />
@@ -203,9 +325,22 @@ const BankCard = (props) =>
                             style={{
                                 height: md ? '24px' : xs ? '30px' : '',
                                 width: xs ? '23%' : '',
-                                padding: xs ? '8px' : ''
+                                padding: xs ? '8px' : '',
+                                border: cvvError ? '2px solid red' : 'none',
                             }}
-                            className={xs ? 'h5-bold-brown2 number-input unselectable' : 'number-input unselectable'}
+                            className={'h5-bold-brown2 number-input unselectable'}
+                            value={cvv}
+                            onKeyDown={(event) =>
+                            {
+                                onCvvInput(event)
+                            }}
+                            onBlur={() =>
+                            {
+                                if (cvv.length < 3)
+                                {
+                                    cvvInput('')
+                                }
+                            }}
                         />
 
                     </Grid>

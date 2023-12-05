@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { instance } from "../../../../api.config.js";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
@@ -10,9 +10,40 @@ const initialState = {
 
     isAuthState: false,
     beforeAuthPath: '',
+
+    loading: false,
+    userPersonalData: {},
 }
 
+export const getUserPersonalData = createAsyncThunk('user/getUserPersonalData', async (_, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(REACT_APP_BASE_URL + '/User/getUserPersonalData');
+        return response;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
 
+            return rejectWithValue(customError);
+        }
+
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+
+        return rejectWithValue(customError)
+    }
+});
 
 const userAuthSlice = createSlice({
     name: 'userAuthState',
@@ -53,6 +84,32 @@ const userAuthSlice = createSlice({
                 beforeAuthPath: payload
             }
         },
+    },
+    extraReducers(builder)
+    {
+        builder
+            .addCase(getUserPersonalData.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getUserPersonalData.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    userPersonalData: payload.data,
+                }
+            })
+            .addCase(getUserPersonalData.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
     }
 })
 

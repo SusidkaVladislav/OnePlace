@@ -8,11 +8,31 @@ import
 } from '@mui/material'
 import '../CheckoutStyles.css';
 import BankCard from '../../../controls/bank-card/BankCard';
-
+import { useDispatch, useSelector } from 'react-redux';
+import
+{
+    setPaymentMethod,
+    setCardNumber,
+    setExpireMonth,
+    setExpireYear,
+    setCvv,
+    setComment,
+    setCardErrorList,
+} from '../../../features/order/userOrderSlice';
 
 const PaymentData = () =>
 {
-    const [paymantMethod, setPaymentMethod] = useState(1);
+    const dispatch = useDispatch();
+
+    const {
+        paymentMethod,
+        cardNumber,
+        expireMonth,
+        expireYear,
+        cvv,
+        comment,
+        cardErrorList,
+    } = useSelector(state => state.userOrder);
 
     const xs = useMediaQuery('(min-width: 0px)');
 
@@ -47,8 +67,11 @@ const PaymentData = () =>
                 >
                     <CustomRadio
                         name="payment-method"
-                        checked={paymantMethod === 1}
-                        onChange={() => { setPaymentMethod(1) }}
+                        checked={paymentMethod === 0 ? true : false}
+                        onChange={() => 
+                        {
+                            dispatch(setPaymentMethod(0))
+                        }}
                     />
                     <Typography
                         className={xs ? 't2-medium-500-brown2' : ''}
@@ -64,8 +87,11 @@ const PaymentData = () =>
                 >
                     <CustomRadio
                         name="payment-method"
-                        checked={paymantMethod === 2}
-                        onChange={() => { setPaymentMethod(2) }}
+                        checked={paymentMethod === 1 ? true : false}
+                        onChange={() => 
+                        {
+                            dispatch(setPaymentMethod(1))
+                        }}
                     />
                     <Typography
                         className={xs ? 't2-medium-500-brown2' : ''}
@@ -74,7 +100,7 @@ const PaymentData = () =>
             </Grid>
 
             {
-                paymantMethod === 2 && (
+                paymentMethod === 1 && (
                     <Grid
                         container
                         sx={{
@@ -88,7 +114,44 @@ const PaymentData = () =>
                             }
                         }}
                     >
-                        <BankCard />
+                        <BankCard
+                            number={cardNumber}
+                            expireMonth={expireMonth}
+                            expireYear={expireYear}
+                            cvv={cvv}
+                            numberInput={(value) =>
+                            {
+                                const updatedCardErrorList = [...cardErrorList];
+                                dispatch(setCardNumber(value))
+                                updatedCardErrorList[0] = false;
+                                dispatch(setCardErrorList(updatedCardErrorList))
+                            }}
+                            expireMonthInput={(value) =>
+                            {
+                                const updatedCardErrorList = [...cardErrorList];
+                                dispatch(setExpireMonth(value))
+                                updatedCardErrorList[1] = false;
+                                dispatch(setCardErrorList(updatedCardErrorList))
+                            }}
+                            expireYearInput={(value) =>
+                            {
+                                const updatedCardErrorList = [...cardErrorList];
+                                dispatch(setExpireYear(value))
+                                updatedCardErrorList[2] = false;
+                                dispatch(setCardErrorList(updatedCardErrorList))
+                            }}
+                            cvvInput={(value) =>
+                            {
+                                const updatedCardErrorList = [...cardErrorList];
+                                dispatch(setCvv(value))
+                                updatedCardErrorList[3] = false;
+                                dispatch(setCardErrorList(updatedCardErrorList))
+                            }}
+                            numberError={cardErrorList[0]}
+                            expireMonthError={cardErrorList[1]}
+                            expireYearError={cardErrorList[2]}
+                            cvvError={cardErrorList[3]}
+                        />
                     </Grid>
                 )
             }
@@ -115,7 +178,9 @@ const PaymentData = () =>
                 </Typography>
                 <textarea
                     className={xs ? 'light-h5 comment-text-area' : 'comment-text-area'}
-                    style={{}} />
+                    value={comment}
+                    onInput={({ target }) => { dispatch(setComment(target.value)) }}
+                />
             </Grid>
 
         </Grid>
