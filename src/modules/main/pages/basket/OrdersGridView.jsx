@@ -126,8 +126,6 @@ const OrdersGridView = () =>
                             })
                         )
                     }
-
-
                 </Grid>
 
                 <Grid
@@ -155,7 +153,6 @@ const OrdersGridView = () =>
                     }}
                 >
                     <Grid
-                        //container
                         item
                         bgcolor={'#F8F8F8'}
 
@@ -181,8 +178,6 @@ const OrdersGridView = () =>
                                         : 'unselectable'}
                             sx={{
                                 marginBottom: {
-                                    lg: '10px',
-                                    md: '10px',
                                     sm: '10px',
                                 }
                             }}
@@ -212,13 +207,9 @@ const OrdersGridView = () =>
                             justifyContent={'space-between'}
                             sx={{
                                 marginTop: {
-                                    lg: '10px',
-                                    md: '10px',
                                     sm: '10px',
                                 },
                                 marginBottom: {
-                                    lg: '18px',
-                                    md: '18px',
                                     sm: '18px',
                                 }
                             }}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CheckoutStyles.css';
+//#region Material
 import
 {
     Grid,
@@ -11,29 +12,45 @@ import
     Stack,
     useMediaQuery,
 } from '@mui/material'
+
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import WhiteCheckIcon from '../../../../svg/shared-icons/WhiteCheckIcon';
-import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
+//#endregion
+
+//#region Icons
+import WhiteCheckIcon from '../../../../svg/shared-icons/WhiteCheckIcon';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-
-import ContactData from './contact-data/ContactData';
-import DeliveryData from './delivery-data/DeliveryData';
-import PaymentData from './payment-data/PaymentData';
-
 import BigBrownLeftArrow from '../../../../svg/arrows/BigBrownLeftArrow';
 import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon';
+//#endregion
 
+//#region Redux
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
-    setShowSuccessfulOrerAlert,
+    setShowUnsuccessfulOrerAlert,
     setErrorList,
     setCardErrorList,
+    createOrder,
 } from '../../features/order/userOrderSlice';
+import
+{
+    setCheckedIds,
+} from '../../features/basket_features/cartSlice';
+//#endregion
+
+//#region Components
+import ContactData from './contact-data/ContactData';
+import DeliveryData from './delivery-data/DeliveryData';
+import PaymentData from './payment-data/PaymentData';
+import UnsuccessfulCheckout from './successful-checkout/UnsuccessfulCheckout';
+//#endregion
+
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 
 //Налаштування лінії
 const QontoConnector = styled(StepConnector)(() => ({
@@ -139,6 +156,11 @@ const CheckoutPage = () =>
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // useEffect(() =>
+    // {
+    //     dispatch(setShowUnsuccessfulOrerAlert(false))
+    // }, [])
+
     const xs = useMediaQuery('(min-width: 0px)');
     const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
@@ -151,7 +173,8 @@ const CheckoutPage = () =>
     } = useSelector(state => state.userBasket)
 
     const {
-        showSuccessfulOrderAlert,
+        showUnsuccessfulOrderAlert,
+
         userName,
         userSurname,
         userEmail,
@@ -168,6 +191,8 @@ const CheckoutPage = () =>
 
         errorList,
         cardErrorList,
+
+        actionNotification,
     } = useSelector(state => state.userOrder);
 
     const steps =
@@ -182,7 +207,9 @@ const CheckoutPage = () =>
     const [activeProductStep, setActiveProductStep] = useState(0);
     const maxSteps = checkedProductIds?.length;
 
-    const onGoToNextStep = () =>
+    //dispatch(setShowUnsuccessfulOrerAlert(false))
+
+    const onGoToNextStep = async () =>
     {
         if (activeStep === 0)
         {
@@ -252,14 +279,26 @@ const CheckoutPage = () =>
                 dispatch(setCardErrorList(updatedCardErrorList))
             }
 
-            if (updatedCardErrorList.every(e => e === false))
+            if ((paymentMethod === 1 && updatedCardErrorList.every(e => e === false)) || paymentMethod === 0)
             {
                 //все провалідовано, можна формувати запит на оформлення замовлення
+                await dispatch(createOrder(checkedProductIds))
+                    .then((res) =>
+                    {
+                        if (res?.error)
+                            setTimeout(() =>
+                            {
+                                dispatch(setShowUnsuccessfulOrerAlert(false))
+                            }, 3000);
+                        else
+                        {
+                            //почистити в кошику вибрані товари 
+                            dispatch(setCheckedIds([]))
+                            navigate('/')
+                        }
+                    })
             }
         }
-
-        //dispatch(setShowSuccessfulOrerAlert(true))
-        //navigate('/')
     }
 
     const validatePersonalData = () =>
@@ -303,6 +342,18 @@ const CheckoutPage = () =>
                 }
             }}
         >
+            {
+                showUnsuccessfulOrderAlert && (
+                    <span
+                        className="modal-backdrop"
+                    >
+                        <UnsuccessfulCheckout
+                            message={actionNotification}
+                        />
+                    </span>
+                )
+            }
+
             <Grid
                 container
                 item
@@ -328,6 +379,10 @@ const CheckoutPage = () =>
                         style={{
                             display: md ? 'none' : 'flex',
                             cursor: 'pointer',
+                        }}
+                        onClick={() =>
+                        {
+                            navigate(-1)
                         }}
                     >
                         {
@@ -625,9 +680,6 @@ const CheckoutPage = () =>
                             </Grid>
                         </Grid>
 
-
-                        {/* ------------------------------------------------------------ */}
-
                         <Grid
                             sx={{
                                 display: {
@@ -755,8 +807,6 @@ const CheckoutPage = () =>
                     >{activeStep === 2 ? 'Підтвердити замовлення' : 'Продовжити'}</Button>
                 </Grid>
 
-
-
                 <Grid
                     item
                     sx={{
@@ -867,7 +917,7 @@ const CheckoutPage = () =>
                     }}
                     className={xs ? 'h4-lg-gray3 stepper-navigation-btn' : ''}
                     variant='contained'
-                    onClick={() =>
+                    onClick={async () => 
                     {
 
                         //Перевірка персональних даних покупця
@@ -902,45 +952,55 @@ const CheckoutPage = () =>
                                 }
 
                                 dispatch(setErrorList(updatedErrorList));
+
+                                const updatedCardErrorList = [...cardErrorList];
+
+                                if (paymentMethod === 1)
+                                {
+                                    if (cardNumber.length !== 19)
+                                    {
+                                        updatedCardErrorList[0] = true;
+                                    }
+                                    if (expireMonth.length !== 2)
+                                    {
+                                        updatedCardErrorList[1] = true;
+                                    }
+                                    if (expireYear.length !== 2)
+                                    {
+                                        updatedCardErrorList[2] = true;
+                                    }
+                                    if (cvv.length !== 3)
+                                    {
+                                        updatedCardErrorList[3] = true;
+                                    }
+
+                                    dispatch(setCardErrorList(updatedCardErrorList))
+                                }
+
+                                if (isValidPersonalData && isValidDeliveryData)
+                                {
+                                    if ((paymentMethod === 1 && updatedCardErrorList.every(e => e === false)) || paymentMethod === 0)
+                                    {
+                                        dispatch(createOrder(checkedProductIds))
+                                            .then((res) =>
+                                            {
+                                                if (res?.error)
+                                                    setTimeout(() =>
+                                                    {
+                                                        dispatch(setShowUnsuccessfulOrerAlert(false))
+                                                    }, 3000);
+                                                else
+                                                {
+                                                    //почистити в кошику вибрані товари 
+                                                    dispatch(setCheckedIds([]))
+                                                    navigate('/')
+                                                }
+                                            })
+                                    }
+                                }
                             })
-
-                        const updatedCardErrorList = [...cardErrorList];
-
-                        if (paymentMethod === 1)
-                        {
-                            if (cardNumber.length !== 19)
-                            {
-                                updatedCardErrorList[0] = true;
-                            }
-                            if (expireMonth.length !== 2)
-                            {
-                                updatedCardErrorList[1] = true;
-                            }
-                            if (expireYear.length !== 2)
-                            {
-                                updatedCardErrorList[2] = true;
-                            }
-                            if (cvv.length !== 3)
-                            {
-                                updatedCardErrorList[3] = true;
-                            }
-
-                            dispatch(setCardErrorList(updatedCardErrorList))
-
-                            console.log(isValidPersonalData)
-                            console.log(isValidDeliveryData)
-                            console.log(updatedCardErrorList.every(e => e === false))
-
-                            if (isValidPersonalData && isValidDeliveryData && updatedCardErrorList.every(e => e === false))
-                            {
-                                alert('OK!!!')
-                                //все провалідовано, можна формувати запит на оформлення замовлення
-                            }
-                        }
-                    }
-                    }
+                    }}
                 >{'Підтвердити замовлення'}</Button>
-
             </Grid>
         </Stack>
     )

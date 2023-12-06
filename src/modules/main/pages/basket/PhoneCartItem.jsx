@@ -44,6 +44,7 @@ const PhoneCartItem = (props) =>
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
+
     const onSelectProduct = (value) =>
     {
         //Якщо товар вибраний, то значить його ціну треба додати до загальної
@@ -54,7 +55,12 @@ const PhoneCartItem = (props) =>
                 let ids = [];
                 ids.push({
                     id: id,
-                    count: 1
+                    count: 1,
+                    colorId: colorId,
+                    name: name,
+                    imageURL: imageURL,
+                    price: price,
+                    discount: discount,
                 })
                 checkedProductIds.map(item =>
                 {
@@ -84,72 +90,89 @@ const PhoneCartItem = (props) =>
                 dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
             }
         }
+
     }
 
     const incrementCount = () =>
-  {
-    let ids = [];
-    let isAvaliableQuantity = true;
-    
-    if (availableQuantity > 0)
     {
-      //Якщо цей товар не вибраний чекбоксом
-      if (checkedProductIds.every(item => item.id !== id))
-      {
-        if (availableQuantity >= 1)
-        {
-          ids.push({
-            id: id,
-            count: 1
-          })
-          checkedProductIds.map(item =>
-          {
-            ids.push(item);
-          })
-        }
-        else
-        {
-          isAvaliableQuantity = false;
-        }
-      }
-      else
-      {
-        checkedProductIds.map(item =>
-        {
-          if (item.id !== id)
-          {
-            ids.push(item);
-          }
-          else
-          {
-            if ((item.count + 1) <= availableQuantity)
-            {
-              ids.push({
-                id: item.id,
-                count: item.count + 1
-              })
-            }
-            else 
-            {
-              ids.push({
-                id: item.id,
-                count: item.count
-              })
+        let ids = [];
+        let isAvaliableQuantity = true;
 
-              isAvaliableQuantity = false;
+        if (availableQuantity > 0)
+        {
+            //Якщо цей товар не вибраний чекбоксом
+            if (checkedProductIds.every(item => item.id !== id))
+            {
+                if (availableQuantity >= 1)
+                {
+                    ids.push({
+                        id: id,
+                        count: 1,
+                        colorId: colorId,
+                        name: name,
+                        imageURL: imageURL,
+                        price: price,
+                        discount: discount,
+                    })
+                    checkedProductIds.map(item =>
+                    {
+                        ids.push(item);
+                    })
+                }
+                else
+                {
+                    isAvaliableQuantity = false;
+                }
             }
-          }
-        })
-      }
-      dispatch(setCheckedIds(ids));
-      if (isAvaliableQuantity)
-      {
-        dispatch(changeProductPriceSum(productPriceSum + price))
-        dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-        dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
-      }
+            else
+            {
+                checkedProductIds.map(item =>
+                {
+                    if (item.id !== id)
+                    {
+                        ids.push(item);
+                    }
+                    else
+                    {
+                        if ((item.count + 1) <= availableQuantity)
+                        {
+                            ids.push({
+                                id: item.id,
+                                count: item.count + 1,
+                                colorId: colorId,
+                                name: name,
+                                imageURL: imageURL,
+                                price: price,
+                                discount: discount,
+                            })
+                        }
+                        else 
+                        {
+                            ids.push({
+                                id: item.id,
+                                count: item.count,
+                                colorId: colorId,
+                                name: name,
+                                imageURL: imageURL,
+                                price: price,
+                                discount: discount,
+                            })
+
+                            isAvaliableQuantity = false;
+                        }
+                    }
+                })
+            }
+            dispatch(setCheckedIds(ids));
+            if (isAvaliableQuantity)
+            {
+                dispatch(changeProductPriceSum(productPriceSum + price))
+                dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
+                dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
+            }
+        }
+
     }
-  }
 
     const decrementCount = () =>
     {
@@ -164,6 +187,11 @@ const PhoneCartItem = (props) =>
                         {
                             id: item.id,
                             count: item.count - 1,
+                            colorId: colorId,
+                            name: name,
+                            imageURL: imageURL,
+                            price: price,
+                            discount: discount,
                         }
                     );
                 else if (item.id !== id)
@@ -202,6 +230,8 @@ const PhoneCartItem = (props) =>
                 const product = checkedProductIds.find(item => item.id === id);
                 if (product !== undefined)
                 {
+                    let ids = checkedProductIds.filter(item => item.id !== id)
+                    dispatch(setCheckedIds(ids));
                     dispatch(changeProductPriceSum(productPriceSum - price * product.count))
                     dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * product.count))
                     dispatch(changeTotalOrderPrice(((productPriceSum - price * product.count) - (discountPrice - (price * discount / 100) * product.count))))
@@ -246,7 +276,6 @@ const PhoneCartItem = (props) =>
                 justifyContent={'space-between'}
                 alignContent={'space-between'}
             >
-
                 <Grid
                     container
                     item
@@ -444,7 +473,6 @@ const PhoneCartItem = (props) =>
                 </Grid >
             </Grid >
         </Grid>
-
     );
 };
 

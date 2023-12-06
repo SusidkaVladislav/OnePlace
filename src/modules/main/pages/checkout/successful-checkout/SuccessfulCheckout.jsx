@@ -8,6 +8,7 @@ import
 } from '@mui/material';
 import MainSiteLogoWithText from "../../../../../svg/shared-icons/MainSiteLogoWithText";
 import BrownCloseCrossIcon from "../../../../../svg/shared-icons/BrownCloseCrossIcon";
+import BrownCloseCrossXSIcon from "../../../../../svg/shared-icons/BrownCloseCrossXSIcon";
 import OrderBoxIcon from "../../../../../svg/shared-icons/OrderBoxIcon";
 import CharacterIcon from "../../../../../svg/shared-icons/CharacterIcon";
 import SuccessfulOrderMessageIcon from "../../../../../svg/shared-icons/SuccessfulOrderMessageIcon";
@@ -21,9 +22,6 @@ const SuccessfulCheckout = () =>
 {
     const dispatch = useDispatch();
 
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
 
     return (
@@ -31,18 +29,17 @@ const SuccessfulCheckout = () =>
             container
             item
             lg={5}
+            md={5}
+            sm={7.3}
+            xs={11}
             sx={{
                 position: 'absolute',
-                top: '15%',
-                left: '30%',
-                height: {
-                    lg: '423px'
-                },
+
                 borderRadius: '26px',
                 boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
+
             }}
             bgcolor={'#F6F6F6'}
-
         >
             <Grid
                 container
@@ -52,7 +49,8 @@ const SuccessfulCheckout = () =>
                         lg: '10%'
                     },
                     padding: {
-                        lg: '2% 4% 1% 0%'
+                        lg: '2% 4% 1% 0%',
+                        xs: '2% 5% 2% 0%'
                     }
                 }}
                 justifyContent={'right'}
@@ -65,39 +63,44 @@ const SuccessfulCheckout = () =>
                     {
                         dispatch(setShowSuccessfulOrerAlert(false))
                     }}
-                ><BrownCloseCrossIcon /></span>
+                >
+                    {lg ? <BrownCloseCrossIcon /> : <BrownCloseCrossXSIcon />}</span>
             </Grid>
 
             <Grid
                 item
                 container
-
                 lg={12}
+                xs={12}
                 sx={{
                     height: {
                         lg: '30%'
                     },
+                    padding: {
+                        xs: '0px 40px 12px 45px'
+                    }
                 }}
             >
                 <Grid
                     container
                     item
                     width={'100%'}
-                    justifyContent={'center'}
+                    justifyContent={lg ? 'center' : 'left'}
                 >
                     <MainSiteLogoWithText />
                 </Grid>
+
                 <Grid
                     container
                     item
                     width={'100%'}
-                    justifyContent={'center'}
+                    justifyContent={lg ? 'center' : 'left'}
                 >
                     <Typography
                         sx={{
-                            textAlign: 'center',
+                            textAlign: lg ? 'center' : 'left',
                         }}
-                        className={lg ? 'brown1-400-20 unselectable' : 'unselectable'}
+                        className={lg ? 'brown1-400-20 unselectable' : ' brown1-400-20 unselectable'}
                     >Дякуємо!<br /> Замовлення прийнято.</Typography>
                 </Grid>
             </Grid>
@@ -110,26 +113,33 @@ const SuccessfulCheckout = () =>
                 sx={{
                     marginLeft: {
                         lg: '30%',
+                        sm: '25%',
+                        xs: '30%',
                     },
-                    height: lg ? '60%' : ''
+                    height: lg ? '60%' : '',
+                    paddingBottom: {
+                        xs: '12px'
+                    }
                 }}
+                alignItems={'end'}
             >
-                <Stack
+                {
+                    lg ? <Stack
 
-                    direction="column"
-                    alignItems="center"
-                    spacing={2}
-                >
-                    <SuccessfulOrderMessageIcon />
-                    <OrderBoxIcon />
-                </Stack>
+                        direction="column"
+                        alignItems="center"
+                        spacing={2}
+                    >
+                        <SuccessfulOrderMessageIcon />
+                        <OrderBoxIcon />
+                    </Stack> : <OrderBoxIcon />
+                }
 
                 <Grid>
-                    <CharacterIcon />
+                        <CharacterIcon />
                 </Grid>
 
             </Grid>
-
         </Grid>
     )
 }

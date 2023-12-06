@@ -95,7 +95,6 @@ const CartItem = (props) =>
         dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
       }
     }
-
   }
 
   const incrementCount = () =>
@@ -439,7 +438,6 @@ const CartItem = (props) =>
               </Button>
             </Grid>
 
-
             <Grid
               item
               container
@@ -487,9 +485,7 @@ const CartItem = (props) =>
                   }}
                 >{price - (price * discount / 100)} грн</Typography>
               </Grid>
-
             </Grid>
-
           </Grid>
         </Grid>
 
@@ -511,7 +507,6 @@ const CartItem = (props) =>
             <ButtonTrash height={lg ? 36 : sm ? 30 : 0} width={lg ? 36 : sm ? 30 : 0} color={'#0A3D58'} />
           </Button>
         </Grid>
-
       </Grid >
     </Grid>
   );

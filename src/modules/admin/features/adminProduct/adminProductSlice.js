@@ -146,7 +146,6 @@ export const addProduct = createAsyncThunk('adminProducts/addProduct', async (pi
         };
         return rejectWithValue(customError)
     }
-
 })
 
 export const updateProduct = createAsyncThunk('adminProducts/updateProduct', async (args, { rejectWithValue, getState }) =>

@@ -3,13 +3,17 @@ import
     createSlice,
     createAsyncThunk
 } from "@reduxjs/toolkit";
+import jwt from 'jwt-decode'
 import axios from "axios";
 
-const { REACT_APP_BASE_URL } = process.env;
 
+const { REACT_APP_BASE_URL } = process.env;
+const LOCAL_STORAGE_TOKEN_KEY = "access-token";
 const initialState = {
     loading: false,
     showSuccessfulOrderAlert: false,
+    showUnsuccessfulOrderAlert: false,
+    actionNotification: '',
 
     userName: '',
     userSurname: '',
@@ -36,6 +40,115 @@ const initialState = {
     ],
 }
 
+export const createOrder = createAsyncThunk('user/createOrder', async (checkedProductIds, { rejectWithValue, getState }) =>
+{
+    try
+    {
+        const accessToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+        if (accessToken)
+        {
+            try
+            {
+                axios.post(`${REACT_APP_BASE_URL}/Account/refresh`,
+                    null,
+                    {
+                        params: {
+                            accessToken: accessToken,
+                        },
+                        withCredentials: true,
+                    })
+                    .then((response) =>
+                    {
+                        var oldToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
+                        if (oldToken)
+                        {
+                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        }
+                        const user = jwt(response.data);
+                        const role = user["Role"];
+                        if (role === "user")
+                        {
+                            localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, response.data);
+                        }
+                    })
+                    .catch(() =>
+                    {
+                        if (localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY))
+                        {
+                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        }
+                    });
+            }
+            catch (error)
+            { }
+        }
+        const state = getState();
+
+        let products = [];
+
+        for (let i = 0; i < checkedProductIds.length; i++)
+        {
+            products.push({
+                productId: Number(checkedProductIds[i].id),
+                colorId: Number(checkedProductIds[i].colorId),
+                quantity: Number(checkedProductIds[i].count),
+            })
+        }
+
+        const orderCreatePayload = {
+            phoneNumber: state.userOrder.userPhone,
+            name: state.userOrder.userName,
+            surname: state.userOrder.userSurname,
+            comment: state.userOrder.comment,
+            serviceName: 0,
+            city: state.userOrder.city,
+            deliveryMethod: 0,
+            paymentMethod: state.userOrder.paymentMethod,
+            department: state.userOrder.department,
+            products: products,
+            cardData: {
+                number: state.userOrder.cardNumber,
+                expireMonth: Number(state.userOrder.expireMonth),
+                expireYear: Number(state.userOrder.expireYear),
+                cvv: Number(state.userOrder.cvv)
+            }
+        }
+
+        const response = await axios.post(
+            `${REACT_APP_BASE_URL}/Order/createOrder`,
+            orderCreatePayload,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)}`
+                }
+            }
+        );
+
+        return response;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+
+        return rejectWithValue(customError)
+    }
+});
+
 
 const userOrderSlice = createSlice({
     name: 'userOrder',
@@ -46,6 +159,13 @@ const userOrderSlice = createSlice({
             return {
                 ...state,
                 showSuccessfulOrderAlert: payload
+            }
+        },
+        setShowUnsuccessfulOrerAlert: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                showUnsuccessfulOrderAlert: payload
             }
         },
         setName: (state, { payload }) =>
@@ -146,11 +266,47 @@ const userOrderSlice = createSlice({
                 cardErrorList: payload,
             }
         },
+    },
+    extraReducers(builder)
+    {
+        builder
+            .addCase(createOrder.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(createOrder.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    showSuccessfulOrderAlert: true,
+                    errorList: [
+                        false, false, false, false, false, false,
+                    ],
+                    cardErrorList: [
+                        false, false, false, false,
+                    ],
+
+                }
+            })
+            .addCase(createOrder.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+                    actionNotification: payload.detail,
+                    showUnsuccessfulOrderAlert: true,
+                }
+            })
     }
 })
 
 export const {
     setShowSuccessfulOrerAlert,
+    setShowUnsuccessfulOrerAlert,
 
     setName,
     setSurname,

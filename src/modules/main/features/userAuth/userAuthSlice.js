@@ -45,6 +45,31 @@ export const getUserPersonalData = createAsyncThunk('user/getUserPersonalData', 
     }
 });
 
+export const refreshToken = createAsyncThunk('user/refreshToken', async (_, { rejectWithValue }) =>
+{
+    try
+    {
+        const accessToken = localStorage.getItem("access-token");
+
+        const resp = await axios.post(
+            `${REACT_APP_BASE_URL}/Account/refresh`,
+            null,
+            {
+                params: {
+                    accessToken: accessToken,
+                },
+                withCredentials: true,
+            }
+        );
+
+        localStorage.setItem("access-token", resp.data);
+    }
+    catch (err)
+    {
+
+    }
+})
+
 const userAuthSlice = createSlice({
     name: 'userAuthState',
     initialState,
