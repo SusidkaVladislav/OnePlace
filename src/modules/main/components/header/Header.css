@@ -10,32 +10,10 @@
     display: flex;
 }
 
-.searchbar{
-    width: 30%;
-}
-
 .navigation {
     width: 12%
 }
 
-
-
 .toolbar{
     justify-content: space-between;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

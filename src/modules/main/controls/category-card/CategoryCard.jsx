@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Img from './689fff87dbde131c2540025194fae87f.png';
-
+import React from 'react';
+import
+{
+    Card,
+    CardContent,
+    CardMedia,
+    useMediaQuery,
+} from '@mui/material'
 const CategoryCard = (props) =>
 {
 
@@ -12,10 +14,15 @@ const CategoryCard = (props) =>
         picture,
     } = props;
 
+    const xs = useMediaQuery('(min-width: 0px)');
+    const sm = useMediaQuery('(min-width: 600px)');
+    const md = useMediaQuery('(min-width: 900px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
+
     return (
         <Card sx={{
-            width: "264px",
-            height: "309px",
+            width: '264px',
+            height: '309px',
             borderRadius: '10px',
             background: '#E5EAEA',
             boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
@@ -28,7 +35,7 @@ const CategoryCard = (props) =>
                 height="232px"
                 width="217px"
                 image={picture}
-                alt="Product image"
+                alt="Category image"
                 sx={{
                     objectFit: 'contain',
                     background: '#E5EAEA',

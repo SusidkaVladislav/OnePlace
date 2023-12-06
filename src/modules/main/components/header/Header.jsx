@@ -7,6 +7,7 @@ import
   Toolbar,
   Stack,
   Badge,
+  useMediaQuery,
 } from '@mui/material';
 
 import SearchBar from '../../controls/SearchBar';
@@ -17,6 +18,7 @@ import CartIcon from '../../../../svg/client-icons/header/CartIcon';
 import HeartIcon from '../../../../svg/client-icons/header/HeartIcon';
 import UserIcon from '../../../../svg/client-icons/header/UserIcon';
 import DownArrow from '../../../../svg/arrows/DownArrow';
+import ShowCategoriesPageIcon from '../../../../svg/shared-icons/ShowCategoriesPageIcon';
 
 import UserLoginForm from '../../features/login/UserLoginForm';
 import UserRegisterForm from '../../features/register/UserRegisterForm';
@@ -63,6 +65,11 @@ const Header = () =>
 {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const xs = useMediaQuery('(min-width: 0px)');
+  const sm = useMediaQuery('(min-width: 600px)');
+  const md = useMediaQuery('(min-width: 900px)');
+  const lg = useMediaQuery('(min-width: 1200px)');
 
   const [isMouseOverCategory, setIsMouseOverCategory] = useState(false);
 
@@ -111,41 +118,31 @@ const Header = () =>
       <AppBar position="static" className="appbar">
         <Toolbar className="toolbar">
 
-          <Stack direction='row' spacing={2}>
+          <Stack
+            direction='row'
+            spacing={2}
+            alignItems={'center'}
+          >
             <Logo />
-            <Stack
-              alignItems='center'
-              direction='row' spacing={1}
-              style={{
-                cursor: 'pointer',
-                borderBottom: isCategoryOpen ? '2px solid #D17100' : 'none',
-              }}
-              onClick={() =>
-              {
-                onShowCategoryClickHandler()
-              }}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
+            {
+              md ? <Stack
+                //display={md ? 'flex' : 'none'}
+                alignItems='center'
+                direction='row' spacing={1}
+                style={{
+                  cursor: 'pointer',
+                  borderBottom: isCategoryOpen ? '2px solid #D17100' : 'none',
+                }}
+                onClick={() =>
+                {
+                  onShowCategoryClickHandler()
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
 
-              {
-                isCategoryOpen
-                  ? (
-                    <Fragment>
-                      <h3 style={{
-                        color: '#D17100',
-                      }}
-                        className="unselectable"
-                      >Категорії</h3>
-
-                      <span style={{
-                        rotate: '180deg'
-                      }}>
-                        <DownArrow color='#D17100' />
-                      </span>
-                    </Fragment>
-
-                  ) : isMouseOverCategory
+                {
+                  isCategoryOpen
                     ? (
                       <Fragment>
                         <h3 style={{
@@ -153,26 +150,59 @@ const Header = () =>
                         }}
                           className="unselectable"
                         >Категорії</h3>
-                        <DownArrow color='#D17100' />
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <h3 style={{
-                          color: '#0A3D58',
-                        }}
-                          className="unselectable"
-                        >Категорії</h3>
 
-                        <DownArrow color='#0A3D58' />
+                        <span style={{
+                          rotate: '180deg'
+                        }}>
+                          <DownArrow color='#D17100' />
+                        </span>
                       </Fragment>
-                    )
-              }
-            </Stack>
+
+                    ) : isMouseOverCategory
+                      ? (
+                        <Fragment>
+                          <h3 style={{
+                            color: '#D17100',
+                          }}
+                            className="unselectable"
+                          >Категорії</h3>
+                          <DownArrow color='#D17100' />
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                          <h3 style={{
+                            color: '#0A3D58',
+                          }}
+                            className="unselectable"
+                          >Категорії</h3>
+
+                          <DownArrow color='#0A3D58' />
+                        </Fragment>
+                      )
+                }
+              </Stack>
+                :
+                <span
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() =>
+                  {
+                    navigate('/category/' + 0);
+                  }}
+                >
+                  <ShowCategoriesPageIcon />
+                </span>
+            }
           </Stack>
 
           <div style={{ flexGrow: 0.3 }} />
 
-          <div className="searchbar">
+          <div
+            style={{
+              width: lg ? '35%' : md ? '45%' : '60%'
+            }}
+          >
             <SearchBar />
           </div>
 
@@ -180,14 +210,16 @@ const Header = () =>
 
           <span
             style={{
-              cursor: 'pointer'
+              display: sm ? 'flex' : 'none',
+              cursor: 'pointer',
             }}
             onClick={onAuth}>
             <UserIcon /></span>
 
           <span
             style={{
-              cursor: 'pointer'
+              display: sm ? 'flex' : 'none',
+              cursor: 'pointer',
             }}
           >
             <HeartIcon />

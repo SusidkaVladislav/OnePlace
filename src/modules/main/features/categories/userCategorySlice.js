@@ -13,7 +13,7 @@ const initialState = {
     loading: false,
 }
 
-export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSelect', async (args, { rejectWithValue }) =>
+export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSelect', async (_, { rejectWithValue }) =>
 {
     try
     {

@@ -1,12 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Grid } from '@mui/material';
+import
+{
+    Grid,
+    useMediaQuery,
+} from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom'
 import './CategoriesPageStyles.css';
 
 //#region Components&Controls
 import Footer from '../../components/footer/Footer'
 import CategorySelectBox from '../../controls/CategorySelectBox';
-import CategoryCard from '../../controls/CategoryCard';
+import CategoryCard from '../../controls/category-card/CategoryCard';
+import CategoryPhoneCard from '../../controls/category-card/CategoryPhoneCard';
 import Header from '../../components/header/Header';
 //#endregion
 
@@ -18,12 +23,21 @@ import
 
 import { getFullPath } from '../../services/CategoryService';
 
+import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon'
+
 const CategoriesPage = () =>
 {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const params = useParams();
+
+    const sm = useMediaQuery('(min-width: 600px)');
+    const sm2 = useMediaQuery('(min-width: 750px)');
+    const md = useMediaQuery('(min-width: 900px)');
+    const md2 = useMediaQuery('(min-width:1000px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
+    const xlg = useMediaQuery('(min-width: 1400px)');
 
     const [subCategories, setSubCategories] = useState([])
     var categoryPath = useRef([]);
@@ -37,12 +51,17 @@ const CategoriesPage = () =>
 
     useEffect(() =>
     {
-        setCategoryId(params.id);
-        categoryPath.current = [];
         dispatch(getCategoriesForSelect())
-        getFullPath(Number(params.id), categoriesForSelect, categoryPath);
-        categoryPath.current = categoryPath.current.reverse();
-        getSubCategories(Number(params.id));
+        setCategoryId(params.id);
+        if (Number(params.id) > 0)
+        {
+            categoryPath.current = [];
+
+            getFullPath(Number(params.id), categoriesForSelect, categoryPath);
+            categoryPath.current = categoryPath.current.reverse();
+            getSubCategories(Number(params.id));
+        }
+
     }, [params.id])
 
     const getSubCategories = (id) =>
@@ -69,14 +88,16 @@ const CategoriesPage = () =>
         <div>
             <Header />
             {
+                md &&
                 isCategoryOpen && (
                     <CategorySelectBox />
                 )
             }
 
             <Grid
+                display={categoryId > 0 ? 'flex' : 'none'}
                 container
-                marginTop={'1.5%'}
+                marginTop={md ? '1.5%' : '3%'}
                 paddingLeft={'7%'}
             >
                 {
@@ -140,48 +161,152 @@ const CategoriesPage = () =>
                 }
             </Grid>
 
-            <h3
-                style={{
-                    padding: '3% 0% 0% 9%'
+            <Grid
+                display={categoryId > 0 ? 'flex' : 'none'}
+                container
+                direction='row'
+                xs={12}
+                justifyContent={'space-between'}
+                sx={{
+                    paddingLeft: '10%',
+                    marginTop: '2%',
                 }}
-            >{categoryPath.current[categoryPath.current.length - 1]?.name}</h3>
+            >
+                {
+                    !md && <Grid
+                        item
+                        container
+                        xs={2}
+                    >
+                        <span
+
+                            style={{
+                                cursor: 'pointer',
+                            }}
+                            onClick={() =>
+                            {
+                                navigate(-1)
+                            }}
+                        >
+                            <BrownLeftArrow40x40Icon />
+                        </span>
+
+                    </Grid>
+                }
+                <Grid
+                    container
+                    item
+                    xs={10}
+                    sx={{
+                        paddingTop: '4px'
+                    }}
+                >
+                    <h3>{categoryPath.current[categoryPath.current.length - 1]?.name}</h3>
+                </Grid>
+            </Grid>
+
 
             <Grid
                 container
-                columnSpacing={6}
+                item
+                xs={12}
                 rowSpacing={2}
-                justifyContent="center"
+                justifyItems="center"
                 alignItems="center"
-                padding='3% 9% 5% 9%'
+                paddingLeft={
+                    xlg ? '9%' :
+                        lg ? '4.5%' :
+                            md2 ? '5%' :
+                                md ? '' :
+                                    sm2 ? '12%' :
+                                        sm ? '4.3%' : ''
+                }
+                paddingRight={
+                    xlg ? '9%' :
+                        lg ? '4.5%' :
+                            md2 ? '5%' :
+                                md ? '' :
+                                    sm2 ? '12%' :
+                                        sm ? '4.3%' : ''
+                }
+                marginTop={'10px'}
+                marginBottom={'150px'}
             >
                 {
-                    subCategories.map((category, index) =>
-                    {
-                        return (
-                            <Grid
-                                key={index}
-                                item
-                                sx={{
-                                    cursor: 'pointer'
-                                }}
-                                onClick={() =>
-                                {
-                                    onCategoryClickHandler(category.id)
-                                }}
-                            >
-                                <CategoryCard
-                                    name={category.name}
-                                    picture={category.pictureURL}
-                                />
-                            </Grid>
-                        )
-                    })
+                    categoryId > 0 ?
+                        subCategories.map((category, index) =>
+                        {
+                            return (
+                                <Grid
+                                    key={index}
+                                    item
+                                    container
+                                    justifyContent={'center'}
+                                    lg={3}
+                                    md={4}
+                                    sm={6}
+                                    xs={6}
+                                    sx={{
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() =>
+                                    {
+                                        onCategoryClickHandler(category.id)
+                                    }}
+                                >
+                                    {
+                                        sm ? <CategoryCard
+                                            name={category.name}
+                                            picture={category.pictureURL}
+                                        /> : <CategoryPhoneCard
+                                            name={category.name}
+                                            picture={category.pictureURL}
+                                        />
+                                    }
+
+                                </Grid>
+                            )
+                        })
+                        :
+                        categoriesForSelect.map((category, index) =>
+                        {
+                            return (
+                                <Grid
+                                    key={index}
+                                    item
+                                    container
+                                    justifyContent={'center'}
+                                    lg={3}
+                                    md={4}
+                                    sm={6}
+                                    xs={6}
+                                    sx={{
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() =>
+                                    {
+                                        onCategoryClickHandler(category.id)
+                                    }}
+                                >
+                                    {
+                                        sm ? <CategoryCard
+                                            name={category.name}
+                                            picture={category.pictureURL}
+                                        /> : <CategoryPhoneCard
+                                            name={category.name}
+                                            picture={category.pictureURL}
+                                        />
+                                    }
+
+                                </Grid>
+                            )
+                        })
                 }
 
             </Grid>
 
             <Footer />
-        </div>
+        </div >
     )
 }
 

@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import './ProductsByCategoryPageStyles.css';
 import { useParams, useNavigate } from 'react-router-dom'
-import { Grid, Stack } from '@mui/material'
+import
+{
+    Grid,
+    Stack,
+    useMediaQuery,
+} from '@mui/material'
 
 //#region Components & controls
 import Header from '../../components/header/Header';
@@ -54,7 +59,7 @@ const ProductsByCategoryPage = () =>
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
-
+    const md = useMediaQuery('(min-width: 900px)');
     const [currentProductPage, setCurrentProductPage] = useState(1);
 
     const [categoryId, setCategoryId] = useState(params.id);
@@ -242,6 +247,7 @@ const ProductsByCategoryPage = () =>
 
             <Header />
             {
+                md &&
                 isCategoryOpen && (
                     <CategorySelectBox />
                 )

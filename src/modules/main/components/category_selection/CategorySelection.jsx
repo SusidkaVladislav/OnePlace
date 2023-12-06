@@ -1,7 +1,7 @@
 import React from "react";
 import "./CaregorySelection.css"
 import Toolbar from "@mui/material/Toolbar";
-import CategoryCard from "../../controls/CategoryCard";
+import CategoryCard from '../../controls/category-card/CategoryCard'
 import Grid from "@mui/material/Grid";
 
 const CaregorySelection = () => {
