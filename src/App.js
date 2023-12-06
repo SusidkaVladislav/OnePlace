@@ -83,7 +83,6 @@ function App()
           </Route>
         </Route>
 
-
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />
           <Route path="main" element={<AdminPrivateRoute />}>

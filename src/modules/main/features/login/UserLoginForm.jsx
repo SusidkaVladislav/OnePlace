@@ -208,6 +208,7 @@ const UserLoginForm = () =>
                     xs={12}
                 >
                     <Grid
+                        item
                         padding={'2%'}
                         md={6}
                         sm={12}
@@ -219,7 +220,6 @@ const UserLoginForm = () =>
                                 border: 'none',
                             },
                         }}
-                        item
                     >
 
                         <label
