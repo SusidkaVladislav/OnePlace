@@ -182,6 +182,15 @@ h5.bold {
   line-height: 130%;
 }
 
+h5.bold-blue {
+  color: var(--blue1);
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
 h5.bold-brown2 {
   color: var(--brown2);
   font-family: 'Montserrat Alternates';

@@ -72,7 +72,7 @@ function App()
         <Route path='basket' element={<Basket />} />
         <Route path='checkout' element={<CheckoutPage />} />
 
-        <Route path="user" element={<UserPrivateRoute />}>
+        {/* <Route path="user" element={<UserPrivateRoute />}>
           <Route path="" element={<MainCabinetLayer />}>
             <Route index element={<MyOrders />} />
             <Route path='desires' element={<MyDesires />} />
@@ -81,7 +81,16 @@ function App()
             <Route path='chats' element={<MyChats />} />
             <Route path='personal-data' element={<MyPersonalData />} />
           </Route>
-        </Route>
+        </Route> */}
+
+          <Route path="cabinet" element={<MainCabinetLayer />}>
+            <Route index element={<MyOrders />} />
+            <Route path='desires' element={<MyDesires />} />
+            <Route path='purse' element={<MyPurse />} />
+            <Route path='reviews' element={<MyReviews />} />
+            <Route path='chats' element={<MyChats />} />
+            <Route path='personal-data' element={<MyPersonalData />} />
+          </Route>
 
 
         <Route path="admin">
