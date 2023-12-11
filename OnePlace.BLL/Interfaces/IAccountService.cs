@@ -9,7 +9,5 @@ namespace OnePlace.BLL.Interfaces
         Task<string> LoginAsync(LoginPayload loginPayload);
         Task<string> RefreshToken(string accessToken);
         Task LogoutAsync(string email);
-
-        Task SendCode(string emailAddress);
     }
 }

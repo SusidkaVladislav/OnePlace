@@ -15,13 +15,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-//using MailKit.Net.Smtp;
-//using MailKit;
-//using MimeKit;
-
-using System.Net.Mail;
-using System.Net;
-
 namespace OnePlace.BLL.Services
 {
     public class AccountService : IAccountService
@@ -216,74 +209,6 @@ namespace OnePlace.BLL.Services
             await _userManager.UpdateAsync(user);
 
     
-        }
-
-        public async Task SendCode(string emailAddress)
-        {
-            Random rnd = new Random();
-            string code = "";
-
-            for (int i = 0; i < 6; i++)
-            {
-                code += rnd.Next(0, 9);
-            }
-
-            //var email = new MimeMessage();
-
-            //email.From.Add(new MailboxAddress("OnePlace", "vladislav.susidka@gmail.com"));
-            //email.To.Add(new MailboxAddress("Client", emailAddress));
-            //            email.Subject = "Код для відновлення паролю";
-
-
-
-            //email.Body = new TextPart(MimeKit.Text.TextFormat.Plain)
-            //{
-            //    Text = $"Код дійсний 1 хвиллину. Ось код: {code}"
-            //};
-
-            try
-            {
-                MailMessage message= new MailMessage();
-//                message.IsBodyHtml = true;
-                message.From = new MailAddress("vladislav.susidka@gmail.com", "OnePlace");
-                message.To.Add(emailAddress);
-                message.Subject = "Код для відновлення паролю";
-                message.Body = $"Код дійсний 1 хвиллину. Ось код: {code}";
-
-                using(SmtpClient client = new SmtpClient("smtp.gmail.com"))
-                {
-                    client.Credentials = new NetworkCredential("vladislav.susidka@gmail.com", "Ps00q88ISusi_oe99");
-                    client.Port = 587;
-                    client.EnableSsl = true;
-
-                    client.Send(message);
-                }
-            }
-            catch(Exception ex)
-            {
-
-            }
-
-            //var client = new SmtpClient("smtp-mail.outlook.com", 587)
-            //{
-            //    EnableSsl = true,
-            //    Credentials = new NetworkCredential("vladislav.susidka@gmail.com", "Ps00q88ISusi_oe99")
-            //};
-
-            //return client.SendMailAsync(
-            //    new MailMessage(
-            //        from: "vladislav.susidka@gmail.com",
-            //        to: emailAddress,
-            //        "Код для відновлення паролю",
-            //        $"Код дійсний 1 хвиллину. Ось код: {code}"
-            //        ));
-
-                // Note: only needed if the SMTP server requires authentication
-                //smtp.Authenticate("smtp_username", "smtp_password");
-
-                //smtp.Send(email);
-                //smtp.Disconnect(true);
-            
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)

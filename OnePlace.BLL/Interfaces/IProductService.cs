@@ -46,7 +46,5 @@ namespace OnePlace.BLL.Interfaces
         Task<ProductReviewAnalitic> GetProductReviewsAnalitic(int id);
 
         Task<List<ProductToReturnAllDTO>> GetAllProducts(int? categoryId = null);
-
-        Task<List<ProductFromCartDTO>> GetProductsFromCart(List<PayloadProductIdColorId> ids);
     }
 }

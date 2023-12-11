@@ -94,34 +94,22 @@ namespace OnePlace.BLL.Services
         public async Task<int> AddToCart(ShoppingCartPayload cartPayload)
         {
             ShoppingCartDTO shoppingCartDTO = _mapper.Map<ShoppingCartDTO>(cartPayload);
-
-            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            int userId = 0;
-            if (user is not null)
-            {
-                 userId = Int32.Parse(user.Value);
-            }
-            else
-            {
-                throw new ArgumentException("Користувач не авторизований");
-            }
-
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
             ShoppingCart entry = await _unitOfWork.ShoppingCarts.GetAsync(
                 new Composite3Key { 
                     Column1 = shoppingCartDTO.ProductId, 
-                    Column2 = userId, 
+                    Column2 = user.Id, 
                     Column3 = shoppingCartDTO.ColorId });
 
-            if(entry != null) 
-            {
-                //entry.Quantity = 0;//hoppingCartDTO.Quantity;
-                //_unitOfWork.ShoppingCarts.Update(entry);
-                //await _unitOfWork.SaveAsync();
+            if(entry != null) {
+                entry.Quantity += shoppingCartDTO.Quantity;
+                _unitOfWork.ShoppingCarts.Update(entry);
+                await _unitOfWork.SaveAsync();
                 return entry.ProductId;
             }
 
             ShoppingCart cart = _mapper.Map<ShoppingCart>(shoppingCartDTO);
-            cart.UserId = userId;
+            cart.UserId = user.Id;
             _unitOfWork.ShoppingCarts.Create(cart);
             await _unitOfWork.SaveAsync();
             return cart.ProductId;
@@ -146,6 +134,7 @@ namespace OnePlace.BLL.Services
             {
                 var userId = Int32.Parse(user.Value);
                 review.UserId = userId;
+
             }
             else
             {
@@ -160,35 +149,29 @@ namespace OnePlace.BLL.Services
 
         public async Task<int> DeleteFromCart(ShoppingCartPayload cartPayload)
         {
-            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            int userId = 0;
-            if (user is not null)
-            {
-                userId = Int32.Parse(user.Value);
-
-                var cart = await _unitOfWork.ShoppingCarts.GetAsync(
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var cart = await _unitOfWork.ShoppingCarts.GetAsync(
                  new Composite3Key
                  {
                      Column1 = cartPayload.ProductId,
-                     Column2 = userId,
+                     Column2 = user.Id,
                      Column3 = cartPayload.ColorId
                  });
-                if (cart == null)
-                {
-                    return 0;
-                    //throw new ArgumentException("cart entity with this composite key does not exist");
-                }
-                await _unitOfWork.ShoppingCarts.DeleteAsync(
+
+            if (cart == null)
+            {
+                throw new ArgumentException("cart entity with this composite key does not exist");
+            }
+
+            await _unitOfWork.ShoppingCarts.DeleteAsync(
                 new Composite3Key
                 {
                     Column1 = cartPayload.ProductId,
-                    Column2 = userId,
+                    Column2 = user.Id,
                     Column3 = cartPayload.ColorId
                 });
-                await _unitOfWork.SaveAsync();
-                return cartPayload.ProductId;
-            }
-            return 0;
+            await _unitOfWork.SaveAsync();
+            return cartPayload.ProductId;
         }
 
         public async Task<int> DeleteLikedProduct(int productId)
@@ -246,16 +229,10 @@ namespace OnePlace.BLL.Services
 
         public async Task<IEnumerable<ShoppingCart>> GetCart()
         {
-            //var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var cart = await _unitOfWork.ShoppingCarts.FindAsync(lp => lp.UserId == user.Id);
 
-            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            if(user is not null)
-            {
-                var cart = await _unitOfWork.ShoppingCarts.FindAsync(lp => lp.UserId == Int32.Parse(user.Value));
-                return cart;
-
-            }
-            return null;
+            return cart;
         }
 
         public async Task<IEnumerable<LikedProduct>> GetLikedProducts()
@@ -299,7 +276,7 @@ namespace OnePlace.BLL.Services
                 throw new NotFoundException("shopping cart entry with this composite key does not exist");
             }
 
-            entry.Quantity = 0;//shoppingCartDTO.Quantity;
+            entry.Quantity = shoppingCartDTO.Quantity;
             _unitOfWork.ShoppingCarts.Update(entry);
             await _unitOfWork.SaveAsync();
             return entry.ProductId;

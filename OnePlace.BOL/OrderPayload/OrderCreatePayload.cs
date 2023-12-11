@@ -1,6 +1,5 @@
 ﻿using OnePlace.BOL.Enums;
 using System.ComponentModel.DataAnnotations;
-using OnePlace.BOL.OrderPayload.CardDataPayload;
 
 namespace OnePlace.BOL.OrderPayload
 {
@@ -15,6 +14,9 @@ namespace OnePlace.BOL.OrderPayload
         [Required, DataType(DataType.Text)]
         public string Surname { get; set; }
 
+        /// <summary>
+        /// Список товарів які будуть замовлятися
+        /// </summary>
         [Required] 
         public List<ProductOrderModelPayload> Products { get; set; }
 
@@ -43,7 +45,5 @@ namespace OnePlace.BOL.OrderPayload
         public int? HouseNumber { get; set; }
         
         public int? FlatNumber { get; set; }
-
-        public CardData? CardData { get; set; }
     }
 }
