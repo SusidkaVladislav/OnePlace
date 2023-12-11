@@ -5,6 +5,7 @@ using OnePlace.BOL.Password;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.ShoppingCart;
+using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -118,5 +119,7 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<Order>> GetOrders();
+
+        Task<PureUser> GetUserPersonalData();
     }
 }

@@ -142,5 +142,13 @@ namespace webapi.Controllers
             var result = await _userService.GetOrders();
             return Ok(result);
         }
+
+        [HttpPost("getUserPersonalData")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetUserPersonalData()
+        {
+            var result = await _userService.GetUserPersonalData();
+            return Ok(result);
+        }
     }
 }

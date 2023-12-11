@@ -23,9 +23,11 @@ namespace OnePlace.BOL.Message
         [MinLength(5)]
         [DataType(DataType.Text)]
         public string MessageText { get; set; }
-        [Required]
-        public DateTime Date { get; set; }
-        [Required]
-        public bool IsReplied { get; set; }
+        
+        
+        //[Required]
+        //public DateTime Date { get; set; }
+        //[Required]
+        //public bool IsReplied { get; set; }
     }
 }

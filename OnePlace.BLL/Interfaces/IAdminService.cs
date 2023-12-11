@@ -49,5 +49,8 @@ namespace OnePlace.BLL.Interfaces
         Task<int> UpdateBrand(ManufacturerDTO brand);
         Task<List<ProductSaleStatisticDTO>> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload);
         Task<int> GetUsersCountByRegistrateDate(DateTime date);
+
+        Task<PureUser> GetUserPersonalData(int userId);
+        Task<IEnumerable<ReviewDTO>> GetUserReviews(int userId);
     }
 }

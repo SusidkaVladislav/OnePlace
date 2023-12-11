@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MailKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -886,7 +887,7 @@ namespace OnePlace.BLL.Services
                 {
                     StartsCount = productReviews.Sum(r => r.NumberOfStars) / productReviews.Count(),
                     ReviewsCount = productReviews.Count(),
-                    AverageValue = productReviews.Sum(r => r.NumberOfStars) / productReviews.Count()
+                    AverageValue = (float)productReviews.Sum(r => r.NumberOfStars) / productReviews.Count()
                 };
             }
         }

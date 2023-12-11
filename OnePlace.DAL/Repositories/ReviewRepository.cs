@@ -28,7 +28,10 @@ namespace OnePlace.DAL.Repositories
 
         private Task<List<Review>> GetListAsync(Func<Review, bool> predicate)
         {
-            return Task.Run(() => db.Reviews.Include(o => o.User).Where(predicate).ToList());
+            return Task.Run(() => db.Reviews
+            .Include(o => o.User)
+            .Include(o=>o.Product)
+            .Where(predicate).ToList());
         }
 
         public override async Task<Review> GetAsync(int id)

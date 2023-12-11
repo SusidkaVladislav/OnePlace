@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
+using OnePlace.BLL.Services;
 using OnePlace.BOL;
 using OnePlace.BOL.AdminPayload;
 using OnePlace.BOL.Message;
@@ -253,6 +254,22 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetUsersCountByRegistrateDate(DateTime date)
         {
             var result = await _adminService.GetUsersCountByRegistrateDate(date);
+            return Ok(result);
+        }
+
+        [HttpPost("getUserPersonalData")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetUserPersonalData(int userId)
+        {
+            var result = await _adminService.GetUserPersonalData(userId);
+            return Ok(result);
+        }
+
+        [HttpGet("getUserReviews/{userId}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetUserReviews(int userId)
+        {
+            var result = await _adminService.GetUserReviews(userId);
             return Ok(result);
         }
     }

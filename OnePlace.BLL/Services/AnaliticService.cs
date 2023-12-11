@@ -1,5 +1,6 @@
 ﻿using OnePlace.BLL.Interfaces;
 using OnePlace.BOL.Analitics;
+using OnePlace.BOL.Review;
 using OnePlace.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -132,6 +133,43 @@ namespace OnePlace.BLL.Services
             }
 
             return filtersInfo;
+        }
+    
+    
+        public async Task<List<ReviewByProduct>> GetProductReviews(int productId)
+        {
+            List<ReviewByProduct> result = new List<ReviewByProduct>();
+            
+            var reviews = _unitOfWork.Reviews.FindAsync(r=>r.ProductId== productId).Result.ToList();
+
+            if (reviews.Count == 0)
+                return result;
+
+            foreach (var review in reviews)
+            {
+                var user = await _unitOfWork.Users.GetAsync(review.UserId);
+
+                ReviewByProduct reviewByProduct = new ReviewByProduct
+                {
+                    Id = review.Id,
+                    Comment = review.Comment,
+                    CommentDate = review.Date,
+                    NumberOfStars = review.NumberOfStars,
+                    UserInitials = user.Surname + " " + user.Name
+                };
+
+                var reply = await _unitOfWork.ReviewReplies.GetAsync(review.Id);
+
+                if (reply is not null)
+                {
+                    reviewByProduct.AmindReplyDate = reply.Date;
+                    reviewByProduct.AdminReplyComment = reply.Comment;
+                }
+
+                result.Add(reviewByProduct);
+            }
+
+            return result;
         }
     }
 }

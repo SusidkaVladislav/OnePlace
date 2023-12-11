@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Validators;
 using OnePlace.BOL.CategoryDTO;
@@ -11,6 +12,7 @@ using OnePlace.BOL.Password;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.ShoppingCart;
+using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Interfaces;
 using System;
@@ -72,16 +74,21 @@ namespace OnePlace.BLL.Services
 
             Message message = _mapper.Map<Message>(messagePayload);
 
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            if(user != null)
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            int? userId = null;
+            if (user is not null)
             {
-                message.UserId = user.Id;
+                userId = Int32.Parse(user.Value);
             }
-           
+
+            message.UserId = userId;
+            message.IsReplied = false;
+            message.Date = DateTime.Now.Date;
+
             _unitOfWork.Messages.Create(message);
             await _unitOfWork.SaveAsync();
 
-            return messagePayload.ProductId;
+            return message.Id;
         }
 
         public async Task<int> AddToCart(ShoppingCartPayload cartPayload)
@@ -131,6 +138,9 @@ namespace OnePlace.BLL.Services
 
             Review review = _mapper.Map<Review>(reviewDTO);
 
+            //Встановлення дати створення відгуку
+            review.Date = DateTime.Now.Date;
+            
             var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
             if (user is not null)
             {
@@ -320,6 +330,28 @@ namespace OnePlace.BLL.Services
 
             await _unitOfWork.SaveAsync();
             return user.Id;
+        }
+
+        public async Task<PureUser> GetUserPersonalData()
+        {
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userId is not null)
+            {
+                var user = await _unitOfWork.Users.GetAsync(Int32.Parse(userId.Value));
+                return new PureUser
+                {
+                    Id = user.Id,
+                    Name = user?.Name,
+                    Email = user?.Email,
+                    PhoneNumber = user?.PhoneNumber,
+                    Surname = user?.Surname,
+                    RegistrationDate = user.RegistrationDate,
+                    PictureAddress = user?.PictureURL,
+                    CountOfOrders = user.Orders.Count()
+                };
+            
+            }
+            return null;
         }
     }
 }

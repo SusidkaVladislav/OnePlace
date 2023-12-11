@@ -74,13 +74,18 @@ namespace OnePlace.BLL.Services
             //Авторизований користувач
             //var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
 
-            int? userId = null;
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            //if (userId is not null)
 
+            //    if (_httpContextAccessor.HttpContext.User.Claims.Count() > 0)
+            //{
+            //    userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
+            //}
 
-            if (_httpContextAccessor.HttpContext.User.Claims.Count() > 0)
-            {
-                userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
-            }
+            //if (userId is not null)
+            //{
+
+            //}
 
 
             #endregion
@@ -96,7 +101,7 @@ namespace OnePlace.BLL.Services
                 State = DAL.Enums.OrderState.Registered,
                 PaymentMethod = _mapper.Map<DAL.Enums.PaymentMethod>(createOrderDTO.PaymentMethod),
                 Comment = createOrderDTO.Comment,
-                UserId = userId
+                UserId = userId is not null? Int32.Parse(userId.Value) : null,
             };
 
             if (!_unitOfWork.Orders.GetAllAsync().Result.Any())

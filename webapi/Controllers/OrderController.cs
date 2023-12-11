@@ -17,7 +17,7 @@ namespace webapi.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost]
+        [HttpPost("createOrder")]
         public async Task<IActionResult> AddOrder(OrderCreatePayload orderCreatePayload)
         {
             var res = await _orderService.CreateOrder(orderCreatePayload);

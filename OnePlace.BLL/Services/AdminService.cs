@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BOL;
 using OnePlace.BOL.AdminDTO;
@@ -15,6 +16,7 @@ using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
+using Org.BouncyCastle.Pqc.Crypto.Frodo;
 
 namespace OnePlace.BLL.Services
 {
@@ -38,6 +40,8 @@ namespace OnePlace.BLL.Services
         public async Task<int> AddReviewReply(ReviewReplyPayload reviewReplyPayload)
         {
             ReviewReply reviewReply = _mapper.Map<ReviewReply>(reviewReplyPayload);
+            
+            reviewReply.Date = DateTime.Now.Date;
 
             var review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
             if (review is null)
@@ -212,6 +216,7 @@ namespace OnePlace.BLL.Services
             ReviewReplyDTO reviewReplyDTO = _mapper.Map<ReviewReplyDTO>(reviewReply);
             Review review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
             reviewReplyDTO.Review = _mapper.Map<ReviewDTO>(review);
+            reviewReplyDTO.Date = reviewReply.Date;
 
             return reviewReplyDTO;
         }
@@ -544,6 +549,51 @@ namespace OnePlace.BLL.Services
         {
             var count = _unitOfWork.Users.FindAsync(u => u.RegistrationDate.Date >= date.Date).Result.ToList().Count();
             return count;
+        }
+    
+        public async Task<PureUser> GetUserPersonalData(int userId)
+        {
+            if (userId <= 0)
+                throw new ArgumentNullException("Некоректний ID користувача!");
+
+            var user = await _unitOfWork.Users.GetAsync(userId);
+
+            if(user is not null)
+            return new PureUser
+            {
+                Id = user.Id,
+                Name = user?.Name,
+                Email = user?.Email,
+                PhoneNumber = user?.PhoneNumber,
+                Surname = user?.Surname,
+                RegistrationDate = user.RegistrationDate,
+                PictureAddress = user?.PictureURL,
+                CountOfOrders = user.Orders.Count()
+            };
+
+            return null;
+        }
+
+        public async Task<IEnumerable<ReviewDTO>> GetUserReviews(int userId)
+        {
+            if (userId <= 0)
+                throw new ArgumentNullException("Некоректний ID користувача!");
+
+            var reviews = await _unitOfWork.Reviews.FindAsync(r=>r.UserId == userId);
+
+            List<ReviewDTO> reviewsDTO = new List<ReviewDTO>();
+
+            foreach (var review in reviews)
+            {
+                ReviewDTO reviewDTO = _mapper.Map<ReviewDTO>(review);
+                IEnumerable<ProductPicture> productPictures = await _unitOfWork.ProductPictures
+                        .FindAsync(p => p.ProductId == review.ProductId && p.IsTitle == true);
+
+                reviewDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
+                reviewsDTO.Add(reviewDTO);
+            }
+
+            return reviewsDTO;
         }
     }
 }
