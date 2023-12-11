@@ -23,7 +23,7 @@ const ClientPagination = (props) =>
         pageSize
     });
 
-    if (currentPage === 0 || paginationRange.length < 2)
+    if (currentPage === 0 || paginationRange?.length < 2)
     {
         return null;
     }
@@ -38,7 +38,8 @@ const ClientPagination = (props) =>
         onPageChange(currentPage - 1);
     };
 
-    let lastPage = paginationRange[paginationRange.length - 1];
+    let lastPage = paginationRange[paginationRange?.length - 1];
+    
     return (
         <ul
             className={classnames('client-pagination-container', { [className]: className })}

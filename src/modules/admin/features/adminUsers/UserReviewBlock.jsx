@@ -1,67 +1,78 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import
 {
-    getReviews
+    getUserReviews,
 } from '../adminReviews/adminReviewsSlice';
 import StarRating from '../../../../services/starRating/StarRating';
+import LoadingIcon from '../../../../svg/animations/LoadingAnimation.gif';
 
 const UserReviewBlock = (prop) =>
 {
     const userId = prop.userId;
     const dispatch = useDispatch();
 
-
-    const [countReviews, setCountReviews] = useState([]);
-
-    const { reviews } = useSelector(state => state.adminReviews)
+    const {
+        userReviews,
+        loadingUserReviews,
+    } = useSelector(state => state.adminReviews)
 
 
     useEffect(() =>
     {
-        dispatch(getReviews());
-        const countOfReviews = reviews.filter((review) => review.userId === userId);
-        setCountReviews(countOfReviews.length);
+        dispatch(getUserReviews(Number(userId)))
+
     }, [])
+
+    if (loadingUserReviews)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
 
     return (
         <Fragment>
             <div className='review-div'>
-                <label className='review-title'>Відгуки {countReviews}</label>
+                <label className='review-title'>Відгуки {userReviews?.length}</label>
                 <div className='review-body' id='scrollbar-style-1'>
                     {
-                        reviews.map((review) => (
-                            userId === review.userId ? (
-                                <div className='review-row' key={review.id}>
+                        userReviews?.map((review) => (
 
-                                    <div className="review-header">
-                                        <img src={review.productPictureAddress} alt={review.productName} className='review-img'></img>
-                                        <label>{review.productName}</label>
-                                        <label>{review.productCode}</label>
-                                    </div>
+                            <div className='review-row' key={review?.id}>
+
+                                <div className="review-header">
+                                    <img src={review?.productPictureAddress} alt={review?.productName} className='review-img'></img>
+                                    <label>{review?.productName}</label>
+                                    <label>{review?.productCode}</label>
+                                </div>
+
+                                <label>
+                                    <StarRating filledStars={review?.numberOfStars} />
+                                </label>
+
+                                <div className='review-review' id='scrollbar-style-1'>
 
                                     <label>
-                                        <StarRating filledStars={review.numberOfStars} />
+                                        {review?.comment}
                                     </label>
 
-                                    <div className='review-review' id='scrollbar-style-1'>
-                                        
-                                        <label>
-                                            {review.comment}
-                                        </label>
-                                        
-                                        <label className='review-info-time'>
-                                            <span>
-                                                {new Date(review.date).getDate()}.{new Date(review.date).getMonth() + 1}.{new Date(review.date).getFullYear()}
-                                            </span>
-                                            <span>
-                                                {new Date(review.date).getHours()}:{new Date(review.date).getMinutes()}
-                                            </span>
-                                        </label>
-                                    
-                                    </div>
+                                    <label className='review-info-time'>
+                                        <span></span>
+                                        <span>
+                                            {new Date(review?.date).getDate()}.{new Date(review?.date).getMonth() + 1}.{new Date(review?.date).getFullYear()}
+                                        </span>
+                                    </label>
 
-                                </div>) : null
+                                </div>
+
+                            </div>
                         ))}
                 </div>
             </div>

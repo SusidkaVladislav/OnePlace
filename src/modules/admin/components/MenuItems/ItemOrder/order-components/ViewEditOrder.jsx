@@ -202,7 +202,7 @@ export const ViewEditOrder = () =>
 
                             <div className='order-product-info' id='scrollbar-style-1'>
                                 {
-                                    order.products?.map((product, index) =>
+                                    order?.products?.map((product, index) =>
                                     {
                                         return (
                                             <div className='order-product-info-product-row' key={index}>

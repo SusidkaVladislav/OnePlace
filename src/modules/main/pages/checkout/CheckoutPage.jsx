@@ -37,7 +37,7 @@ import
 import
 {
     setCheckedIds,
-} from '../../features/basket_features/cartSlice';
+} from '../../features/basket/cartSlice';
 //#endregion
 
 //#region Components

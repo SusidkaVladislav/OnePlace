@@ -42,7 +42,7 @@ import
 import
 {
     getUserCart,
-} from '../../features/basket_features/cartSlice';
+} from '../../features/basket/cartSlice';
 
 //#endregion
 
@@ -60,7 +60,11 @@ const ProductsByCategoryPage = () =>
     const navigate = useNavigate();
     const params = useParams();
     const md = useMediaQuery('(min-width: 900px)');
-    const [currentProductPage, setCurrentProductPage] = useState(1);
+    const [currentProductPage, setCurrentProductPage] = useState(
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null &&
+            JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== undefined ?
+            JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY))?.page : 1
+    );
 
     const [categoryId, setCategoryId] = useState(params.id);
     var categoryPath = useRef([]);
@@ -111,7 +115,7 @@ const ProductsByCategoryPage = () =>
         dispatch(resetErrorProduct());
 
         //Якщо користувач авторизований, то з БД підтягуєтсья корзина того коритсувача,
-        // якщо не авторизований, то нічого не міняєтсья 
+        // якщо не авторизований, то нічого не міняєтсья
         dispatch(getUserCart());
 
         var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY));
@@ -185,6 +189,8 @@ const ProductsByCategoryPage = () =>
         getFullPath(Number(params.id), categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
         setShowHideFilterOptions([])
+        console.log(currentProductPage)
+        //setCurrentProductPage(currentProductPage)
     }, [params.id, currentProductPage])
 
 
@@ -798,8 +804,7 @@ const ProductsByCategoryPage = () =>
                                     colorId={product.colorId}
                                 />
                             </Grid>
-                        )
-                        )
+                        ))
                     }
                 </Grid>
             </Grid>
@@ -812,18 +817,22 @@ const ProductsByCategoryPage = () =>
                     <ClientPagination
                         className="pagination-bar"
                         currentPage={
-                            JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null ? filtersSet.page :
+                            JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null &&
+                                JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== undefined ?
+                                filtersSet?.page :
                                 currentProductPage
                         }
-                        totalCount={products.totalCount}
+                        totalCount={products?.totalCount}
                         pageSize={PAGE_SIZE}
                         onPageChange={(page) =>
                         {
-
-                            var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY))
-                            filters.page = page;
-                            localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filters));
                             setCurrentProductPage(page)
+                            var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY))
+                            if (filters !== null)
+                            {
+                                filters.page = page;
+                                localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filters));
+                            }
                         }}
                     />
                 </div>

@@ -42,7 +42,7 @@ const ItemReview = () =>
         actionNotification,
     } = useSelector((state) => state.adminReviews)
 
-    const filteredData = useSelector(state => getFilteredReviews(state, inputValue));
+    const filteredData = useSelector(state => getFilteredReviews(state, inputValue))?.reverse();
     const reviewsReply = useSelector(state => getAllReviewReplies(state));
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
 
@@ -148,6 +148,7 @@ const ItemReview = () =>
             transform: 'translate(-50%, -50%)',
         }} src={LoadingIcon} alt="loading" />
     }
+
     return (
         <Fragment>
 
@@ -189,7 +190,7 @@ const ItemReview = () =>
                         }} onClick={handleDeleteReview}>Видалити</label>
                     </div>
                     {
-                        filteredAndPaginatedData.map((review, index) => (
+                        filteredAndPaginatedData?.map((review, index) => (
 
                             <ReviewRow
                                 key={index}

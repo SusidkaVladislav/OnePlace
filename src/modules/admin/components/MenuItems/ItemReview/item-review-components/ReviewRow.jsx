@@ -48,7 +48,7 @@ const ReviewRow = (props) =>
                 {reviewComment}
             </div>
 
-            <label className='review-date-label'>{new Date(reviewDate).toLocaleDateString()} {new Date(reviewDate).toLocaleTimeString()}</label>
+            <label className='review-date-label'>{new Date(reviewDate).getDate() + '.' + new Date(reviewDate).getMonth() + '.' + new Date(reviewDate).getFullYear()}</label>
             <div style={{
                 'cursor': 'pointer',
             }} onClick={async event => { navigate(`review/${reviewId}`); }}>

@@ -33,13 +33,15 @@ import
 {
     getUserById,
     deleteUser,
-    getUsers,
+    //getUsers,
     hideSuccessfulAlert,
     hideUnsuccessfulAlert,
+
+    getUserPersonalData,
 } from '../../../../features/adminUsers/adminUsersSlice';
 //#endregion
 //#endregion
-
+import LoadingIcon from '../../../../../../svg/animations/LoadingAnimation.gif';
 
 const UserInfo = () =>
 {
@@ -56,13 +58,23 @@ const UserInfo = () =>
         actionNotification,
     } = useSelector(state => state.adminUsers)
 
-    const user = useSelector(state => getUserById(state, Number(userId)));
+    //const userPersonalData = useSelector(state => getUserById(state, Number(userId)));
+
+    const {
+        loading,
+        userPersonalData,
+    } = useSelector(state => state.adminUsers);
+
+    useEffect(() =>
+    {
+        dispatch(getUserPersonalData(Number(userId)))
+    }, [])
 
     const handleRemoveButtonClick = () =>
     {
         setIsConfirmDialogVisible(true);
     };
-   
+
     const handleConfirmDelete = async () =>
     {
         setIsConfirmDialogVisible(false);
@@ -72,7 +84,7 @@ const UserInfo = () =>
             await setTimeout(() =>
             {
                 dispatch(hideSuccessfulAlert());
-                dispatch(getUsers());
+                //dispatch(getUsers());
                 navigate(-1);
             }, 1000);
         }
@@ -89,6 +101,19 @@ const UserInfo = () =>
     {
         setIsConfirmDialogVisible(false);
     };
+
+    if (loading)
+    {
+        return <img style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            alignSelf: 'center',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+        }} src={LoadingIcon} alt="loading" />
+    }
 
     return (
         <Fragment>
@@ -110,9 +135,9 @@ const UserInfo = () =>
                     <div className='user-img'>
                         <label> <UnknownUserIcon /></label>
                     </div>
-                    {user !== null ? (
+                    {userPersonalData !== null ? (
                         <span>
-                            <label className='user-name'>{user !== null ? user?.name : 'NotFound'} {user !== null ? user?.surname : 'NotFound'}</label>
+                            <label className='user-name'>{userPersonalData !== null ? userPersonalData?.name : 'NotFound'} {userPersonalData !== null ? userPersonalData?.surname : 'NotFound'}</label>
                             <label className='remove-button' onClick={handleRemoveButtonClick}> <RemoveIcon /></label>
 
                         </span>
@@ -121,12 +146,12 @@ const UserInfo = () =>
                 </div>
 
                 <div className='user-div-info'>
-                    <UserInfoBlock user={user} />
-                    <UserOrdersBlock userId={user?.id} />
+                    <UserInfoBlock user={userPersonalData} />
+                    <UserOrdersBlock userId={userPersonalData?.id} />
                 </div>
-                
+
                 <div className="user-div-reviews">
-                    <UserReviewBlock userId={user?.id} />
+                    <UserReviewBlock userId={userPersonalData?.id} />
                 </div>
 
             </div>

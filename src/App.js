@@ -63,7 +63,7 @@ function App()
 
         <Route path="/" element={<OnePlaceMain />} />
 
-        <Route path="/product-page" element={<ProductPage/>}/>
+        <Route path="/product-page/:id" element={<ProductPage/>}/>
 
         <Route path='/server-connection-error' element={<NoServerConnection />} />
 

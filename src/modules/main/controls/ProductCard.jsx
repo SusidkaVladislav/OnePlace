@@ -16,7 +16,7 @@ import
     getUserCart,
     deleteFromCart,
     setCartCount,
-} from '../features/basket_features/cartSlice';
+} from '../features/basket/cartSlice';
 
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
@@ -205,14 +205,18 @@ const ProductCard = (props) =>
 
 
     return (
-        <Card sx={{
-            width: "264px",
-            height: "366px",
-            borderRadius: '10px',
-            background: '#F6F6F6',
-            boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
-            padding: "18px"
-        }}>
+        <Card
+            sx={{
+                width: "264px",
+                height: "366px",
+                borderRadius: '10px',
+                background: '#F6F6F6',
+                boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
+                padding: "18px",
+
+
+            }}
+        >
             <div style={{ position: 'relative' }}>
                 <CardMedia
                     id="imgContainer"
@@ -249,7 +253,20 @@ const ProductCard = (props) =>
 
             <div style={{ position: 'relative' }}>
                 <CardContent sx={{ padding: '0', paddingTop: '12px' }}>
-                    <Typography id="description" className='t1-bold'>
+                    <Typography
+                        id="description"
+                        className='t1-bold'
+                        sx={{
+                            cursor: 'pointer',
+                            '&:hover': {
+                                color: '#DA8D33'
+                            }
+                        }}
+                        onClick={() =>
+                        {
+                            navigate('/product-page/' + id)
+                        }}
+                    >
                         {name}
                     </Typography>
                     {/* Можна виикориствоувати t2-medium-orange і t2-medium-green */}

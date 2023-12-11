@@ -9,7 +9,7 @@ import
 import
 {
     getProductsFromCart
-} from '../../features/basket_features/cartSlice';
+} from '../../features/basket/cartSlice';
 
 import "./BasketStyle.css";
 import CategorySelectBox from '../../controls/CategorySelectBox';

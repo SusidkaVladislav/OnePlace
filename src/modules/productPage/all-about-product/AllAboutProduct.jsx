@@ -1,12 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import "./AllAboutProduct.css";
 
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import
+{
+  Grid,
+  Card,
+  CardMedia,
+  IconButton,
+  Typography,
+  Button,
+  Badge,
+} from '@mui/material';
 
 import ShareIcon from '../../../svg/client-icons/productPage/ShareIcon';
 import AddReviewIcon from '../../../svg/client-icons/productPage/AddReviewIcon';
@@ -18,67 +22,61 @@ import Divider from '../../../svg/shared-icons/Divider';
 
 import StarRating from '../controls/StarRating';
 
-import Black1 from './example-pics/black1.png';
-import Black2 from './example-pics/black2.png';
-import Black3 from './example-pics/black3.png';
-import Black4 from './example-pics/black4.png';
-import Black5 from './example-pics/black5.png';
-import Black6 from './example-pics/black6.png';
-import Black7 from './example-pics/black7.png';
+import { useSelector } from 'react-redux';
 
-import Blue1 from './example-pics/blue1.png';
-import Blue2 from './example-pics/blue2.png';
-import Blue3 from './example-pics/blue3.png';
-import Blue4 from './example-pics/blue4.png';
-import Blue5 from './example-pics/blue5.png';
-import Blue6 from './example-pics/blue6.png';
-import Blue7 from './example-pics/blue7.png';
 
-import Pink1 from './example-pics/pink1.png';
-import Pink2 from './example-pics/pink2.png';
-import Pink3 from './example-pics/pink3.png';
-import Pink4 from './example-pics/pink4.png';
-import Pink5 from './example-pics/pink5.png';
-import Pink6 from './example-pics/pink6.png';
+const AllAboutBroduct = () =>
+{
+  const [currentImageAddress, setCurrentImageAddress] = useState('');
 
-const imgBlack = [
-    Black1, Black2, Black3, Black4, Black5, Black6, Black7
-];
+  const [rating, setRating] = useState({});
 
-const imgBlue = [
-    Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7
-];
+  const {
+    product,
+    productRaitingInfo,
+  } = useSelector(state => state.userProducts);
 
-const imgPink = [
-    Pink1,Pink2,Pink3,Pink4,Pink5,Pink6
-];
+  const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
 
-const AllAboutBroduct = () => {
-  //images logic
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [currentColorImg, setCurrentColorImg] = useState(imgBlack);
+  useEffect(() =>
+  {
+    setCurrentColorProductConfig({
+      colorName: product?.productColors?.[0]?.color?.name,
+      price: product?.productColors?.[0]?.price,
+      quantity: product?.productColors?.[0]?.quantity,
+    });
 
-    const navigateImage = (direction) => {
-        if(direction === "next"){
-            setCurrentImageIndex((prevIndex) => 
-                prevIndex === imgBlack.length - 1 ? 0 : prevIndex + 1);
-        } else {
-            setCurrentImageIndex((prevIndex) =>
-                prevIndex === 0 ? imgBlack.length - 1: prevIndex - 1);
-        }
-    };
+    setCurrentImageAddress(product?.pictures?.find(img => img?.isTitle === true)?.address)
+    setRating(
+      {
+        starsCount: productRaitingInfo?.startsCount,
+        reviewsCount: productRaitingInfo?.reviewsCount,
+        averageValue: productRaitingInfo?.averageValue,
+      }
+    )
+  }, [])
 
-    const changeColor = (imgArray) => {
-      setCurrentColorImg(imgArray);
-    };
+  const navigateImage = (direction) =>
+  {
+    const currentIndex = product?.pictures?.findIndex(picture => picture.address === currentImageAddress);
+    if (direction === "next")
+    {
+      setCurrentImageAddress(() =>
+        currentIndex !== -1 && currentIndex < product?.pictures?.length - 1 ?
+          product?.pictures?.[currentIndex + 1]?.address
+          : product?.pictures?.[0]?.address
+      )
+    }
+    else if (direction === 'prev')
+    {
+      setCurrentImageAddress(() =>
+        currentIndex !== -1 && currentIndex > 0 ?
+          product?.pictures?.[currentIndex - 1]?.address
+          : product?.pictures?.[product?.pictures?.length - 1]?.address
+      )
+    }
+  };
 
-  //star rating logic
-  const [rating, setRating] = useState(4);
-  const HandleRatingChange = (value) => {
-      setRating(value);
-  }
-
-  //heart button logic
   const [filled, setFilled] = useState(false);
 
   function HeartClick()
@@ -86,122 +84,222 @@ const AllAboutBroduct = () => {
     setFilled(!filled);
   }
 
-    return(
-        <Grid container>
-            <Grid item className="product-gallery-root" xs={12} md={4.7} xl={4.7}>
-            <Card>
-            <div className='product-gallery-cardmedia-container'>
-              <CardMedia
-                component="img"
-                className="product-gallery-main-image" 
-                image={currentColorImg[currentImageIndex]}/>
-                  <Grid container alignItems="center" justifyContent="center" className='product-gallery-navigation-container'>
-                    <Grid item>
-                      <IconButton onClick={() => navigateImage('next')}>
-                      <BigBrownLeftArrow/>
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <IconButton onClick={() => navigateImage('next')}>
-                      <BigBrownRightArrow/>
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-            </div>     
-            </Card>
-            <Grid container justifyContent="center" alignItems="center" spacing={1} className="product-gallery-img-container">
-            {currentColorImg.map((image, index) => (
-              <Grid item key={index}>
+  return (
+    <Grid container>
+      <Grid item className="product-gallery-root" xs={12} md={4.7} xl={4.7}>
+        <Card>
+          <div className='product-gallery-cardmedia-container'>
+            <CardMedia
+              component="img"
+              className="product-gallery-main-image"
+              image={currentImageAddress} />
+            <Grid
+              display={product?.pictures?.length > 1 ? 'flex' : 'none'}
+              container
+              alignItems="center"
+              justifyContent="center"
+              className='product-gallery-navigation-container'
+            >
+              <Grid item>
+                <IconButton onClick={() => navigateImage('prev')}>
+                  <BigBrownLeftArrow />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => navigateImage('next')}>
+                  <BigBrownRightArrow />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </div>
+        </Card>
+        <Grid container justifyContent="center" alignItems="center" spacing={1} className="product-gallery-img-container">
+          {product?.pictures?.map((image, index) => (
+            <Grid item key={index}>
               <img
-                src={image}
+                src={image?.address}
                 alt={`thumbnail-${index}`}
                 className={`product-gallery-thumbnail`}
-                onClick={() => setCurrentImageIndex(index)}/>
-              </Grid>))}
+                onClick={
+                  () =>
+                  {
+                    setCurrentImageAddress(image?.address)
+                  }}
+              />
+            </Grid>))}
+        </Grid>
+      </Grid>
+
+
+      <Grid
+        item
+        md={0.3}
+        xl={0.3}
+      ></Grid>
+      <Grid
+        item
+        className='aap-container1'
+        xs={12}
+        md={7}
+        xl={7}
+      >
+        <div className='aap-container2'>
+          <h4>{product?.name}</h4>
+
+          <div className='hl'></div>
+
+          <div style={{ display: "flex", justifyContent: 'space-between' }}>
+            <div
+              style={{
+                display: "flex",
+                width: '60%',
+                gap: '5%'
+              }}
+            >
+
+              <h4
+                className='red'
+              >
+                {
+                  product?.sale !== null ?
+                    currentColorProductConfig?.price - (currentColorProductConfig?.price * product?.sale?.discountPercent / 100)
+                    : currentColorProductConfig?.price
+                } грн</h4>
+
+              <Typography
+                className='t2-medium'
+                sx={{
+                  display: product?.sale !== null ? 'flex' : 'none',
+                  textDecoration: 'line-through'
+                }}>
+                {
+                  product?.sale !== null ? currentColorProductConfig?.price : 0
+                } грн</Typography>
+
+            </div>
+            <Typography className={currentColorProductConfig?.quantity > 0 ? 't1-bold-green' : 't1-bold-red'}>
+              {currentColorProductConfig?.quantity > 0 ? 'В наявності' : 'Немає'}</Typography>
+          </div>
+
+          <div className='hl'></div>
+
+          <div style={{ display: "flex", justifyContent: 'space-between' }}>
+            <Typography className='t1-bold'>Колір: {currentColorProductConfig?.colorName}</Typography>
+            <div style={{ display: "flex" }}>
+              {
+                product?.productColors?.map((productColor, index) =>
+                {
+                  return (
+                    <Fragment
+                      key={index}
+                    >
+                      {
+                        product?.productColors?.length > 1 && productColor?.color?.name === currentColorProductConfig?.colorName ?
+                          (
+                            <Badge
+                              color="warning"
+                              variant="dot"
+                              overlap="circular"
+                            >
+                              <div
+                                className='aap-color-circle'
+                                style={{
+                                  backgroundColor: productColor?.color?.hex,
+                                  display: 'flex'
+                                }}
+                                onClick={() =>
+                                {
+                                  setCurrentColorProductConfig({
+                                    colorName: productColor?.color?.name,
+                                    price: productColor?.price,
+                                    quantity: productColor?.quantity,
+                                  });
+                                }}
+                              >
+                              </div>
+                            </Badge>
+                          ) :
+                          (
+                            <div
+                              className='aap-color-circle'
+                              style={{
+                                backgroundColor: productColor?.color?.hex,
+                                display: 'flex'
+                              }}
+                              onClick={() =>
+                              {
+                                setCurrentColorProductConfig({
+                                  colorName: productColor?.color?.name,
+                                  price: productColor?.price,
+                                  quantity: productColor?.quantity,
+                                });
+                              }}
+                            >
+                            </div>
+                          )
+                      }
+                      <div style={{ width: "5px" }}></div>
+                    </Fragment>
+                  )
+                })
+              }
+            </div>
+          </div>
+
+          <div className='hl'></div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+            <Button variant="contained" className="aap-button">Купити</Button>
+
+            <div style={{ display: "flex", paddingTop: "9px" }}>
+              <ShareIcon />
+              <div style={{ width: "20px" }}></div>
+
+              <div id="heartBtn" onClick={HeartClick}>
+                {filled === false ?
+                  (<div id="heartIcon"><BigHeartIcon /></div>) :
+                  (<div id="filledHeartIcon"><BigFilledHeartIcon /></div>)}
+              </div>
+
+              <div style={{ width: "20px" }}></div>
+              <AddReviewIcon />
+            </div>
+          </div>
+
+          <div className='aap-star-rating-container'>
+            <StarRating
+              defaultRating={rating?.starsCount}
+            />
+            <Typography className='t2-medium-blue' style={{ display: "inline", paddingTop: "5px" }}>{rating?.averageValue} ({rating?.reviewsCount} оцінок)</Typography>
+          </div>
+
+          <div className='hl'></div>
+
+          <div>
+            <Typography className='t1-bold-brown2'>
+              {product?.description}
+            </Typography>
+          </div>
+
+          <div className='hl'></div>
+
+          <Grid container className="aap-footer-container">
+            <Grid item className='aap-navigate'>
+              <h5 className="bold-brown2">Доставка</h5>
+            </Grid>
+            <Grid item className="pi-divider-container">
+              <Divider />
+            </Grid>
+            <Grid item className='aap-navigate'>
+              <h5 className="bold-brown2">Оплата</h5>
             </Grid>
           </Grid>
 
-
-          <Grid item md = {0.3} xl={0.3}></Grid>
-            <Grid item className='aap-container1' xs={12} md={7} xl={7}>
-              <div className='aap-container2'>
-                <h4>Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)</h4>
-
-                <div className='hl'></div>
-
-                <div style={{display:"flex", justifyContent:'space-between'}}>
-                  <div style={{display:"flex"}}>
-                    <h4 className='red'>2 449 грн</h4>
-                    <Typography className='t2-medium' sx={{ textDecoration: 'line-through'}}>3 299 грн</Typography>
-                  </div>
-                    <Typography className='t1-bold-green'>В наявності</Typography>
-                </div>
-
-                <div className='hl'></div>
-
-                <div style={{display:"flex", justifyContent:'space-between'}}>
-                  <Typography className='t1-bold'>Колір: Black</Typography>  
-                  <div style={{display:"flex"}}>
-                      <div className='aap-color-circle' style={{backgroundColor:"#373639"}} onClick={() => changeColor(imgBlack)}></div>
-                      <div style={{width:"5px"}}></div>
-                      <div className='aap-color-circle' style={{backgroundColor:"#4D627C"}} onClick={() => changeColor(imgBlue)}></div>
-                      <div style={{width:"5px"}}></div>
-                      <div className='aap-color-circle' style={{backgroundColor:"#E8C8DA"}} onClick={() => changeColor(imgPink)}></div>
-                  </div>
-                </div>
-
-                <div className='hl'></div>
-
-                <div style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
-                  <Button variant="contained" className="aap-button">Купити</Button>
-
-                  <div style={{display:"flex", paddingTop:"9px"}}>
-                      <ShareIcon/>
-                      <div style={{width:"20px"}}></div>
-
-                      <div id="heartBtn" onClick={HeartClick}>
-                      {filled === false ?
-                        (<div id="heartIcon"><BigHeartIcon /></div>) :
-                        (<div id="filledHeartIcon"><BigFilledHeartIcon/></div>)}
-                      </div>
-            
-                      <div style={{width:"20px"}}></div>
-                      <AddReviewIcon/>
-                  </div>
-                </div>
-
-                <div className='aap-star-rating-container'>
-                  <StarRating defaultRating={rating} onRatingChange={HandleRatingChange}/>
-                  <Typography className='t2-medium-blue' style={{display:"inline", paddingTop:"5px"}}>4,8 (711 оцінок)</Typography>
-                </div>
-               
-                <div className='hl'></div>
-
-                <div>
-                  <Typography className='t1-bold-brown2'>
-                  Навушники JBL Tune 510BT дають змогу повною мірою передати потужність JBL Pure Bass. Ви можете під'єднатися через Bluetooth 5.0 до двох пристроїв одночасно та вибирати між контентом на різних пристроях, коли Вам цього хочеться. А якщо дзвінок надходить, наприклад, під час перегляду відео на іншому пристрої, JBL Tune 510BT перемикається на ваш мобільний телефон.
-                  </Typography>
-                </div>
-
-                <div className='hl'></div>
-
-                <Grid container className="aap-footer-container">
-                    <Grid item className='aap-navigate'>
-                        <h5 className="bold-brown2">Доставка</h5>
-                    </Grid>
-                    <Grid item  className="pi-divider-container">
-                        <Divider/>
-                    </Grid>
-                    <Grid item className='aap-navigate'>
-                        <h5 className="bold-brown2">Оплата</h5>
-                    </Grid>
-                </Grid>
-
-                <div className='hl'></div>
-              </div>
-            </Grid>
-        </Grid>
-    )
+          <div className='hl'></div>
+        </div>
+      </Grid>
+    </Grid>
+  )
 }
 
 export default AllAboutBroduct;

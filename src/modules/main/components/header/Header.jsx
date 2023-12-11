@@ -42,7 +42,7 @@ import
   changeDiscountPrice,
   changeProductPriceSum,
   changeTotalOrderPrice,
-} from '../../features/basket_features/cartSlice';
+} from '../../features/basket/cartSlice';
 
 import { styled } from '@mui/material/styles';
 

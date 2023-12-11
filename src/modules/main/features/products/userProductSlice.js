@@ -8,11 +8,15 @@ import axios from "axios";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    loading: false,
+    loadingProduct: false,
+    loadingRating: false,
     products: [],
     isErrorProduct: false,
 
     productErrorModel: {},
+
+    product: {},
+    productRaitingInfo: {},
 }
 
 export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters', async (filter, { rejectWithValue }) =>
@@ -47,6 +51,61 @@ export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters'
     }
 });
 
+export const getProductById = createAsyncThunk('user/getProductById', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.get(REACT_APP_BASE_URL + `/Product/product/${id}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const getProductRaitingInfo = createAsyncThunk('user/getProductRaitingInfo', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.get(REACT_APP_BASE_URL + `/Product/getProductReviewsAnalitic/${id}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
 
 const userProductSlice = createSlice({
     name: 'userProducts',
@@ -67,7 +126,7 @@ const userProductSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    loadingProduct: true,
                     isError: false,
                 }
             })
@@ -75,7 +134,7 @@ const userProductSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    loadingProduct: false,
                     products: payload,
                     isError: false,
                 }
@@ -84,9 +143,55 @@ const userProductSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    loadingProduct: false,
                     isErrorProduct: true,
                     //productErrorModel: payload,
+                }
+            })
+
+            .addCase(getProductById.pending, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingProduct: true,
+                }
+            })
+            .addCase(getProductById.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingProduct: false,
+                    product: payload,
+                }
+            })
+            .addCase(getProductById.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingProduct: false,
+                }
+            })
+
+            .addCase(getProductRaitingInfo.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loadingRating: true,
+                }
+            })
+            .addCase(getProductRaitingInfo.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    productRaitingInfo: payload,
+                    loadingRating: false,
+                }
+            })
+            .addCase(getProductRaitingInfo.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingRating: false,
                 }
             })
     }

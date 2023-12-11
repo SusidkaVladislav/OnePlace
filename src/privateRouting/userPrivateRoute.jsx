@@ -11,7 +11,7 @@ import
 import
     {
         getUserCart
-    } from '../modules/main/features/basket_features/cartSlice';
+    } from '../modules/main/features/basket/cartSlice';
 
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";

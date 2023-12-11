@@ -112,12 +112,12 @@ const ItemOrder = () =>
                                     </label>
                                     <label
                                         style={{
-                                            'backgroundColor': order.orderStatus === 'Registered' ? '#DA8D33' :
+                                            backgroundColor: order.orderStatus === 'Registered' ? '#DA8D33' :
                                                 order.orderStatus === 'Processing' ? '#6B81F0' : order.orderStatus === 'Shipped' ? '#C4A8D3' :
                                                     order.orderStatus === 'Done' ? '#01830E' : '#B31D21',
-                                            'color': '#F6F6F6',
-                                            'borderRadius': '10px',
-                                            'paddingLeft': '10px',
+                                            color: '#F6F6F6',
+                                            borderRadius: '10px',
+                                            paddingLeft: '10px',
                                         }}
                                     >
                                         {

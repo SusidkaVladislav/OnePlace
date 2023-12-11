@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllOrdersByUserId } from '../adminOrders/adminOrdersSlice';
 import LoadingIcon from '../../../../svg/animations/LoadingAnimation.gif';
@@ -6,6 +7,8 @@ import './userOrderBlock.css';
 
 const UserOrdersBlock = (props) =>
 {
+    const navigate = useNavigate();
+
     const {
         userId
     } = props;
@@ -19,7 +22,8 @@ const UserOrdersBlock = (props) =>
 
     useEffect(() =>
     {
-        dispatch(getAllOrdersByUserId(userId));
+        if (userId !== undefined && userId !== null)
+            dispatch(getAllOrdersByUserId(userId));
     }, [])
 
 
@@ -52,10 +56,22 @@ const UserOrdersBlock = (props) =>
                 <div className='order-div-list' id='scrollbar-style-1'>
                     {orders.map((order) => (
                         <div className='order-div-row' key={order.id}
-                            onClick={event => { alert(order.id); }}>
+                            onClick={() => { navigate(`/admin/main/orders/order/${order.id}`) }}>
                             <label>{order.orderNumber}</label>
-                            <label>{order.paymentStatus}</label>
-                            <label>{order.orderStatus}</label>
+                            <label
+                                style={{
+                                    overflow: 'hidden',
+                                    wordBreak: 'break-word',
+                                }}
+                            >{order.paymentStatus === 'Pending' ? 'Очікується оплата'
+                                : order.paymentStatus === 'Approved' ? 'Оплачено' : 'Скасовано'}</label>
+                            <label
+                                style={{
+                                    overflow: 'hidden',
+                                    wordBreak: 'break-word',
+                                }}
+                            >{order.orderStatus === 'Registered' ? 'Нове' : order.orderStatus === 'Processing' ? 'Очікування' :
+                                order.orderStatus === 'Shipped' ? 'Відправлено' : order.orderStatus === 'Done' ? 'Виконано' : 'Анульовано'}</label>
                             <label>{order.totalPrice}₴</label>
                         </div>
                     ))}

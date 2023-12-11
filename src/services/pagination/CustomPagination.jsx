@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { usePagination, DOTS } from './usePagination';
 import './pagination.css';
@@ -21,10 +21,6 @@ const Pagination = props =>
         pageSize
     });
 
-    if (currentPage === 0 || paginationRange.length < 2)
-    {
-        return null;
-    }
 
     const onNext = () =>
     {
@@ -36,7 +32,19 @@ const Pagination = props =>
         onPageChange(currentPage - 1);
     };
 
-    let lastPage = paginationRange[paginationRange.length - 1];
+    useEffect(() =>
+    {
+
+    }, [])
+
+    let lastPage = paginationRange[paginationRange?.length - 1];
+
+    if (currentPage === 0 || paginationRange.length < 2)
+    {
+        //return null;
+        return <></>
+    }
+
     return (
         <ul
             className={classnames('pagination-container', { [className]: className })}

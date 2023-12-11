@@ -17,7 +17,7 @@ import
     deleteFromCart,
     setCartCount,
     getProductsFromCart,
-} from "../../features/basket_features/cartSlice";
+} from "../../features/basket/cartSlice";
 
 import ButtonMinusXS from '../../../../svg/basket-icons/ButtonMinusXS';
 import ButtonPlusXS from '../../../../svg/basket-icons/ButtonPlusXS';

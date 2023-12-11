@@ -4,6 +4,7 @@ const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
     users: [],
+    userPersonalData: {},
     loading: null,
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
@@ -91,6 +92,46 @@ export const getUsersCount = createAsyncThunk('adminUsers/getUsersCount', async 
     try
     {
         const response = await instance.get(`${REACT_APP_BASE_URL}/Admin/getUsersCount/${new Date(date).toISOString()}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const getUserPersonalData = createAsyncThunk('adminUser/getUserPersonalData', async (userId, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(`${REACT_APP_BASE_URL}/Admin/getUserPersonalData`, null, {
+            params: { userId: userId },
+        });
+
         return response.data;
     }
     catch (error)
@@ -218,6 +259,30 @@ const adminUsersSlice = createSlice({
                 }
             })
 
+            .addCase(getUserPersonalData.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(getUserPersonalData.fulfilled, (state, { payload }) =>
+            {
+
+                return {
+                    ...state,
+                    loading: false,
+                    userPersonalData: payload,
+                }
+            })
+            .addCase(getUserPersonalData.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
+
+                }
+            })
     }
 })
 

@@ -6,11 +6,18 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     reviews: [],
     replies: [],
+    userReviews: [],
     replyById: {},
+    reviewById: {},
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
     loading: null,
+
+    loadingReviews: false,
+    loadingReplies: false,
+    loadingRewieById: false,
+    loadingUserReviews: false,
 }
 
 export const getReviews = createAsyncThunk('adminReviews/fetchReviews', async (_, { rejectWithValue }) =>
@@ -86,7 +93,7 @@ export const createPostReview = createAsyncThunk('adminReviews/fetchPostReview',
     try
     {
         const response = await instance.post(REACT_APP_BASE_URL + '/Admin/reviewReply',
-            { reviewId: reply.reviewId, comment: reply.comment, date: reply.date }
+            { reviewId: reply.reviewId, comment: reply.comment }
         );
         return response.data;
     }
@@ -162,6 +169,50 @@ export const deleteReview = createAsyncThunk('adminReviews/fetchDeleteReview', a
     }
 })
 
+export const getReviewById = createAsyncThunk('adminReviews/getReviewById', async (id, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(`${REACT_APP_BASE_URL}/Admin/review/${Number(id)}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+    }
+})
+
+export const getUserReviews = createAsyncThunk('adminReviews/getUserReviews', async (userId, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(`${REACT_APP_BASE_URL}/Admin/getUserReviews/${Number(userId)}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+    }
+})
+
 const adminReviewsSlice = createSlice({
     name: 'adminReviews',
     initialState,
@@ -188,7 +239,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    loadingReviews: true,
                 }
             })
             .addCase(getReviews.fulfilled, (state, { payload }) =>
@@ -196,7 +247,7 @@ const adminReviewsSlice = createSlice({
                 return {
                     ...state,
                     reviews: payload,
-                    loading: false,
+                    loadingReviews: false,
                 }
             })
             .addCase(getReviews.rejected, (state, { payload }) =>
@@ -206,7 +257,7 @@ const adminReviewsSlice = createSlice({
                     unsuccessfulAlertShow: true,
                     successfulAlertShow: false,
                     actionNotification: payload.detail,
-                    loading: false,
+                    loadingReviews: false,
                 }
             })
 
@@ -214,7 +265,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    loadingReplies: true,
                 }
             })
             .addCase(getReviewReplies.fulfilled, (state, { payload }) =>
@@ -222,7 +273,7 @@ const adminReviewsSlice = createSlice({
                 return {
                     ...state,
                     replies: payload,
-                    loading: false,
+                    loadingReplies: false,
                 }
             })
             .addCase(getReviewReplies.rejected, (state, { payload }) =>
@@ -232,7 +283,7 @@ const adminReviewsSlice = createSlice({
                     unsuccessfulAlertShow: true,
                     successfulAlertShow: false,
                     actionNotification: payload.detail,
-                    loading: false,
+                    loadingReplies: false,
                 }
             })
 
@@ -247,7 +298,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    reviewById: payload,
+                    replyById: payload,
                     loading: false,
                 }
             })
@@ -314,12 +365,56 @@ const adminReviewsSlice = createSlice({
                     loading: false,
                     actionNotification: payload.detail,
                 }
-            });;
+            })
+
+            .addCase(getReviewById.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loadingRewieById: true,
+                }
+            })
+            .addCase(getReviewById.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    reviewById: payload,
+                    loadingRewieById: false,
+                }
+            })
+            .addCase(getReviewById.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loadingRewieById: false,
+                }
+            })
+            .addCase(getUserReviews.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    loadingUserReviews: true,
+                }
+            })
+            .addCase(getUserReviews.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingUserReviews: false,
+                    userReviews: payload,
+                }
+            })
+            .addCase(getUserReviews.rejected, (state) =>
+            {
+                return {
+                    ...state,
+                    loadingUserReviews: false,
+                }
+            })
     }
 })
 
 export const getAllReviewReplies = (state) => state.adminReviews.replies;
-
 
 export const getFilteredReviews = (state, inputValue) =>
     state.adminReviews.reviews.filter(review =>
@@ -328,13 +423,9 @@ export const getFilteredReviews = (state, inputValue) =>
         )
     );
 
-export const getReviewById = (state, reviewId) =>
-    state.adminReviews.reviews.find(review => review.id === reviewId)
-
 export const {
     hideSuccessfulAlert,
     hideUnsuccessfulAlert,
-
 } = adminReviewsSlice.actions;
 
 export default adminReviewsSlice.reducer

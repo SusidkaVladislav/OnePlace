@@ -52,6 +52,7 @@ const CategoriesPage = () =>
     useEffect(() =>
     {
         dispatch(getCategoriesForSelect())
+        console.log(categoriesForSelect)
         setCategoryId(params.id);
         if (Number(params.id) > 0)
         {
@@ -271,7 +272,7 @@ const CategoriesPage = () =>
                         categoriesForSelect.map((category, index) =>
                         {
                             return (
-                                <Grid
+                                category.parentCategoryId === null && <Grid
                                     key={index}
                                     item
                                     container
