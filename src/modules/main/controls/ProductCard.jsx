@@ -270,8 +270,8 @@ const ProductCard = (props) =>
                     <div
                         style={{
                             position: "absolute",
-                            bottom: "35px",
-                            right: "12px",
+                            bottom: "25px",
+                            right: "5px",
                             cursor: "pointer"
                         }}
                         onClick={onCartAdd}

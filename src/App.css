@@ -218,6 +218,15 @@ h5.bold-orange {
   line-height: 130%;
 }
 
+h5.bold-red {
+  color: var(--red);
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
 .t1-light {
   color: var(--brown1);
   font-family: 'Montserrat Alternates';
