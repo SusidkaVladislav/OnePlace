@@ -1,4 +1,4 @@
-﻿ using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OnePlace.BOL.AccoountPayload
 {
@@ -6,7 +6,7 @@ namespace OnePlace.BOL.AccoountPayload
     {
         [Required]
         public string Name { get; set; }
-        
+
         [Required]
         public string Surname { get; set; }
 

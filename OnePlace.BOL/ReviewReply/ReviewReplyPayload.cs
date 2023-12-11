@@ -13,8 +13,6 @@ namespace OnePlace.BOL.ReviewReply
         public int ReviewId { get; set; }
         [Required]
         public string Comment { get; set; }
-        
-        //[Required]
-        //public DateTime Date { get; set; }
+
     }
 }

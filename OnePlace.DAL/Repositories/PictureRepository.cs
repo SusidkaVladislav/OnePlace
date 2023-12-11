@@ -8,8 +8,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class PictureRepository : RepositoryBase<Picture, int>
     {
-        public PictureRepository(AppDbContext context, 
-            UserManager<User> userManager) : base(context, userManager){}
+        public PictureRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(int id)

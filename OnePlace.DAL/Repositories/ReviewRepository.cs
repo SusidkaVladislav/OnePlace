@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ReviewRepository: RepositoryBase<Review, int>
+    public class ReviewRepository : RepositoryBase<Review, int>
     {
-        public ReviewRepository(AppDbContext context, 
-            UserManager<User> userManager) : base(context, userManager) { }    
+        public ReviewRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(int id)
@@ -30,7 +30,7 @@ namespace OnePlace.DAL.Repositories
         {
             return Task.Run(() => db.Reviews
             .Include(o => o.User)
-            .Include(o=>o.Product)
+            .Include(o => o.Product)
             .Where(predicate).ToList());
         }
 

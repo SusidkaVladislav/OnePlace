@@ -15,6 +15,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
+//using MailKit.Net.Smtp;
+//using MailKit;
+//using MimeKit;
+
+using System.Net.Mail;
+using System.Net;
+
 namespace OnePlace.BLL.Services
 {
     public class AccountService : IAccountService
@@ -72,7 +79,7 @@ namespace OnePlace.BLL.Services
 
             if (!result.Succeeded)
             {
-                throw new BusinessException("Не вдалося зареєструвати користувача!");   
+                throw new BusinessException("Не вдалося зареєструвати користувача!");
             }
 
             await _userManager.AddToRoleAsync(user, USER_ROLE);
@@ -126,7 +133,7 @@ namespace OnePlace.BLL.Services
                 cookie.Path = "/";
                 cookie.SameSite = SameSiteMode.None;
                 cookie.Expires = DateTime.Now.AddDays(tokenValidityDays);
-                
+
 
                 _httpContextAccessor.HttpContext.Response.Cookies.Append("refresh-token", refreshToken, cookie);
 
@@ -152,7 +159,7 @@ namespace OnePlace.BLL.Services
             {
                 throw new BusinessException("access-token error!");
             }
-            
+
             if (!_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken))
                 throw new BusinessException("refresh-token error!");
 
@@ -162,7 +169,7 @@ namespace OnePlace.BLL.Services
             {
                 throw new BusinessException("Токен не валідний!");
             }
-            
+
             var userEmail = principal.Identity.Name;
             var user = await _userManager.FindByNameAsync(userEmail);
 
@@ -192,7 +199,7 @@ namespace OnePlace.BLL.Services
                 var result = new JwtSecurityTokenHandler().WriteToken(newAccessToken);
                 return result;
             }
-            catch(SecurityTokenEncryptionFailedException ex)
+            catch (SecurityTokenEncryptionFailedException ex)
             {
                 throw ex;
             }
@@ -201,14 +208,82 @@ namespace OnePlace.BLL.Services
         public async Task LogoutAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            
-            if (user == null) 
+
+            if (user == null)
                 throw new BusinessException("Invalid user name");
 
             user.RefreshToken = null;
             await _userManager.UpdateAsync(user);
 
-    
+
+        }
+
+        public async Task SendCode(string emailAddress)
+        {
+            Random rnd = new Random();
+            string code = "";
+
+            for (int i = 0; i < 6; i++)
+            {
+                code += rnd.Next(0, 9);
+            }
+
+            //var email = new MimeMessage();
+
+            //email.From.Add(new MailboxAddress("OnePlace", "vladislav.susidka@gmail.com"));
+            //email.To.Add(new MailboxAddress("Client", emailAddress));
+            //            email.Subject = "Код для відновлення паролю";
+
+
+
+            //email.Body = new TextPart(MimeKit.Text.TextFormat.Plain)
+            //{
+            //    Text = $"Код дійсний 1 хвиллину. Ось код: {code}"
+            //};
+
+            try
+            {
+                MailMessage message = new MailMessage();
+                //                message.IsBodyHtml = true;
+                message.From = new MailAddress("vladislav.susidka@gmail.com", "OnePlace");
+                message.To.Add(emailAddress);
+                message.Subject = "Код для відновлення паролю";
+                message.Body = $"Код дійсний 1 хвиллину. Ось код: {code}";
+
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
+                {
+                    client.Credentials = new NetworkCredential("vladislav.susidka@gmail.com", "Ps00q88ISusi_oe99");
+                    client.Port = 587;
+                    client.EnableSsl = true;
+
+                    client.Send(message);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            //var client = new SmtpClient("smtp-mail.outlook.com", 587)
+            //{
+            //    EnableSsl = true,
+            //    Credentials = new NetworkCredential("vladislav.susidka@gmail.com", "Ps00q88ISusi_oe99")
+            //};
+
+            //return client.SendMailAsync(
+            //    new MailMessage(
+            //        from: "vladislav.susidka@gmail.com",
+            //        to: emailAddress,
+            //        "Код для відновлення паролю",
+            //        $"Код дійсний 1 хвиллину. Ось код: {code}"
+            //        ));
+
+            // Note: only needed if the SMTP server requires authentication
+            //smtp.Authenticate("smtp_username", "smtp_password");
+
+            //smtp.Send(email);
+            //smtp.Disconnect(true);
+
         }
 
         private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
@@ -231,11 +306,11 @@ namespace OnePlace.BLL.Services
 
                 return principal;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new BusinessException("Не валідний токен!");
             }
-            
+
         }
 
         public JwtSecurityToken GetToken(List<Claim> claims)

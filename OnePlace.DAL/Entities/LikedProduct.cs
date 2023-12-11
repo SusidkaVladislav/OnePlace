@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnePlace.DAL.Entities
 {
-    //[PrimaryKey(nameof(UserId), nameof(ProductId))]
-
     public class LikedProduct
     {
         public int UserId { get; set; }

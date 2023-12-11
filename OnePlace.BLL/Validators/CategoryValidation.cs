@@ -25,7 +25,7 @@ namespace OnePlace.BLL.Validators
         {
             IEnumerable<Category> categories = await _unitOfWork.Categories.FindAsync(
                 c => c.ParentCategoryId == categoryId);
-            if(categories.Count() > 0) 
+            if (categories.Count() > 0)
                 return true;
             return false;
         }
@@ -38,7 +38,7 @@ namespace OnePlace.BLL.Validators
         /// <returns></returns>
         public async Task<bool> Exists(int categoryId)
         {
-            if(await _unitOfWork.Categories.GetAsync(categoryId) != null)
+            if (await _unitOfWork.Categories.GetAsync(categoryId) != null)
                 return true;
             return false;
         }
@@ -56,7 +56,7 @@ namespace OnePlace.BLL.Validators
 
             if (categories.Any())
                 return false;
-            
+
             return true;
         }
 
@@ -72,7 +72,7 @@ namespace OnePlace.BLL.Validators
                 if (await _unitOfWork.Categories.GetAsync(parentId ?? default(int)) == null)
                     return false;
             return true;
-               
+
         }
 
         /// <summary>

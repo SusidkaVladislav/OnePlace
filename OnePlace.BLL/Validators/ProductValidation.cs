@@ -84,9 +84,9 @@ namespace OnePlace.BLL.Validators
         public async Task ProductColorsValid(List<ProductColorDTO> productColors)
         {
             //ProductColorDTO
-            if (!productColors.Any()) 
+            if (!productColors.Any())
                 throw new ArgumentNullException("Не вибраний колір!");
-            
+
 
             foreach (var productColor in productColors)
             {
@@ -94,17 +94,17 @@ namespace OnePlace.BLL.Validators
                 if (productColors.Select(c => c.ColorId)
                     .Where(x => x == productColor.ColorId).Count() > 1)
                     throw new BusinessException("Кольори не унікальні!");
-                
+
                 //Валідація самого кольору
                 await ColorValidAsync(productColor.ColorId);
-                
+
                 //Валідація ціни
                 PriceValid(productColor.Price);
-                
+
                 //Валідація кількості товару
                 if (productColor.Quantity < 0)
                     throw new BusinessException("Кількість товару не може бути меншою ніж 0!");
-            
+
             }
         }
 
@@ -115,7 +115,7 @@ namespace OnePlace.BLL.Validators
             var color = await _unitOfWork.Colors.GetAsync(colorId);
             if (color is null)
                 throw new ArgumentNullException("Неіснуючий колір!");
-        
+
             return color.Id;
         }
 

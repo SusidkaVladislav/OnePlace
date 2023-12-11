@@ -20,7 +20,7 @@ namespace OnePlace.BOL.OrderDTO
 
         public DeliveryMethods DeliveryMethod { get; set; }
 
-        public PaymentMethod PaymentMethod{ get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public string? Street { get; set; }
 

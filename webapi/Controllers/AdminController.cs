@@ -160,8 +160,8 @@ namespace webapi.Controllers
             var result = await _adminService.GetAllColors();
             return Ok(result);
         }
-        
-        [HttpGet("getDescriptionsByCategory")]    
+
+        [HttpGet("getDescriptionsByCategory")]
         public async Task<IActionResult> GetDescriptionsByCategory(int categoryId)
         {
             var result = await _adminService.GetDescriptionsByCategoryId(categoryId);

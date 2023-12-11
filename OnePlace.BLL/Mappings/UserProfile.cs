@@ -10,7 +10,8 @@ namespace OnePlace.BLL.Mappings
 {
     public class UserProfile : Profile
     {
-        public UserProfile() {
+        public UserProfile()
+        {
 
             CreateMap<CreateReviewPayload, CreateReviewDTO>();
             CreateMap<CreateReviewDTO, Review>(MemberList.Source);

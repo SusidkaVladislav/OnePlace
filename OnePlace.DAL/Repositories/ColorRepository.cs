@@ -5,9 +5,9 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ColorReository: RepositoryBase<Color, int>
+    public class ColorReository : RepositoryBase<Color, int>
     {
-        public ColorReository(AppDbContext context, UserManager<User> userManager): base(context, userManager) { }
+        public ColorReository(AppDbContext context, UserManager<User> userManager) : base(context, userManager) { }
 
         public override async Task DeleteAsync(int id)
         {

@@ -1,6 +1,4 @@
-﻿using OnePlace.BOL.ProductColor;
-
-namespace OnePlace.BOL.ProductDTO
+﻿namespace OnePlace.BOL.ProductDTO
 {
     public class ProductListModel
     {
@@ -12,5 +10,6 @@ namespace OnePlace.BOL.ProductDTO
         public bool IsInCart { get; set; }
         public int DiscountPercent { get; set; }
         public bool IsInStock { get; set; }
+        public int ColorId { get; set; }
     }
 }

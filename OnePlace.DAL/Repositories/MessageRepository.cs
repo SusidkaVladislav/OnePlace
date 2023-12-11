@@ -50,7 +50,7 @@ namespace OnePlace.DAL.Repositories
         {
             return await db.Messages
                 .Include(m => m.User)
-                .Include(m=>m.Product)
+                .Include(m => m.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
     }

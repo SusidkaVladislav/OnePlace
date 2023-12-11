@@ -40,11 +40,11 @@ namespace OnePlace.BLL.Interfaces
         Task<List<DescriptionHeader>> GetDescriptionsByCategoryId(int categoryId);
         Task<int> CreateColor(ColorToAdd color);
         Task<int> DeleteColor(int colorId);
-        Task<int> UpdateColor (ColorDTO color);
+        Task<int> UpdateColor(ColorDTO color);
         Task<int> CreateCountry(string colorName);
         Task<int> DeleteCountry(int id);
         Task<int> UpdateCountry(ManufacturerCountryDTO country);
-        Task<int> CreateBrand (string brandName);
+        Task<int> CreateBrand(string brandName);
         Task<int> DeleteBrand(int id);
         Task<int> UpdateBrand(ManufacturerDTO brand);
         Task<List<ProductSaleStatisticDTO>> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload);

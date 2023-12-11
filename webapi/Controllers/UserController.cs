@@ -40,7 +40,7 @@ namespace webapi.Controllers
         }
 
         [HttpPost("shoppingCart")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> AddToCart(ShoppingCartPayload cart)
         {
             var result = await _userService.AddToCart(cart);
@@ -48,7 +48,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("shoppingCart")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteFromCart(ShoppingCartPayload cart)
         {
             var result = await _userService.DeleteFromCart(cart);
@@ -56,7 +56,7 @@ namespace webapi.Controllers
         }
 
         [HttpPut("shoppingCart")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> UpdateCart(ShoppingCartPayload cart)
         {
             var result = await _userService.UpdateCart(cart);
@@ -64,7 +64,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("shoppingCart")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> GetCart()
         {
             var result = await _userService.GetCart();

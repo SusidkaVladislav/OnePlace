@@ -17,7 +17,7 @@ namespace webapi.Controllers
         [HttpGet("getCategoryProductsInfo/{categoryId}")]
         public async Task<IActionResult> GetCategoryProductsInfo(int categoryId)
         {
-           var result = await _analiticService.GetCategoryProductFilters(categoryId);
+            var result = await _analiticService.GetCategoryProductFilters(categoryId);
             return Ok(result);
         }
 

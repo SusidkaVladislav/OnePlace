@@ -30,7 +30,7 @@ namespace OnePlace.BLL.Services
         private readonly SignInManager<User> _signInManager;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public OrderService(IMapper mapper, 
+        public OrderService(IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
@@ -90,8 +90,8 @@ namespace OnePlace.BLL.Services
 
             #endregion
 
-            Order newOrder = new Order 
-            { 
+            Order newOrder = new Order
+            {
                 Date = DateTime.Now,
                 DeliveryInfo = ExtractDeliveryInfo(createOrderDTO),
                 Name = createOrderDTO.Name,
@@ -101,7 +101,7 @@ namespace OnePlace.BLL.Services
                 State = DAL.Enums.OrderState.Registered,
                 PaymentMethod = _mapper.Map<DAL.Enums.PaymentMethod>(createOrderDTO.PaymentMethod),
                 Comment = createOrderDTO.Comment,
-                UserId = userId is not null? Int32.Parse(userId.Value) : null,
+                UserId = userId is not null ? Int32.Parse(userId.Value) : null,
             };
 
             if (!_unitOfWork.Orders.GetAllAsync().Result.Any())
@@ -126,12 +126,12 @@ namespace OnePlace.BLL.Services
                 {
                     OrderId = newOrder.Id,
                     ProductId = product.ProductId,
-                    ColorId= product.ColorId,
+                    ColorId = product.ColorId,
                     Quantity = product.Quantity
                 };
 
                 //Наклaдання знижки
-                if(sale is not null)
+                if (sale is not null)
                     //Ціна зі знижкою (обрахунок знижки)
                     orderProduct.Price = productColor.Price - (productColor.Price * sale.DiscountPercent / 100);
                 else
@@ -141,7 +141,7 @@ namespace OnePlace.BLL.Services
                 productColor.Quantity -= product.Quantity;
 
                 _unitOfWork.ProductColors.Update(productColor);
-                _unitOfWork.OrderProducts.Create(orderProduct); 
+                _unitOfWork.OrderProducts.Create(orderProduct);
             }
             await _unitOfWork.SaveAsync();
 
@@ -158,7 +158,7 @@ namespace OnePlace.BLL.Services
         public async Task<OrderDetails> GetOrder(int orderId)
         {
             Order order = await _unitOfWork.Orders.GetAsync(orderId);
-            if(order is null)
+            if (order is null)
                 throw new ArgumentNullException(nameof(order) + " is null");
 
             OrderDetails orderDetails = new OrderDetails
@@ -167,24 +167,24 @@ namespace OnePlace.BLL.Services
                 Date = order.Date,
                 Comment = order.Comment,
                 DeliveryInfo = order.DeliveryInfo,
-                Number= order.Number,
+                Number = order.Number,
                 OrderState = order.State.ToString(),
                 PaymentMethod = order.PaymentMethod.ToString(),
                 PaymentStatus = order.PaymentStatus.ToString(),
                 //DeliveryCompany = 
-                PhoneNumber= order.PhoneNumber,
-                UserId= order.UserId,
+                PhoneNumber = order.PhoneNumber,
+                UserId = order.UserId,
                 UserInitials = order.Name + " " + order.Surname,
-                Email = order.User is not null? order.User.Email : null
+                Email = order.User is not null ? order.User.Email : null
             };
 
-                #region Products
+            #region Products
             var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId);
             foreach (var product in productsOrder)
             {
                 string productName = _unitOfWork.Products.FindAsync(p => p.Id == product.ProductId).Result.Select(p => p.Name).FirstOrDefault();
                 //Підтягнути титульну картинку товару
-                var picture = await _unitOfWork.ProductPictures.FindAsync(pp=>pp.ProductId == product.ProductId
+                var picture = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.ProductId
                 && pp.IsTitle == true);
 
                 OrderedProduct orderedProduct = new OrderedProduct
@@ -207,7 +207,7 @@ namespace OnePlace.BLL.Services
             if (orderDetails.UserId is not null)
             {
                 User user = await _unitOfWork.Users.GetAsync(orderId);
-                if(user is not null)
+                if (user is not null)
                 {
                     orderDetails.Email = user.Email;
                 }
@@ -251,10 +251,10 @@ namespace OnePlace.BLL.Services
             if (order is not null)
             {
                 order.State = _mapper.Map<DAL.Enums.OrderState>(orderState);
-                
+
                 _unitOfWork.Orders.Update(order);
                 await _unitOfWork.SaveAsync();
-                
+
                 return order.Id;
             }
             else
@@ -269,8 +269,8 @@ namespace OnePlace.BLL.Services
         public async Task<List<OrderListModel>> FilterOrders(OrderSearchParams filters)
         {
             var orders = await _unitOfWork.Orders.Filter(_mapper.Map<DAL.SearchParams.OrderSearchParams>(filters));
-        
-            List<OrderListModel> orderList= new List<OrderListModel>();
+
+            List<OrderListModel> orderList = new List<OrderListModel>();
             foreach (var order in orders.Items)
             {
                 OrderListModel orderListModel = new OrderListModel
@@ -292,7 +292,7 @@ namespace OnePlace.BLL.Services
 
             return orderList;
         }
-        
+
         //Здійснення оплати карткою
         public Task CardPay()
         {
@@ -306,7 +306,7 @@ namespace OnePlace.BLL.Services
             var orders = new List<Order>();
             if (date is not null)
             {
-                orders = _unitOfWork.Orders.FindAsync(o=>o.Date >= date.Value.Date).Result.ToList();
+                orders = _unitOfWork.Orders.FindAsync(o => o.Date >= date.Value.Date).Result.ToList();
             }
             else
             {

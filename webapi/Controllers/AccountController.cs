@@ -47,5 +47,12 @@ namespace webapi.Controllers
             await _accountService.LogoutAsync(email);
             return Ok();
         }
+
+        [HttpPost("sendCode")]
+        public async Task<IActionResult> SendCode(string emailAddress)
+        {
+            var result = _accountService.SendCode(emailAddress);
+            return Ok(result);
+        }
     }
 }

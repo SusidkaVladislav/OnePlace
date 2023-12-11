@@ -12,7 +12,6 @@ namespace OnePlace.BOL.Review
     {
         public int NumberOfStars { get; set; }
         public string Comment { get; set; }
-        //public DateTime Date { get; set; }
         public int ProductId { get; set; }
     }
 }

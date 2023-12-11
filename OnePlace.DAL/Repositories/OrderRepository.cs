@@ -12,8 +12,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class OrderRepository : RepositoryBase<Order, int>
     {
-        public OrderRepository(AppDbContext context, 
-            UserManager<User> userManager): base(context, userManager) { }
+        public OrderRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
         private const int LIMIT = 10;
         public override async Task DeleteAsync(int id)
@@ -60,7 +60,7 @@ namespace OnePlace.DAL.Repositories
                 //Замовлення тільки конкретного користувача
                 if (searchParams.UserId.HasValue)
                 {
-                    predicate = predicate.And(o=>o.UserId == searchParams.UserId);
+                    predicate = predicate.And(o => o.UserId == searchParams.UserId);
                 }
 
                 //Тільки ті замовлення стан яких рівний переданому 
@@ -76,7 +76,7 @@ namespace OnePlace.DAL.Repositories
                 }
 
                 //Тільки замовлення, статус оплати яких рівний переданому
-                if(searchParams.PaymentStatus.HasValue)
+                if (searchParams.PaymentStatus.HasValue)
                 {
                     predicate = predicate.And(o => o.PaymentStatus == searchParams.PaymentStatus.Value);
                 }

@@ -7,7 +7,7 @@ namespace OnePlace.BOL.AdminPayload
     {
         [Required]
         public int CategoryId { get; set; }
-        
+
         [Required]
         public DateTime Period { get; set; }
     }

@@ -6,7 +6,7 @@ using OnePlace.BOL.Sale;
 
 namespace OnePlace.BOL.ProductDTO
 {
-    public class ProductUpdateDTO: BaseProduct
+    public class ProductUpdateDTO : BaseProduct
     {
         public int Id { get; set; }
         public SaleDetails? Sale { get; set; }

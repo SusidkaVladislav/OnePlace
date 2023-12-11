@@ -23,7 +23,7 @@ namespace OnePlace.BOL.Message
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public string ProductPictureAddress { get; set; }
-        
+
         public string Name { get; set; }
         public string Email { get; set; }
         public string MessageText { get; set; }

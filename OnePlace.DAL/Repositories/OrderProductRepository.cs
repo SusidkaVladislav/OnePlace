@@ -7,8 +7,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class OrderProductRepository : RepositoryBase<OrderProduct, Composite3Key>
     {
-        public OrderProductRepository(AppDbContext context, 
-            UserManager<User> userManager): base(context, userManager) { }
+        public OrderProductRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(Composite3Key key)

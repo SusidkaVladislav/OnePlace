@@ -6,7 +6,7 @@ namespace OnePlace.BLL.Utilities
     /// <summary>
     /// Параметри пошуку продукту
     /// </summary>
-    public class ProductSearchParams: BaseSearchParams
+    public class ProductSearchParams : BaseSearchParams
     {
         /// <summary>
         /// Мінімальа ціна продукту

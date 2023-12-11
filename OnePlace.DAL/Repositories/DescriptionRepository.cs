@@ -6,7 +6,7 @@ namespace OnePlace.DAL.Repositories
 {
     public class DescriptionRepository : RepositoryBase<Description, int>
     {
-        public DescriptionRepository(AppDbContext context, UserManager<User> userManager): base(context, userManager) { }
+        public DescriptionRepository(AppDbContext context, UserManager<User> userManager) : base(context, userManager) { }
 
         public override async Task DeleteAsync(int id)
         {

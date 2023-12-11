@@ -1,6 +1,5 @@
 ﻿namespace OnePlace.DAL.Entities
 {
-    //[PrimaryKey(nameof(OrderId), nameof(ProductId), nameof(ColorId))]
     public class OrderProduct
     {
         public int OrderId { get; set; }

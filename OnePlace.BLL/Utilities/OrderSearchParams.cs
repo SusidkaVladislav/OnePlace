@@ -3,7 +3,7 @@
     /// <summary>
     /// Параметри пошуку замовлення
     /// </summary>
-    public class OrderSearchParams: BaseSearchParams
+    public class OrderSearchParams : BaseSearchParams
     {
         /// <summary>
         /// Замовлення певного користувача

@@ -8,7 +8,7 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.BLL.Mappings
 {
-    public class AdminProfile: Profile
+    public class AdminProfile : Profile
     {
         public AdminProfile()
         {

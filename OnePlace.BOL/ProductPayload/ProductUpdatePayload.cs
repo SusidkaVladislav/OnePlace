@@ -24,21 +24,21 @@ namespace OnePlace.BOL.ProductPayload
         [Required]
         [RegularExpression(@"^[0-9]*$")]
         public int ManufacturerCountryId { get; set; }
-        
+
         [Required]
         [RegularExpression(@"^[0-9]*$")]
         public int ManufacturerId { get; set; }
-        
+
         [Required]
         [StringLength(2000, MinimumLength = 20)]
         public string Description { get; set; }
 
         public bool IsInBestProducts { get; set; }
-        
+
         public SaleDetails? Sale { get; set; }
-        
+
         public List<ProductDescriptionDetails>? Descriptions { get; set; }
-        
+
         [Required]
         public List<ProductPictureDetails> Pictures { get; set; }
 

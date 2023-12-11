@@ -16,7 +16,7 @@ using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
-using Org.BouncyCastle.Pqc.Crypto.Frodo;
+//using Org.BouncyCastle.Pqc.Crypto.Frodo;
 
 namespace OnePlace.BLL.Services
 {
@@ -26,8 +26,8 @@ namespace OnePlace.BLL.Services
         private readonly IConfiguration _configuration;
         private IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
-        public AdminService(IMapper mapper, 
-            IConfiguration configuration, 
+        public AdminService(IMapper mapper,
+            IConfiguration configuration,
             IUnitOfWork unitOfWork,
             UserManager<User> userManager)
         {
@@ -40,7 +40,7 @@ namespace OnePlace.BLL.Services
         public async Task<int> AddReviewReply(ReviewReplyPayload reviewReplyPayload)
         {
             ReviewReply reviewReply = _mapper.Map<ReviewReply>(reviewReplyPayload);
-            
+
             reviewReply.Date = DateTime.Now.Date;
 
             var review = await _unitOfWork.Reviews.GetAsync(reviewReply.ReviewId);
@@ -90,7 +90,7 @@ namespace OnePlace.BLL.Services
                 await _unitOfWork.OrderProducts.DeleteAsync(key);
 
             }
-           
+
             await _unitOfWork.Orders.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
 
@@ -105,7 +105,7 @@ namespace OnePlace.BLL.Services
             var review = await _unitOfWork.Reviews.GetAsync(id);
             if (review is null)
                 throw new NotFoundException("Відгук з таким ID не існує!");
-          
+
             await _unitOfWork.ReviewReplies.DeleteAsync(id);
             await _unitOfWork.Reviews.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
@@ -158,7 +158,7 @@ namespace OnePlace.BLL.Services
                 messageDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
                 messagesDTO.Add(messageDTO);
             }
-           
+
             return messagesDTO;
         }
 
@@ -297,7 +297,7 @@ namespace OnePlace.BLL.Services
         {
             return _mapper.Map<List<ManufacturerDTO>>(await _unitOfWork.Manufacturers.GetAllAsync());
         }
-    
+
         public async Task<List<ManufacturerCountryDTO>> GetAllCountries()
         {
             return _mapper.Map<List<ManufacturerCountryDTO>>(await _unitOfWork.ManufactureCountries.GetAllAsync());
@@ -316,9 +316,9 @@ namespace OnePlace.BLL.Services
             }
             var descriptions = await _unitOfWork.Descriptions.FindAsync(
                 d => d.CategoryId == categoryId);
-            
+
             List<DescriptionHeader> result = new List<DescriptionHeader>();
-            foreach ( var description in descriptions ) 
+            foreach (var description in descriptions)
             {
                 result.Add(new DescriptionHeader()
                 {
@@ -331,11 +331,11 @@ namespace OnePlace.BLL.Services
 
         public async Task<int> CreateColor(ColorToAdd colorToAdd)
         {
-            if(colorToAdd.Name.Length == 0)
+            if (colorToAdd.Name.Length == 0)
             {
                 throw new BusinessException("Немає назви кольору!");
             }
-            if(_unitOfWork.Colors.FindAsync(c=>c.Name== colorToAdd.Name).Result.Count() > 0)
+            if (_unitOfWork.Colors.FindAsync(c => c.Name == colorToAdd.Name).Result.Count() > 0)
             {
                 throw new BusinessException("Колір з такою назвою уже існує!");
             }
@@ -343,7 +343,7 @@ namespace OnePlace.BLL.Services
             DAL.Entities.Color color = _mapper.Map<DAL.Entities.Color>(colorToAdd);
 
             _unitOfWork.Colors.Create(color);
-        
+
             await _unitOfWork.SaveAsync();
             return color.Id;
         }
@@ -353,9 +353,9 @@ namespace OnePlace.BLL.Services
             if (colorId <= 0)
                 throw new ArgumentNullException("Некоректний ID кольору!");
 
-            if(_unitOfWork.ProductColors.FindAsync(c=>c.ColorId==colorId).Result.Count() > 0)
+            if (_unitOfWork.ProductColors.FindAsync(c => c.ColorId == colorId).Result.Count() > 0)
                 throw new BusinessException("Цей колір використовуєтсья деякими продуктами!");
-            
+
 
             await _unitOfWork.Colors.DeleteAsync(colorId);
             await _unitOfWork.SaveAsync();
@@ -364,7 +364,7 @@ namespace OnePlace.BLL.Services
 
         public async Task<int> UpdateColor(ColorDTO color)
         {
-            if(_unitOfWork.Colors.FindAsync(c=>c.Id == color.Id).Result.FirstOrDefault() is not null)
+            if (_unitOfWork.Colors.FindAsync(c => c.Id == color.Id).Result.FirstOrDefault() is not null)
             {
                 DAL.Entities.Color updatedColor = _mapper.Map<DAL.Entities.Color>(color);
                 _unitOfWork.Colors.Update(updatedColor);
@@ -378,14 +378,14 @@ namespace OnePlace.BLL.Services
         {
             if (countryName.Length < 2)
                 throw new ArgumentException("Немає назви країни!");
-            if(_unitOfWork.ManufactureCountries.FindAsync(c=>c.Name.ToLower() == countryName.ToLower()).Result.Count() > 0)
+            if (_unitOfWork.ManufactureCountries.FindAsync(c => c.Name.ToLower() == countryName.ToLower()).Result.Count() > 0)
             {
                 throw new BusinessException("Така країна вже існує!");
             }
 
             ManufactureCountry country = new ManufactureCountry
             {
-                Name= countryName,
+                Name = countryName,
             };
             _unitOfWork.ManufactureCountries.Create(country);
             await _unitOfWork.SaveAsync();
@@ -396,9 +396,9 @@ namespace OnePlace.BLL.Services
         {
             if (id <= 0)
                 throw new ArgumentNullException("Некоректний ID країни!");
-            if (_unitOfWork.Products.FindAsync(p=>p.ManufacturerCountryId == id).Result.FirstOrDefault() is not null)
+            if (_unitOfWork.Products.FindAsync(p => p.ManufacturerCountryId == id).Result.FirstOrDefault() is not null)
                 throw new BusinessException("Ця країна використовується деякими продуктами!");
-        
+
             await _unitOfWork.ManufactureCountries.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
             return id;
@@ -408,7 +408,7 @@ namespace OnePlace.BLL.Services
         {
             if (_unitOfWork.ManufactureCountries.FindAsync(c => c.Id == country.Id).Result.FirstOrDefault() is not null)
             {
-                ManufactureCountry updatedCountry= _mapper.Map<ManufactureCountry>(country);
+                ManufactureCountry updatedCountry = _mapper.Map<ManufactureCountry>(country);
                 _unitOfWork.ManufactureCountries.Update(updatedCountry);
                 await _unitOfWork.SaveAsync();
                 return updatedCountry.Id;
@@ -450,14 +450,14 @@ namespace OnePlace.BLL.Services
         {
             if (_unitOfWork.Manufacturers.FindAsync(m => m.Id == brand.Id).Result.FirstOrDefault() is not null)
             {
-                Manufacturer updatedBrand= _mapper.Map<Manufacturer>(brand);
+                Manufacturer updatedBrand = _mapper.Map<Manufacturer>(brand);
                 _unitOfWork.Manufacturers.Update(updatedBrand);
                 await _unitOfWork.SaveAsync();
                 return updatedBrand.Id;
             }
             throw new BusinessException("Неіснуючий виробник!");
         }
-    
+
         public async Task<List<ProductSaleStatisticDTO>> GetProductSalingInfo(GetProductSaleStatisticPayload saleStatisticPayload)
         {
             if (saleStatisticPayload is null)
@@ -471,31 +471,31 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException("Дата не може бути новіша ніж сьогоднішня!");
 
             var allProductsIdsFromCategory = _unitOfWork.Products
-                .FindAsync(p=>p.CategoryId == saleStatisticPayload.CategoryId).Result.Select(p=>p.Id).ToList();
-            
+                .FindAsync(p => p.CategoryId == saleStatisticPayload.CategoryId).Result.Select(p => p.Id).ToList();
+
             var allOrdersIdByDate = _unitOfWork.Orders.FindAsync(
                 o => o.Date >= saleStatisticPayload.Period.Date.AddDays(1) &&
-                o.State == OrderState.Done && o.PaymentStatus == PaymentStatus.Approved).Result.Select(o=>o.Id).ToList();
+                o.State == OrderState.Done && o.PaymentStatus == PaymentStatus.Approved).Result.Select(o => o.Id).ToList();
 
             List<ProductSaleStatisticDTO> productSaleStatistic = new List<ProductSaleStatisticDTO>();
 
             foreach (var orderId in allOrdersIdByDate)
             {
 
-               var ordersProducts = _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId 
-                                        && allProductsIdsFromCategory.Contains(o.ProductId)).Result.ToList();
+                var ordersProducts = _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId
+                                         && allProductsIdsFromCategory.Contains(o.ProductId)).Result.ToList();
 
                 //Якщо замовлення містить мінімум 1 товар з потрібної категорії
-                if(ordersProducts is not null)
+                if (ordersProducts is not null)
                 {
                     //Тільки ті замовлення які точно містять товар з потрібної категорії
                     foreach (var orderProduct in ordersProducts)
                     {
 
                         var product = await _unitOfWork.Products.GetAsync(orderProduct.ProductId);
-                        
+
                         //Якщо замовлений товар ще існує
-                        if(product is not null)
+                        if (product is not null)
                         {
                             //Колір товару із замовлення
                             var productColor = await _unitOfWork.ProductColors.GetAsync(new Composite2Key
@@ -504,15 +504,15 @@ namespace OnePlace.BLL.Services
                                 Column2 = orderProduct.ColorId
                             });
 
-                            if(productColor is not null)
+                            if (productColor is not null)
                             {
                                 var existedProductSaleStatisticElement = productSaleStatistic.Where(p => p.Id == product.Id).FirstOrDefault();
-                                
-                                if(existedProductSaleStatisticElement is null) 
+
+                                if (existedProductSaleStatisticElement is null)
                                 {
                                     var picture = await _unitOfWork.ProductPictures.GetAsync(new Composite2Key
                                     {
-                                        Column1= product.Id,
+                                        Column1 = product.Id,
                                         Column2 = product.ProductPictures.Where(p => p.IsTitle == true).FirstOrDefault().PictureId
                                     });
 
@@ -544,13 +544,13 @@ namespace OnePlace.BLL.Services
 
             return productSaleStatistic;
         }
-    
+
         public async Task<int> GetUsersCountByRegistrateDate(DateTime date)
         {
             var count = _unitOfWork.Users.FindAsync(u => u.RegistrationDate.Date >= date.Date).Result.ToList().Count();
             return count;
         }
-    
+
         public async Task<PureUser> GetUserPersonalData(int userId)
         {
             if (userId <= 0)
@@ -558,18 +558,18 @@ namespace OnePlace.BLL.Services
 
             var user = await _unitOfWork.Users.GetAsync(userId);
 
-            if(user is not null)
-            return new PureUser
-            {
-                Id = user.Id,
-                Name = user?.Name,
-                Email = user?.Email,
-                PhoneNumber = user?.PhoneNumber,
-                Surname = user?.Surname,
-                RegistrationDate = user.RegistrationDate,
-                PictureAddress = user?.PictureURL,
-                CountOfOrders = user.Orders.Count()
-            };
+            if (user is not null)
+                return new PureUser
+                {
+                    Id = user.Id,
+                    Name = user?.Name,
+                    Email = user?.Email,
+                    PhoneNumber = user?.PhoneNumber,
+                    Surname = user?.Surname,
+                    RegistrationDate = user.RegistrationDate,
+                    PictureAddress = user?.PictureURL,
+                    CountOfOrders = user.Orders.Count()
+                };
 
             return null;
         }
@@ -579,7 +579,7 @@ namespace OnePlace.BLL.Services
             if (userId <= 0)
                 throw new ArgumentNullException("Некоректний ID користувача!");
 
-            var reviews = await _unitOfWork.Reviews.FindAsync(r=>r.UserId == userId);
+            var reviews = await _unitOfWork.Reviews.FindAsync(r => r.UserId == userId);
 
             List<ReviewDTO> reviewsDTO = new List<ReviewDTO>();
 

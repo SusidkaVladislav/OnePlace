@@ -5,10 +5,10 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.DAL.Repositories
 {
-    public class ReviewReplyRepository: RepositoryBase<ReviewReply, int>
+    public class ReviewReplyRepository : RepositoryBase<ReviewReply, int>
     {
-        public ReviewReplyRepository(AppDbContext context, 
-            UserManager<User> userManager) : base(context, userManager){}
+        public ReviewReplyRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
         public override async Task DeleteAsync(int id)
         {

@@ -7,7 +7,7 @@ namespace OnePlace.DAL.Repositories
 {
     public class SaleRepository : RepositoryBase<Sale, int>
     {
-        public SaleRepository(AppDbContext context, 
+        public SaleRepository(AppDbContext context,
             UserManager<User> userManager) : base(context, userManager) { }
 
 

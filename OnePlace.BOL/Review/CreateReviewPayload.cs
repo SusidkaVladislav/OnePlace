@@ -17,9 +17,7 @@ namespace OnePlace.BOL.Review
         [AllowNull]
         [DataType(DataType.Text)]
         public string Comment { get; set; }
-        //[Required]
-        //[DataType(DataType.DateTime)]
-        //public DateTime Date { get; set; }
+
         [Required]
         public int ProductId { get; set; }
     }

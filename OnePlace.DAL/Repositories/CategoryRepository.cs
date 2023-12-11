@@ -59,7 +59,7 @@ namespace OnePlace.DAL.Repositories
                     .Result.Select(c => c.Products).FirstOrDefault()
                 );
             }
-                
+
 
             return category;
         }

@@ -20,7 +20,7 @@ namespace OnePlace.DAL.Repositories
 
         public void Create(T item)
         {
-           db.Set<T>().Add(item);
+            db.Set<T>().Add(item);
         }
 
         public Task<int> GetAllCount()

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 namespace OnePlace.BOL.ShoppingCart
 {
     public class ShoppingCartDTO
-    { 
+    {
         public int ProductId { get; set; }
         public int ColorId { get; set; }
-        public int Quantity { get; set; }
     }
 }

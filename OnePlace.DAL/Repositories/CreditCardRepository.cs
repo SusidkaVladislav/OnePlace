@@ -7,8 +7,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class CreditCardRepository : RepositoryBase<CreditCard, int>
     {
-        public CreditCardRepository(AppDbContext context, 
-            UserManager<User> userManager) : base(context, userManager){}
+        public CreditCardRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
         public override async Task DeleteAsync(int id)
         {
@@ -18,7 +18,7 @@ namespace OnePlace.DAL.Repositories
         public override async Task<IEnumerable<CreditCard>> FindAsync(Func<CreditCard, bool> predicate)
         {
             //return await GetListAsync(predicate);
-        
+
             throw new NotImplementedException();
         }
 

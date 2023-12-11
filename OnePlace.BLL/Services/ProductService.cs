@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MailKit;
+//using MailKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -64,7 +64,7 @@ namespace OnePlace.BLL.Services
             List<ProductListModel> productListModels = new List<ProductListModel>();
 
             //Отримання користувача
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
 
             //Перебір всіх з сторінки продуктів
             foreach (var product in products.Items)
@@ -87,17 +87,31 @@ namespace OnePlace.BLL.Services
                 #endregion
 
                 #region Чи є цей товар в улуюблених товарах користувача
-                var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == user.Id &&
-                l.ProductId == product.Id);
+                if (user is not null)
+                {
+                    var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                    l.ProductId == product.Id);
 
-                productListModel.IsInLiked = likedProducts.Any();
+                    productListModel.IsInLiked = likedProducts.Any();
+                }
+                else
+                {
+                    productListModel.IsInLiked = false;
+                }
+
                 #endregion
 
                 #region Чи є цей товар в корзині користувача
-                var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == user.Id &&
-                c.ProductId == product.Id);
-
-                productListModel.IsInCart = productsInCart.Any();
+                if (user is not null)
+                {
+                    var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                    c.ProductId == product.Id);
+                    productListModel.IsInCart = productsInCart.Any();
+                }
+                else
+                {
+                    productListModel.IsInCart = false;
+                }
                 #endregion
 
                 #region Перевірка знижки
@@ -123,20 +137,24 @@ namespace OnePlace.BLL.Services
                 productListModel.IsInStock = isInStock;
                 #endregion
 
+                #region Отримання першрої фотографії товару
+                productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
+                #endregion
+
                 productListModels.Add(productListModel);
             }
 
-            
+
             //Створення пагінованого списку з продуктів
             var result = new PaginatedList<ProductListModel>
             {
                 Items = productListModels,
                 TotalCountFromPage = productListModels.Count,
-                TotalCount = products.TotalCount,    
+                TotalCount = products.TotalCount,
             };
 
             return result;
-        } 
+        }
 
         /// <summary>
         /// Додати новий товар
@@ -146,7 +164,7 @@ namespace OnePlace.BLL.Services
         /// <exception cref="ArgumentNullException"></exception>
         public async Task<int> AddProduct(ProductCreatePayload product)
         {
-            if(product.Sale is not null)
+            if (product.Sale is not null)
             {
                 product.Sale.StartDate = product.Sale.StartDate.AddDays(1);
                 product.Sale.EndDate = product.Sale.EndDate.AddDays(1);
@@ -554,7 +572,7 @@ namespace OnePlace.BLL.Services
                     {
                         updatePicture.Address = picture.Address;
                         updatePicture.DeleteAddress = picture.DeleteURL;
-                        
+
                         _unitOfWork.Pictures.Update(updatePicture);
                     }
                 }
@@ -563,7 +581,7 @@ namespace OnePlace.BLL.Services
                     updatePicture = new Picture
                     {
                         Address = picture.Address,
-                        DeleteAddress= picture.DeleteURL
+                        DeleteAddress = picture.DeleteURL
                     };
                     _unitOfWork.Pictures.Create(updatePicture);
                 }
@@ -614,12 +632,12 @@ namespace OnePlace.BLL.Services
 
             #region Sale
             Sale sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == productToUpdate.Id).Result.FirstOrDefault();
-            
+
             //Якщо у відредагованому товарі присутня знижка
             if (updatedProduct.Sale != null)
             {
                 if (sale is null && updatedProduct.Sale.DiscountPercent > 0) //Якщо знижки на цей товар ще не було, то створити
-                {   
+                {
                     validation.SaleValid(updatedProduct.Sale);
 
                     sale = new Sale
@@ -631,7 +649,7 @@ namespace OnePlace.BLL.Services
                     };
                     _unitOfWork.Sales.Create(sale);
                 }
-                else if(updatedProduct.Sale.DiscountPercent > 0) //Якщо знижка вже існувала раніше, то просто оновити запис
+                else if (updatedProduct.Sale.DiscountPercent > 0) //Якщо знижка вже існувала раніше, то просто оновити запис
                 {
                     if (DateTime.Compare(updatedProduct.Sale.StartDate.Date, sale.StartDate.Date) < 0
                    || DateTime.Compare(updatedProduct.Sale.EndDate.Date, DateTime.UtcNow.Date) < 0)
@@ -794,10 +812,10 @@ namespace OnePlace.BLL.Services
 
         public async Task<List<ProductToReturnAllDTO>> GetAllProducts(int? categoryId = null)
         {
-            List <Product> products = new List<Product>();
+            List<Product> products = new List<Product>();
             if (categoryId != null)
             {
-                products = _unitOfWork.Products.FindAsync(product => product.CategoryId == categoryId).Result.ToList(); 
+                products = _unitOfWork.Products.FindAsync(product => product.CategoryId == categoryId).Result.ToList();
             }
             else
             {
@@ -820,24 +838,24 @@ namespace OnePlace.BLL.Services
                     Id = product.Id,
                     Code = product.Code,
                     Name = product.Name,
-                    DiscountPercent = discountPercent is null? 0 : discountPercent.DiscountPercent,
+                    DiscountPercent = discountPercent is null ? 0 : discountPercent.DiscountPercent,
                     Picture = picture.FirstOrDefault().Address
                 };
                 foreach (var colorPrice in product.ProductColors)
                 {
                     var color = _unitOfWork
                     .Colors.FindAsync(c => c.Id == colorPrice.ColorId).Result.FirstOrDefault();
-                    
+
                     ProductToReturnAllDTO productToReturnAll = new ProductToReturnAllDTO
                     {
-                        Id=tmp.Id,
+                        Id = tmp.Id,
                         Code = tmp.Code,
                         Name = tmp.Name,
                         DiscountPercent = tmp.DiscountPercent,
                         Color = color.Name,
                         Price = colorPrice.Price,
                         Quantity = colorPrice.Quantity,
-                        Picture= tmp.Picture,
+                        Picture = tmp.Picture,
                     };
 
                     res.Add(productToReturnAll);
@@ -853,8 +871,8 @@ namespace OnePlace.BLL.Services
                 throw new BusinessException("Не коректне id товару!");
 
             var productReviews = _unitOfWork.Reviews.FindAsync(r => r.ProductId == id).Result.ToList();
-        
-            if(productReviews.Count() == 0)
+
+            if (productReviews.Count() == 0)
             {
                 return new ProductReviewAnalitic
                 {
@@ -873,6 +891,48 @@ namespace OnePlace.BLL.Services
                 };
             }
         }
+
+        public async Task<List<ProductFromCartDTO>> GetProductsFromCart(List<PayloadProductIdColorId> ids)
+        {
+            List<ProductFromCartDTO> result = new List<ProductFromCartDTO>();
+            if (ids is null)
+            {
+                return result;
+            }
+            List<ProductIdColorId> ts = _mapper.Map<List<ProductIdColorId>>(ids);
+
+            foreach (var item in ts)
+            {
+                ProductFromCartDTO product = new ProductFromCartDTO();
+                var p = await _unitOfWork.Products.GetAsync(item.ProductId);
+
+                product.Id = p.Id;
+                product.Name = p.Name;
+
+                var color = p.ProductColors.Where(p => p.ProductId == item.ProductId && p.ColorId == item.ColorId).FirstOrDefault();
+                product.ColorId = item.ColorId;
+                product.Price = color.Price;
+                product.Quantity = color.Quantity;
+
+                int i = p.ProductPictures.Where(c => c.IsTitle == true).FirstOrDefault().PictureId;
+                product.Picture = _unitOfWork.Pictures.GetAsync(i).Result.Address;
+
+                var sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == item.ProductId).Result.FirstOrDefault();
+                if (sale is not null)
+                {
+                    product.Discount = sale.DiscountPercent;
+                }
+                else
+                {
+                    product.Discount = 0;
+                }
+
+                result.Add(product);
+            }
+
+            return result;
+        }
+
 
         private async Task DeleteUnusedDescriptions(int categoryId)
         {

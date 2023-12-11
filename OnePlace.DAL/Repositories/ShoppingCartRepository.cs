@@ -8,8 +8,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class ShoppingCartRepository : RepositoryBase<ShoppingCart, Composite3Key>
     {
-        public ShoppingCartRepository(AppDbContext context, 
-            UserManager<User> userManager) : base(context, userManager) { }  
+        public ShoppingCartRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(Composite3Key key)

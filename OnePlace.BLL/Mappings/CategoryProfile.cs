@@ -8,7 +8,7 @@ namespace OnePlace.BLL.Mappings
     /// <summary>
     /// Category map profile
     /// </summary>
-    public class CategoryProfile: Profile
+    public class CategoryProfile : Profile
     {
         public CategoryProfile()
         {
@@ -17,14 +17,14 @@ namespace OnePlace.BLL.Mappings
             CreateMap<CategoryUpdateDTO, Category>(MemberList.Source);
 
             CreateMap<Category, CategoryDetails>(MemberList.Source)
-                .ForMember(d=>d.ParentId, p=>p.MapFrom(s=>s.ParentCategoryId))
-                .ForMember(d=>d.ChildrenCategories, p=>p.MapFrom(s=>s.ChildCategories));
+                .ForMember(d => d.ParentId, p => p.MapFrom(s => s.ParentCategoryId))
+                .ForMember(d => d.ChildrenCategories, p => p.MapFrom(s => s.ChildCategories));
 
 
             CreateMap<CategoryCreatePayload, CategoryCreateDTO>();
 
             CreateMap<CategoryCreateDTO, Category>(MemberList.Source)
-                .ForMember(d=>d.ParentCategoryId, p=>p.MapFrom(s=>s.ParentId));
+                .ForMember(d => d.ParentCategoryId, p => p.MapFrom(s => s.ParentId));
 
             CreateMap<Category, PureCategory>(MemberList.Destination)
                 .ForMember(d => d.HasProducts, p => p.MapFrom(s => s.Products.Count > 0))

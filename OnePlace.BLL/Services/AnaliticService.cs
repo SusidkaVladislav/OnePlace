@@ -11,7 +11,7 @@ using System.Web;
 
 namespace OnePlace.BLL.Services
 {
-    public class AnaliticService: IAnaliticService
+    public class AnaliticService : IAnaliticService
     {
         private IUnitOfWork _unitOfWork;
 
@@ -25,7 +25,7 @@ namespace OnePlace.BLL.Services
             if (_unitOfWork.Categories.GetAsync(categoryId).Result is null)
                 throw new ArgumentException("Не існуюча категорія!");
 
-            var products = _unitOfWork.Products.FindAsync(p=>p.CategoryId == categoryId).Result.ToList();
+            var products = _unitOfWork.Products.FindAsync(p => p.CategoryId == categoryId).Result.ToList();
 
             FiltersInfo filtersInfo = new FiltersInfo();
 
@@ -114,12 +114,12 @@ namespace OnePlace.BLL.Services
                     HashSet<string> abouts = new HashSet<string>();
                     foreach (var desc in option.Value)
                     {
-                        if((100 * desc.Value.Count / products.Count) >= 15)
+                        if ((100 * desc.Value.Count / products.Count) >= 15)
                         {
                             abouts.Add(desc.Key);
-                        } 
+                        }
                     }
-                    if(abouts.Count >= 2)
+                    if (abouts.Count >= 2)
                     {
                         descriptionFilters.Add(option.Key, abouts);
                     }
@@ -134,13 +134,13 @@ namespace OnePlace.BLL.Services
 
             return filtersInfo;
         }
-    
-    
+
+
         public async Task<List<ReviewByProduct>> GetProductReviews(int productId)
         {
             List<ReviewByProduct> result = new List<ReviewByProduct>();
-            
-            var reviews = _unitOfWork.Reviews.FindAsync(r=>r.ProductId== productId).Result.ToList();
+
+            var reviews = _unitOfWork.Reviews.FindAsync(r => r.ProductId == productId).Result.ToList();
 
             if (reviews.Count == 0)
                 return result;

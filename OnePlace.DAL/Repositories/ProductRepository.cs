@@ -11,7 +11,7 @@ namespace OnePlace.DAL.Repositories
     public class ProductRepository : RepositoryBase<Product, int>
     {
         public ProductRepository(AppDbContext context, UserManager<User> userManager) : base(context, userManager) { }
-        
+
         /// <summary>
         /// Кількість товарів які повертаються на клієнт
         /// </summary>
@@ -41,11 +41,11 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.Reviews)
                 .Include(o => o.ProductDescriptions)
                 .Include(o => o.ProductPictures)
-                .Include(o=>o.ProductColors)
+                .Include(o => o.ProductColors)
                 .Where(predicate).ToList());
         }
 
-        public override async Task<PaginatedList<Product>> Filter<T>(T searchParamsModel) 
+        public override async Task<PaginatedList<Product>> Filter<T>(T searchParamsModel)
         {
             var searchParams = searchParamsModel as ProductSearchParams;
 
@@ -59,7 +59,7 @@ namespace OnePlace.DAL.Repositories
                    .AsNoTracking();
 
                 var predicate = PredicateBuilder.New<Product>(true);
-                
+
                 //Фiльтрація за кольорами
                 if (searchParams.Colors.Any())
                 {
@@ -128,9 +128,9 @@ namespace OnePlace.DAL.Repositories
 
                 query = query.Include(o => o.ProductPictures)
                     .Include(o => o.ProductColors)
-                    .Include(o=>o.ProductDescriptions)
-                    .Include(o=>o.Manufacturer)
-                    .Include(o=>o.ManufacturerCountry);
+                    .Include(o => o.ProductDescriptions)
+                    .Include(o => o.Manufacturer)
+                    .Include(o => o.ManufacturerCountry);
 
                 //Виконання предикату
                 query = query.Where(predicate);
@@ -156,7 +156,7 @@ namespace OnePlace.DAL.Repositories
 
                 return paginatedList;
             }
-            catch(ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 throw new ArgumentNullException(nameof(searchParamsModel) + " null категорія");
             }
@@ -179,7 +179,7 @@ namespace OnePlace.DAL.Repositories
         {
             return await db.Products
                 .Include(o => o.ProductPictures)
-                .Include(o=>o.ProductColors).ToListAsync();
+                .Include(o => o.ProductColors).ToListAsync();
         }
     }
 }

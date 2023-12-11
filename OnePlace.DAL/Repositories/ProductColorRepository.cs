@@ -7,7 +7,7 @@ namespace OnePlace.DAL.Repositories
 {
     public class ProductColorRepository : RepositoryBase<ProductColor, Composite2Key>
     {
-        public ProductColorRepository(AppDbContext context, 
+        public ProductColorRepository(AppDbContext context,
             UserManager<User> userManager) : base(context, userManager) { }
 
         public override async Task DeleteAsync(Composite2Key key)

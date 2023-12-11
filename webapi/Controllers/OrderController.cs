@@ -28,11 +28,11 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetOrder(int id)
         {
             var res = await _orderService.GetOrder(id);
-            return Ok(res); 
+            return Ok(res);
         }
 
         [HttpPost("ChangePaymentStatus")]
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ChangePaymentStatus(OrderChangePaymentStatePayload paymentStatePayload)
         {
             var res = await _orderService.ChangePaymentStatus(paymentStatePayload.orderId, paymentStatePayload.paymentStatus);
@@ -71,7 +71,7 @@ namespace webapi.Controllers
         }
 
         [HttpDelete("deleteOrder")]
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var res = await _orderService.DeleteOrer(id);

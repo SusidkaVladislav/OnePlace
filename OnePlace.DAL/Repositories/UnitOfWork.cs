@@ -25,7 +25,7 @@ namespace OnePlace.DAL.Repositories
         public IRepository<Review, int> Reviews { get; private set; }
         public IRepository<Sale, int> Sales { get; private set; }
         public IRepository<User, int> Users { get; private set; }
-        public IRepository<ProductColor, Composite2Key> ProductColors { get; private set; } 
+        public IRepository<ProductColor, Composite2Key> ProductColors { get; private set; }
         public IRepository<ShoppingCart, Composite3Key> ShoppingCarts { get; private set; }
         public IRepository<Message, int> Messages { get; private set; }
         public IRepository<ReviewReply, int> ReviewReplies { get; private set; }

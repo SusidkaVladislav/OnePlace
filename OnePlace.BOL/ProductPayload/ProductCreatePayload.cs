@@ -29,7 +29,7 @@ namespace OnePlace.BOL.ProductPayload
         [RegularExpression(@"^[0-9]*$")]
         [NotNull]
         public int CategoryId { get; set; }
-        
+
         [Required]
         [StringLength(2000, MinimumLength = 20)]
         public string Description { get; set; }
@@ -42,7 +42,7 @@ namespace OnePlace.BOL.ProductPayload
 
         [Required]
         public List<ProductPictureDTO> Pictures { get; set; }
-        
+
         [Required]
         public List<ProductColorPayload> ProductColors { get; set; }
     }

@@ -8,7 +8,7 @@ namespace OnePlace.DAL.Repositories
     public class ManufactureCountryRepository : RepositoryBase<ManufactureCountry, int>
     {
         public ManufactureCountryRepository(AppDbContext context
-            , UserManager<User> userManager) : base(context, userManager) { }    
+            , UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(int id)

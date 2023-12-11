@@ -13,9 +13,9 @@ namespace OnePlace.BOL.CategoryPayload
         [DataType(DataType.Text)]
         [DisplayName("Назва")]
         public string Name { get; set; }
-        
+
         public string? PictureURL { get; set; }
-        
+
         public string? DeletePictureURL { get; set; }
 
     }

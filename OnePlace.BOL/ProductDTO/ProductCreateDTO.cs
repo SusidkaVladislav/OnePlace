@@ -5,7 +5,7 @@ using OnePlace.BOL.Sale;
 
 namespace OnePlace.BOL.ProductDTO
 {
-    public class ProductCreateDTO: BaseProduct
+    public class ProductCreateDTO : BaseProduct
     {
         public int CategoryId { get; set; }
         public SaleDTO? Sale { get; set; }

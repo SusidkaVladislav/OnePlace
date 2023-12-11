@@ -7,8 +7,8 @@ namespace OnePlace.DAL.Repositories
 {
     public class ProductPictureRepository : RepositoryBase<ProductPicture, Composite2Key>
     {
-        public ProductPictureRepository(AppDbContext context, 
-            UserManager<User> userManager): base(context, userManager) { }
+        public ProductPictureRepository(AppDbContext context,
+            UserManager<User> userManager) : base(context, userManager) { }
 
 
         public override async Task DeleteAsync(Composite2Key key)

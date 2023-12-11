@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BOL.ProductPayload;
@@ -17,7 +18,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("product/{id}")]
-       // [Authorize(Roles = "admin, user")]
+        // [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> GetProduct(int id)
         {
             var result = await _productService.GetProduct(id);
@@ -26,7 +27,7 @@ namespace webapi.Controllers
 
         [HttpPost("search")]
         //[Authorize(Roles = "admin, user")]
-        public async Task<IActionResult> GetFilteredProducts([FromBody]ProductSearchParams filter)
+        public async Task<IActionResult> GetFilteredProducts([FromBody] ProductSearchParams filter)
         {
             var result = await _productService.FilterProduct(filter);
             return Ok(result);
@@ -75,6 +76,13 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetProductReviewsAnalitic(int id)
         {
             var result = await _productService.GetProductReviewsAnalitic(id);
+            return Ok(result);
+        }
+
+        [HttpPost("getProductsFromCart")]
+        public async Task<IActionResult> GetProductsFromCart(List<PayloadProductIdColorId> ids)
+        {
+            var result = await _productService.GetProductsFromCart(ids);
             return Ok(result);
         }
     }

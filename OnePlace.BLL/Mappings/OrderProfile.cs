@@ -10,7 +10,7 @@ namespace OnePlace.BLL.Mappings
     /// <summary>
     /// Order map profile
     /// </summary>
-    public class OrderProfile: Profile
+    public class OrderProfile : Profile
     {
         public OrderProfile()
         {
@@ -28,7 +28,7 @@ namespace OnePlace.BLL.Mappings
             CreateMap<OrderSearchParams, DAL.SearchParams.OrderSearchParams>().ReverseMap();
 
             CreateMap<Order, OrderDetails>(MemberList.Source);
-            
+
             CreateMap<OrderCreateDTO, Order>(MemberList.Source);
         }
     }

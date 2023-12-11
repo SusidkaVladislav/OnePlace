@@ -12,7 +12,7 @@ using OnePlace.DAL.Entities;
 
 namespace OnePlace.BLL.Mappings
 {
-    public class ProductProfile: Profile
+    public class ProductProfile : Profile
     {
         /// <summary>
         /// Product map profile 
@@ -21,18 +21,20 @@ namespace OnePlace.BLL.Mappings
         {
             #region Add product
 
-                CreateMap<ProductCreatePayload, ProductCreateDTO>();
-                CreateMap<ProductColorPayload, ProductColorDTO>();
+            CreateMap<ProductCreatePayload, ProductCreateDTO>();
+            CreateMap<ProductColorPayload, ProductColorDTO>();
 
-                CreateMap<ProductCreateDTO, Product>(MemberList.None);
-                CreateMap<ProductColorDTO, ProductColor>(MemberList.Source);
+            CreateMap<ProductCreateDTO, Product>(MemberList.None);
+            CreateMap<ProductColorDTO, ProductColor>(MemberList.Source);
 
-                CreateMap<ProductDescriptionDTO, ProductDescription>();
-                CreateMap<ProductPictureDTO, ProductPicture>();
-                
+            CreateMap<ProductDescriptionDTO, ProductDescription>();
+            CreateMap<ProductPictureDTO, ProductPicture>();
+
             #endregion
 
             CreateMap<Color, ColorDTO>().ReverseMap();
+
+            CreateMap<PayloadProductIdColorId, ProductIdColorId>().ReverseMap();
 
             #region Updating
             CreateMap<ProductUpdatePayload, ProductUpdateDTO>(MemberList.None);
@@ -40,10 +42,10 @@ namespace OnePlace.BLL.Mappings
             #endregion
 
             CreateMap<ProductColor, ProductColorDetails>();
-            
+
             CreateMap<ProductDescription, ProductDescriptionDetails>(MemberList.Destination);
-            
-            CreateMap <Product, ProductDetails>()
+
+            CreateMap<Product, ProductDetails>()
                .ForMember(dest => dest.Descriptions, opt => opt.MapFrom(src => src.ProductDescriptions))
                .ForMember(dest => dest.Pictures, opt => opt.MapFrom(src => src.ProductPictures));
 
@@ -60,7 +62,7 @@ namespace OnePlace.BLL.Mappings
             #region SearchParams
             CreateMap<BaseSearchParams, DAL.SearchParams.BaseSearchParams>();
             CreateMap<ProductSearchParams, DAL.SearchParams.ProductSearchParams>();
-            
+
             CreateMap<DAL.SearchParams.BaseSearchParams, BaseSearchParams>();
             CreateMap<DAL.SearchParams.ProductSearchParams, ProductSearchParams>();
 

@@ -10,7 +10,7 @@ namespace OnePlace.BOL.CategoryPayload
         [MinLength(2)]
         [DataType(DataType.Text)]
         public string Name { get; set; }
-        
+
 
         public string? PictureURL { get; set; }
 

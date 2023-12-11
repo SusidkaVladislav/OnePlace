@@ -6,7 +6,7 @@ using OnePlace.DAL.Entities.ViewModels;
 
 namespace OnePlace.BLL.Mappings
 {
-    public class AccountProfile: Profile
+    public class AccountProfile : Profile
     {
         public AccountProfile()
         {
