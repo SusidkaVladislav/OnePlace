@@ -7,7 +7,7 @@ import BagIcon from '../../../../svg/user-cabinet/orders/BagIcon';
 import DollarIcon from '../../../../svg/user-cabinet/orders/DollarIcon';
 import CommentIcon from '../../../../svg/user-cabinet/orders/CommentIcon';
 
-import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
+//import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
 
 const MyOrders = () => {
     const tempData = [
@@ -42,7 +42,7 @@ const MyOrders = () => {
                         <Grid container>
                             {order.products.map((product, prodIndex) =>(
                                 <Grid item xs={12} xl={12} className='mo-container4'>
-                                        <img src={MainImg} className='mo-product-image'></img>
+                                        {/* <img src={MainImg} className='mo-product-image'></img> */}
                                         <div className='mo-container5'>
                                             <h4>{product.name}</h4>
                                             <h5 className='bold'>Колір: {product.color}</h5>

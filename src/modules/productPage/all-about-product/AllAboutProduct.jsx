@@ -42,6 +42,16 @@ import
   refreshToken,
 } from '../../main/features/userAuth/userAuthSlice';
 
+import
+{
+  setIsLoginFormOpen,
+} from '../../main/features/userAuth/userAuthSlice';
+
+import
+{
+  addToLiked,
+  deleteFromLiked,
+} from '../../main/features/liked-products/likedProductsSlice';
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
 const AllAboutBroduct = () =>
@@ -50,15 +60,7 @@ const AllAboutBroduct = () =>
   const navigate = useNavigate();
 
   const [currentImageAddress, setCurrentImageAddress] = useState('');
-
   const [rating, setRating] = useState({});
-
-  //#region Cart
-  //const [productsInCart, setProductsInCart] = useState([]);
-
-
-  //#endregion
-
 
   const {
     product,
@@ -68,6 +70,11 @@ const AllAboutBroduct = () =>
   const {
     isAuth,
   } = useSelector(state => state.userBasket);
+
+  const {
+    isInLiked,
+    likedProductLoading,
+  } = useSelector(state => state.userLikedProducts);
 
   const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
 
@@ -88,6 +95,7 @@ const AllAboutBroduct = () =>
         averageValue: productRaitingInfo?.averageValue,
       }
     )
+
   }, [])
 
   const navigateImage = (direction) =>
@@ -110,13 +118,6 @@ const AllAboutBroduct = () =>
       )
     }
   };
-
-  const [filled, setFilled] = useState(false);
-
-  function HeartClick()
-  {
-    setFilled(!filled);
-  }
 
   const onAddToCart = async () =>
   {
@@ -188,6 +189,10 @@ const AllAboutBroduct = () =>
 
   }
 
+  if (likedProductLoading)
+  {
+    return <></>
+  }
   return (
     <Grid container>
       <Grid item className="product-gallery-root" xs={12} md={4.7} xl={4.7}>
@@ -364,14 +369,54 @@ const AllAboutBroduct = () =>
               }}
             >Купити</Button>
 
-            <div style={{ display: "flex", paddingTop: "9px" }}>
+            <div
+              style={{ display: "flex", paddingTop: "9px" }}
+              onClick={() =>
+              {
+                navigator.clipboard.writeText(window.location.href)
+                  .catch(() =>
+                  {
+                    console.log('Write permission denied.')
+                  });
+              }}
+            >
               <ShareIcon />
               <div style={{ width: "20px" }}></div>
 
-              <div id="heartBtn" onClick={HeartClick}>
-                {filled === false ?
-                  (<div id="heartIcon"><BigHeartIcon /></div>) :
-                  (<div id="filledHeartIcon"><BigFilledHeartIcon /></div>)}
+              <div
+                id="heartBtn"
+              >
+                {isInLiked === false ?
+                  <span
+                    id="heartIcon"
+                    onClick={async () =>
+                    {
+                      //Додати товар до улюблених
+                      await dispatch(addToLiked(Number(product?.id))).unwrap()
+                        .catch((error) =>
+                        {
+                          console.log(error);
+                          if (error.status === undefined)
+                            dispatch(setIsLoginFormOpen(true))
+                        })
+                    }}
+                  >
+                    <BigHeartIcon />
+                  </span> :
+                  <span
+                    id="filledHeartIcon"
+                    style={{
+                      cursor: 'pointer'
+                    }}
+                    onClick={async () =>
+                    {
+                      //Видалити товар з улюблених
+                      await dispatch(deleteFromLiked(Number(product?.id)))
+                    }}
+                  >
+                    <BigFilledHeartIcon />
+                  </span>
+                }
               </div>
 
               <div

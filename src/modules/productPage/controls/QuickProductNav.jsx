@@ -12,29 +12,65 @@ import BigHeartIcon from '../../../svg/client-icons/productPage/BigHeartIcon';
 import BigFilledHeartIcon from '../../../svg/client-icons/productPage/BigFilledHeartIcon';
 import AddReviewIcon from '../../../svg/client-icons/productPage/AddReviewIcon';
 import StarRating from './StarRating';
+import { useNavigate } from 'react-router-dom';
 
 import
 {
     setActiveTab,
 } from '../../main/features/products/userViewProduct';
 
+import
+{
+    addToLiked,
+    deleteFromLiked,
+} from '../../main/features/liked-products/likedProductsSlice';
+
+import
+{
+    addToCart,
+    getUserCart,
+    setCartCount,
+} from '../../main/features/basket/cartSlice';
+
+import
+{
+    refreshToken,
+} from '../../main/features/userAuth/userAuthSlice';
+
+import
+{
+    setIsLoginFormOpen,
+} from '../../main/features/userAuth/userAuthSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
 
+const LOCAL_STORAGE_CART_KEY = 'cart';
 const QuickProductNav = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         product,
         productRaitingInfo,
     } = useSelector(state => state.userProducts);
-    const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
 
+    const {
+        isAuth,
+    } = useSelector(state => state.userBasket);
+
+    const {
+        isInLiked,
+        likedProductLoading,
+    } = useSelector(state => state.userLikedProducts);
+
+    const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
     const [rating, setRating] = useState({});
 
     useEffect(() =>
     {
         setCurrentColorProductConfig({
+            colorId: product?.productColors?.[0]?.color?.id,
             colorName: product?.productColors?.[0]?.color?.name,
             price: product?.productColors?.[0]?.price,
             quantity: product?.productColors?.[0]?.quantity,
@@ -49,13 +85,80 @@ const QuickProductNav = () =>
         )
     }, [])
 
-    const [filled, setFilled] = useState(false);
-
-    function HeartClick()
+    const onAddToCart = async () =>
     {
-        setFilled(!filled);
+        await dispatch(refreshToken())
+            .then(() =>
+            {
+                let cart = [];
+                let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+                if (cartFromLocalStorage !== null)
+                {
+                    Object.values(cartFromLocalStorage).forEach(item =>
+                    {
+                        cart.push(item);
+                    });
+                }
+
+                const productsById = cart?.filter(item => item?.productId === product?.id);
+                const isNotInCart = productsById?.every(item => item?.colorId !== currentColorProductConfig?.colorId)
+
+                if (isNotInCart && isAuth)
+                {
+                    let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+                    if (cartFromLocalStorage !== null)
+                    {
+                        //await
+                        dispatch(addToCart(
+                            {
+                                productId: Number(product?.id),
+                                colorId: Number(currentColorProductConfig?.colorId),
+                            }
+                        ))
+                            .then(() =>
+                            {
+                                dispatch(getUserCart());
+                                navigate('/basket')
+                            })
+                    }
+                }
+                if (isNotInCart && !isAuth)
+                {
+                    cart = [];
+
+                    let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+                    if (cartFromLocalStorage !== null)
+                    {
+                        cart.push({
+                            productId: Number(product?.id),
+                            colorId: Number(currentColorProductConfig?.colorId),
+                        });
+
+                        Object.values(cartFromLocalStorage).forEach(item =>
+                        {
+                            if (item?.productId !== product?.id || item?.colorId !== currentColorProductConfig?.colorId)
+                                cart.push(item);
+                        });
+                    }
+                    dispatch(setCartCount(cart.length));
+                    localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cart));
+                    navigate('/basket')
+                }
+
+                if (!isNotInCart)
+                {
+                    navigate('/basket')
+                }
+            })
     }
 
+
+    if (likedProductLoading)
+    {
+        return <></>
+    }
     return (
         <div
             style={{
@@ -135,6 +238,7 @@ const QuickProductNav = () =>
                                                             onClick={() =>
                                                             {
                                                                 setCurrentColorProductConfig({
+                                                                    colorId: productColor?.color?.id,
                                                                     colorName: productColor?.color?.name,
                                                                     price: productColor?.price,
                                                                     quantity: productColor?.quantity,
@@ -154,6 +258,7 @@ const QuickProductNav = () =>
                                                         onClick={() =>
                                                         {
                                                             setCurrentColorProductConfig({
+                                                                colorId: productColor?.color?.id,
                                                                 colorName: productColor?.color?.name,
                                                                 price: productColor?.price,
                                                                 quantity: productColor?.quantity,
@@ -175,16 +280,62 @@ const QuickProductNav = () =>
                 <div className='hl'></div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-                    <Button variant="contained" className="aap-button">Купити</Button>
+                    <Button
+                        variant="contained"
+                        className="aap-button"
+                        onClick={() =>
+                        {
+                            //Добавити в кошик
+                            onAddToCart()
+                        }}
+                    >Купити</Button>
 
-                    <div style={{ display: "flex", paddingTop: "9px" }}>
+                    <div
+                        style={{ display: "flex", paddingTop: "9px" }}
+                        onClick={() =>
+                        {
+                            navigator.clipboard.writeText(window.location.href)
+                                .catch(() =>
+                                {
+                                    console.log('Write permission denied.')
+                                });
+                        }}
+                    >
                         <ShareIcon />
                         <div style={{ width: "20px" }}></div>
 
-                        <div id="heartBtn" onClick={HeartClick}>
-                            {filled === false ?
-                                (<div id="heartIcon"><BigHeartIcon /></div>) :
-                                (<div id="filledHeartIcon"><BigFilledHeartIcon /></div>)}
+                        <div
+                            id="heartBtn"
+                        >
+                            {isInLiked === false ?
+                                <span
+                                    id="heartIcon"
+                                    onClick={async () =>
+                                    {
+                                        //Додати товар до улюблених
+                                        await dispatch(addToLiked(Number(product?.id))).unwrap().catch((error) =>
+                                        {
+                                            if (error.status === 401)
+                                                dispatch(setIsLoginFormOpen(true))
+                                        })
+                                    }}
+                                >
+                                    <BigHeartIcon />
+                                </span> :
+                                <span
+                                    id="filledHeartIcon"
+                                    style={{
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={async () =>
+                                    {
+                                        //Видалити товар з улюблених
+                                        await dispatch(deleteFromLiked(Number(product?.id)))
+                                    }}
+                                >
+                                    <BigFilledHeartIcon />
+                                </span>
+                            }
                         </div>
 
                         <div style={{ width: "20px" }}></div>

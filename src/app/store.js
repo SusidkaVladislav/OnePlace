@@ -39,6 +39,7 @@ import userOrderReducer from "../modules/main/features/order/userOrderSlice";
 import userBasketReducer from "../modules/main/features/basket/cartSlice";
 import userMessageReducer from "../modules/main/features/messages/userMessageSlice";
 import userViewProductReducer from "../modules/main/features/products/userViewProduct";
+import userLikedProductsReducer from "../modules/main/features/liked-products/likedProductsSlice";
 //#endregion
 
 
@@ -51,7 +52,7 @@ const persistConfig = {
         'adminOrders', 'adminMessages', 'adminSales', 'adminReviews', 'adminUsers',
         // user
         'userAnalitic', 'userProducts', 'userRegister', 'userAuth', 'userLogin', 'userMessages',
-        'userViewProduct',
+        'userViewProduct', 'userLikedProducts',
     ],
     stateReconciler: autoMergeLevel2,
 }
@@ -85,6 +86,7 @@ const rootReducer = combineReducers({
     userBasket: userBasketReducer,
     userMessages: userMessageReducer,
     userViewProduct: userViewProductReducer,
+    userLikedProducts: userLikedProductsReducer,
 })
 
 

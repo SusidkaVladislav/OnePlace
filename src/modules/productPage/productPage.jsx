@@ -29,6 +29,11 @@ import
     getUserCart,
 } from '../main/features/basket/cartSlice';
 
+import
+{
+    isProductInLiked,
+} from '../main/features/liked-products/likedProductsSlice';
+
 import Header from '../main/components/header/Header';
 import Footer from '../main/components/footer/Footer';
 import ProductInfo from './product-info/productInfo';
@@ -81,6 +86,8 @@ const ProductPage = () =>
                 dispatch(setName(payload?.data?.name !== undefined ? payload?.data?.name : ''))
                 dispatch(setEmail(payload?.data?.email ? payload?.data?.email : ''))
             })
+
+        dispatch(isProductInLiked(Number(params.id)));
 
     }, [params.id])
 
