@@ -36,6 +36,7 @@ const PhoneCartItem = (props) =>
         availableQuantity,
         discount,
         colorId,
+        colorName,
     } = props;
 
     const {
@@ -47,49 +48,50 @@ const PhoneCartItem = (props) =>
 
     const onSelectProduct = (value) =>
     {
-        //Якщо товар вибраний, то значить його ціну треба додати до загальної
-        if (availableQuantity > 0)
-        {
-            if (value)
-            {
-                let ids = [];
-                ids.push({
-                    id: id,
-                    count: 1,
-                    colorId: colorId,
-                    name: name,
-                    imageURL: imageURL,
-                    price: price,
-                    discount: discount,
-                })
-                checkedProductIds.map(item =>
-                {
-                    ids.push(item);
-                })
-                dispatch(setCheckedIds(ids));
+ //Якщо товар вибраний, то значить його ціну треба додати до загальної
+ if (availableQuantity > 0)
+ {
+   if (value)
+   {
+     let ids = [];
+     ids.push({
+       id: id,
+       count: 1,
+       colorId: colorId,
+       name: name,
+       imageURL: imageURL,
+       price: price,
+       discount: discount,
+       colorName: colorName,
+     })
+     checkedProductIds.map(item =>
+     {
+       ids.push(item);
+     })
+     dispatch(setCheckedIds(ids));
 
-                dispatch(changeProductPriceSum(productPriceSum + price))
-                dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-                dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
-            }
-            else
-            {
-                let ids = [];
-                let count = 0;
-                checkedProductIds.map(item =>
-                {
-                    if (item.id !== id)
-                        ids.push(item);
-                    else
-                        count = item.count;
-                })
-                dispatch(setCheckedIds(ids));
+     dispatch(changeProductPriceSum(productPriceSum + price))
+     dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
+     dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
+   }
+   else
+   {
+     let ids = [];
+     let count = 0;
+     checkedProductIds.map(item =>
+     {
+       if (item?.id !== id || item?.colorId !== colorId)
+         ids.push(item);
+       else
+         count = item.count;
+     })
+     dispatch(setCheckedIds(ids));
 
-                dispatch(changeProductPriceSum(productPriceSum - price * count))
-                dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * count))
-                dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
-            }
-        }
+     dispatch(changeProductPriceSum(productPriceSum - price * count))
+     dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * count))
+     dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
+   }
+ }
 
     }
 
@@ -101,7 +103,10 @@ const PhoneCartItem = (props) =>
         if (availableQuantity > 0)
         {
             //Якщо цей товар не вибраний чекбоксом
-            if (checkedProductIds.every(item => item.id !== id))
+            const productsById = checkedProductIds?.filter(item => item?.id === id);
+            const isNotInCart = productsById?.every(item => item?.colorId !== colorId)
+
+            if (isNotInCart)
             {
                 if (availableQuantity >= 1)
                 {
@@ -113,6 +118,7 @@ const PhoneCartItem = (props) =>
                         imageURL: imageURL,
                         price: price,
                         discount: discount,
+                        colorName: colorName,
                     })
                     checkedProductIds.map(item =>
                     {
@@ -126,36 +132,40 @@ const PhoneCartItem = (props) =>
             }
             else
             {
-                checkedProductIds.map(item =>
+                checkedProductIds?.map(item =>
                 {
-                    if (item.id !== id)
+                    if (item?.id !== id || item?.colorId !== colorId)
                     {
                         ids.push(item);
                     }
                     else
                     {
-                        if ((item.count + 1) <= availableQuantity)
+
+                        if ((item?.count + 1) <= availableQuantity)
                         {
+
                             ids.push({
-                                id: item.id,
-                                count: item.count + 1,
+                                id: id,
+                                count: item?.count + 1,
                                 colorId: colorId,
                                 name: name,
                                 imageURL: imageURL,
                                 price: price,
                                 discount: discount,
+                                colorName: colorName,
                             })
                         }
                         else 
                         {
                             ids.push({
-                                id: item.id,
-                                count: item.count,
+                                id: id,
+                                count: item?.count,
                                 colorId: colorId,
                                 name: name,
                                 imageURL: imageURL,
                                 price: price,
                                 discount: discount,
+                                colorName: colorName,
                             })
 
                             isAvaliableQuantity = false;
@@ -171,18 +181,20 @@ const PhoneCartItem = (props) =>
                 dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
             }
         }
-
     }
 
     const decrementCount = () =>
     {
         let ids = [];
         //Якщо цей товар не вибраний чекбоксом
-        if (checkedProductIds.some(item => item.id === id))
+        const productsById = checkedProductIds?.filter(item => item?.id === id);
+        const isNotInCart = productsById?.every(item => item?.colorId !== colorId)
+        if (!isNotInCart)
         {
-            checkedProductIds.map(item =>
+            checkedProductIds?.map(item =>
             {
-                if (item.id === id && item.count > 1)
+                if ((item?.id === Number(id) && item?.colorId === Number(colorId)) && item?.count > 1)
+                {
                     ids.push(
                         {
                             id: item.id,
@@ -192,13 +204,16 @@ const PhoneCartItem = (props) =>
                             imageURL: imageURL,
                             price: price,
                             discount: discount,
+                            colorName: colorName,
                         }
                     );
-                else if (item.id !== id)
+                }
+                else if (item?.id !== id || item?.colorId !== colorId)
                 {
                     ids.push(item);
                 }
             })
+
             dispatch(setCheckedIds(ids));
 
             dispatch(changeProductPriceSum(productPriceSum - price))
@@ -263,7 +278,7 @@ const PhoneCartItem = (props) =>
             >
                 <CustomCheckbox
                     onChange={(value) => { onSelectProduct(value) }}
-                    value={checkedProductIds.some(item => item.id === id)}
+                    value={checkedProductIds.some(item => item?.id === id && item?.colorId === colorId)}
                     productId={id}
                 />
             </Grid>
@@ -324,24 +339,42 @@ const PhoneCartItem = (props) =>
                         </Grid>
 
                         <Grid
+                            container
                             item
+                            direction={'row'}
                             xs={12}
                             sx={{
                                 height: '15%',
                             }}
                         >
-                            <Typography
-                                className={availableQuantity > 0 ? 'green-400-12' : 'red-400-12'}
+                            <Grid
+                                item
+                                xs={6}
                             >
-                                {availableQuantity > 0 ? 'В наявності' : 'Немає'}
-                            </Typography>
+                                <Typography
+                                    className='t3-bold'
+                                >
+                                    Колір: {colorName}
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                container
+                                xs={6}
+                                justifyContent={'right'}
+                            >
+                                <Typography
+                                    className={availableQuantity > 0 ? 'green-400-12' : 'red-400-12'}
+                                >
+                                    {availableQuantity > 0 ? 'В наявності' : 'Немає'}
+                                </Typography>
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid
                         item
                         container
                         xs={1}
-                        alignItems={'center'}
                     >
                         <Button
                             sx={{
@@ -400,9 +433,9 @@ const PhoneCartItem = (props) =>
                                 }}
                             >
                                 {
-                                    checkedProductIds.some(item => item.id === id) ? checkedProductIds.map(item =>
+                                    checkedProductIds.some(item => item?.id === id && item?.colorId === colorId) ? checkedProductIds.map(item =>
                                     {
-                                        if (item.id === id)
+                                        if (item?.id === id && item?.colorId === colorId)
                                             return item.count
                                     }) : 0
                                 }

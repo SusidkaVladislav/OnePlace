@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { usePagination, DOTS } from './usePagination';
 import './cilentPaginationStyles.css';
@@ -23,10 +23,7 @@ const ClientPagination = (props) =>
         pageSize
     });
 
-    if (currentPage === 0 || paginationRange?.length < 2)
-    {
-        return null;
-    }
+    const [lastPage, setLastPage] = useState(0);
 
     const onNext = () =>
     {
@@ -38,8 +35,19 @@ const ClientPagination = (props) =>
         onPageChange(currentPage - 1);
     };
 
-    let lastPage = paginationRange[paginationRange?.length - 1];
-    
+    useEffect(() =>
+    {
+        if (paginationRange !== null)
+            if (paginationRange?.length !== undefined && paginationRange?.length !== null && paginationRange?.length !== NaN)
+                if (paginationRange[paginationRange?.length - 1] !== undefined && paginationRange[paginationRange?.length - 1] !== null
+                    && paginationRange[paginationRange?.length - 1] !== NaN)
+                    setLastPage(paginationRange[paginationRange?.length - 1])
+    }, [])
+
+    if (currentPage === 0 || paginationRange?.length < 2)
+    {
+        return null;
+    }
     return (
         <ul
             className={classnames('client-pagination-container', { [className]: className })}
@@ -52,7 +60,7 @@ const ClientPagination = (props) =>
             >
                 <BackArrow />
             </li>
-            {paginationRange.map(pageNumber =>
+            {paginationRange?.map(pageNumber =>
             {
                 if (pageNumber === DOTS)
                 {

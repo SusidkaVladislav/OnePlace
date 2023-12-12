@@ -248,14 +248,14 @@ const ItemMessage = () =>
 
                 <div className={rowClicked ? 'msg-chart' : ''}>
                     <div className='msg-user-list'>
-                        {filteredAndPaginatedData.map((msg) => (
+                        {filteredAndPaginatedData?.map((msg) => (
                             <MessageRow
-                                key={msg.id}
-                                id={msg.id}
-                                name={msg.name}
-                                email={msg.email}
-                                date={msg.date}
-                                isReplied={msg.isReplied}
+                                key={msg?.id}
+                                id={msg?.id}
+                                name={msg?.name}
+                                email={msg?.email}
+                                date={msg?.date}
+                                isReplied={msg?.isReplied}
                                 handleChecked={handleChecked}
                                 checkedMessages={checkedMessages}
                                 onRowClick={handleRowClick}
@@ -265,10 +265,10 @@ const ItemMessage = () =>
                     </div>
 
                     {rowClicked ? (
-                        checkedMessage.productId !== 0 ? (
+                        checkedMessage?.productId !== 0 ? (
                             <div className='chart-with-user'>
                                 <div className='user-product-info'>
-                                    {checkedMessage.userId !== 0 ? (
+                                    {checkedMessage?.userId !== 0 ? (
                                         <div className='user-info'>
                                             <label> <UnknownUserIcon /></label>
 
@@ -276,16 +276,33 @@ const ItemMessage = () =>
                                                 <div className='user-initials-message-name'
                                                     onClick={() =>
                                                     {
-                                                        navigator.clipboard.writeText(checkedMessage.email);
-                                                    }}>{checkedMessage?.userName} {checkedMessage?.userSurname}</div>
+                                                        navigator.clipboard.writeText(checkedMessage?.email)
+                                                            .catch(() =>
+                                                            {
+                                                                console.log('Write permission denied.')
+                                                            });
+
+                                                        window.open('https://mail.google.com/', '_blank');
+                                                    }}>
+                                                    {checkedMessage?.userName} {checkedMessage?.userSurname}
+                                                </div>
                                                 <div className='user-initials-message-email'
                                                     style={{
                                                         'color': '#D17100'
-                                                    }}>{checkedMessage?.userEmail}
+                                                    }}
                                                     onClick={() =>
                                                     {
-                                                        navigator.clipboard.writeText(checkedMessage.email);
-                                                    }}</div>
+                                                        navigator.clipboard.writeText(checkedMessage?.email)
+                                                            .catch(() =>
+                                                            {
+                                                                console.log('Write permission denied.')
+                                                            });
+
+                                                        window.open('https://mail.google.com/', '_blank');
+                                                    }}
+                                                >
+                                                    {checkedMessage?.userEmail}
+                                                </div>
                                             </div>
                                         </div>
                                     ) : (
@@ -296,18 +313,31 @@ const ItemMessage = () =>
                                                 <div className='user-initials-message-name'
                                                     onClick={() =>
                                                     {
-                                                        navigator.clipboard.writeText(checkedMessage.email);
+                                                        navigator.clipboard.writeText(checkedMessage?.email)
+                                                            .catch(() =>
+                                                            {
+                                                                console.log('Write permission denied.')
+                                                            });
+
+                                                        window.open('https://mail.google.com/', '_blank');
                                                     }}
-                                                >{checkedMessage.name}</div>
-                                                <div className='user-initials-message-email'
+                                                >{checkedMessage?.name}</div>
+                                                <div
+                                                    className='user-initials-message-email'
                                                     style={{
                                                         'color': '#D17100'
                                                     }}
                                                     onClick={() =>
                                                     {
-                                                        navigator.clipboard.writeText(checkedMessage.email);
+                                                        navigator.clipboard.writeText(checkedMessage?.email)
+                                                            .catch(() =>
+                                                            {
+                                                                console.log('Write permission denied.')
+                                                            });
+
+                                                        window.open('https://mail.google.com/', '_blank');
                                                     }}
-                                                >{checkedMessage.email}</div>
+                                                >{checkedMessage?.email}</div>
                                             </div>
                                         </div>
                                     )}
@@ -321,7 +351,7 @@ const ItemMessage = () =>
 
                                 <div className='msg-from-user'>
                                     <div className='checked-msg-date'>
-                                        <label >{new Date(checkedMessage?.date).toLocaleDateString()} {new Date(checkedMessage?.date).toLocaleTimeString()}</label>
+                                        <label >{new Date(checkedMessage?.date).getUTCDate() + '.' + (new Date(checkedMessage?.date).getMonth() + 1) + '.' + new Date(checkedMessage?.date).getFullYear()}</label>
                                     </div>
 
                                     <div className='checked-icon-text'>
@@ -349,7 +379,7 @@ const ItemMessage = () =>
                     <CustomPagination
                         className="pagination-bar"
                         currentPage={currentPage}
-                        totalCount={filteredData.length}
+                        totalCount={filteredData?.length}
                         pageSize={PageSize}
                         onPageChange={page => setCurrentPage(page)} />
                 </div>

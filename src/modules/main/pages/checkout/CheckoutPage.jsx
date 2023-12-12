@@ -452,7 +452,6 @@ const CheckoutPage = () =>
                 container
                 justifyContent={'space-between'}
             >
-
                 <Grid
                     item
                     md={6}
@@ -514,7 +513,6 @@ const CheckoutPage = () =>
                                     xs: '12.5px 16.8px 24px 31px'
                                 },
                                 boxShadow: !md ? '1px 1px 8px 0px rgba(0, 0, 0, 0.08)' : '',
-
                             }}
                         >
                             <Grid
@@ -589,13 +587,44 @@ const CheckoutPage = () =>
                                     }}
                                 ><KeyboardArrowRight /></span>
                             </Grid>
-
+                            <Grid
+                                item
+                                container
+                                sx={{
+                                    height: {
+                                        lg: '30px',
+                                        md: '35px',
+                                        xs: '35px',
+                                    },
+                                    maxHeight: {
+                                        lg: '30px',
+                                        md: '35px',
+                                        xs: '35px',
+                                    }
+                                }}
+                                direction={'row'}
+                                justifyContent={'space-between'}
+                                alignContent={'center'}
+                            >
+                                <Typography
+                                    className='t2-medium-500'
+                                >
+                                    Колір: {checkedProductIds[activeProductStep]?.colorName}
+                                </Typography>
+                                <Typography
+                                    className='t2-medium-500'
+                                    sx={{
+                                        marginRight: '15%',
+                                    }}
+                                >
+                                    (x{checkedProductIds[activeProductStep]?.count})
+                                </Typography>
+                            </Grid>
                             <Grid
                                 container
                                 sx={{
                                     padding: '0px 30px 19px 0px',
                                 }}
-
                             >
                                 <Grid
                                     container
@@ -608,6 +637,7 @@ const CheckoutPage = () =>
                                         container
                                         item
                                         xs={2.5}
+                                    // alignContent={'center'}
                                     >
                                         <img
                                             style={{
@@ -636,29 +666,31 @@ const CheckoutPage = () =>
                                                 height: {
                                                     lg: '40px',
                                                     md: '45px',
-                                                    xs: '55px',
+                                                    xs: '50px',
                                                 },
                                                 maxHeight: {
                                                     lg: '40px',
                                                     md: '45px',
-                                                    xs: '55px',
+                                                    xs: '50px',
                                                 }
                                             }}
                                             className={md ? 't2-medium-500' : sm ? 'brown1-500-18' : 't1-bold'}
                                         >
                                             {checkedProductIds[activeProductStep]?.name}
                                         </Typography>
+
                                         <Grid
                                             container
                                             item
                                             direction={'row'}
                                             alignItems={'center'}
+
                                         >
                                             <Typography
                                                 width="fit-content"
                                                 className={sm ? 'h4-red' : 't2-medium-500-red'}
                                             >
-                                                {checkedProductIds[activeProductStep]?.price} грн.
+                                                {checkedProductIds[activeProductStep]?.price - (checkedProductIds[activeProductStep]?.price * checkedProductIds[activeProductStep]?.discount) / 100} грн.
                                             </Typography>
 
                                             <Typography
@@ -672,7 +704,7 @@ const CheckoutPage = () =>
                                                     }
                                                 }}
                                             >
-                                                {checkedProductIds[activeProductStep]?.price * checkedProductIds[activeProductStep]?.discount / 100} грн.
+                                                {checkedProductIds[activeProductStep]?.price} грн.
                                             </Typography>
                                         </Grid>
                                     </Grid>

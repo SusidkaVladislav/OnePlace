@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import
 {
@@ -93,34 +93,36 @@ const OrdersGridView = () =>
                 >
                     {
                         sm ? (
-                            products.map((product, index) =>
+                            products?.map((product, index) =>
                             {
                                 return (
                                     <CartItem
                                         key={index}
-                                        id={product.id}
-                                        name={product.name}
-                                        imageURL={product.picture}
-                                        price={product.price}
-                                        availableQuantity={product.quantity}
-                                        discount={product.discount}
-                                        colorId={product.colorId}
+                                        id={product?.id}
+                                        name={product?.name}
+                                        imageURL={product?.picture}
+                                        price={product?.price}
+                                        availableQuantity={product?.quantity}
+                                        discount={product?.discount}
+                                        colorId={product?.colorId}
+                                        colorName={product?.colorName}
                                     />
                                 )
                             })
                         ) : (
-                            products.map((product, index) =>
+                            products?.map((product, index) =>
                             {
                                 return (
                                     <PhoneCartItem
                                         key={index}
-                                        id={product.id}
-                                        name={product.name}
-                                        imageURL={product.picture}
-                                        price={product.price}
-                                        availableQuantity={product.quantity}
-                                        discount={product.discount}
-                                        colorId={product.colorId}
+                                        id={product?.id}
+                                        name={product?.name}
+                                        imageURL={product?.picture}
+                                        price={product?.price}
+                                        availableQuantity={product?.quantity}
+                                        discount={product?.discount}
+                                        colorId={product?.colorId}
+                                        colorName={product?.colorName}
                                     />
                                 )
                             })

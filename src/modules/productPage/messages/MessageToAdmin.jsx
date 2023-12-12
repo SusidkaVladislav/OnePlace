@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import
@@ -31,12 +31,17 @@ const MessageToAdmin = () =>
         product
     } = useSelector(state => state.userProducts);
 
+    const {
+        userName,
+        userEmail,
+    } = useSelector(state => state.userViewProduct)
+
     const xs = useMediaQuery('(min-width: 0px)');
     const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState(userName);
+    const [email, setEmail] = useState(userEmail);
     const [message, setMessage] = useState('');
     const [nameValidError, setNameValidError] = useState(false);
     const [emailValidError, setEmailValidError] = useState(false);
@@ -112,7 +117,7 @@ const MessageToAdmin = () =>
                             padding: lg ? '1% 15px 1% 15px' : md ? '1% 10px 1% 10px' : xs ? '1% 15px 1% 15px' : '',
                             border: nameValidError ? '1px solid red' : 'none'
                         }}
-                        className='input-message-data'
+                        className='input-message-data t1-bold-blue'
                         type='text'
                         value={name}
                         onInput={({ target }) =>
@@ -140,7 +145,7 @@ const MessageToAdmin = () =>
                             padding: lg ? '1% 15px 1% 15px' : md ? '1% 10px 1% 10px' : xs ? '1% 15px 1% 15px' : '',
                             border: emailValidError ? '1px solid red' : 'none'
                         }}
-                        className='input-message-data'
+                        className='input-message-data t1-bold-blue'
                         type='email'
                         value={email}
                         onInput={({ target }) =>

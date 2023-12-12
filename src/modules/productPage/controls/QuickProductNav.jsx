@@ -13,10 +13,17 @@ import BigFilledHeartIcon from '../../../svg/client-icons/productPage/BigFilledH
 import AddReviewIcon from '../../../svg/client-icons/productPage/AddReviewIcon';
 import StarRating from './StarRating';
 
+import
+{
+    setActiveTab,
+} from '../../main/features/products/userViewProduct';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 const QuickProductNav = () =>
 {
+    const dispatch = useDispatch();
+
     const {
         product,
         productRaitingInfo,
@@ -42,7 +49,6 @@ const QuickProductNav = () =>
         )
     }, [])
 
-    //heart button logic
     const [filled, setFilled] = useState(false);
 
     function HeartClick()
@@ -182,7 +188,12 @@ const QuickProductNav = () =>
                         </div>
 
                         <div style={{ width: "20px" }}></div>
-                        <AddReviewIcon />
+                        <span onClick={() =>
+                        {
+                            dispatch(setActiveTab('messages'))
+                        }}>
+                            <AddReviewIcon />
+                        </span>
                     </div>
                 </div>
 

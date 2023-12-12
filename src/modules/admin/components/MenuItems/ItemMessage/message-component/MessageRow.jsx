@@ -42,7 +42,7 @@ const MessageRow = (props) =>
             </div>
 
             <div className='message-date-indicator-container'>
-                <label>{new Date(date).toLocaleDateString()} {new Date(date).toLocaleTimeString()}</label>
+                <label>{new Date(date).getUTCDate() + '.' + (new Date(date).getMonth() + 1) + '.' + new Date(date).getFullYear()}</label>
                 {isReplied === false ? (<label className='msg-elipse-icon'><MessageComeIndicator /></label>) : null}
             </div>
 

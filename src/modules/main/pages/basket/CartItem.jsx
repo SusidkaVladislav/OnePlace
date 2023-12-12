@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import
 {
@@ -38,6 +38,7 @@ const CartItem = (props) =>
     availableQuantity,
     discount,
     colorId,
+    colorName,
   } = props;
 
   const {
@@ -49,6 +50,12 @@ const CartItem = (props) =>
   const sm = useMediaQuery('(min-width: 600px)');
   const md = useMediaQuery('(min-width: 900px)');
   const lg = useMediaQuery('(min-width: 1200px)');
+
+  // useEffect(() =>
+  // {
+  //   dispatch(changeProductPriceSum(0))
+  //   dispatch(changeTotalOrderPrice(0))
+  // }, [])
 
   const onSelectProduct = (value) =>
   {
@@ -66,6 +73,7 @@ const CartItem = (props) =>
           imageURL: imageURL,
           price: price,
           discount: discount,
+          colorName: colorName,
         })
         checkedProductIds.map(item =>
         {
@@ -83,7 +91,7 @@ const CartItem = (props) =>
         let count = 0;
         checkedProductIds.map(item =>
         {
-          if (item.id !== id)
+          if (item?.id !== id || item?.colorId !== colorId)
             ids.push(item);
           else
             count = item.count;
@@ -105,7 +113,10 @@ const CartItem = (props) =>
     if (availableQuantity > 0)
     {
       //Якщо цей товар не вибраний чекбоксом
-      if (checkedProductIds.every(item => item.id !== id))
+      const productsById = checkedProductIds?.filter(item => item?.id === id);
+      const isNotInCart = productsById?.every(item => item?.colorId !== colorId)
+
+      if (isNotInCart)
       {
         if (availableQuantity >= 1)
         {
@@ -117,6 +128,7 @@ const CartItem = (props) =>
             imageURL: imageURL,
             price: price,
             discount: discount,
+            colorName: colorName,
           })
           checkedProductIds.map(item =>
           {
@@ -130,36 +142,40 @@ const CartItem = (props) =>
       }
       else
       {
-        checkedProductIds.map(item =>
+        checkedProductIds?.map(item =>
         {
-          if (item.id !== id)
+          if (item?.id !== id || item?.colorId !== colorId)
           {
             ids.push(item);
           }
           else
           {
-            if ((item.count + 1) <= availableQuantity)
+
+            if ((item?.count + 1) <= availableQuantity)
             {
+
               ids.push({
-                id: item.id,
-                count: item.count + 1,
+                id: id,
+                count: item?.count + 1,
                 colorId: colorId,
                 name: name,
                 imageURL: imageURL,
                 price: price,
                 discount: discount,
+                colorName: colorName,
               })
             }
             else 
             {
               ids.push({
-                id: item.id,
-                count: item.count,
+                id: id,
+                count: item?.count,
                 colorId: colorId,
                 name: name,
                 imageURL: imageURL,
                 price: price,
                 discount: discount,
+                colorName: colorName,
               })
 
               isAvaliableQuantity = false;
@@ -175,18 +191,20 @@ const CartItem = (props) =>
         dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
       }
     }
-
   }
 
   const decrementCount = () =>
   {
     let ids = [];
     //Якщо цей товар не вибраний чекбоксом
-    if (checkedProductIds.some(item => item.id === id))
+    const productsById = checkedProductIds?.filter(item => item?.id === id);
+    const isNotInCart = productsById?.every(item => item?.colorId !== colorId)
+    if (!isNotInCart)
     {
-      checkedProductIds.map(item =>
+      checkedProductIds?.map(item =>
       {
-        if (item.id === id && item.count > 1)
+        if ((item?.id === Number(id) && item?.colorId === Number(colorId)) && item?.count > 1)
+        {
           ids.push(
             {
               id: item.id,
@@ -196,13 +214,16 @@ const CartItem = (props) =>
               imageURL: imageURL,
               price: price,
               discount: discount,
+              colorName: colorName,
             }
           );
-        else if (item.id !== id)
+        }
+        else if (item?.id !== id || item?.colorId !== colorId)
         {
           ids.push(item);
         }
       })
+
       dispatch(setCheckedIds(ids));
 
       dispatch(changeProductPriceSum(productPriceSum - price))
@@ -261,7 +282,7 @@ const CartItem = (props) =>
       >
         <CustomCheckbox
           onChange={(value) => { onSelectProduct(value) }}
-          value={checkedProductIds.some(item => item.id === id)}
+          value={checkedProductIds.some(item => item?.id === id && item?.colorId === colorId)}
           productId={id}
         />
       </Grid>
@@ -333,6 +354,8 @@ const CartItem = (props) =>
 
           <Grid
             item
+            container
+            direction={'row'}
             xs={12}
             sx={{
               height: {
@@ -343,19 +366,37 @@ const CartItem = (props) =>
               }
             }}
           >
-            <Typography
-              className={
-                availableQuantity > 0
-                  ? (lg ? 't2-medium-orange1'
-                    : md ? 't2-medium-orange'
-                      : 't2-medium-orange1')
-                  : (lg ? 't2-medium-red'
-                    : md ? 't2-medium-red'
-                      : 't2-medium-red')
-              }
+            <Grid
+              item
+              xs={6}
             >
-              {availableQuantity > 0 ? 'В наявності' : 'Немає'}
-            </Typography>
+              <Typography
+                className={lg ? 't1-bold' : md ? 't2-medium' : 't1-bold'}
+              >
+                Колір: {colorName}
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              container
+              xs={6}
+              justifyContent={'right'}
+            >
+              <Typography
+                className={
+                  availableQuantity > 0
+                    ? (lg ? 't2-medium-orange1'
+                      : md ? 't2-medium-orange'
+                        : 't2-medium-orange1')
+                    : (lg ? 't2-medium-red'
+                      : md ? 't2-medium-red'
+                        : 't2-medium-red')
+                }
+              >
+                {availableQuantity > 0 ? 'В наявності' : 'Немає'}
+              </Typography>
+            </Grid>
+
           </Grid>
 
           <Grid
@@ -411,9 +452,9 @@ const CartItem = (props) =>
                         : ''}
               >
                 {
-                  checkedProductIds.some(item => item.id === id) ? checkedProductIds.map(item =>
+                  checkedProductIds.some(item => item?.id === id && item?.colorId === colorId) ? checkedProductIds.map(item =>
                   {
-                    if (item.id === id)
+                    if (item?.id === id && item?.colorId === colorId)
                       return item.count
                   }) : 0
                 }

@@ -60,6 +60,7 @@ const ProductsByCategoryPage = () =>
     const navigate = useNavigate();
     const params = useParams();
     const md = useMediaQuery('(min-width: 900px)');
+    
     const [currentProductPage, setCurrentProductPage] = useState(
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null &&
             JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== undefined ?
@@ -189,7 +190,6 @@ const ProductsByCategoryPage = () =>
         getFullPath(Number(params.id), categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
         setShowHideFilterOptions([])
-        console.log(currentProductPage)
         //setCurrentProductPage(currentProductPage)
     }, [params.id, currentProductPage])
 

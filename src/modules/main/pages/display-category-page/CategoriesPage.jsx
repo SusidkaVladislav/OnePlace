@@ -52,7 +52,6 @@ const CategoriesPage = () =>
     useEffect(() =>
     {
         dispatch(getCategoriesForSelect())
-        console.log(categoriesForSelect)
         setCategoryId(params.id);
         if (Number(params.id) > 0)
         {
@@ -163,6 +162,7 @@ const CategoriesPage = () =>
             </Grid>
 
             <Grid
+                item
                 display={categoryId > 0 ? 'flex' : 'none'}
                 container
                 direction='row'

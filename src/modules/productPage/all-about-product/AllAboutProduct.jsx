@@ -22,25 +22,59 @@ import Divider from '../../../svg/shared-icons/Divider';
 
 import StarRating from '../controls/StarRating';
 
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+import
+{
+  setActiveTab,
+} from '../../main/features/products/userViewProduct';
+
+import
+{
+  addToCart,
+  getUserCart,
+  setCartCount,
+} from '../../main/features/basket/cartSlice';
+
+import
+{
+  refreshToken,
+} from '../../main/features/userAuth/userAuthSlice';
 
 
+const LOCAL_STORAGE_CART_KEY = 'cart';
 const AllAboutBroduct = () =>
 {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [currentImageAddress, setCurrentImageAddress] = useState('');
 
   const [rating, setRating] = useState({});
+
+  //#region Cart
+  //const [productsInCart, setProductsInCart] = useState([]);
+
+
+  //#endregion
+
 
   const {
     product,
     productRaitingInfo,
   } = useSelector(state => state.userProducts);
 
+  const {
+    isAuth,
+  } = useSelector(state => state.userBasket);
+
   const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
 
   useEffect(() =>
   {
     setCurrentColorProductConfig({
+      colorId: product?.productColors?.[0]?.color?.id,
       colorName: product?.productColors?.[0]?.color?.name,
       price: product?.productColors?.[0]?.price,
       quantity: product?.productColors?.[0]?.quantity,
@@ -82,6 +116,76 @@ const AllAboutBroduct = () =>
   function HeartClick()
   {
     setFilled(!filled);
+  }
+
+  const onAddToCart = async () =>
+  {
+    await dispatch(refreshToken())
+      .then(() =>
+      {
+        let cart = [];
+        let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+        if (cartFromLocalStorage !== null)
+        {
+          Object.values(cartFromLocalStorage).forEach(item =>
+          {
+            cart.push(item);
+          });
+        }
+
+        const productsById = cart?.filter(item => item?.productId === product?.id);
+        const isNotInCart = productsById?.every(item => item?.colorId !== currentColorProductConfig?.colorId)
+
+        if (isNotInCart && isAuth)
+        {
+          let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+          if (cartFromLocalStorage !== null)
+          {
+            //await
+            dispatch(addToCart(
+              {
+                productId: Number(product?.id),
+                colorId: Number(currentColorProductConfig?.colorId),
+              }
+            ))
+              .then(() =>
+              {
+                dispatch(getUserCart());
+                navigate('/basket')
+              })
+          }
+        }
+        if (isNotInCart && !isAuth)
+        {
+          cart = [];
+
+          let cartFromLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CART_KEY));
+
+          if (cartFromLocalStorage !== null)
+          {
+            cart.push({
+              productId: Number(product?.id),
+              colorId: Number(currentColorProductConfig?.colorId),
+            });
+
+            Object.values(cartFromLocalStorage).forEach(item =>
+            {
+              if (item?.productId !== product?.id || item?.colorId !== currentColorProductConfig?.colorId)
+                cart.push(item);
+            });
+          }
+          dispatch(setCartCount(cart.length));
+          localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(cart));
+          navigate('/basket')
+        }
+
+        if (!isNotInCart)
+        {
+          navigate('/basket')
+        }
+      })
+
   }
 
   return (
@@ -129,7 +233,6 @@ const AllAboutBroduct = () =>
             </Grid>))}
         </Grid>
       </Grid>
-
 
       <Grid
         item
@@ -210,6 +313,7 @@ const AllAboutBroduct = () =>
                                 onClick={() =>
                                 {
                                   setCurrentColorProductConfig({
+                                    colorId: productColor?.color?.id,
                                     colorName: productColor?.color?.name,
                                     price: productColor?.price,
                                     quantity: productColor?.quantity,
@@ -229,6 +333,7 @@ const AllAboutBroduct = () =>
                               onClick={() =>
                               {
                                 setCurrentColorProductConfig({
+                                  colorId: productColor?.color?.id,
                                   colorName: productColor?.color?.name,
                                   price: productColor?.price,
                                   quantity: productColor?.quantity,
@@ -249,7 +354,15 @@ const AllAboutBroduct = () =>
           <div className='hl'></div>
 
           <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-            <Button variant="contained" className="aap-button">Купити</Button>
+            <Button
+              variant="contained"
+              className="aap-button"
+              onClick={() =>
+              {
+                //Добавити в кошик
+                onAddToCart()
+              }}
+            >Купити</Button>
 
             <div style={{ display: "flex", paddingTop: "9px" }}>
               <ShareIcon />
@@ -261,8 +374,18 @@ const AllAboutBroduct = () =>
                   (<div id="filledHeartIcon"><BigFilledHeartIcon /></div>)}
               </div>
 
-              <div style={{ width: "20px" }}></div>
-              <AddReviewIcon />
+              <div
+                style={{ width: "20px" }}
+              ></div>
+              <span
+                onClick={() =>
+                {
+                  dispatch(setActiveTab('messages'))
+                }}
+              >
+                <AddReviewIcon />
+              </span>
+
             </div>
           </div>
 

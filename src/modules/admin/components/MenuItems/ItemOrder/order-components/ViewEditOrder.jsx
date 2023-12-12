@@ -97,7 +97,7 @@ export const ViewEditOrder = () =>
             default:
                 setSelectedPaymentStatus(paymentStatusoptions[2])
         }
-       
+
     }, [order])
 
 
@@ -214,6 +214,15 @@ export const ViewEditOrder = () =>
                                                             navigate('/admin/main/products/product/' + product.id);
                                                         }}
                                                     >{product.name}</label>
+                                                    <div
+
+                                                        style={{
+                                                            height: '25px',
+                                                            marginBottom: '5px'
+                                                        }}
+                                                    >
+                                                        <label className='t2-medium-blue'> Колір: {product?.colorName}</label>
+                                                    </div>
                                                     <div>
                                                         <label className='order-product-info-product-quantity'>{product.quantity} шт.</label>
                                                         <label className='order-product-info-product-price'>{product.price} ₴</label>

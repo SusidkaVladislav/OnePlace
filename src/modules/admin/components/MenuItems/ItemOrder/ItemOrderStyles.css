@@ -117,7 +117,6 @@
     height: 75%;
     overflow-y: auto;
     border-bottom: 3px dashed rgba(206, 216, 222);
-    ;
 }
 
 .order-product-info-product-row {
@@ -145,7 +144,7 @@
     width: 79%;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    /* gap: 30px; */
 }
 
 .order-product-info-product-name {

@@ -19,6 +19,10 @@ import
 {
     getCategoriesForSelect
 } from '../../main/features/categories/userCategorySlice';
+import
+{
+    setActiveTab,
+} from '../../main/features/products/userViewProduct';
 import { getFullPath } from '../../main/services/CategoryService';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,12 +31,16 @@ const ProductInfo = () =>
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [activeMenuItem, setActiveMenuItem] = useState('allAboutProduct');
-    var categoryPath = useRef([]);
-
     const {
         product
     } = useSelector(state => state.userProducts);
+
+    const {
+        activeTab,
+    } = useSelector(state => state.userViewProduct);
+
+    const [activeMenuItem, setActiveMenuItem] = useState(activeTab);
+    var categoryPath = useRef([]);
 
     const {
         categoriesForSelect
@@ -50,6 +58,11 @@ const ProductInfo = () =>
         getFullPath(product.categoryId, categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
     }, [])
+
+    useEffect(() =>
+    {
+        setActiveMenuItem(activeTab)
+    }, [activeTab])
 
     return (
         <div className='pi-container1'>
@@ -110,25 +123,44 @@ const ProductInfo = () =>
 
             </Grid>
             <Grid container className="pi-menu-container">
-                <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('allAboutProduct')}>
+                <Grid item className="pi-menu-item" onClick={
+                    () =>
+                    {
+                        handleMenuItemClick('allAboutProduct')
+                        dispatch(setActiveTab('allAboutProduct'))
+                    }}>
                     <Typography className={activeMenuItem === 'allAboutProduct' ? 't1-bold-orange1' : 't1-light'}>Усе про товар</Typography>
                 </Grid>
                 <Grid item className="pi-divider-container">
                     <Divider />
                 </Grid>
-                <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('characteristics')}>
+                <Grid item className="pi-menu-item" onClick={
+                    () =>
+                    {
+                        handleMenuItemClick('characteristics')
+                        dispatch(setActiveTab('characteristics'))
+                    }}>
                     <Typography className={activeMenuItem === 'characteristics' ? 't1-bold-orange1' : 't1-light'}>Характеристики</Typography>
                 </Grid>
                 <Grid item className="pi-divider-container">
                     <Divider />
                 </Grid>
-                <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('reviews')}>
+                <Grid item className="pi-menu-item" onClick={
+                    () =>
+                    {
+                        handleMenuItemClick('reviews')
+                        dispatch(setActiveTab('reviews'))
+                    }}>
                     <Typography className={activeMenuItem === 'reviews' ? 't1-bold-orange1' : 't1-light'}>Відгуки</Typography>
                 </Grid>
                 <Grid item className="pi-divider-container">
                     <Divider />
                 </Grid>
-                <Grid item className="pi-menu-item" onClick={() => handleMenuItemClick('messages')}>
+                <Grid item className="pi-menu-item" onClick={() =>
+                {
+                    handleMenuItemClick('messages')
+                    dispatch(setActiveTab('messages'))
+                }}>
                     <Typography className={activeMenuItem === 'messages' ? 't1-bold-orange1' : 't1-light'}>Задати питання</Typography>
                 </Grid>
             </Grid>
