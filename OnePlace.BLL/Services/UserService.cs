@@ -53,16 +53,20 @@ namespace OnePlace.BLL.Services
             var product = await _unitOfWork.Products.GetAsync(productId);
             if (product == null)
             {
-                throw new ArgumentException("product with this id does not exist");
+                throw new ArgumentException("Неіснуючий товар!");
+            }
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userId is not null)
+            {
+                LikedProduct likedProduct = new LikedProduct { ProductId = productId, UserId = Int32.Parse(userId.Value) };
+                _unitOfWork.LikedProducts.Create(likedProduct);
+
+                await _unitOfWork.SaveAsync();
+
+                return productId;
             }
 
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            LikedProduct likedProduct = new LikedProduct { ProductId = productId, UserId = user.Id };
-            _unitOfWork.LikedProducts.Create(likedProduct);
-
-            await _unitOfWork.SaveAsync();
-
-            return productId;
+            return 0;
         }
 
         public async Task<int> AddMessage(MessagePayload messagePayload)
@@ -70,7 +74,7 @@ namespace OnePlace.BLL.Services
             var product = await _unitOfWork.Products.GetAsync(messagePayload.ProductId);
             if (product == null)
             {
-                throw new ArgumentException("product with this id does not exist");
+                throw new ArgumentException("Неіснуючий товар!");
             }
 
             Message message = _mapper.Map<Message>(messagePayload);
@@ -199,22 +203,62 @@ namespace OnePlace.BLL.Services
             var product = await _unitOfWork.Products.GetAsync(productId);
             if (product == null)
             {
-                throw new ArgumentException("product with this id does not exist");
+                throw new ArgumentException("Неіснуючий товар!");
             }
 
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            var likedProduct = await _unitOfWork.LikedProducts.GetAsync(
-                new Composite2Key { Column1 = user.Id, Column2 = productId });
-            if (likedProduct == null)
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            if (userId is not null)
             {
-                throw new NotFoundException(nameof(likedProduct) + "liked product with this id does not exist");
+                var likedProduct = await _unitOfWork.LikedProducts.GetAsync(
+                new Composite2Key { 
+                    Column1 = Int32.Parse(userId.Value),
+                    Column2 = productId
+                }
+                );
+                if (likedProduct == null)
+                {
+                    throw new NotFoundException(nameof(likedProduct) + "liked product with this id does not exist");
+                }
+
+                await _unitOfWork.LikedProducts.DeleteAsync(
+                    new Composite2Key { 
+                        Column1 = Int32.Parse(userId.Value), 
+                        Column2 = productId
+                    });
+                await _unitOfWork.SaveAsync();
+
+                return productId;
             }
 
-            await _unitOfWork.LikedProducts.DeleteAsync(
-                new Composite2Key { Column1 = productId, Column2 = user.Id });
-            await _unitOfWork.SaveAsync();
+            return 0;
+        }
 
-            return productId;
+        public async Task<bool> IsProductInLiked(int productId)
+        {
+            var product = await _unitOfWork.Products.GetAsync(productId);
+            if (product == null)
+            {
+                throw new ArgumentException("Неіснуючий товар!");
+            }
+
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            if (userId is not null)
+            {
+                var likedProduct = await _unitOfWork.LikedProducts.GetAsync(new Composite2Key
+                {
+                    Column1 = Int32.Parse(userId.Value),
+                    Column2 = productId
+                });
+
+                if (likedProduct is not null)
+                    return true;
+                
+                return false;
+            }
+
+            return false;
         }
 
         public async Task<int> DeleteMessage(int messageId)
@@ -249,8 +293,6 @@ namespace OnePlace.BLL.Services
 
         public async Task<IEnumerable<ShoppingCart>> GetCart()
         {
-            //var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-
             var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
             if (user is not null)
             {
@@ -263,8 +305,14 @@ namespace OnePlace.BLL.Services
 
         public async Task<IEnumerable<LikedProduct>> GetLikedProducts()
         {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            var likedProducts = await _unitOfWork.LikedProducts.FindAsync(lp => lp.UserId == user.Id);
+            IEnumerable<LikedProduct> likedProducts = new List<LikedProduct>();
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            if (userId is not null)
+            {
+                likedProducts = await _unitOfWork.LikedProducts.FindAsync(lp => lp.UserId == Int32.Parse(userId.Value));
+                return likedProducts;
+            }
 
             return likedProducts;
         }

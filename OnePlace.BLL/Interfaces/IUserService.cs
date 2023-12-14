@@ -74,6 +74,13 @@ namespace OnePlace.BLL.Interfaces
         Task<int> DeleteLikedProduct(int productId);
 
         /// <summary>
+        /// Check if product is in liked
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<bool> IsProductInLiked (int productId);
+
+        /// <summary>
         /// Returns all liked products by current user
         /// </summary>
         /// <returns></returns>

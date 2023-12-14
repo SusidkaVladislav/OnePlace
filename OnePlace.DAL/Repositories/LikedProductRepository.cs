@@ -35,7 +35,8 @@ namespace OnePlace.DAL.Repositories
 
         public override async Task<LikedProduct> GetAsync(Composite2Key key)
         {
-            return await db.LikedProducts.Include(o => o.User)
+            return await db.LikedProducts
+                .Include(o => o.User)
                 .Include(o => o.Product)
                 .FirstOrDefaultAsync(o => o.UserId == key.Column1 && o.ProductId == key.Column2);
         }

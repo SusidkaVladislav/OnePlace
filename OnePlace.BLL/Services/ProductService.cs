@@ -914,6 +914,9 @@ namespace OnePlace.BLL.Services
                 product.Price = color.Price;
                 product.Quantity = color.Quantity;
 
+                var colorName = await _unitOfWork.Colors.GetAsync(color.ColorId);
+                product.ColorName = colorName.Name;
+
                 int i = p.ProductPictures.Where(c => c.IsTitle == true).FirstOrDefault().PictureId;
                 product.Picture = _unitOfWork.Pictures.GetAsync(i).Result.Address;
 

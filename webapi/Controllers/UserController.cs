@@ -71,16 +71,16 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [HttpPost("addLikedProduct")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> AddLikedProduct(int id)
         {
             var result = await _userService.AddLikedProduct(id);
             return Ok(result);
         }
 
-        [HttpDelete("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [HttpDelete("deleteLikedProduct/{id}")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteLikedProduct(int id)
         {
             var result = await _userService.DeleteLikedProduct(id);
@@ -88,10 +88,18 @@ namespace webapi.Controllers
         }
 
         [HttpGet("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> GetLikedProducts()
         {
             var result = await _userService.GetLikedProducts();
+            return Ok(result);
+        }
+
+        [HttpGet("isProductInLiked/{productId}")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> IsProductInLiked(int productId)
+        {
+            var result = await _userService.IsProductInLiked(productId);
             return Ok(result);
         }
 
