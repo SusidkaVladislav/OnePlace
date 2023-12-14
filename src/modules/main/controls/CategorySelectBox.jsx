@@ -11,6 +11,7 @@ import
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import './CategorySelectBoxStyles.css';
 
+const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
 const CategorySelectBox = () =>
 {
     const dispatch = useDispatch();
@@ -85,6 +86,7 @@ const CategorySelectBox = () =>
         }
         else
         {
+            localStorage.removeItem(LOCAL_STORAGE_RELOAD_KEY);
             dispatch(setIsCategoryOpen(false));
             navigate('/products/' + id);
         }

@@ -25,6 +25,8 @@ import { getFullPath } from '../../services/CategoryService';
 
 import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon'
 
+
+const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
 const CategoriesPage = () =>
 {
     const dispatch = useDispatch();
@@ -51,6 +53,7 @@ const CategoriesPage = () =>
 
     useEffect(() =>
     {
+        localStorage.removeItem(LOCAL_STORAGE_RELOAD_KEY);
         dispatch(getCategoriesForSelect())
         setCategoryId(params.id);
         if (Number(params.id) > 0)

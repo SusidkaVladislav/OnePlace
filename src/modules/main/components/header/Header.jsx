@@ -58,6 +58,22 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
+const StyledLikedProductBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    minWidth: '15px',
+    height: '15px',
+    right: 3,
+    top: 6,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+    background: '#D17100',
+    color: '#FFF',
+    textHeight: '10.5px',
+    fontWeight: 500,
+    fontFamily: 'Montserrat Alternates',
+  },
+}));
+
 const Header = () =>
 {
   const dispatch = useDispatch();
@@ -73,6 +89,10 @@ const Header = () =>
   const {
     cartCount
   } = useSelector(state => state.userBasket)
+
+  const {
+    likedProductsCount
+  } = useSelector(state => state.userLikedProducts);
 
   const {
     isCategoryOpen
@@ -213,14 +233,23 @@ const Header = () =>
             onClick={onAuth}>
             <UserIcon /></span>
 
-          <span
+          <StyledLikedProductBadge
+            badgeContent={likedProductsCount}
+            style={{
+              display: sm ? 'flex' : 'none',
+              cursor: 'pointer',
+            }}
+          >
+             <HeartIcon />
+          </StyledLikedProductBadge>
+          {/* <span
             style={{
               display: sm ? 'flex' : 'none',
               cursor: 'pointer',
             }}
           >
             <HeartIcon />
-          </span>
+          </span> */}
 
 
           <StyledBadge

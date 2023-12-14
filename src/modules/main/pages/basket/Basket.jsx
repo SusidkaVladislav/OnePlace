@@ -33,6 +33,10 @@ const Basket = () =>
         {
             dispatch(getProductsFromCart(cartFromLocalStorage))
         }
+        else
+        {
+            localStorage.setItem("cart", JSON.stringify([]));
+        }
     }, [])
 
     return (

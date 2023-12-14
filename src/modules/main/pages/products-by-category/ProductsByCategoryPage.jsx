@@ -53,6 +53,7 @@ import GreenCheckCheckboxIcon from '../../../../svg/shared-icons/GreenCheckCheck
 
 const PAGE_SIZE = 7;
 const LOCAL_STORAGE_FILTER_KEY = "filtersSet"
+const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
 
 const ProductsByCategoryPage = () =>
 {
@@ -60,7 +61,7 @@ const ProductsByCategoryPage = () =>
     const navigate = useNavigate();
     const params = useParams();
     const md = useMediaQuery('(min-width: 900px)');
-    
+
     const [currentProductPage, setCurrentProductPage] = useState(
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null &&
             JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== undefined ?
@@ -85,7 +86,8 @@ const ProductsByCategoryPage = () =>
 
     const {
         products,
-        loading,
+        loadingProduct,
+
         isErrorProduct
     } = useSelector(state => state.userProducts)
 
@@ -120,15 +122,38 @@ const ProductsByCategoryPage = () =>
         dispatch(getUserCart());
 
         var filters = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY));
-        if (filters !== null && filters.category === Number(params.id))
+        //Тут також йде перевірка чи на сторінка просто перезагружається, чи на неї йде перехід з якоїсь іншої сторніки
+        //Потрібне для того визначити чи скинути фільтри до початкових значень чи залишити вибрані (якщо сторінка лише перезагружається)
+        if (filters !== null && filters.category === Number(params.id) && localStorage.getItem(LOCAL_STORAGE_RELOAD_KEY) !== null)
         {
             setFiltersSet(filters);
+            localStorage.setItem(LOCAL_STORAGE_RELOAD_KEY, true)
         }
         else
         {
-            filters = filtersModel;
+            if (localStorage.getItem(LOCAL_STORAGE_RELOAD_KEY) !== null)
+            {
+                filters = filtersModel;
+            }
+            else
+            {
+                filters = {
+                    page: 1,
+                    limit: PAGE_SIZE,
+                    minPrice: null,
+                    maxPrice: null,
+                    colors: null,
+                    manufacturerCountries: null,
+                    manufacturers: null,
+                    category: Number(params.id),
+                    descriptions: null,
+                    withDiscount: null
+                }
+            }
+
             setFiltersSet(filters)
             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filters));
+            localStorage.setItem(LOCAL_STORAGE_RELOAD_KEY, true)
         }
 
         let cart = [];
@@ -153,6 +178,10 @@ const ProductsByCategoryPage = () =>
         // })
 
         dispatch(getProductsByFilters(filters))
+            .then((p) =>
+            {
+                console.log(p);
+            })
         // .unwrap().catch((error) =>
         // {
         //     if (error.status === 500)
@@ -190,7 +219,6 @@ const ProductsByCategoryPage = () =>
         getFullPath(Number(params.id), categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
         setShowHideFilterOptions([])
-        //setCurrentProductPage(currentProductPage)
     }, [params.id, currentProductPage])
 
 
@@ -227,7 +255,7 @@ const ProductsByCategoryPage = () =>
     //     setCurrentProductPage(1);
     // }
 
-    if (loading)
+    if (loadingProduct)
     {
         return <></>
     }
@@ -270,6 +298,7 @@ const ProductsByCategoryPage = () =>
                         className='t2-medium-blue category-hover'
                         onClick={() =>
                         {
+                            localStorage.removeItem(LOCAL_STORAGE_RELOAD_KEY);
                             navigate('/')
                         }}
                         sx={
@@ -283,9 +312,9 @@ const ProductsByCategoryPage = () =>
                     </Grid>
                 }
                 {
-                    categoryPath.current.map((path, index) =>
+                    categoryPath.current?.map((path, index) =>
                     {
-                        if (categoryPath.current.length > index + 1)
+                        if (categoryPath.current?.length > index + 1)
                             return (
                                 <Grid
                                     item
@@ -293,7 +322,7 @@ const ProductsByCategoryPage = () =>
                                     className='t2-medium-blue category-hover'
                                     onClick={() =>
                                     {
-                                        navigate('/category/' + path.id)
+                                        navigate('/category/' + path?.id)
                                     }}
                                     sx={
                                         {
@@ -302,7 +331,7 @@ const ProductsByCategoryPage = () =>
                                         }
                                     }
                                 >
-                                    {path.name}
+                                    {path?.name}
 
                                 </Grid>
                             )
@@ -317,7 +346,7 @@ const ProductsByCategoryPage = () =>
                                         paddingLeft: '0.5%'
                                     }}
                                 >
-                                    {path.name}
+                                    {path?.name}
                                 </Grid>
                             )
                         }
@@ -328,7 +357,7 @@ const ProductsByCategoryPage = () =>
                 style={{
                     padding: '3% 0% 0% 9%'
                 }}
-            >{categoryPath.current[categoryPath.current.length - 1]?.name}</h3>
+            >{categoryPath.current[categoryPath.current?.length - 1]?.name}</h3>
             <div
                 style={{
                     marginTop: '1%',
@@ -374,8 +403,8 @@ const ProductsByCategoryPage = () =>
                             <label className="filter-message-custom-checkbox">
                                 <input
                                     type="checkbox"
-                                    checked={filtersSet !== null && filtersSet.withDiscount !== null ?
-                                        filtersSet.withDiscount ? true : false
+                                    checked={filtersSet !== null && filtersSet?.withDiscount !== null ?
+                                        filtersSet?.withDiscount ? true : false
                                         : false}
                                     onChange={() =>
                                     {
@@ -409,8 +438,8 @@ const ProductsByCategoryPage = () =>
                             <label className="filter-message-custom-checkbox">
                                 <input
                                     type="checkbox"
-                                    checked={filtersSet !== null && filtersSet.withDiscount !== null ?
-                                        !filtersSet.withDiscount ? true : false
+                                    checked={filtersSet !== null && filtersSet?.withDiscount !== null ?
+                                        !filtersSet?.withDiscount ? true : false
                                         : false}
                                     onChange={() =>
                                     {
@@ -741,7 +770,6 @@ const ProductsByCategoryPage = () =>
                                                         </label>
                                                         <span className='t2-medium-brown2'>{value}</span>
                                                     </div>
-
                                             }
                                             )
 
@@ -754,8 +782,6 @@ const ProductsByCategoryPage = () =>
                                                     setShowHideFilterOptions={setShowHideFilterOptions}
                                                 />
                                             )
-
-
                                         }
                                     </Fragment>
                                 )
@@ -788,20 +814,20 @@ const ProductsByCategoryPage = () =>
                             >
 
                                 <ProductCard
-                                    id={product.id}
-                                    picture={product.picture}
+                                    id={product?.id}
+                                    picture={product?.picture}
                                     isInCart={
-                                        productsInCart.length > 0 ?
-                                            productsInCart.some(item => item.productId === product.id)
+                                        productsInCart?.length > 0 ?
+                                            productsInCart?.some(item => item?.productId === product?.id)
                                             :
-                                            product.isInCart
+                                            product?.isInCart
                                     }
-                                    isInLiked={product.isInLiked}
-                                    name={product.name}
-                                    discountPercent={product.discountPercent}
-                                    price={product.price}
-                                    isInStock={product.isInStock}
-                                    colorId={product.colorId}
+                                    isInLiked={product?.isInLiked}
+                                    name={product?.name}
+                                    discountPercent={product?.discountPercent}
+                                    price={product?.price}
+                                    isInStock={product?.isInStock}
+                                    colorId={product?.colorId}
                                 />
                             </Grid>
                         ))

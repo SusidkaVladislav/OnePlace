@@ -18,6 +18,17 @@ import
     setCartCount,
 } from '../features/basket/cartSlice';
 
+import
+{
+    addToLiked,
+    deleteFromLiked,
+} from '../../main/features/liked-products/likedProductsSlice';
+
+import
+{
+    setIsLoginFormOpen,
+} from '../../main/features/userAuth/userAuthSlice';
+
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
 const ProductCard = (props) =>
@@ -43,10 +54,6 @@ const ProductCard = (props) =>
     const [filled, setFilled] = useState(isInLiked);
     const [inCart, setInCart] = useState(isInCart);
 
-    function HeartClick()
-    {
-        setFilled(!filled);
-    }
 
     async function onCartAdd()
     {
@@ -244,10 +251,40 @@ const ProductCard = (props) =>
                         )
                 }
 
-                <div id="heartBtn" onClick={HeartClick} style={{ position: "absolute", top: "12px", right: "12px" }}>
+                <div id="heartBtn" style={{ position: "absolute", top: "12px", right: "12px" }}>
                     {filled === false ?
-                        (<div id="heartIcon"><HeartIcon /></div>) :
-                        (<div id="filledHeartIcon"><FilledHeartIcon /></div>)}
+
+                        <div id="heartIcon"
+                            onClick={async () =>
+                            {
+                                setFilled(!filled)
+                                //Додати товар до улюблених
+                                await dispatch(addToLiked(Number(id)))
+                                    .unwrap().catch((error) =>
+                                    {
+                                        //if (error.status === 401)
+                                        //{
+                                        dispatch(setIsLoginFormOpen(true))
+                                        //}
+                                    })
+                            }}
+                        >
+                            <HeartIcon />
+                        </div> :
+
+                        <div id="filledHeartIcon"
+                            style={{
+                                cursor: 'pointer'
+                            }}
+                            onClick={async () =>
+                            {
+                                setFilled(!filled)
+                                await dispatch(deleteFromLiked(Number(id)))
+                            }}
+                        >
+                            <FilledHeartIcon />
+                        </div>
+                    }
                 </div>
             </div>
 

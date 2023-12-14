@@ -4,11 +4,11 @@ import
     createAsyncThunk
 } from "@reduxjs/toolkit";
 import { instance } from '../../../../api.config';
-import { AlternateEmail } from "@mui/icons-material";
 
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
+    likedProductsCount: 1,
     isInLiked: false,
     likedProductLoading: false,
 }
@@ -103,6 +103,13 @@ const likedProductsSlice = createSlice({
     name: 'likedProducts',
     initialState,
     reducers: {
+        setLikedProductsCount: (state, { payload }) =>
+        {
+            return {
+                ...state,
+                likedProductsCount: payload
+            }
+        },
     },
     extraReducers(builder)
     {
@@ -181,7 +188,7 @@ const likedProductsSlice = createSlice({
 })
 
 export const {
-
+    setLikedProductsCount,
 } = likedProductsSlice.actions
 
 export default likedProductsSlice.reducer
