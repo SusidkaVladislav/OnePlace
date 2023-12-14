@@ -22,6 +22,7 @@ import
 {
     addToLiked,
     deleteFromLiked,
+    getLikedProducts,
 } from '../../main/features/liked-products/likedProductsSlice';
 
 import
@@ -260,7 +261,12 @@ const ProductCard = (props) =>
                                 setFilled(!filled)
                                 //Додати товар до улюблених
                                 await dispatch(addToLiked(Number(id)))
-                                    .unwrap().catch((error) =>
+                                    .unwrap()
+                                    .then(() =>
+                                    {
+                                        dispatch(getLikedProducts())
+                                    })
+                                    .catch((error) =>
                                     {
                                         //if (error.status === 401)
                                         //{
@@ -280,6 +286,10 @@ const ProductCard = (props) =>
                             {
                                 setFilled(!filled)
                                 await dispatch(deleteFromLiked(Number(id)))
+                                    .then(() =>
+                                    {
+                                        dispatch(getLikedProducts())
+                                    })
                             }}
                         >
                             <FilledHeartIcon />

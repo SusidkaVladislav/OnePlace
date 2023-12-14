@@ -52,7 +52,7 @@ const persistConfig = {
         'adminOrders', 'adminMessages', 'adminSales', 'adminReviews', 'adminUsers',
         // user
         'userAnalitic', 'userProducts', 'userRegister', 'userAuth', 'userLogin', 'userMessages',
-        'userViewProduct', 'userLikedProducts',
+        'userViewProduct',
     ],
     stateReconciler: autoMergeLevel2,
 }

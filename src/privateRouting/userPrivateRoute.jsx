@@ -7,11 +7,15 @@ import
 {
     setIsAuthState
 } from '../modules/main/features/userAuth/userAuthSlice';
+import
+{
+    getLikedProducts,
+} from '../modules/main/features/liked-products/likedProductsSlice';
 
 import
-    {
-        getUserCart
-    } from '../modules/main/features/basket/cartSlice';
+{
+    getUserCart
+} from '../modules/main/features/basket/cartSlice';
 
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";
@@ -31,8 +35,6 @@ const UserPrivateRoute = () =>
 
     useEffect(() =>
     {
-
-
         const accessToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
         if (accessToken)
         {
@@ -63,6 +65,7 @@ const UserPrivateRoute = () =>
                             setIsAuth(true);
                             dispatch(setIsAuthState(true));
                             dispatch(getUserCart());
+                            dispatch(getLikedProducts())
                         }
                         else
                         {
@@ -70,7 +73,6 @@ const UserPrivateRoute = () =>
                             setIsAuthInProgress(false)
                             dispatch(setIsAuthState(false));
                         }
-
                     })
                     .catch(() =>
                     {

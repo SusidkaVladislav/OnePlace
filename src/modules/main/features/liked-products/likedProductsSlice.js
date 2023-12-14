@@ -8,7 +8,8 @@ import { instance } from '../../../../api.config';
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    likedProductsCount: 1,
+    likedProductsCount: 0,
+    likedProducts: [],
     isInLiked: false,
     likedProductLoading: false,
 }
@@ -76,6 +77,34 @@ export const deleteFromLiked = createAsyncThunk('likedProducts/deleteFromLiked',
     try
     {
         const response = await instance.delete(`${REACT_APP_BASE_URL}/User/deleteLikedProduct/${id}`);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+export const getLikedProducts = createAsyncThunk('likedProducts/getLikedProducts', async (_, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.get(`${REACT_APP_BASE_URL}/User/getLikedProducts`);
         return response.data;
     }
     catch (error)
@@ -182,6 +211,32 @@ const likedProductsSlice = createSlice({
                 return {
                     ...state,
                     likedProductLoading: false,
+                }
+            })
+
+            .addCase(getLikedProducts.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    likedProductLoading: true,
+                }
+            })
+            .addCase(getLikedProducts.fulfilled, (state, { payload }) =>
+            {
+                console.log(payload)
+                return {
+                    ...state,
+                    likedProductLoading: false,
+                    likedProducts: payload,
+                    likedProductsCount: payload?.length
+                }
+            })
+            .addCase(getLikedProducts.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    likedProductLoading: false,
+                    likedProductsCount: 0,
                 }
             })
     }
