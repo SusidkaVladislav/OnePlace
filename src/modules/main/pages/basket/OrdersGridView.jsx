@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import
 {
@@ -21,15 +21,27 @@ const OrdersGridView = () =>
 
     const {
         products,
-        productPriceSum,
+        //productPriceSum,
         totalOrderPrice,
-        discountPrice,
+        //discountPrice,
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
     const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
+
+    const [discountPrice, setDiscountPrice] = useState(0)
+
+    useEffect(() =>
+    {
+        checkedProductIds?.map(product =>
+        {
+
+        })
+
+        setDiscountPrice(totalOrderPrice)
+    }, [])
 
     return (
         <Grid
@@ -227,7 +239,11 @@ const OrdersGridView = () =>
                                         : sm ? 'h5-bold-brown2 unselectable'
                                             : 'unselectable'
                                 }
-                            >{productPriceSum} грн.</Typography>
+                            >{
+                                    checkedProductIds?.reduce(
+                                        (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                        0)
+                                } грн.</Typography>
                         </Grid>
 
                         <Grid
@@ -250,7 +266,11 @@ const OrdersGridView = () =>
                                             : sm ? 'h5-bold-brown2 unselectable'
                                                 : 'unselectable'
                                 }
-                            >{discountPrice} грн.</Typography>
+                            >
+                                {
+                                    checkedProductIds?.filter(product => product.discount > 0)?.
+                                        reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0)
+                                } грн.</Typography>
                         </Grid>
 
                         <Grid
@@ -281,7 +301,13 @@ const OrdersGridView = () =>
                                             : sm ? 'h4-red unselectable'
                                                 : 'unselectable'
                                 }
-                            >{totalOrderPrice} грн.</Typography>
+                            >
+                                {
+                                    (checkedProductIds?.reduce(
+                                        (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                        0)) - (checkedProductIds?.filter(product => product.discount > 0)?.
+                                            reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0))
+                                } грн.</Typography>
                         </Grid>
                     </Grid>
 

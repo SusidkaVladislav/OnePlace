@@ -40,7 +40,7 @@ const initialState = {
     ],
 }
 
-export const createOrder = createAsyncThunk('user/createOrder', async (checkedProductIds, { rejectWithValue, getState }) =>
+export const createCashOrder = createAsyncThunk('user/createCashOrder', async (checkedProductIds, { rejectWithValue, getState }) =>
 {
     try
     {
@@ -115,11 +115,11 @@ export const createOrder = createAsyncThunk('user/createOrder', async (checkedPr
         }
 
         const response = await axios.post(
-            `${REACT_APP_BASE_URL}/Order/createOrder`,
+            `${REACT_APP_BASE_URL}/Order/createCashOrder`,
             orderCreatePayload,
             {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)}`
+                    Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)}`,
                 }
             }
         );
@@ -149,6 +149,114 @@ export const createOrder = createAsyncThunk('user/createOrder', async (checkedPr
     }
 });
 
+export const createCardOrder = createAsyncThunk('user/createCardOrder', async (checkedProductIds, { rejectWithValue, getState }) =>
+{
+    try
+    {
+        const accessToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
+        if (accessToken)
+        {
+            try
+            {
+                axios.post(`${REACT_APP_BASE_URL}/Account/refresh`,
+                    null,
+                    {
+                        params: {
+                            accessToken: accessToken,
+                        },
+                        withCredentials: true,
+                    })
+                    .then((response) =>
+                    {
+                        var oldToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
+                        if (oldToken)
+                        {
+                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        }
+                        const user = jwt(response.data);
+                        const role = user["Role"];
+                        if (role === "user")
+                        {
+                            localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, response.data);
+                        }
+                    })
+                    .catch(() =>
+                    {
+                        if (localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY))
+                        {
+                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        }
+                    });
+            }
+            catch (error)
+            { }
+        }
+        const state = getState();
+
+        let products = [];
+
+        for (let i = 0; i < checkedProductIds.length; i++)
+        {
+            products.push({
+                productId: Number(checkedProductIds[i].id),
+                colorId: Number(checkedProductIds[i].colorId),
+                quantity: Number(checkedProductIds[i].count),
+            })
+        }
+
+        const orderCreatePayload = {
+            phoneNumber: state.userOrder.userPhone,
+            name: state.userOrder.userName,
+            surname: state.userOrder.userSurname,
+            comment: state.userOrder.comment,
+            serviceName: 0,
+            city: state.userOrder.city,
+            deliveryMethod: 0,
+            paymentMethod: state.userOrder.paymentMethod,
+            department: state.userOrder.department,
+            products: products,
+            cardData: {
+                number: state.userOrder.cardNumber,
+                expireMonth: Number(state.userOrder.expireMonth),
+                expireYear: Number(state.userOrder.expireYear),
+                cvv: Number(state.userOrder.cvv)
+            }
+        }
+
+        const response = await axios.post(
+            `${REACT_APP_BASE_URL}/Order/createCardOrder`,
+            orderCreatePayload,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)}`,
+                }
+            }
+        );
+
+        return response;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+
+        return rejectWithValue(customError)
+    }
+})
 
 const userOrderSlice = createSlice({
     name: 'userOrder',
@@ -270,14 +378,14 @@ const userOrderSlice = createSlice({
     extraReducers(builder)
     {
         builder
-            .addCase(createOrder.pending, (state) =>
+            .addCase(createCashOrder.pending, (state) =>
             {
                 return {
                     ...state,
                     loading: true,
                 }
             })
-            .addCase(createOrder.fulfilled, (state, { payload }) =>
+            .addCase(createCashOrder.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
@@ -289,16 +397,38 @@ const userOrderSlice = createSlice({
                     cardErrorList: [
                         false, false, false, false,
                     ],
-
                 }
             })
-            .addCase(createOrder.rejected, (state, { payload }) =>
+            .addCase(createCashOrder.rejected, (state, { payload }) =>
             {
                 return {
                     ...state,
                     loading: false,
-                    actionNotification: payload.detail,
+                    actionNotification: payload?.detail,
                     showUnsuccessfulOrderAlert: true,
+                }
+            })
+
+            .addCase(createCardOrder.pending, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: true,
+                }
+            })
+            .addCase(createCardOrder.fulfilled, (state, { payload }) =>
+            {
+                window.open(payload.data.url, '_self')
+                return {
+                    ...state,
+                    loading: false,
+                }
+            })
+            .addCase(createCardOrder.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loading: false,
                 }
             })
     }

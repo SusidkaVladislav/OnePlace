@@ -7,17 +7,17 @@ import
     Typography,
 } from '@mui/material'
 import '../CheckoutStyles.css';
-import BankCard from '../../../controls/bank-card/BankCard';
+//import BankCard from '../../../controls/bank-card/BankCard';
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
     setPaymentMethod,
-    setCardNumber,
-    setExpireMonth,
-    setExpireYear,
-    setCvv,
+    //setCardNumber,
+    //setExpireMonth,
+    //setExpireYear,
+    //setCvv,
     setComment,
-    setCardErrorList,
+    //setCardErrorList,
 } from '../../../features/order/userOrderSlice';
 
 const PaymentData = () =>
@@ -26,12 +26,12 @@ const PaymentData = () =>
 
     const {
         paymentMethod,
-        cardNumber,
-        expireMonth,
-        expireYear,
-        cvv,
+        //cardNumber,
+        //expireMonth,
+        //expireYear,
+        //cvv,
         comment,
-        cardErrorList,
+        //cardErrorList,
     } = useSelector(state => state.userOrder);
 
     const xs = useMediaQuery('(min-width: 0px)');
@@ -99,7 +99,7 @@ const PaymentData = () =>
                 </Grid>
             </Grid>
 
-            {
+            {/* {
                 paymentMethod === 1 && (
                     <Grid
                         container
@@ -154,7 +154,7 @@ const PaymentData = () =>
                         />
                     </Grid>
                 )
-            }
+            } */}
 
             <Grid
                 container

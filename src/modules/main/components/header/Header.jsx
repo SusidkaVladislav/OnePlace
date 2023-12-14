@@ -39,9 +39,6 @@ import
 import
 {
   setCheckedIds,
-  changeDiscountPrice,
-  changeProductPriceSum,
-  changeTotalOrderPrice,
 } from '../../features/basket/cartSlice';
 
 import { styled } from '@mui/material/styles';
@@ -234,9 +231,6 @@ const Header = () =>
             onClick={() =>
             {
               dispatch(setCheckedIds([]));
-              dispatch(changeProductPriceSum(0))
-              dispatch(changeDiscountPrice(0))
-              dispatch(changeTotalOrderPrice(0))
               navigate('/basket')
             }}
           >

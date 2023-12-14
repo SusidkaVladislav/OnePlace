@@ -10,9 +10,6 @@ import
 import { useDispatch, useSelector } from "react-redux"
 import
 {
-    changeProductPriceSum,
-    changeTotalOrderPrice,
-    changeDiscountPrice,
     setCheckedIds,
     deleteFromCart,
     setCartCount,
@@ -40,58 +37,48 @@ const PhoneCartItem = (props) =>
     } = props;
 
     const {
-        productPriceSum,
-        discountPrice,
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
 
     const onSelectProduct = (value) =>
     {
- //Якщо товар вибраний, то значить його ціну треба додати до загальної
- if (availableQuantity > 0)
- {
-   if (value)
-   {
-     let ids = [];
-     ids.push({
-       id: id,
-       count: 1,
-       colorId: colorId,
-       name: name,
-       imageURL: imageURL,
-       price: price,
-       discount: discount,
-       colorName: colorName,
-     })
-     checkedProductIds.map(item =>
-     {
-       ids.push(item);
-     })
-     dispatch(setCheckedIds(ids));
-
-     dispatch(changeProductPriceSum(productPriceSum + price))
-     dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-     dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
-   }
-   else
-   {
-     let ids = [];
-     let count = 0;
-     checkedProductIds.map(item =>
-     {
-       if (item?.id !== id || item?.colorId !== colorId)
-         ids.push(item);
-       else
-         count = item.count;
-     })
-     dispatch(setCheckedIds(ids));
-
-     dispatch(changeProductPriceSum(productPriceSum - price * count))
-     dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * count))
-     dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
-   }
- }
+        //Якщо товар вибраний, то значить його ціну треба додати до загальної
+        if (availableQuantity > 0)
+        {
+            if (value)
+            {
+                let ids = [];
+                ids.push({
+                    id: id,
+                    count: 1,
+                    colorId: colorId,
+                    name: name,
+                    imageURL: imageURL,
+                    price: price,
+                    discount: discount,
+                    colorName: colorName,
+                })
+                checkedProductIds.map(item =>
+                {
+                    ids.push(item);
+                })
+                dispatch(setCheckedIds(ids));
+            }
+            else
+            {
+                let ids = [];
+                let count = 0;
+                checkedProductIds.map(item =>
+                {
+                    if (item?.id !== id || item?.colorId !== colorId)
+                        ids.push(item);
+                    else
+                        count = item.count;
+                })
+                dispatch(setCheckedIds(ids));
+            }
+        }
 
     }
 
@@ -174,12 +161,6 @@ const PhoneCartItem = (props) =>
                 })
             }
             dispatch(setCheckedIds(ids));
-            if (isAvaliableQuantity)
-            {
-                dispatch(changeProductPriceSum(productPriceSum + price))
-                dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-                dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
-            }
         }
     }
 
@@ -215,10 +196,6 @@ const PhoneCartItem = (props) =>
             })
 
             dispatch(setCheckedIds(ids));
-
-            dispatch(changeProductPriceSum(productPriceSum - price))
-            dispatch(changeDiscountPrice(discountPrice - price * discount / 100))
-            dispatch(changeTotalOrderPrice((productPriceSum - price) - (discountPrice - price * discount / 100)))
         }
     }
 
@@ -247,9 +224,6 @@ const PhoneCartItem = (props) =>
                 {
                     let ids = checkedProductIds.filter(item => item.id !== id)
                     dispatch(setCheckedIds(ids));
-                    dispatch(changeProductPriceSum(productPriceSum - price * product.count))
-                    dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * product.count))
-                    dispatch(changeTotalOrderPrice(((productPriceSum - price * product.count) - (discountPrice - (price * discount / 100) * product.count))))
                 }
 
                 if (cartFromLocalStorage !== null)

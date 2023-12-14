@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import
 {
@@ -11,9 +11,6 @@ import
 import { useDispatch, useSelector } from "react-redux"
 import
 {
-  changeProductPriceSum,
-  changeTotalOrderPrice,
-  changeDiscountPrice,
   setCheckedIds,
   deleteFromCart,
   setCartCount,
@@ -42,8 +39,6 @@ const CartItem = (props) =>
   } = props;
 
   const {
-    productPriceSum,
-    discountPrice,
     checkedProductIds,
   } = useSelector(state => state.userBasket)
 
@@ -51,11 +46,6 @@ const CartItem = (props) =>
   const md = useMediaQuery('(min-width: 900px)');
   const lg = useMediaQuery('(min-width: 1200px)');
 
-  // useEffect(() =>
-  // {
-  //   dispatch(changeProductPriceSum(0))
-  //   dispatch(changeTotalOrderPrice(0))
-  // }, [])
 
   const onSelectProduct = (value) =>
   {
@@ -80,10 +70,6 @@ const CartItem = (props) =>
           ids.push(item);
         })
         dispatch(setCheckedIds(ids));
-
-        dispatch(changeProductPriceSum(productPriceSum + price))
-        dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-        dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
       }
       else
       {
@@ -97,10 +83,6 @@ const CartItem = (props) =>
             count = item.count;
         })
         dispatch(setCheckedIds(ids));
-
-        dispatch(changeProductPriceSum(productPriceSum - price * count))
-        dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * count))
-        dispatch(changeTotalOrderPrice(((productPriceSum - price * count) - (discountPrice - (price * discount / 100) * count))))
       }
     }
   }
@@ -184,12 +166,6 @@ const CartItem = (props) =>
         })
       }
       dispatch(setCheckedIds(ids));
-      if (isAvaliableQuantity)
-      {
-        dispatch(changeProductPriceSum(productPriceSum + price))
-        dispatch(changeDiscountPrice(discountPrice + price * discount / 100))
-        dispatch(changeTotalOrderPrice((productPriceSum + price) - (discountPrice + price * discount / 100)))
-      }
     }
   }
 
@@ -225,10 +201,6 @@ const CartItem = (props) =>
       })
 
       dispatch(setCheckedIds(ids));
-
-      dispatch(changeProductPriceSum(productPriceSum - price))
-      dispatch(changeDiscountPrice(discountPrice - price * discount / 100))
-      dispatch(changeTotalOrderPrice((productPriceSum - price) - (discountPrice - price * discount / 100)))
     }
   }
 
@@ -257,9 +229,6 @@ const CartItem = (props) =>
         {
           let ids = checkedProductIds.filter(item => item.id !== id)
           dispatch(setCheckedIds(ids));
-          dispatch(changeProductPriceSum(productPriceSum - price * product.count))
-          dispatch(changeDiscountPrice(discountPrice - (price * discount / 100) * product.count))
-          dispatch(changeTotalOrderPrice(((productPriceSum - price * product.count) - (discountPrice - (price * discount / 100) * product.count))))
         }
 
         if (cartFromLocalStorage !== null)

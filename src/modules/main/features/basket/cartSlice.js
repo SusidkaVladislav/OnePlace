@@ -5,16 +5,9 @@ const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
     products: [],
-
     checkedProductIds: [],
-
-    productPriceSum: 0,
-    totalOrderPrice: 0,
-    discountPrice: 0,
-
     isAuth: false,
     cartCount: 0,
-
     loading: false,
 };
 
@@ -141,27 +134,6 @@ const cartSlice = createSlice({
                 cartCount: payload
             }
         },
-        changeProductPriceSum: (state, { payload }) =>
-        {
-            return {
-                ...state,
-                productPriceSum: payload,
-            }
-        },
-        changeTotalOrderPrice: (state, { payload }) =>
-        {
-            return {
-                ...state,
-                totalOrderPrice: payload,
-            }
-        },
-        changeDiscountPrice: (state, { payload }) =>
-        {
-            return {
-                ...state,
-                discountPrice: payload
-            }
-        },
         setCheckedIds: (state, { payload }) =>
         {
             return {
@@ -282,9 +254,6 @@ const cartSlice = createSlice({
 
 export const {
     setCartCount,
-    changeProductPriceSum,
-    changeTotalOrderPrice,
-    changeDiscountPrice,
     setCheckedIds,
 } = cartSlice.actions
 

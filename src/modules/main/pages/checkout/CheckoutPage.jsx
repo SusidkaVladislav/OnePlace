@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CheckoutStyles.css';
 //#region Material
 import
@@ -31,8 +31,9 @@ import
 {
     setShowUnsuccessfulOrerAlert,
     setErrorList,
-    setCardErrorList,
-    createOrder,
+    //setCardErrorList,
+    createCashOrder,
+    createCardOrder,
 } from '../../features/order/userOrderSlice';
 import
 {
@@ -156,19 +157,14 @@ const CheckoutPage = () =>
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // useEffect(() =>
-    // {
-    //     dispatch(setShowUnsuccessfulOrerAlert(false))
-    // }, [])
-
     const xs = useMediaQuery('(min-width: 0px)');
     const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
 
     const {
-        productPriceSum,
-        discountPrice,
+        //productPriceSum,
+        //discountPrice,
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
@@ -184,13 +180,13 @@ const CheckoutPage = () =>
         department,
 
         paymentMethod,
-        cardNumber,
-        expireMonth,
-        expireYear,
-        cvv,
+        //cardNumber,
+        //expireMonth,
+        //expireYear,
+        //cvv,
 
         errorList,
-        cardErrorList,
+        //cardErrorList,
 
         actionNotification,
     } = useSelector(state => state.userOrder);
@@ -207,7 +203,6 @@ const CheckoutPage = () =>
     const [activeProductStep, setActiveProductStep] = useState(0);
     const maxSteps = checkedProductIds?.length;
 
-    //dispatch(setShowUnsuccessfulOrerAlert(false))
 
     const onGoToNextStep = async () =>
     {
@@ -255,34 +250,57 @@ const CheckoutPage = () =>
         }
         if (activeStep === 2)
         {
-            const updatedCardErrorList = [...cardErrorList];
+            //#region Custom card validation logic
+            // const updatedCardErrorList = [...cardErrorList];
 
+            // if (paymentMethod === 1)
+            // {
+            //     if (cardNumber.length !== 19)
+            //     {
+            //         updatedCardErrorList[0] = true;
+            //     }
+            //     if (expireMonth.length !== 2)
+            //     {
+            //         updatedCardErrorList[1] = true;
+            //     }
+            //     if (expireYear.length !== 2)
+            //     {
+            //         updatedCardErrorList[2] = true;
+            //     }
+            //     if (cvv.length !== 3)
+            //     {
+            //         updatedCardErrorList[3] = true;
+            //     }
+
+            //     dispatch(setCardErrorList(updatedCardErrorList))
+            // }
+            // && updatedCardErrorList.every(e => e === false)
+            //#endregion
+
+            //Якщо овлата карточкою
             if (paymentMethod === 1)
             {
-                if (cardNumber.length !== 19)
-                {
-                    updatedCardErrorList[0] = true;
-                }
-                if (expireMonth.length !== 2)
-                {
-                    updatedCardErrorList[1] = true;
-                }
-                if (expireYear.length !== 2)
-                {
-                    updatedCardErrorList[2] = true;
-                }
-                if (cvv.length !== 3)
-                {
-                    updatedCardErrorList[3] = true;
-                }
-
-                dispatch(setCardErrorList(updatedCardErrorList))
+                await dispatch(createCardOrder(checkedProductIds))
+                // .then((res) =>
+                // {
+                //     if (res?.error)
+                //         setTimeout(() =>
+                //         {
+                //             dispatch(setShowUnsuccessfulOrerAlert(false))
+                //         }, 3000);
+                //     else
+                //     {
+                //         //почистити в кошику вибрані товари 
+                //         //dispatch(setCheckedIds([]))
+                //         //navigate('/')
+                //     }
+                // })
             }
-
-            if ((paymentMethod === 1 && updatedCardErrorList.every(e => e === false)) || paymentMethod === 0)
+            //Оплата готівкою
+            else if (paymentMethod === 0)
             {
                 //все провалідовано, можна формувати запит на оформлення замовлення
-                await dispatch(createOrder(checkedProductIds))
+                await dispatch(createCashOrder(checkedProductIds))
                     .then((res) =>
                     {
                         if (res?.error)
@@ -545,7 +563,14 @@ const CheckoutPage = () =>
                                             : sm ? 'h5-bold-red' :
                                                 't2-medium-500-red'
                                     }
-                                >{productPriceSum - discountPrice} грн</Typography>
+                                >
+                                    {
+                                        (checkedProductIds?.reduce(
+                                            (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                            0)) - (checkedProductIds?.filter(product => product.discount > 0)?.
+                                                reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0))
+                                    }
+                                    грн</Typography>
                             </Grid>
 
                             <Grid
@@ -743,7 +768,11 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500' : ''}
                                 >
-                                    {productPriceSum} грн.
+                                    {
+                                        checkedProductIds?.reduce(
+                                            (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                            0)
+                                    } грн.
                                 </Typography>
 
                             </Grid>
@@ -769,7 +798,10 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500-red' : ''}
                                 >
-                                    {discountPrice} грн.
+                                    {
+                                        checkedProductIds?.filter(product => product.discount > 0)?.
+                                            reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0)
+                                    } грн.
                                 </Typography>
                             </Grid>
 
@@ -794,7 +826,12 @@ const CheckoutPage = () =>
                                 <Typography
                                     className={md ? 't2-medium-500' : ''}
                                 >
-                                    {productPriceSum - discountPrice} грн.
+                                    {
+                                        (checkedProductIds?.reduce(
+                                            (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                            0)) - (checkedProductIds?.filter(product => product.discount > 0)?.
+                                                reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0))
+                                    } грн.
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -873,7 +910,11 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500' : ''}
                         >
-                            {productPriceSum} грн.
+                            {
+                                checkedProductIds?.reduce(
+                                    (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                    0)
+                            } грн.
                         </Typography>
 
                     </Grid>
@@ -898,7 +939,10 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500-red' : ''}
                         >
-                            {discountPrice} грн.
+                            {
+                                checkedProductIds?.filter(product => product.discount > 0)?.
+                                    reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0)
+                            } грн.
                         </Typography>
                     </Grid>
 
@@ -922,7 +966,12 @@ const CheckoutPage = () =>
                         <Typography
                             className={xs ? 't2-medium-500' : ''}
                         >
-                            {productPriceSum - discountPrice} грн.
+                            {
+                                (checkedProductIds?.reduce(
+                                    (accumulator, currentValue) => accumulator + (currentValue?.price * currentValue?.count),
+                                    0)) - (checkedProductIds?.filter(product => product.discount > 0)?.
+                                        reduce((sum, product) => sum + (product?.price * product?.discount / 100 * (product?.count || 1)), 0))
+                            } грн.
                         </Typography>
                     </Grid>
                 </Grid>
@@ -985,35 +1034,56 @@ const CheckoutPage = () =>
 
                                 dispatch(setErrorList(updatedErrorList));
 
-                                const updatedCardErrorList = [...cardErrorList];
+                                // const updatedCardErrorList = [...cardErrorList];
 
-                                if (paymentMethod === 1)
-                                {
-                                    if (cardNumber.length !== 19)
-                                    {
-                                        updatedCardErrorList[0] = true;
-                                    }
-                                    if (expireMonth.length !== 2)
-                                    {
-                                        updatedCardErrorList[1] = true;
-                                    }
-                                    if (expireYear.length !== 2)
-                                    {
-                                        updatedCardErrorList[2] = true;
-                                    }
-                                    if (cvv.length !== 3)
-                                    {
-                                        updatedCardErrorList[3] = true;
-                                    }
+                                // if (paymentMethod === 1)
+                                // {
+                                //     if (cardNumber.length !== 19)
+                                //     {
+                                //         updatedCardErrorList[0] = true;
+                                //     }
+                                //     if (expireMonth.length !== 2)
+                                //     {
+                                //         updatedCardErrorList[1] = true;
+                                //     }
+                                //     if (expireYear.length !== 2)
+                                //     {
+                                //         updatedCardErrorList[2] = true;
+                                //     }
+                                //     if (cvv.length !== 3)
+                                //     {
+                                //         updatedCardErrorList[3] = true;
+                                //     }
 
-                                    dispatch(setCardErrorList(updatedCardErrorList))
-                                }
+                                //     dispatch(setCardErrorList(updatedCardErrorList))
+                                // }
 
                                 if (isValidPersonalData && isValidDeliveryData)
                                 {
-                                    if ((paymentMethod === 1 && updatedCardErrorList.every(e => e === false)) || paymentMethod === 0)
+                                    // && updatedCardErrorList.every(e => e === false)
+                                    //Якщо оплата карткою 
+                                    if (paymentMethod === 1)
                                     {
-                                        dispatch(createOrder(checkedProductIds))
+                                        dispatch(createCardOrder(checkedProductIds))
+                                        // .then((res) =>
+                                        // {
+                                        //     if (res?.error)
+                                        //         setTimeout(() =>
+                                        //         {
+                                        //             dispatch(setShowUnsuccessfulOrerAlert(false))
+                                        //         }, 3000);
+                                        //     else
+                                        //     {
+                                        //         //почистити в кошику вибрані товари 
+                                        //         //dispatch(setCheckedIds([]))
+                                        //         //navigate('/')
+                                        //     }
+                                        // })
+                                    }
+                                    //Якщо оплата готівкою
+                                    else if (paymentMethod === 0)
+                                    {
+                                        dispatch(createCashOrder(checkedProductIds))
                                             .then((res) =>
                                             {
                                                 if (res?.error)
