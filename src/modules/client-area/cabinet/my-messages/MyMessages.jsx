@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MyChats = () =>
+const MyMessages = () =>
 {
     return (
         <div
@@ -14,4 +14,4 @@ const MyChats = () =>
     )
 }
 
-export default MyChats;
+export default MyMessages;
