@@ -43,7 +43,7 @@ const MainCabinetLayer = () =>
 
     return (
     <Grid container sx={{backgroundColor:"#F6F6F6"}}>
-        <Hidden smUp>
+        <Hidden mdUp>
             <Drawer anchor="left" variant="permanent" open={open} onClose={toggleDrawer}>
                 {!open ? (
                   <div style={{direction:"column", paddingLeft:"15px", paddingRight:"5px"}}>
@@ -264,7 +264,7 @@ const MainCabinetLayer = () =>
                 )}
             </Drawer>
         </Hidden>
-        <Hidden smDown>
+        <Hidden mdDown>
             <Grid item md={3} xl={3} sx={{direction:"column"}}>
                 <div style={{borderRadius: '0px 0px 30px 0px',padding: '15px', backgroundColor: '#DA8D33', display:"flex", alignItems:"center"}}>
                     <img style={{borderRadius: '90px', width: '50px', height: "50px", objectFit:"contain", marginLeft:"10px"}}
@@ -415,11 +415,11 @@ const MainCabinetLayer = () =>
             </Grid>
             </Hidden>
 
-            <Hidden smUp>
-            <Grid item xs={1} sm={0}></Grid>
+            <Hidden mdUp>
+            <Grid item xs={1} sm={1}></Grid>
             </Hidden>
 
-            <Grid item xs={11} sm={8} md={9} xl={9}>
+            <Grid item xs={11} sm={11} md={9} xl={9}>
                 <Outlet />
             </Grid>
         </Grid>
