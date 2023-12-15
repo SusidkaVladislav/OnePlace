@@ -15,11 +15,11 @@ const MyDesires = () =>
         {name:"Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)", stock: "В наявності", oldPrice:"3 299 грн", newPrice: "2 449 грн"},
         {name:"Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)", stock: "В наявності", oldPrice:"3 299 грн", newPrice: "2 449 грн"},
         {name:"Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)", stock: "В наявності", oldPrice:"3 299 грн", newPrice: "2 449 грн"},
-        {name:"Навушники JBL TUNE 510 BT Black (JBLT510BTBLKEU)", stock: "В наявності", oldPrice:"3 299 грн", newPrice: "2 449 грн"}
     ]
 
     return (
-        <Grid container className='md-container1'>
+        <div className='md-div'>
+            <Grid container className='md-container1'>
             {tempData.map((product, index)=>(
                 <Grid item xs={12} xl={12} className='md-container2'>
                     <img src={MainImg} className='md-product-image'></img>
@@ -45,6 +45,7 @@ const MyDesires = () =>
                 </Grid>
             ))}
         </Grid>
+        </div>
     )
 }
 

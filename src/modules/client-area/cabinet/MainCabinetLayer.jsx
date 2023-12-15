@@ -42,7 +42,7 @@ const MainCabinetLayer = () =>
     }
 
     return (
-    <Grid container sx={{backgroundColor:"#F6F6F6"}}>
+    <Grid container sx={{backgroundColor:"#F6F6F6", height:"100%"}}>
         <Hidden mdUp>
             <Drawer anchor="left" variant="permanent" open={open} onClose={toggleDrawer}>
                 {!open ? (
@@ -53,7 +53,7 @@ const MainCabinetLayer = () =>
                   
                   <Grid container direction={'column'}>
   
-                  <Grid item sx={{display:"flex", paddingTop:"50px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"50px", cursor: "pointer"}}
                     onClick={() =>
                     {
                         setSelectionIndex(0)
@@ -62,7 +62,7 @@ const MainCabinetLayer = () =>
                   <MyOrders color={selectedIndex === 0 ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR} />
                   </Grid>
                       
-                  <Grid item sx={{display:"flex", paddingTop:"30px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"30px", cursor: "pointer"}}
                         onClick={() =>
                         {
                             setSelectionIndex(1)
@@ -71,7 +71,7 @@ const MainCabinetLayer = () =>
                   <MyDesireList color={selectedIndex === 1 ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR} />
                   </Grid>
   
-                  <Grid item sx={{display:"flex", paddingTop:"30px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"30px", cursor: "pointer"}}
                         onClick={() =>
                             {
                                 setSelectionIndex(2)
@@ -81,16 +81,16 @@ const MainCabinetLayer = () =>
                   </Grid>
                      
   
-                  <Grid item sx={{display:"flex", paddingTop:"30px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"30px", cursor: "pointer"}}
                         onClick={() =>
                             {
                                 setSelectionIndex(3)
-                                navigate("chats")
+                                navigate("messages")
                             }}>
                   <MyMessages color={selectedIndex === 3 ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR} />
                   </Grid>
                           
-                  <Grid item sx={{display:"flex", paddingTop:"30px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"30px", cursor: "pointer"}}
                         onClick={() =>
                             {
                                 setSelectionIndex(4)
@@ -99,7 +99,7 @@ const MainCabinetLayer = () =>
                   <MyPersonalData color={selectedIndex === 4 ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR} />
                   </Grid>
                      
-                  <Grid item sx={{display:"flex", paddingTop:"80px"}}
+                  <Grid item sx={{display:"flex", paddingTop:"80px", cursor: "pointer"}}
                         onClick={() =>
                             {
                                 navigate("/")
@@ -210,8 +210,8 @@ const MainCabinetLayer = () =>
                                 onClick={() =>
                                 {
                                     setSelectionIndex(3)
-                                    navigate("chats")
-                                }}>Мої повідомлення</h5>
+                                    navigate("messages")
+                                }}>Мої питання</h5>
                     </Grid>
                             
                     <Grid item sx={{display:"flex", paddingTop:"30px"}}>
@@ -362,8 +362,8 @@ const MainCabinetLayer = () =>
                             onClick={() =>
                             {
                                 setSelectionIndex(3)
-                                navigate("chats")
-                            }}>Мої повідомлення</h5>
+                                navigate("messages")
+                            }}>Мої питання</h5>
                 </Grid>
                         
                 <Grid item sx={{display:"flex", paddingTop:"30px"}}>

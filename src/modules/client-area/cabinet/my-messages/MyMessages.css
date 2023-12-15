@@ -1,0 +1,38 @@
+.mm-container1{
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.mm-container2{
+    border-radius: 15px;
+    border: 1px solid var(--blue2);
+    box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.08);
+    margin: 20px;
+    margin-bottom: 10px;
+}
+
+.mm-container3{
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.mm-container4{
+    display: flex;
+    justify-content: space-between;
+}
+
+.mm-container5{
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+    padding-right: 3px;
+}
+
+.mm-container6{
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+}
