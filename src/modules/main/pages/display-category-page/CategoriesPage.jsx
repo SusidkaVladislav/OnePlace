@@ -53,6 +53,7 @@ const CategoriesPage = () =>
 
     useEffect(() =>
     {
+        window.scrollTo(0, 0);
         localStorage.removeItem(LOCAL_STORAGE_RELOAD_KEY);
         dispatch(getCategoriesForSelect())
         setCategoryId(params.id);
@@ -238,7 +239,7 @@ const CategoriesPage = () =>
             >
                 {
                     categoryId > 0 ?
-                        subCategories.map((category, index) =>
+                        subCategories?.map((category, index) =>
                         {
                             return (
                                 <Grid
@@ -255,16 +256,17 @@ const CategoriesPage = () =>
                                     }}
                                     onClick={() =>
                                     {
-                                        onCategoryClickHandler(category.id)
+                                        onCategoryClickHandler(category?.id)
                                     }}
                                 >
                                     {
                                         sm ? <CategoryCard
-                                            name={category.name}
-                                            picture={category.pictureURL}
+                                            name={category?.name}
+                                            picture={category?.pictureURL}
                                         /> : <CategoryPhoneCard
-                                            name={category.name}
-                                            picture={category.pictureURL}
+                                            bgColor={'#E9ECEC'}
+                                            name={category?.name}
+                                            picture={category?.pictureURL}
                                         />
                                     }
 
@@ -275,7 +277,7 @@ const CategoriesPage = () =>
                         categoriesForSelect.map((category, index) =>
                         {
                             return (
-                                category.parentCategoryId === null && <Grid
+                                category?.parentCategoryId === null && <Grid
                                     key={index}
                                     item
                                     container
@@ -289,16 +291,17 @@ const CategoriesPage = () =>
                                     }}
                                     onClick={() =>
                                     {
-                                        onCategoryClickHandler(category.id)
+                                        onCategoryClickHandler(category?.id)
                                     }}
                                 >
                                     {
                                         sm ? <CategoryCard
-                                            name={category.name}
-                                            picture={category.pictureURL}
+                                            name={category?.name}
+                                            picture={category?.pictureURL}
                                         /> : <CategoryPhoneCard
-                                            name={category.name}
-                                            picture={category.pictureURL}
+                                            bgColor={'#E9ECEC'}
+                                            name={category?.name}
+                                            picture={category?.pictureURL}
                                         />
                                     }
 

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import
 {
-    getCategoriesForSelect,
     setIsCategoryOpen,
 } from '../features/categories/userCategorySlice';
 
@@ -26,8 +25,6 @@ const CategorySelectBox = () =>
 
     useEffect(() =>
     {
-        dispatch(getCategoriesForSelect())
-
         let index = categoriesForSelect.findIndex(c => c.parentCategoryId === null)
         if (index !== -1)
         {

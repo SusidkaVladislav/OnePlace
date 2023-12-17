@@ -1,14 +1,23 @@
 import React from "react";
 import "./Banner1.css";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+
+import
+{
+    Button,
+    Typography,
+    useMediaQuery,
+} from '@mui/material';
+
 import SuccessfulCheckout from '../../pages/checkout/successful-checkout/SuccessfulCheckout'
-import Button from '@mui/material/Button';
 import CategorySelectBox from '../../controls/CategorySelectBox';
 
 const Banner1 = () =>
 {
-    const dispatch = useDispatch();
+    const sm = useMediaQuery('(min-width: 600px)');
+    const md = useMediaQuery('(min-width: 900px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
 
     const {
         isCategoryOpen
@@ -37,6 +46,24 @@ const Banner1 = () =>
         position: 'initial',
     };
 
+    const buttonSxStyles = {
+        '&:hover': {
+            backgroundColor: 'var(--orange2)',
+            color: 'white',
+        },
+        marginTop: '15px',
+        borderRadius: '0px 26px 26px 0px',
+        border: 'none',
+        textTransform: 'initial',
+        color: '#F6F6F6',
+        backgroundColor: '#D17100',
+        fontFamily: 'Montserrat Alternates',
+        fontSize: '18px',
+        fontStyle: 'normal',
+        fontWeight: 500,
+        position: 'initial',
+    };
+
     return (
         <div className="background" >
             {
@@ -46,16 +73,44 @@ const Banner1 = () =>
             }
             <div className="content">
                 <div className="text1">
-                    <h1 className="unselectable">Приєднуйся до</h1>
-                    <h1 className="unselectable">One Place</h1>
+                    <Typography
+                        className={lg ? 'brown1-500-52 unselectable' : md ? 'brown1-500-42 unselectable' :
+                            sm ? 'brown1-500-28 unselectable' : 'brown1-400-28 unselectable'}
+                    >Приєднуйся до</Typography>
+                    <Typography
+                        className={lg ? 'brown1-500-52 unselectable' : md ? 'brown1-500-42 unselectable' :
+                            sm ? 'brown1-500-28 unselectable' : 'brown1-400-28 unselectable'}
+                    >One Place</Typography>
                 </div>
                 <div className="text2">
-                    <h2 className="unselectable">забудь про пошуки тут ти знайдеш</h2>
-                    <h2 className="unselectable">все, що потрібно в одному місці!</h2>
+                    <Typography
+                        className={lg ? 'h2-500-32-brown1 unselectable' : md ? 'brown1-400-24 unselectable'
+                            : sm ? 'light-h5 unselectable' : 't1-bold unselectable'}
+                    >забудь про пошуки тут ти знайдеш</Typography>
+                    <Typography
+                        className={lg ? 'h2-500-32-brown1 unselectable' : md ? 'brown1-400-24 unselectable'
+                            : sm ? 'light-h5 unselectable' : 't1-bold unselectable'}
+                    >все, що потрібно в одному місці!</Typography>
                 </div>
                 <div className="button-container">
-                    <Button size="large"
-                        sx={buttonStyles}>Усі товари</Button>
+                    <Button
+                        size="large"
+                        sx={sm ? buttonStyles : buttonSxStyles}
+                        onClick={() =>
+                        {
+                            const targetElement = document.getElementById('best-choice-id')
+
+                            if (targetElement)
+                            {
+                                targetElement.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start',
+                                    inline: 'nearest'
+                                });
+                            }
+                        }
+                        }
+                    >Усі товари</Button>
                 </div>
             </div>
             {

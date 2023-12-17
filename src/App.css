@@ -617,3 +617,48 @@ h5.bold-orange {
   font-weight: 500;
   line-height: 130%;
 }
+
+.brown1-500-52 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 52px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.brown1-500-42 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 42px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.brown1-500-28 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.brown1-400-28 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}
+
+.brown1-400-24 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+}

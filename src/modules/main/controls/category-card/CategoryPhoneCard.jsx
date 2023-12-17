@@ -11,12 +11,13 @@ const CategoryPhoneCard = (props) =>
     const {
         name,
         picture,
+        bgColor,
     } = props;
 
     return (
         <Grid
             container
-            bgcolor={'#E9ECEC'}
+            bgcolor={bgColor}
             width={'85%'}
             height={'100px'}
             padding={'5% 1% 5% 1%'}

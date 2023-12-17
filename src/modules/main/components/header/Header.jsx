@@ -27,7 +27,7 @@ import ChangePassword from '../../features/changePassword/ChangePassword';
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
-  setIsCategoryOpen
+  setIsCategoryOpen,
 } from '../../features/categories/userCategorySlice';
 
 import
@@ -91,11 +91,12 @@ const Header = () =>
   } = useSelector(state => state.userBasket)
 
   const {
-    likedProductsCount
+    likedProductsCount,
   } = useSelector(state => state.userLikedProducts);
 
   const {
-    isCategoryOpen
+    isCategoryOpen,
+    loading,
   } = useSelector(state => state.userCategories);
 
   const {
@@ -130,6 +131,10 @@ const Header = () =>
       dispatch(setIsLoginFormOpen(true));
   }
 
+  if (loading)
+  {
+    return <></>
+  }
   return (
     <Fragment>
       <AppBar position="static" className="appbar">
@@ -240,7 +245,7 @@ const Header = () =>
               cursor: 'pointer',
             }}
           >
-             <HeartIcon />
+            <HeartIcon />
           </StyledLikedProductBadge>
           {/* <span
             style={{

@@ -166,6 +166,7 @@ const ProductsByCategoryPage = () =>
             });
         }
         setProductsInCart(cart);
+        
 
         setCategoryId(params.id)
         categoryPath.current = [];
@@ -178,10 +179,6 @@ const ProductsByCategoryPage = () =>
         // })
 
         dispatch(getProductsByFilters(filters))
-            .then((p) =>
-            {
-                console.log(p);
-            })
         // .unwrap().catch((error) =>
         // {
         //     if (error.status === 500)

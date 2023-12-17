@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Badge from '@mui/material/Badge';
+import
+{
+    Badge,
+    Typography,
+    CardMedia,
+    CardContent,
+    Card,
+    useMediaQuery,
+} from '@mui/material'
 import HeartIcon from '../../../svg/client-icons/header/HeartIcon';
 import FilledHeartIcon from '../../../svg/client-icons/header/FilledHeartIcon';
 import CartIcon from '../../../svg/client-icons/header/CartIcon';
@@ -23,6 +27,7 @@ import
     addToLiked,
     deleteFromLiked,
     getLikedProducts,
+    setLikedProductsCount,
 } from '../../main/features/liked-products/likedProductsSlice';
 
 import
@@ -36,9 +41,21 @@ const ProductCard = (props) =>
 {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const xs = useMediaQuery('(min-width: 0px)');
+    const sm = useMediaQuery('(min-width: 600px)');
+    const md1 = useMediaQuery('(min-width: 800px)');
+    const md = useMediaQuery('(min-width: 900px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
+
     const {
         isAuth,
     } = useSelector(state => state.userBasket);
+
+
+    const {
+        likedProductsCount,
+    } = useSelector(state => state.userLikedProducts);
 
     const {
         id,
@@ -215,25 +232,25 @@ const ProductCard = (props) =>
     return (
         <Card
             sx={{
-                width: "264px",
-                height: "366px",
+                width: md ? "264px" : md1 ? "300px" : sm ? "264px" : "85%",
+                height: sm ? "366px" : "270px",
                 borderRadius: '10px',
                 background: '#F6F6F6',
                 boxShadow: '1px 1px 8px 0px rgba(0, 0, 0, 0.08)',
                 padding: "18px",
-
-
             }}
         >
             <div style={{ position: 'relative' }}>
                 <CardMedia
                     id="imgContainer"
                     component="img"
-                    height="196px"
-                    width="228px"
+                    //height="196px"
+                    //width="228px"
                     image={picture}
                     alt="Product image"
                     sx={{
+                        height: sm ? "196px" : "110px",
+                        width: md ? "228px" : md1 ? "266px" : sm ? "228px" : "100%",
                         objectFit: 'contain',
                         background: 'white',
                         borderRadius: '4px',
@@ -258,20 +275,19 @@ const ProductCard = (props) =>
                         <div id="heartIcon"
                             onClick={async () =>
                             {
-                                setFilled(!filled)
+
                                 //Додати товар до улюблених
                                 await dispatch(addToLiked(Number(id)))
                                     .unwrap()
                                     .then(() =>
                                     {
+                                        dispatch(setLikedProductsCount(likedProductsCount + 1))
                                         dispatch(getLikedProducts())
+                                        setFilled(!filled)
                                     })
-                                    .catch((error) =>
+                                    .catch(() =>
                                     {
-                                        //if (error.status === 401)
-                                        //{
                                         dispatch(setIsLoginFormOpen(true))
-                                        //}
                                     })
                             }}
                         >
@@ -288,7 +304,7 @@ const ProductCard = (props) =>
                                 await dispatch(deleteFromLiked(Number(id)))
                                     .then(() =>
                                     {
-                                        dispatch(getLikedProducts())
+                                        dispatch(setLikedProductsCount(likedProductsCount - 1))
                                     })
                             }}
                         >

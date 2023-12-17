@@ -50,11 +50,11 @@ const UserPrivateRoute = () =>
                     })
                     .then((response) =>
                     {
-                        var oldToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
-                        if (oldToken)
-                        {
-                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
-                        }
+                        // var oldToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY)
+                        // if (oldToken)
+                        // {
+                        //     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        // }
                         const user = jwt(response.data);
                         const role = user["Role"];
                         if (role === "user")
@@ -76,10 +76,10 @@ const UserPrivateRoute = () =>
                     })
                     .catch(() =>
                     {
-                        if (localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY))
-                        {
-                            localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
-                        }
+                        // if (localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY))
+                        // {
+                        //     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
+                        // }
                         setIsAuthInProgress(false);
                         setIsAuth(false);
                         setIsUser(false);

@@ -223,7 +223,6 @@ const likedProductsSlice = createSlice({
             })
             .addCase(getLikedProducts.fulfilled, (state, { payload }) =>
             {
-                console.log(payload)
                 return {
                     ...state,
                     likedProductLoading: false,

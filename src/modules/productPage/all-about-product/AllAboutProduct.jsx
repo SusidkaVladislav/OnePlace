@@ -51,6 +51,7 @@ import
 {
   addToLiked,
   deleteFromLiked,
+  setLikedProductsCount,
 } from '../../main/features/liked-products/likedProductsSlice';
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
@@ -74,6 +75,7 @@ const AllAboutBroduct = () =>
   const {
     isInLiked,
     likedProductLoading,
+    likedProductsCount,
   } = useSelector(state => state.userLikedProducts);
 
   const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
@@ -393,6 +395,10 @@ const AllAboutBroduct = () =>
                     {
                       //Додати товар до улюблених
                       await dispatch(addToLiked(Number(product?.id))).unwrap()
+                        .then(() =>
+                        {
+                          dispatch(setLikedProductsCount(likedProductsCount + 1))
+                        })
                         .catch((error) =>
                         {
                           console.log(error);
@@ -412,6 +418,10 @@ const AllAboutBroduct = () =>
                     {
                       //Видалити товар з улюблених
                       await dispatch(deleteFromLiked(Number(product?.id)))
+                        .then(() =>
+                        {
+                          dispatch(setLikedProductsCount(likedProductsCount - 1))
+                        })
                     }}
                   >
                     <BigFilledHeartIcon />
