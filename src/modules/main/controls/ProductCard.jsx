@@ -244,8 +244,6 @@ const ProductCard = (props) =>
                 <CardMedia
                     id="imgContainer"
                     component="img"
-                    //height="196px"
-                    //width="228px"
                     image={picture}
                     alt="Product image"
                     sx={{

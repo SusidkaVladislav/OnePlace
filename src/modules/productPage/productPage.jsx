@@ -6,6 +6,7 @@ import
 {
     getProductById,
     getProductRaitingInfo,
+    getInterestingProducts,
 } from '../main/features/products/userProductSlice';
 
 import
@@ -56,6 +57,7 @@ const ProductPage = () =>
     const {
         loadingProduct,
         loadingRating,
+        loadingInterestingProducts,
     } = useSelector(state => state.userProducts)
 
     const {
@@ -76,7 +78,11 @@ const ProductPage = () =>
         dispatch(getUserCart());
 
         setProductId(params.id)
-        dispatch(getProductById(Number(params.id)));
+        dispatch(getProductById(Number(params.id)))
+            .then(({ payload }) =>
+            {
+                dispatch(getInterestingProducts(Number(payload?.categoryId)))
+            });
         dispatch(getProductRaitingInfo(Number(params.id)))
         dispatch(getProductReviews(Number(params.id)))
 
@@ -88,7 +94,6 @@ const ProductPage = () =>
             })
 
         dispatch(isProductInLiked(Number(params.id)));
-
     }, [params.id])
 
     if (loadingProduct)
@@ -100,6 +105,10 @@ const ProductPage = () =>
         return <></>
     }
     if (analiticLoading)
+    {
+        return <></>
+    }
+    if (loadingInterestingProducts)
     {
         return <></>
     }

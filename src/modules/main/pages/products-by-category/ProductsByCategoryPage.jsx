@@ -49,6 +49,9 @@ import
 //#region Icons
 import BackArrow from '../../../../svg/arrows/BackArrow';
 import GreenCheckCheckboxIcon from '../../../../svg/shared-icons/GreenCheckCheckboxIcon';
+import CloseFiltersIcon from '../../../../svg/shared-icons/CloseFiltersIcon';
+import OpenFiltersIcon from '../../../../svg/shared-icons/OpenFiltersIcon';
+import BackRightArrowIcon from '../../../../svg/arrows/BackRightArrowIcon';
 //#endregion
 
 const PAGE_SIZE = 7;
@@ -60,7 +63,14 @@ const ProductsByCategoryPage = () =>
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
+
+    const xs = useMediaQuery('(min-width: 0px)');
+    const sm = useMediaQuery('(min-width: 600px)');
+    const sm1 = useMediaQuery('(min-width: 650px)');
     const md = useMediaQuery('(min-width: 900px)');
+    const md1 = useMediaQuery('(min-width: 1050px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
+    const lg1 = useMediaQuery('(min-width: 1400px)');
 
     const [currentProductPage, setCurrentProductPage] = useState(
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_FILTER_KEY)) !== null &&
@@ -96,6 +106,8 @@ const ProductsByCategoryPage = () =>
     } = useSelector(state => state.userAnalitic)
 
     const [isFiltersUploaded, setIsFiltersUploaded] = useState(false)
+
+    const [isFiltersShown, setIsFiltersShown] = useState(true)
 
     const filtersModel = {
         page: currentProductPage,
@@ -166,7 +178,7 @@ const ProductsByCategoryPage = () =>
             });
         }
         setProductsInCart(cart);
-        
+
 
         setCategoryId(params.id)
         categoryPath.current = [];
@@ -368,30 +380,52 @@ const ProductsByCategoryPage = () =>
                     }}
                     onClick={() =>
                     {
-                        navigate(-1);
+                        setIsFiltersShown(!isFiltersShown)
                     }}
-                ><BackArrow /></span>
+                >
+                    {sm && isFiltersShown === false ? <BackRightArrowIcon /> :
+                        sm && isFiltersShown === true ?
+                            <BackArrow /> :
+                            xs && isFiltersShown === false ? <CloseFiltersIcon /> :
+                                <OpenFiltersIcon />
+                    }
+
+                </span>
             </div>
 
             <Grid
                 container
-                padding='0% 9% 5% 9%'
-                columnSpacing={1}
+                item
+                sx={{
+                    paddingLeft: lg1 ? '80px' : lg ? '45px' :
+                        md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
+
+                    paddingRight: lg1 ? '80px' : lg ? '45px' :
+                        md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
+                }}
+                xs={12}
             >
 
-                <Stack
+                <Grid
                     sx={{
-                        '@media screen and (max-width: 900px)': {
-                            display: 'none',
-                        },
+                        display: isFiltersShown === true ? 'flex' : 'none',
+                        zIndex: 1000,
+                        position: isFiltersShown === true && !lg ? 'absolute' : 'initial',
                     }}
-                    width={'22%'}
+                    item
+                    container
                     height={'fit-content'}
                     style={{ borderRadius: '10px', boxShadow: '1px 1px 8px 0px #00000014' }}
                     padding={'1%'}
                     direction={'column'}
+                    bgcolor={'#E9ECEC'}
+                    xs={7}
+                    sm={6}
+                    md={4}
+                    lg={3}
                 >
-                    <Stack
+                    <Grid
+                        container
                         direction={'column'}
                     >
                         <h5 className='bold-brown2'>Ціна</h5>
@@ -785,13 +819,14 @@ const ProductsByCategoryPage = () =>
                             })
                         }
 
-                    </Stack>
-                </Stack>
+                    </Grid>
+                </Grid>
 
                 <Grid
                     container
                     item
-                    md={9.3}
+                    lg={isFiltersShown ? 9 : 12}
+                    md={12}
                     rowGap={3}
                     columnSpacing={2}
                     height={'fit-content'}
@@ -801,11 +836,11 @@ const ProductsByCategoryPage = () =>
                         (
                             <Grid
                                 key={index}
-                                item
-                                md={4}
-                                sm={6}
-                                xs={12}
                                 container
+                                item
+                                lg={isFiltersShown ? 4 : 3}
+                                md={4}
+                                xs={6}
                                 justifyContent="center"
                                 alignItems="center"
                             >

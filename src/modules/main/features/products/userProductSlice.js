@@ -11,9 +11,12 @@ const initialState = {
     loadingProduct: false,
     loadingRating: false,
     loadingRecommendedProducts: false,
+    loadingInterestingProducts: false,
     products: [],
     recommendedProducts: [],
     allRecommendedProducts: [],
+    interestingProducts: [],
+
     isErrorProduct: false,
 
     productErrorModel: {},
@@ -174,6 +177,39 @@ export const getAllRecommendedProducts = createAsyncThunk('user/getAllRecommende
     }
 })
 
+export const getInterestingProducts = createAsyncThunk('user/getInterestingProducts', async (categoryId, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await axios.get(`${REACT_APP_BASE_URL}/Product/getInterestingForYou/${categoryId}`, null, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access-token")}`
+            }
+        });
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
+
+
 const userProductSlice = createSlice({
     name: 'userProducts',
     initialState,
@@ -212,7 +248,6 @@ const userProductSlice = createSlice({
                     ...state,
                     loadingProduct: false,
                     isErrorProduct: true,
-                    //productErrorModel: payload,
                 }
             })
 
@@ -305,6 +340,29 @@ const userProductSlice = createSlice({
                 return {
                     ...state,
                     loadingRecommendedProducts: false,
+                }
+            })
+
+            .addCase(getInterestingProducts.pending, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingInterestingProducts: true,
+                }
+            })
+            .addCase(getInterestingProducts.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingInterestingProducts: false,
+                    interestingProducts: payload
+                }
+            })
+            .addCase(getInterestingProducts.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    loadingInterestingProducts: false,
                 }
             })
     }
