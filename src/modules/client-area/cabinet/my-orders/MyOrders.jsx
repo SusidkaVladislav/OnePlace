@@ -23,7 +23,8 @@ const MyOrders = () => {
     ]
 
     return(
-            <Grid container className='mo-container1'>
+        <div className='mo-div'>
+             <Grid container className='mo-container1'>
                 {tempData.map((order, index) => (
                     <Grid item xs={12} xl={12} className='mo-container2'>
                         <div className='mo-container3'>
@@ -69,6 +70,7 @@ const MyOrders = () => {
                     </Grid>
                 ))}
             </Grid>
+        </div>
     )
 }
 
