@@ -8,7 +8,7 @@ import TrashIcon from '../../../../svg/user-cabinet/favourites/TrashIcon';
 import ReviewReplyIcon from '../../../../svg/client-icons/productPage/ReviewReplyIcon';
 import PlusIcon from '../../../../svg/user-cabinet/reviews/PlusIcon';
 
-import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
+//import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
 
 const MyReviews = () =>
 {
@@ -38,7 +38,7 @@ const MyReviews = () =>
                     <div className="mr-container3">
                         <div className="mr-container4">
                             <div className="mr-container5">
-                                <img src={MainImg} className='mr-product-image'></img>
+                                <img src='' className='mr-product-image'></img>
                                 <h5 className='bold-brown2'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                             </div>
                             <Typography className="t2-medium-brown3">02 серпня 2023</Typography>
@@ -67,7 +67,7 @@ const MyReviews = () =>
                 <Grid container gap={1}>
                     <Grid item xs = {12} sm={12} md={5} lg={5} className='mr-container2'>
                         <div className="mr-container7">
-                            <img src={MainImg} className='mr-product-image'></img>
+                            <img src='' className='mr-product-image'></img>
                             <div>
                                 <h5 className='bold-brown2'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                                 <div style={{display:"flex", justifyContent:"space-between"}}>
@@ -79,7 +79,7 @@ const MyReviews = () =>
                     </Grid>
                     <Grid item xs = {12} sm={12} md={5} lg={5} className='mr-container2'>
                         <div className="mr-container7">
-                            <img src={MainImg} className='mr-product-image'></img>
+                            <img src='' className='mr-product-image'></img>
                             <div>
                                 <h5 className='bold-brown2'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                                 <div style={{display:"flex", justifyContent:"space-between"}}>
@@ -91,7 +91,7 @@ const MyReviews = () =>
                     </Grid>
                     <Grid item xs = {12} sm={12} md={5} lg={5} className='mr-container2'>
                         <div className="mr-container7">
-                            <img src={MainImg} className='mr-product-image'></img>
+                            <img src='' className='mr-product-image'></img>
                             <div>
                                 <h5 className='bold-brown2'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                                 <div style={{display:"flex", justifyContent:"space-between"}}>

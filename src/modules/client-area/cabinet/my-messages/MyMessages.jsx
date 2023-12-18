@@ -4,7 +4,7 @@ import "./MyMessages.css";
 import { Grid, Typography } from "@mui/material";
 import CommentIcon from '../../../../svg/user-cabinet/orders/CommentIcon';
 
-import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
+//import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
 
 const MyMessages = () =>
 {
@@ -15,7 +15,7 @@ const MyMessages = () =>
                     <div className="mm-container3">
                         <div className="mm-container4">
                             <div className="mm-container5">
-                                <img src={MainImg} className='mr-product-image'></img>
+                                <img src='' className='mr-product-image'></img>
                                 <h5 className='bold-blue'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                             </div>
                             <Typography className="t2-medium-blue">02 серпня 2023</Typography>
@@ -32,7 +32,7 @@ const MyMessages = () =>
                     <div className="mm-container3">
                         <div className="mm-container4">
                             <div className="mm-container5">
-                                <img src={MainImg} className='mr-product-image'></img>
+                                <img src='' className='mr-product-image'></img>
                                 <h5 className='bold-blue'>Ноутбук Fujitsu LifeBook E546, 14" IPS, Intel Core</h5>
                             </div>
                             <Typography className="t2-medium-blue">02 серпня 2023</Typography>

@@ -49,8 +49,6 @@ import UserPrivateRoute from './privateRouting/userPrivateRoute';
 
 import "./App.css";
 
-
-
 function App()
 {
   return (
@@ -72,18 +70,8 @@ function App()
         <Route path='basket' element={<Basket />} />
         <Route path='checkout' element={<CheckoutPage />} />
 
-        {/* <Route path="user" element={<UserPrivateRoute />}>
+        <Route path="user" element={<UserPrivateRoute />}>
           <Route path="" element={<MainCabinetLayer />}>
-            <Route index element={<MyOrders />} />
-            <Route path='desires' element={<MyDesires />} />
-            <Route path='purse' element={<MyPurse />} />
-            <Route path='reviews' element={<MyReviews />} />
-            <Route path='chats' element={<MyChats />} />
-            <Route path='personal-data' element={<MyPersonalData />} />
-          </Route>
-        </Route> */}
-
-        <Route path="cabinet" element={<MainCabinetLayer />}>
             <Route index element={<MyOrders />} />
             <Route path='desires' element={<MyDesires />} />
             <Route path='purse' element={<MyPurse />} />
@@ -91,6 +79,16 @@ function App()
             <Route path='messages' element={<MyMessages />} />
             <Route path='personal-data' element={<MyPersonalData />} />
           </Route>
+        </Route>
+
+        {/* <Route path="cabinet" element={<MainCabinetLayer />}>
+            <Route index element={<MyOrders />} />
+            <Route path='desires' element={<MyDesires />} />
+            <Route path='purse' element={<MyPurse />} />
+            <Route path='reviews' element={<MyReviews />} />
+            <Route path='messages' element={<MyMessages />} />
+            <Route path='personal-data' element={<MyPersonalData />} />
+          </Route> */}
 
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />

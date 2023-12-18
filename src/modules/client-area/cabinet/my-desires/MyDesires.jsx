@@ -6,7 +6,7 @@ import TrashIcon from '../../../../svg/user-cabinet/favourites/TrashIcon';
 import CartIcon from '../../../../svg/client-icons/header/CartIcon';
 import Typography from '@mui/material/Typography';
 
-import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
+//import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
 
 const MyDesires = () =>
 {
@@ -22,7 +22,7 @@ const MyDesires = () =>
             <Grid container className='md-container1'>
             {tempData.map((product, index)=>(
                 <Grid item xs={12} xl={12} className='md-container2'>
-                    <img src={MainImg} className='md-product-image'></img>
+                    <img src='' className='md-product-image'></img>
                     <Grid container>
                         <Grid item xs={12} s={10} md={10} xl={10} className='md-container3'>
                             <div>
