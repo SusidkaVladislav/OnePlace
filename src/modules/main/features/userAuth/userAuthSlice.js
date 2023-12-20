@@ -11,7 +11,7 @@ const initialState = {
     isAuthState: false,
     beforeAuthPath: '',
 
-    loading: false,
+    userPersonalDataLoading: false,
     userPersonalData: {},
 }
 
@@ -117,14 +117,14 @@ const userAuthSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    userPersonalDataLoading: true,
                 }
             })
             .addCase(getUserPersonalData.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    userPersonalDataLoading: false,
                     userPersonalData: payload.data,
                 }
             })
@@ -132,7 +132,7 @@ const userAuthSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    userPersonalDataLoading: false,
                 }
             })
     }

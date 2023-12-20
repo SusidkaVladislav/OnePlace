@@ -53,6 +53,8 @@ import
   deleteFromLiked,
   setLikedProductsCount,
 } from '../../main/features/liked-products/likedProductsSlice';
+import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
+
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
 const AllAboutBroduct = () =>
@@ -193,7 +195,7 @@ const AllAboutBroduct = () =>
 
   if (likedProductLoading)
   {
-    return <></>
+    return <LoadingAnimation/>
   }
   return (
     <Grid container>
@@ -253,7 +255,21 @@ const AllAboutBroduct = () =>
         md={7}
         xl={7}
       >
-        <div className='aap-container2'>
+        <Grid
+          sx={{
+            paddingLeft: {
+              lg: '15%',
+              xs: '2.5%'
+            },
+            paddingRight: {
+              lg: '15%',
+              xs: '2.5%'
+            },
+            paddingTop: {
+              xs: '30px',
+            }
+          }}
+        >
           <h4>{product?.name}</h4>
 
           <div className='hl'></div>
@@ -474,7 +490,7 @@ const AllAboutBroduct = () =>
           </Grid>
 
           <div className='hl'></div>
-        </div>
+        </Grid>
       </Grid>
     </Grid>
   )

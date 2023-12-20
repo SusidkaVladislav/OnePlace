@@ -5,12 +5,13 @@ import
 } from "@reduxjs/toolkit";
 import jwt from 'jwt-decode'
 import axios from "axios";
-
+import { instance } from "../../../../api.config.js";
 
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";
 const initialState = {
     loading: false,
+
     showSuccessfulOrderAlert: false,
     showUnsuccessfulOrderAlert: false,
     actionNotification: '',
@@ -31,6 +32,8 @@ const initialState = {
     cvv: '',
 
     comment: '',
+
+
 
     errorList: [
         false, false, false, false, false, false,
@@ -258,12 +261,46 @@ export const createCardOrder = createAsyncThunk('user/createCardOrder', async (c
     }
 })
 
+
+
 const userOrderSlice = createSlice({
     name: 'userOrder',
     initialState,
     reducers: {
+        resetOrderState: (state) =>
+        {
+            return {
+                ...state,
+                loading: false,
+                showSuccessfulOrderAlert: false,
+                showUnsuccessfulOrderAlert: false,
+                actionNotification: '',
+                userName: '',
+                userSurname: '',
+                userEmail: '',
+                userPhone: '',
+                city: '',
+                department: '',
+                paymentMethod: 0,
+                cardNumber: '',
+                expireMonth: '',
+                expireYear: '',
+                cvv: '',
+                comment: '',
+                errorList: [
+                    false, false, false, false, false, false,
+                ],
+                cardErrorList: [
+                    false, false, false, false,
+                ],
+            }
+        },
         setShowSuccessfulOrerAlert: (state, { payload }) =>
         {
+            if (payload === false)
+            {
+                window.location.href = "/"
+            }
             return {
                 ...state,
                 showSuccessfulOrderAlert: payload
@@ -435,6 +472,8 @@ const userOrderSlice = createSlice({
 })
 
 export const {
+    resetOrderState,
+
     setShowSuccessfulOrerAlert,
     setShowUnsuccessfulOrerAlert,
 

@@ -21,9 +21,12 @@ import ButtonPlusXS from '../../../../svg/basket-icons/ButtonPlusXS';
 import ButtonTrash from '../../../../svg/basket-icons/trash';
 import CustomCheckbox from '../../../../services/custom-inputs/CustomCheckbox2';
 
+import { useNavigate } from 'react-router-dom';
+
 const PhoneCartItem = (props) =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         id,
@@ -309,7 +312,15 @@ const PhoneCartItem = (props) =>
                         >
                             <Typography
                                 className={'t3-bold'}
-                            >{name}</Typography>
+                            ><span
+                                style={{
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() =>
+                                {
+                                    navigate(`/product-page/${id}`)
+                                }}
+                            >{name}</span></Typography>
                         </Grid>
 
                         <Grid

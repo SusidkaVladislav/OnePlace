@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Banner1.css";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import
+{
+    setShowSuccessfulOrerAlert
+} from '../../features/order/userOrderSlice';
+
+import
+{
+    setIsCategoryOpen
+} from '../../features/categories/userCategorySlice';
 
 import
 {
@@ -13,8 +22,11 @@ import
 import SuccessfulCheckout from '../../pages/checkout/successful-checkout/SuccessfulCheckout'
 import CategorySelectBox from '../../controls/CategorySelectBox';
 
+
 const Banner1 = () =>
 {
+    const dispatch = useDispatch();
+
     const sm = useMediaQuery('(min-width: 600px)');
     const md = useMediaQuery('(min-width: 900px)');
     const lg = useMediaQuery('(min-width: 1200px)');
@@ -64,10 +76,57 @@ const Banner1 = () =>
         position: 'initial',
     };
 
+    useEffect(() =>
+    {
+        if (window.location.search.includes('order_success=true'))
+        {
+            dispatch(setShowSuccessfulOrerAlert(true))
+        }
+    }, [])
+
+    const [step, setStep] = useState(2);
+
+    useEffect(() =>
+    {
+        const handleResize = () =>
+        {
+            const isLg = window.matchMedia('(min-width: 1200px)').matches;
+            const isMd = window.matchMedia('(min-width: 900px)').matches;
+
+            if (isLg)
+            {
+                setStep(4);
+            } else if (isMd)
+            {
+                setStep(3);
+            } else
+            {
+                setStep(2);
+            }
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () =>
+        {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    useEffect(() =>
+    {
+        if (step === 2)
+        {
+            dispatch(setIsCategoryOpen(false))
+        }
+    }, [step]);
+
     return (
         <div className="background" >
             {
-                isCategoryOpen && (
+                md && isCategoryOpen && (
                     <CategorySelectBox />
                 )
             }

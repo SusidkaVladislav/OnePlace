@@ -42,6 +42,14 @@ import userViewProductReducer from "../modules/main/features/products/userViewPr
 import userLikedProductsReducer from "../modules/main/features/liked-products/likedProductsSlice";
 //#endregion
 
+//#region User Cabinet Reducers
+import myOrdersReducer from "../modules/client-area/features/orders/myOrdersSlics";
+import myReviewsReducer from "../modules/client-area/features/reviews/myReviewsSlice";
+import myProductsReducer from "../modules/client-area/features/products/myProductsSlice";
+import myMessagesReducer from "../modules/client-area/features/messages/myMessagesSlice";
+import myPersonalDataReducer from "../modules/client-area/features/personal-data/myPersonalDataSlice";
+//#endregion
+
 
 const persistConfig = {
     key: 'root',
@@ -53,6 +61,8 @@ const persistConfig = {
         // user
         'userAnalitic', 'userProducts', 'userRegister', 'userAuth', 'userLogin', 'userMessages',
         'userViewProduct',
+        // cabinet
+        'myOrders', 'myReviews', 'myProducts', 'myMessages', 'myPersonalData',
     ],
     stateReconciler: autoMergeLevel2,
 }
@@ -87,6 +97,12 @@ const rootReducer = combineReducers({
     userMessages: userMessageReducer,
     userViewProduct: userViewProductReducer,
     userLikedProducts: userLikedProductsReducer,
+
+    myOrders: myOrdersReducer,
+    myReviews: myReviewsReducer,
+    myProducts: myProductsReducer,
+    myMessages: myMessagesReducer,
+    myPersonalData: myPersonalDataReducer,
 })
 
 

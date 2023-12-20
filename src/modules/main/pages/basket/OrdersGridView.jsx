@@ -11,19 +11,16 @@ import
 
 import CartItem from "./CartItem";
 import PhoneCartItem from "./PhoneCartItem";
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { useNavigate } from 'react-router-dom';
 
 const OrdersGridView = () =>
 {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const {
         products,
-        //productPriceSum,
         totalOrderPrice,
-        //discountPrice,
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
@@ -35,11 +32,6 @@ const OrdersGridView = () =>
 
     useEffect(() =>
     {
-        checkedProductIds?.map(product =>
-        {
-
-        })
-
         setDiscountPrice(totalOrderPrice)
     }, [])
 
@@ -367,6 +359,7 @@ const OrdersGridView = () =>
                     xs={12}
                 >
                     <Button
+                        disabled={checkedProductIds?.length === 0}
                         sx={{
                             width: '100%',
                             height: '48px',

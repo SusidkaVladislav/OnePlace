@@ -172,16 +172,17 @@ const UserLoginForm = () =>
         >
             <Stack
                 className="user-login-form"
-                width={'50%'}
-
+                sx={{
+                    width: {
+                        md: '50%',
+                        sm: '75%',
+                        xs: '85%',
+                    }
+                }}
                 height={'fit-content'}
                 padding={'2%'}
-                sx={{
-
-                }}
-
-                top={'15%'}
-                left={'25%'}
+            //top={'15%'}
+            //left={'25%'}
             >
                 <Stack
                     direction={'row'}
@@ -202,16 +203,14 @@ const UserLoginForm = () =>
 
                 <Grid
                     container
+                    item
                     direction={'row'}
-                    md={12}
-                    sm={12}
                     xs={12}
                 >
                     <Grid
                         item
                         padding={'2%'}
                         md={6}
-                        sm={12}
                         xs={12}
 
                         sx={{
@@ -229,8 +228,6 @@ const UserLoginForm = () =>
                         >{messageFromServer}</label>
 
                         <Stack
-                            md={12}
-                            sm={12}
                             xs={12}
                         >
                             <label className="t2-medium">Пошта</label>
@@ -259,8 +256,6 @@ const UserLoginForm = () =>
                         </Stack>
 
                         <Stack
-                            md={12}
-                            sm={12}
                             xs={12}
                             sx={{
                                 marginBottom: '1%',
@@ -328,8 +323,8 @@ const UserLoginForm = () =>
                     </Grid>
 
                     <Grid
+                        item
                         md={6}
-                        sm={12}
                         xs={12}
                         padding={'2%'}
                         container

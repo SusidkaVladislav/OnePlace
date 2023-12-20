@@ -10,8 +10,10 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     likedProductsCount: 0,
     likedProducts: [],
+    likedProductsData: [],
     isInLiked: false,
     likedProductLoading: false,
+    likedProductsDataLoading: false,
 }
 
 export const isProductInLiked = createAsyncThunk('likedProducts/isProductInLiked', async (productId, { rejectWithValue }) =>
@@ -128,10 +130,49 @@ export const getLikedProducts = createAsyncThunk('likedProducts/getLikedProducts
     }
 })
 
+export const getLikedProductsData = createAsyncThunk('likedProducts/getLikedProductsData', async (productIds, { rejectWithValue }) =>
+{
+    try
+    {
+        const response = await instance.post(`${REACT_APP_BASE_URL}/Product/getLikedProducts`, productIds);
+        return response.data;
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
+})
 const likedProductsSlice = createSlice({
     name: 'likedProducts',
     initialState,
     reducers: {
+        resetLikedProductsState: (state) =>
+        {
+            return {
+                ...state,
+                likedProductsCount: 0,
+                likedProducts: [],
+                likedProductsData: [],
+                isInLiked: false,
+                likedProductLoading: false,
+                likedProductsDataLoading: false,
+            }
+        },
         setLikedProductsCount: (state, { payload }) =>
         {
             return {
@@ -238,10 +279,33 @@ const likedProductsSlice = createSlice({
                     likedProductsCount: 0,
                 }
             })
+            .addCase(getLikedProductsData.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    likedProductsDataLoading: true,
+                }
+            })
+            .addCase(getLikedProductsData.fulfilled, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    likedProductsDataLoading: false,
+                    likedProductsData: payload,
+                }
+            })
+            .addCase(getLikedProductsData.rejected, (state, { payload }) =>
+            {
+                return {
+                    ...state,
+                    likedProductsDataLoading: false,
+                }
+            })
     }
 })
 
 export const {
+    resetLikedProductsState,
     setLikedProductsCount,
 } = likedProductsSlice.actions
 

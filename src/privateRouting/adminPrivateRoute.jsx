@@ -2,6 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import jwt from 'jwt-decode'
+import LoadingAnimation from '../common-elements/loading/LoadingAnimation';
 
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -14,7 +15,7 @@ const AdminPrivateRoute = () =>
     useEffect(() =>
     {
         const accessToken = localStorage.getItem("access-token");
-        
+
         if (accessToken)
         {
             try
@@ -79,7 +80,7 @@ const AdminPrivateRoute = () =>
 
     if (isAuthInProgress)
     {
-        return <div></div>;
+        return <LoadingAnimation />;
     }
     if (isAuth && isAdmin)
     {

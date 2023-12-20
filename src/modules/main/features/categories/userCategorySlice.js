@@ -9,8 +9,10 @@ const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
     isCategoryOpen: false,
-    categoriesForSelect: [],   
+    categoriesForSelect: [],
     loading: false,
+
+    categoryServerConnectionError: false,
 }
 
 export const getCategoriesForSelect = createAsyncThunk('user/getCategoriesForSelect', async (_, { rejectWithValue }) =>
@@ -45,11 +47,27 @@ const userCategorySlice = createSlice({
     name: 'userCategories',
     initialState,
     reducers: {
+        resetCategoryState: (state) =>
+        {
+            return {
+                ...state,
+                isCategoryOpen: false,
+                categoriesForSelect: [],
+                loading: false,
+            }
+        },
         setIsCategoryOpen: (state, { payload }) =>
         {
             return {
                 ...state,
                 isCategoryOpen: payload,
+            }
+        },
+        resetServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                categoryServerConnectionError: false,
             }
         }
     },
@@ -76,18 +94,26 @@ const userCategorySlice = createSlice({
                     loading: false,
                 }
             })
-            .addCase(getCategoriesForSelect.rejected, (state) =>
+            .addCase(getCategoriesForSelect.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
+                    categoryServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
 
 export const {
-    setIsCategoryOpen
+    resetCategoryState,
+    setIsCategoryOpen,
+    resetServerConnectionError,
 } = userCategorySlice.actions;
 
 export default userCategorySlice.reducer;

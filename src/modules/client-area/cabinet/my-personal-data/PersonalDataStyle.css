@@ -1,4 +1,13 @@
-.custom-block  {
+.input-my-data-row{
+    background-color: inherit;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+/* .custom-block  {
     display: flex;
     padding: 2;
     flex-direction: column;
@@ -10,12 +19,12 @@
     color: var(--blue-100, #0A3D58);
     text-align: center;
     padding: 10px;
-    /* H5/Med18px */
+
     font-family: Montserrat Alternates;
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
-    line-height: 130%; /* 23.4px */
+    line-height: 130%;
 }
 .infoStyle{
     display: flex;
@@ -28,12 +37,12 @@
     padding-left: 10px;
      color: var(--brown-100, #471915);
     text-align: center;
-    /* T2/Reg14px */
+
     font-family: Montserrat Alternates;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: 130%; /* 18.2px */
+    line-height: 130%; 
     padding: 5px;
 }
 .button_style{
@@ -45,10 +54,10 @@
     color: var(--blue-100, #0A3D58);
     text-align: center;
     padding: 2px;
-    /* H5/Med18px */
+
     font-family: Montserrat Alternates;
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
-    line-height: 130%;/* 18.2px */
-}
+    line-height: 130%;
+} */

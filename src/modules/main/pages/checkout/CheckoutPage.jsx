@@ -31,7 +31,6 @@ import
 {
     setShowUnsuccessfulOrerAlert,
     setErrorList,
-    //setCardErrorList,
     createCashOrder,
     createCardOrder,
 } from '../../features/order/userOrderSlice';
@@ -52,6 +51,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 //Налаштування лінії
 const QontoConnector = styled(StepConnector)(() => ({
@@ -163,8 +163,6 @@ const CheckoutPage = () =>
     const lg = useMediaQuery('(min-width: 1200px)');
 
     const {
-        //productPriceSum,
-        //discountPrice,
         checkedProductIds,
     } = useSelector(state => state.userBasket)
 
@@ -180,15 +178,10 @@ const CheckoutPage = () =>
         department,
 
         paymentMethod,
-        //cardNumber,
-        //expireMonth,
-        //expireYear,
-        //cvv,
-
         errorList,
-        //cardErrorList,
 
         actionNotification,
+        loading,
     } = useSelector(state => state.userOrder);
 
     const steps =
@@ -250,51 +243,11 @@ const CheckoutPage = () =>
         }
         if (activeStep === 2)
         {
-            //#region Custom card validation logic
-            // const updatedCardErrorList = [...cardErrorList];
-
-            // if (paymentMethod === 1)
-            // {
-            //     if (cardNumber.length !== 19)
-            //     {
-            //         updatedCardErrorList[0] = true;
-            //     }
-            //     if (expireMonth.length !== 2)
-            //     {
-            //         updatedCardErrorList[1] = true;
-            //     }
-            //     if (expireYear.length !== 2)
-            //     {
-            //         updatedCardErrorList[2] = true;
-            //     }
-            //     if (cvv.length !== 3)
-            //     {
-            //         updatedCardErrorList[3] = true;
-            //     }
-
-            //     dispatch(setCardErrorList(updatedCardErrorList))
-            // }
-            // && updatedCardErrorList.every(e => e === false)
-            //#endregion
 
             //Якщо овлата карточкою
             if (paymentMethod === 1)
             {
                 await dispatch(createCardOrder(checkedProductIds))
-                // .then((res) =>
-                // {
-                //     if (res?.error)
-                //         setTimeout(() =>
-                //         {
-                //             dispatch(setShowUnsuccessfulOrerAlert(false))
-                //         }, 3000);
-                //     else
-                //     {
-                //         //почистити в кошику вибрані товари 
-                //         //dispatch(setCheckedIds([]))
-                //         //navigate('/')
-                //     }
-                // })
             }
             //Оплата готівкою
             else if (paymentMethod === 0)
@@ -350,6 +303,11 @@ const CheckoutPage = () =>
         return isValid;
     }
 
+
+    if (loading)
+    {
+        return <LoadingAnimation />
+    }
     return (
 
         <Stack

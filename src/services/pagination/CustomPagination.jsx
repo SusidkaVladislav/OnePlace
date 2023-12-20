@@ -32,11 +32,6 @@ const Pagination = props =>
         onPageChange(currentPage - 1);
     };
 
-    useEffect(() =>
-    {
-
-    }, [])
-
     let lastPage = paginationRange[paginationRange?.length - 1];
 
     if (currentPage === 0 || paginationRange.length < 2)

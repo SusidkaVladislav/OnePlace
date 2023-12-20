@@ -1,71 +1,119 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./MyOrders.css";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+
+//#region Icons
 import ParcelIcon from '../../../../svg/user-cabinet/orders/ParcelIcon';
 import BagIcon from '../../../../svg/user-cabinet/orders/BagIcon';
 import DollarIcon from '../../../../svg/user-cabinet/orders/DollarIcon';
 import CommentIcon from '../../../../svg/user-cabinet/orders/CommentIcon';
+//#endregion
 
-//import MainImg from "../../../productPage/all-about-product/example-pics/black1.png"
+import { useNavigate } from 'react-router-dom';
 
-const MyOrders = () => {
-    const tempData = [
-        {orderId: 14566, comment:"just some comment", state: "in process", date: "02.02.2023", 
-        paymentMethod: "cash", paymentState: "unpaid", finalPrice:"1500hrn", products: 
-        [{name: "Навушники JBL TUNE 510 BT Black", color:"Black", amount:1, img: "", price: "1200hrn"},
-        {name: "Навушники JBL TUNE 510 BT Black", color:"Pink", amount:2, img: "", price: "2400hrn"} ]},
-        {orderId: 24566, comment:"another comment", state: "in process", date: "02.02.2023", 
-        paymentMethod: "cash", paymentState: "unpaid", finalPrice:"1500hrn", products: 
-        [{name: "Навушники JBL TUNE 510 BT Black", color:"Black", amount:1, img: "", price: "1200hrn"},
-        {name: "Навушники JBL TUNE 510 BT Black", color:"Pink", amount:2, img: "", price: "2400hrn"},
-        {name: "Навушники JBL TUNE 510 BT Black", color:"Pink", amount:2, img: "", price: "2400hrn"} ]}
-    ]
+import { useDispatch, useSelector } from 'react-redux';
+import
+{
+    getAllMyOrders
+} from '../../features/orders/myOrdersSlics';
 
-    return(
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+
+const MyOrders = () =>
+{
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() =>
+    {
+        dispatch(getAllMyOrders());
+    }, [])
+
+    const {
+        userOrders,
+        loadingUserOrders,
+    } = useSelector(state => state.myOrders);
+
+
+    if (loadingUserOrders)
+    {
+        return (
+            <Grid
+                sx={{
+                    minHeight: '100vh'
+                }}
+            >
+                <LoadingAnimation />
+            </Grid>
+        )
+    }
+    return (
         <div className='mo-div'>
-             <Grid container className='mo-container1'>
-                {tempData.map((order, index) => (
-                    <Grid item xs={12} xl={12} className='mo-container2'>
+            <Grid container className='mo-container1'>
+                {userOrders?.map((order, index) => (
+                    <Grid
+                        key={index}
+                        item
+                        xs={12}
+                        xl={12}
+                        className='mo-container2'
+                    >
                         <div className='mo-container3'>
-                            <Typography className='t2-medium-blue'>Номер замовлення: {order.orderId}</Typography>
-                            <Typography className='t2-medium-blue'>{order.date}</Typography>
+                            <Typography className='t2-medium-blue'>Номер замовлення: {order?.number}</Typography>
+                            <Typography className='t2-medium-blue'>{new Date(order?.date).getUTCDate() + '.' + (new Date(order?.date).getMonth() + 1) + '.' + new Date(order?.date).getFullYear()}</Typography>
                         </div>
-                        <h5 className='bold-blue'><BagIcon/>Спосіб оплати: {order.paymentMethod}</h5>
+                        <h5 className='bold-blue'><BagIcon />Спосіб оплати: {order?.paymentMethod === 'CardPayment' ? 'Карткою' : 'Післяплата'}</h5>
                         <Grid container className='mo-container3'>
                             <Grid item xs={12} md={6} xl={6}>
-                                <h5 className='bold-blue'><DollarIcon/>Стан оплати: {order.paymentState}</h5>
+                                <h5 className='bold-blue'><DollarIcon />Стан оплати: {order?.paymentStatus === 'Pending' ? 'Очікується оплата'
+                                    : order?.paymentStatus === 'Approved' ? 'Оплачено' : 'Скасовано'}</h5>
                             </Grid>
                             <Grid item xs={12} md={6} xl={6} className='mo-grid-item'>
-                                <h5 className='bold-blue'>Стан замовлення: {order.state} <ParcelIcon/></h5>
+                                <h5 className='bold-blue'>Стан замовлення: {order?.orderState === 'Registered' ? 'Нове' : order?.orderState === 'Processing' ? 'Очікування' :
+                                    order?.orderState === 'Shipped' ? 'Відправлено' : order?.orderState === 'Done' ? 'Виконано' : 'Анульовано'} <ParcelIcon /></h5>
                             </Grid>
                         </Grid>
                         <Grid container>
-                            {order.products.map((product, prodIndex) =>(
-                                <Grid item xs={12} xl={12} className='mo-container4'>
-                                        {/* <img src={MainImg} className='mo-product-image'></img> */}
-                                        <div className='mo-container5'>
-                                            <h4>{product.name}</h4>
-                                            <h5 className='bold'>Колір: {product.color}</h5>
-                                            <Grid container className='mo-container6'>
-                                                <Grid item xs={12} md={6} xl={6}>
-                                                    <h5 className='bold'>Кількість: {product.amount}</h5>
-                                                </Grid>
-                                                <Grid item xs={12} md={6} xl={6} className='mo-grid-item'>
-                                                    <h5 className='bold'>Ціна: {product.price}</h5>
-                                                </Grid>
+                            {order?.products?.map((product, prodIndex) => (
+                                <Grid
+                                    key={prodIndex}
+                                    item
+                                    xs={12}
+                                    xl={12}
+                                    className='mo-container4'
+                                >
+                                    <img src={product?.picture} className='mo-product-image'></img>
+                                    <div className='mo-container5'>
+                                        <h4
+                                            style={{
+                                                cursor: 'pointer',
+                                            }}
+                                            onClick={() =>
+                                            {
+                                                navigate(`/product-page/${product?.id}`)
+                                            }}
+                                        >{product?.name}</h4>
+                                        <h5 className='bold'>Колір: {product?.colorName}</h5>
+                                        <Grid container item xs={12} className='mo-container6'>
+                                            <Grid item xs={12} md={6} xl={6}>
+                                                <h5 className='bold'>Кількість: {product?.quantity}</h5>
                                             </Grid>
-                                        </div>
+                                            <Grid item xs={12} md={6} xl={6} className='mo-grid-item'>
+                                                <h5 className='bold'>Ціна: {product?.price}</h5>
+                                            </Grid>
+                                        </Grid>
+                                    </div>
                                 </Grid>
                             ))}
                         </Grid>
 
-                        <h5 className='bold-blue'><CommentIcon/> Коментар до замовлення:</h5>
+                        <h5 className='bold-blue'><CommentIcon /> Коментар до замовлення:</h5>
                         <div className="mo-comment-container">
-                            <h5 className='bold-blue'>{order.comment}</h5>
+                            <h5 className='bold-blue'>{order?.comment}</h5>
                         </div>
                         <div className='mo-container7'>
-                            <h5 className='bold-blue'>Вартість замовлення: {order.finalPrice}</h5>
+                            <h5 className='bold-blue'>Вартість замовлення: {order?.totalPrice}</h5>
                         </div>
                     </Grid>
                 ))}

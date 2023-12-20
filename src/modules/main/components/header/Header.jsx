@@ -43,6 +43,8 @@ import
 
 import { styled } from '@mui/material/styles';
 
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     minWidth: '20px',
@@ -121,11 +123,11 @@ const Header = () =>
     dispatch(setIsCategoryOpen(!isCategoryOpen))
   }
 
-  const onAuth = () =>
+  const onAuth = (path) =>
   {
     dispatch(setBeforeAuthPath(window.location.pathname))
 
-    navigate('/user')
+    navigate(path)
 
     if (!isAuthState)
       dispatch(setIsLoginFormOpen(true));
@@ -133,7 +135,7 @@ const Header = () =>
 
   if (loading)
   {
-    return <></>
+    return <LoadingAnimation />
   }
   return (
     <Fragment>
@@ -222,7 +224,7 @@ const Header = () =>
 
           <div
             style={{
-              width: lg ? '35%' : md ? '45%' : '60%'
+              width: lg ? '35%' : md ? '45%' : '50%'
             }}
           >
             <SearchBar />
@@ -232,10 +234,9 @@ const Header = () =>
 
           <span
             style={{
-              display: sm ? 'flex' : 'none',
               cursor: 'pointer',
             }}
-            onClick={onAuth}>
+            onClick={() => { onAuth('/user') }}>
             <UserIcon /></span>
 
           <StyledLikedProductBadge
@@ -245,17 +246,12 @@ const Header = () =>
               cursor: 'pointer',
             }}
           >
-            <HeartIcon />
+            <span
+              onClick={() => { onAuth('/user/desires') }}
+            >
+              <HeartIcon />
+            </span>
           </StyledLikedProductBadge>
-          {/* <span
-            style={{
-              display: sm ? 'flex' : 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <HeartIcon />
-          </span> */}
-
 
           <StyledBadge
             badgeContent={cartCount}

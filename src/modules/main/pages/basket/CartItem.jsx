@@ -21,11 +21,14 @@ import ButtonMinus from '../../../../svg/basket-icons/ButtonMinus';
 import ButtonPlus from '../../../../svg/basket-icons/ButtonPlus';
 import ButtonTrash from '../../../../svg/basket-icons/trash';
 
+import { useNavigate } from 'react-router-dom';
+
 import CustomCheckbox from '../../../../services/custom-inputs/CustomCheckbox';
 
 const CartItem = (props) =>
 {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     id,
@@ -318,7 +321,15 @@ const CartItem = (props) =>
                   : md ? 't1-bold'
                     : sm ? 'brown1-400-20'
                       : ''}
-            >{name}</Typography>
+            ><span
+              style={{
+                cursor: 'pointer'
+              }}
+              onClick={() =>
+              {
+                navigate(`/product-page/${id}`)
+              }}
+            >{name}</span></Typography>
           </Grid>
 
           <Grid

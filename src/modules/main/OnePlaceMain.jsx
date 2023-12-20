@@ -15,6 +15,8 @@ import
 {
     getCategoriesForSelect
 } from '../main/features/categories/userCategorySlice';
+import LoadingAnimation from '../../common-elements/loading/LoadingAnimation';
+
 
 const OnePlaceMain = () =>
 {
@@ -95,11 +97,11 @@ const OnePlaceMain = () =>
 
     if (loadingRecommendedProducts)
     {
-        return <></>
+        return <LoadingAnimation/>
     }
     if (loading)
     {
-        return <></>
+        return <LoadingAnimation/>
     }
     return (
         <div>

@@ -12,6 +12,7 @@ import
     Typography,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
+import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
 
 const CouldInterest = () =>
 {
@@ -24,6 +25,7 @@ const CouldInterest = () =>
 
     const {
         interestingProducts,
+        loadingInterestingProducts,
     } = useSelector(state => state.userProducts)
 
     const [step, setStep] = useState(2);
@@ -90,6 +92,11 @@ const CouldInterest = () =>
         setProductsInCart(cart);
     }, [step]);
 
+
+    if (loadingInterestingProducts)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <Grid
             sx={{
@@ -203,13 +210,18 @@ const CouldInterest = () =>
                 justifyContent={'space-between'}
             >
                 {
+                    console.log(interestingProducts)
+                }
+                {
+
                     productBlock?.items?.map((product, index) =>
                     {
+
                         return (
                             <Grid
                                 container
                                 item
-                                key={index}
+                                key={product?.id}
                                 lg={3}
                                 md={4}
                                 xs={6}

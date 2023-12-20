@@ -17,6 +17,8 @@ import
     getUserCart
 } from '../modules/main/features/basket/cartSlice';
 
+import LoadingAnimation from '../common-elements/loading/LoadingAnimation';
+
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";
 
@@ -74,7 +76,7 @@ const UserPrivateRoute = () =>
                             dispatch(setIsAuthState(false));
                         }
                     })
-                    .catch(() =>
+                    .catch((error) =>
                     {
                         // if (localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY))
                         // {
@@ -104,7 +106,7 @@ const UserPrivateRoute = () =>
 
     if (isAuthInProgress)
     {
-        return <div></div>;
+        return <LoadingAnimation />;
     }
     if (isAuth && isUser)
     {

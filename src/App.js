@@ -5,14 +5,13 @@ import { Helmet } from 'react-helmet';
 import CategoryPage from './modules/main/pages/display-category-page/CategoriesPage';
 import ProductsByCategoryPage from './modules/main/pages/products-by-category/ProductsByCategoryPage';
 import Basket from './modules/main/pages/basket/Basket';
-import CheckoutPage from './modules/main/pages/checkout/CheckoutPage';
+import ProtectedCartRoute from './privateRouting/protectedCartRoute'
 
 import MainCabinetLayer from './modules/client-area/cabinet/MainCabinetLayer';
 import MyMessages from './modules/client-area/cabinet/my-messages/MyMessages';
 import MyDesires from './modules/client-area/cabinet/my-desires/MyDesires';
 import MyOrders from './modules/client-area/cabinet/my-orders/MyOrders';
 import MyPersonalData from './modules/client-area/cabinet/my-personal-data/MyPersonalData';
-import MyPurse from './modules/client-area/cabinet/my-purse/MyPurse';
 import MyReviews from './modules/client-area/cabinet/my-reviews/MyReviews';
 
 import ProductPage from './modules/productPage/productPage';
@@ -35,10 +34,6 @@ import ItemEditProduct from './modules/admin/components/MenuItems/ItemEditProduc
 import ViewEditOrder from './modules/admin/components/MenuItems/ItemOrder/order-components/ViewEditOrder';
 //#endregion
 
-//#region 
-import NoServerConnection from './error-pages/NoServerConnection';
-//#endregion
-
 import OnePlaceMain from "./modules/main/OnePlaceMain";
 
 import UserInfo from "./modules/admin/components/MenuItems/ItemUser/userPages/UserInfo";
@@ -46,7 +41,8 @@ import ReviewInfo from "./modules/admin/components/MenuItems/ItemReview/reviewPa
 
 import AdminPrivateRoute from './privateRouting/adminPrivateRoute';
 import UserPrivateRoute from './privateRouting/userPrivateRoute';
-
+import NotFound from './common-elements/pages/NotFound';
+import NoServerConnection from './common-elements/pages/NoServerConnection';
 import "./App.css";
 
 function App()
@@ -61,34 +57,22 @@ function App()
 
         <Route path="/" element={<OnePlaceMain />} />
 
-        <Route path="/product-page/:id" element={<ProductPage/>}/>
-
-        <Route path='/server-connection-error' element={<NoServerConnection />} />
+        <Route path="/product-page/:id" element={<ProductPage />} />
 
         <Route path='category/:id' element={<CategoryPage />} />
         <Route path='products/:id' element={<ProductsByCategoryPage />} />
         <Route path='basket' element={<Basket />} />
-        <Route path='checkout' element={<CheckoutPage />} />
+        <Route path='checkout' element={<ProtectedCartRoute />} />
 
         <Route path="user" element={<UserPrivateRoute />}>
           <Route path="" element={<MainCabinetLayer />}>
             <Route index element={<MyOrders />} />
             <Route path='desires' element={<MyDesires />} />
-            <Route path='purse' element={<MyPurse />} />
             <Route path='reviews' element={<MyReviews />} />
             <Route path='messages' element={<MyMessages />} />
             <Route path='personal-data' element={<MyPersonalData />} />
           </Route>
         </Route>
-
-        {/* <Route path="cabinet" element={<MainCabinetLayer />}>
-            <Route index element={<MyOrders />} />
-            <Route path='desires' element={<MyDesires />} />
-            <Route path='purse' element={<MyPurse />} />
-            <Route path='reviews' element={<MyReviews />} />
-            <Route path='messages' element={<MyMessages />} />
-            <Route path='personal-data' element={<MyPersonalData />} />
-          </Route> */}
 
         <Route path="admin">
           <Route index element={<AdminAuthForm />} />
@@ -128,6 +112,8 @@ function App()
           </Route>
         </Route>
 
+        <Route path="no_server_connection" element={<NoServerConnection />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
     </div>

@@ -25,7 +25,8 @@ import FilterShowArrow from './elements/FilterShowArrow';
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
-    getCategoriesForSelect
+    getCategoriesForSelect,
+    setIsCategoryOpen,
 } from '../../features/categories/userCategorySlice';
 
 import
@@ -53,6 +54,8 @@ import CloseFiltersIcon from '../../../../svg/shared-icons/CloseFiltersIcon';
 import OpenFiltersIcon from '../../../../svg/shared-icons/OpenFiltersIcon';
 import BackRightArrowIcon from '../../../../svg/arrows/BackRightArrowIcon';
 //#endregion
+
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 const PAGE_SIZE = 7;
 const LOCAL_STORAGE_FILTER_KEY = "filtersSet"
@@ -91,7 +94,8 @@ const ProductsByCategoryPage = () =>
 
     const {
         isCategoryOpen,
-        categoriesForSelect
+        categoriesForSelect,
+        categoryServerConnectionError,
     } = useSelector(state => state.userCategories);
 
     const {
@@ -100,6 +104,12 @@ const ProductsByCategoryPage = () =>
 
         isErrorProduct
     } = useSelector(state => state.userProducts)
+
+    const {
+        isLoginFormOpen,
+        isRegisterFormOpen,
+        isRenewPasswordFormOpen,
+    } = useSelector(state => state.userAuth);
 
     const {
         productInfoFilters,
@@ -121,6 +131,45 @@ const ProductsByCategoryPage = () =>
         descriptions: null,
         withDiscount: null
     }
+
+    const [step, setStep] = useState(2);
+
+    useEffect(() =>
+    {
+        const handleResize = () =>
+        {
+            const isLg = window.matchMedia('(min-width: 1200px)').matches;
+            const isMd = window.matchMedia('(min-width: 900px)').matches;
+
+            if (isLg)
+            {
+                setStep(4);
+            } else if (isMd)
+            {
+                setStep(3);
+            } else
+            {
+                setStep(2);
+            }
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () =>
+        {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    useEffect(() =>
+    {
+        if (step === 2)
+        {
+            dispatch(setIsCategoryOpen(false))
+        }
+    }, [step]);
 
     useEffect(() =>
     {
@@ -184,21 +233,12 @@ const ProductsByCategoryPage = () =>
         categoryPath.current = [];
 
         dispatch(getCategoriesForSelect())
-        // .unwrap().catch((error) =>
-        // {
-        //     if (error.status === 500)
-        //         navigate('server-connection-error')
-        // })
+
 
         dispatch(getProductsByFilters(filters))
-        // .unwrap().catch((error) =>
-        // {
-        //     if (error.status === 500)
-        //         navigate('server-connection-error')
-        // })
+
 
         dispatch(getCategoryProductsInfo(params.id))
-            //.unwrap()
             .then(({ payload }) =>
             {
                 var falseFilterOptions = [];
@@ -219,11 +259,7 @@ const ProductsByCategoryPage = () =>
                 setShowHideFilterOptions(falseFilterOptions)
                 setIsFiltersUploaded(true)
             })
-        // .catch((error) =>
-        // {
-        //     if (error.status === 500)
-        //         navigate('server-connection-error')
-        // })
+
 
         getFullPath(Number(params.id), categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
@@ -258,36 +294,20 @@ const ProductsByCategoryPage = () =>
         filterCheckHandler(tmpFiltersSet)
     }
 
-    // if (isErrorProduct)
-    // {
-    //     localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(filtersModel));
-    //     setCurrentProductPage(1);
-    // }
+    if(categoryServerConnectionError){
+        navigate('/no_server_connection')
+    }
 
     if (loadingProduct)
     {
-        return <></>
+        return <LoadingAnimation />
     }
     if (!isFiltersUploaded)
     {
-        return <></>
+        return <LoadingAnimation />
     }
     return (
         <Grid>
-
-            {/* {
-                successfulAlertShow &&
-                <div className='modal-backdrop'>
-                    <SuccessfulNotification notifiaction={actionNotification} />
-                </div>
-            }
-            {
-                unsuccessfulAlertShow &&
-                <div className='modal-backdrop'>
-                    <UnsuccessfulNotification notifiaction={actionNotification} />
-                </div>
-            } */}
-
             <Header />
             {
                 md &&
@@ -299,7 +319,6 @@ const ProductsByCategoryPage = () =>
                 container
                 marginTop={'1.5%'}
                 paddingLeft={'7%'}
-
             >
                 {
                     <Grid
@@ -408,9 +427,9 @@ const ProductsByCategoryPage = () =>
 
                 <Grid
                     sx={{
-                        display: isFiltersShown === true ? 'flex' : 'none',
-                        zIndex: 1000,
-                        position: isFiltersShown === true && !lg ? 'absolute' : 'initial',
+                        display: isFiltersShown === true && !isCategoryOpen? 'flex' : 'none',
+                        zIndex: !isRegisterFormOpen && !isLoginFormOpen && !isCategoryOpen && !isRenewPasswordFormOpen ? 1000 : 0,
+                        position: isFiltersShown === true && !lg && !isRegisterFormOpen && !isLoginFormOpen ? 'absolute' : 'initial',
                     }}
                     item
                     container
@@ -442,12 +461,12 @@ const ProductsByCategoryPage = () =>
                                         let tmpFiltersSet = filtersSet;
                                         if (tmpFiltersSet !== null)
                                         {
-                                            if (tmpFiltersSet.withDiscount !== null)
+                                            if (tmpFiltersSet?.withDiscount !== null)
                                             {
-                                                if (tmpFiltersSet.withDiscount)
+                                                if (tmpFiltersSet?.withDiscount)
                                                     tmpFiltersSet.withDiscount = null;
                                                 else
-                                                    tmpFiltersSet.withDiscount = !tmpFiltersSet.withDiscount;
+                                                    tmpFiltersSet.withDiscount = !tmpFiltersSet?.withDiscount;
                                             }
                                             else
                                             {
@@ -477,12 +496,12 @@ const ProductsByCategoryPage = () =>
                                         let tmpFiltersSet = filtersSet;
                                         if (tmpFiltersSet !== null)
                                         {
-                                            if (tmpFiltersSet.withDiscount !== null)
+                                            if (tmpFiltersSet?.withDiscount !== null)
                                             {
-                                                if (!tmpFiltersSet.withDiscount)
+                                                if (!tmpFiltersSet?.withDiscount)
                                                     tmpFiltersSet.withDiscount = null;
                                                 else
-                                                    tmpFiltersSet.withDiscount = !tmpFiltersSet.withDiscount;
+                                                    tmpFiltersSet.withDiscount = !tmpFiltersSet?.withDiscount;
                                             }
                                             else
                                             {
@@ -522,7 +541,7 @@ const ProductsByCategoryPage = () =>
 
                         <h5 className='bold-brown2 filter-title'>Виробник</h5>
                         {
-                            Object.keys(productInfoFilters.manufacturers).map((key, index) =>
+                            Object.keys(productInfoFilters?.manufacturers)?.map((key, index) =>
                             {
                                 if (index < 2 || showHideFilterOptions[0])
                                     return (
@@ -533,31 +552,31 @@ const ProductsByCategoryPage = () =>
                                                 <input
                                                     type="checkbox"
                                                     value={key}
-                                                    checked={filtersSet !== null && filtersSet.manufacturers !== null
-                                                        ? filtersSet.manufacturers.includes(Number(key))
+                                                    checked={filtersSet !== null && filtersSet?.manufacturers !== null
+                                                        ? filtersSet?.manufacturers?.includes(Number(key))
                                                         : false}
                                                     onChange={() =>
                                                     {
                                                         let tmpFiltersSet = filtersSet;
                                                         if (tmpFiltersSet !== null)
                                                         {
-                                                            if (tmpFiltersSet.manufacturers !== null)
+                                                            if (tmpFiltersSet?.manufacturers !== null)
                                                             {
-                                                                if (!tmpFiltersSet.manufacturers.includes(Number(key)))
-                                                                    tmpFiltersSet.manufacturers.push(Number(key));
+                                                                if (!tmpFiltersSet?.manufacturers?.includes(Number(key)))
+                                                                    tmpFiltersSet?.manufacturers?.push(Number(key));
                                                                 else
                                                                 {
-                                                                    const index = tmpFiltersSet.manufacturers.indexOf(Number(key));
+                                                                    const index = tmpFiltersSet?.manufacturers?.indexOf(Number(key));
                                                                     if (index > -1)
                                                                     {
-                                                                        tmpFiltersSet.manufacturers.splice(index, 1);
+                                                                        tmpFiltersSet?.manufacturers?.splice(index, 1);
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
                                                                 tmpFiltersSet.manufacturers = [];
-                                                                tmpFiltersSet.manufacturers.push(Number(key));
+                                                                tmpFiltersSet?.manufacturers?.push(Number(key));
                                                             }
                                                             tmpFiltersSet.page = 1;
                                                             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(tmpFiltersSet));
@@ -567,14 +586,14 @@ const ProductsByCategoryPage = () =>
                                                 />
                                                 <span className='filter-message-custom-checkbox-checkmark'><GreenCheckCheckboxIcon /></span>
                                             </label>
-                                            <span className='t2-medium-brown2'>{productInfoFilters.manufacturers[key]}</span>
+                                            <span className='t2-medium-brown2'>{productInfoFilters?.manufacturers[key]}</span>
                                         </div>
                                     )
                                 return null;
                             })
                         }
                         {
-                            Object.keys(productInfoFilters.manufacturers).length > 2 && (
+                            Object.keys(productInfoFilters?.manufacturers)?.length > 2 && (
                                 <FilterShowArrow
                                     filterIndex={0}
                                     showHideFilterOptions={showHideFilterOptions}
@@ -585,7 +604,7 @@ const ProductsByCategoryPage = () =>
 
                         <h5 className='bold-brown2 filter-title'>Країна виробник</h5>
                         {
-                            Object.keys(productInfoFilters.countries).map((key, index) =>
+                            Object.keys(productInfoFilters?.countries)?.map((key, index) =>
                             {
                                 if (index < 2 || showHideFilterOptions[1])
                                     return (
@@ -597,8 +616,8 @@ const ProductsByCategoryPage = () =>
                                                     type="checkbox"
                                                     value={key}
                                                     checked={
-                                                        filtersSet !== null && filtersSet.manufacturerCountries !== null
-                                                            ? filtersSet.manufacturerCountries.includes(Number(key))
+                                                        filtersSet !== null && filtersSet?.manufacturerCountries !== null
+                                                            ? filtersSet?.manufacturerCountries?.includes(Number(key))
                                                             : false
                                                     }
                                                     onChange={() =>
@@ -606,23 +625,23 @@ const ProductsByCategoryPage = () =>
                                                         let tmpFiltersSet = filtersSet;
                                                         if (tmpFiltersSet !== null)
                                                         {
-                                                            if (tmpFiltersSet.manufacturerCountries !== null)
+                                                            if (tmpFiltersSet?.manufacturerCountries !== null)
                                                             {
-                                                                if (!tmpFiltersSet.manufacturerCountries.includes(Number(key)))
-                                                                    tmpFiltersSet.manufacturerCountries.push(Number(key));
+                                                                if (!tmpFiltersSet?.manufacturerCountries?.includes(Number(key)))
+                                                                    tmpFiltersSet?.manufacturerCountries?.push(Number(key));
                                                                 else
                                                                 {
-                                                                    const index = tmpFiltersSet.manufacturerCountries.indexOf(Number(key));
+                                                                    const index = tmpFiltersSet?.manufacturerCountries?.indexOf(Number(key));
                                                                     if (index > -1)
                                                                     {
-                                                                        tmpFiltersSet.manufacturerCountries.splice(index, 1);
+                                                                        tmpFiltersSet?.manufacturerCountries?.splice(index, 1);
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
                                                                 tmpFiltersSet.manufacturerCountries = [];
-                                                                tmpFiltersSet.manufacturerCountries.push(Number(key));
+                                                                tmpFiltersSet?.manufacturerCountries?.push(Number(key));
                                                             }
                                                             tmpFiltersSet.page = 1;
                                                             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(tmpFiltersSet));
@@ -632,14 +651,14 @@ const ProductsByCategoryPage = () =>
                                                 />
                                                 <span className='filter-message-custom-checkbox-checkmark'><GreenCheckCheckboxIcon /></span>
                                             </label>
-                                            <span className='t2-medium-brown2'>{productInfoFilters.countries[key]}</span>
+                                            <span className='t2-medium-brown2'>{productInfoFilters?.countries[key]}</span>
                                         </div>
                                     )
                                 return null;
                             })
                         }
                         {
-                            Object.keys(productInfoFilters.countries).length > 2 && (
+                            Object.keys(productInfoFilters?.countries)?.length > 2 && (
                                 <FilterShowArrow
                                     filterIndex={1}
                                     showHideFilterOptions={showHideFilterOptions}
@@ -650,7 +669,7 @@ const ProductsByCategoryPage = () =>
 
                         <h5 className='bold-brown2 filter-title'>Колір</h5>
                         {
-                            Object.keys(productInfoFilters.colors).map((key, index) =>
+                            Object.keys(productInfoFilters?.colors)?.map((key, index) =>
                             {
                                 if (index < 2 || showHideFilterOptions[2])
                                     return (
@@ -661,31 +680,31 @@ const ProductsByCategoryPage = () =>
                                                 <input
                                                     type="checkbox"
                                                     value={key}
-                                                    checked={filtersSet !== null && filtersSet.colors !== null
-                                                        ? filtersSet.colors.includes(Number(key))
+                                                    checked={filtersSet !== null && filtersSet?.colors !== null
+                                                        ? filtersSet?.colors?.includes(Number(key))
                                                         : false}
                                                     onChange={() =>
                                                     {
                                                         let tmpFiltersSet = filtersSet;
                                                         if (tmpFiltersSet !== null)
                                                         {
-                                                            if (tmpFiltersSet.colors !== null)
+                                                            if (tmpFiltersSet?.colors !== null)
                                                             {
-                                                                if (!tmpFiltersSet.colors.includes(Number(key)))
-                                                                    tmpFiltersSet.colors.push(Number(key));
+                                                                if (!tmpFiltersSet?.colors?.includes(Number(key)))
+                                                                    tmpFiltersSet?.colors?.push(Number(key));
                                                                 else
                                                                 {
-                                                                    const index = tmpFiltersSet.colors.indexOf(Number(key));
+                                                                    const index = tmpFiltersSet?.colors?.indexOf(Number(key));
                                                                     if (index > -1)
                                                                     {
-                                                                        tmpFiltersSet.colors.splice(index, 1);
+                                                                        tmpFiltersSet?.colors?.splice(index, 1);
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
                                                                 tmpFiltersSet.colors = [];
-                                                                tmpFiltersSet.colors.push(Number(key));
+                                                                tmpFiltersSet?.colors?.push(Number(key));
                                                             }
                                                             tmpFiltersSet.page = 1;
                                                             localStorage.setItem(LOCAL_STORAGE_FILTER_KEY, JSON.stringify(tmpFiltersSet));
@@ -695,14 +714,14 @@ const ProductsByCategoryPage = () =>
                                                 />
                                                 <span className='filter-message-custom-checkbox-checkmark'><GreenCheckCheckboxIcon /></span>
                                             </label>
-                                            <span className='t2-medium-brown2'>{productInfoFilters.colors[key]}</span>
+                                            <span className='t2-medium-brown2'>{productInfoFilters?.colors[key]}</span>
                                         </div>
                                     )
                                 return null;
                             })
                         }
                         {
-                            Object.keys(productInfoFilters.colors).length > 2 && (
+                            Object.keys(productInfoFilters?.colors)?.length > 2 && (
                                 <FilterShowArrow
                                     filterIndex={2}
                                     showHideFilterOptions={showHideFilterOptions}
@@ -712,15 +731,15 @@ const ProductsByCategoryPage = () =>
                         }
 
                         {
-                            Object.keys(productInfoFilters.descriptionFilters).map((key, keyIndex) =>
+                            Object.keys(productInfoFilters?.descriptionFilters)?.map((key, keyIndex) =>
                             {
                                 return (
                                     <Fragment key={keyIndex}>
-                                        <h5 className='bold-brown2 filter-title'>{key.trim()}</h5>
+                                        <h5 className='bold-brown2 filter-title'>{key?.trim()}</h5>
                                         {
-                                            productInfoFilters.descriptionFilters[key].map((value, index) =>
+                                            productInfoFilters?.descriptionFilters[key]?.map((value, index) =>
                                             {
-                                                let trimmedKey = key.trim();
+                                                let trimmedKey = key?.trim();
                                                 if (index < 2 || showHideFilterOptions[keyIndex + 3])
                                                     return <div className='filter-product-row'
                                                         key={index}
@@ -730,9 +749,9 @@ const ProductsByCategoryPage = () =>
                                                                 type="checkbox"
                                                                 value={trimmedKey}
                                                                 checked={
-                                                                    filtersSet !== null && filtersSet.descriptions !== null ?
-                                                                        filtersSet.descriptions.some((element) =>
-                                                                            element.name === trimmedKey ? element.abouts.includes(value) : false
+                                                                    filtersSet !== null && filtersSet?.descriptions !== null ?
+                                                                        filtersSet?.descriptions?.some((element) =>
+                                                                            element?.name === trimmedKey ? element?.abouts?.includes(value) : false
                                                                         ) : false
                                                                 }
                                                                 onChange={() =>
@@ -740,20 +759,20 @@ const ProductsByCategoryPage = () =>
                                                                     let tmpFiltersSet = filtersSet;
                                                                     if (tmpFiltersSet !== null)
                                                                     {
-                                                                        if (tmpFiltersSet.descriptions === null)
+                                                                        if (tmpFiltersSet?.descriptions === null)
                                                                         {
                                                                             tmpFiltersSet.descriptions = [];
                                                                         }
-                                                                        if (Object.keys(tmpFiltersSet.descriptions).length > 0 &&
+                                                                        if (Object.keys(tmpFiltersSet?.descriptions)?.length > 0 &&
 
-                                                                            tmpFiltersSet.descriptions.some((element) =>
+                                                                            tmpFiltersSet?.descriptions?.some((element) =>
                                                                             {
-                                                                                return element.name === trimmedKey
+                                                                                return element?.name === trimmedKey
                                                                             })
                                                                         )
                                                                         {
                                                                             let rowIndex = -1;
-                                                                            tmpFiltersSet.descriptions.map((element, index) =>
+                                                                            tmpFiltersSet?.descriptions?.map((element, index) =>
                                                                             {
                                                                                 if (element.name === trimmedKey)
                                                                                 {
@@ -761,22 +780,22 @@ const ProductsByCategoryPage = () =>
                                                                                     return index;
                                                                                 }
                                                                             })
-                                                                            if (!tmpFiltersSet.descriptions[rowIndex].abouts.includes(value))
+                                                                            if (!tmpFiltersSet?.descriptions[rowIndex]?.abouts?.includes(value))
                                                                             {
-                                                                                tmpFiltersSet.descriptions[rowIndex].abouts.push(value);
+                                                                                tmpFiltersSet?.descriptions[rowIndex]?.abouts?.push(value);
                                                                             }
                                                                             else
                                                                             {
-                                                                                const index = tmpFiltersSet.descriptions[rowIndex].abouts.indexOf(value);
+                                                                                const index = tmpFiltersSet?.descriptions[rowIndex]?.abouts?.indexOf(value);
                                                                                 if (index > -1)
                                                                                 {
-                                                                                    tmpFiltersSet.descriptions[rowIndex].abouts.splice(index, 1);
+                                                                                    tmpFiltersSet?.descriptions[rowIndex]?.abouts?.splice(index, 1);
                                                                                 }
-                                                                                if (tmpFiltersSet.descriptions[rowIndex].abouts.length === 0)
+                                                                                if (tmpFiltersSet?.descriptions[rowIndex]?.abouts?.length === 0)
                                                                                 {
-                                                                                    tmpFiltersSet.descriptions.splice(rowIndex, 1);
+                                                                                    tmpFiltersSet?.descriptions?.splice(rowIndex, 1);
                                                                                 }
-                                                                                if (Object.keys(tmpFiltersSet.descriptions).length === 0)
+                                                                                if (Object.keys(tmpFiltersSet?.descriptions)?.length === 0)
                                                                                 {
                                                                                     tmpFiltersSet.descriptions = null;
                                                                                 }
@@ -784,7 +803,7 @@ const ProductsByCategoryPage = () =>
                                                                         }
                                                                         else
                                                                         {
-                                                                            tmpFiltersSet.descriptions.push(
+                                                                            tmpFiltersSet?.descriptions?.push(
                                                                                 {
                                                                                     name: trimmedKey,
                                                                                     abouts: [value]
@@ -806,7 +825,7 @@ const ProductsByCategoryPage = () =>
 
                                         }
                                         {
-                                            productInfoFilters.descriptionFilters[key].length > 2 && (
+                                            productInfoFilters?.descriptionFilters[key]?.length > 2 && (
                                                 <FilterShowArrow
                                                     filterIndex={Number(keyIndex) + 3}
                                                     showHideFilterOptions={showHideFilterOptions}
@@ -825,20 +844,20 @@ const ProductsByCategoryPage = () =>
                 <Grid
                     container
                     item
-                    lg={isFiltersShown ? 9 : 12}
+                    lg={isFiltersShown && !isCategoryOpen ? 9 : 12}
                     md={12}
                     rowGap={3}
                     columnSpacing={2}
                     height={'fit-content'}
                 >
                     {
-                        products.items?.map((product, index) =>
+                        products?.items?.map((product, index) =>
                         (
                             <Grid
                                 key={index}
                                 container
                                 item
-                                lg={isFiltersShown ? 4 : 3}
+                                lg={isFiltersShown && !isCategoryOpen ? 4 : 3}
                                 md={4}
                                 xs={6}
                                 justifyContent="center"

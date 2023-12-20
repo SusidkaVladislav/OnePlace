@@ -127,6 +127,17 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
+        resetCartState: (state) =>
+        {
+            return {
+                ...state,
+                products: [],
+                checkedProductIds: [],
+                isAuth: false,
+                cartCount: 0,
+                loading: false,
+            }
+        },
         setCartCount: (state, { payload }) =>
         {
             return {
@@ -253,6 +264,7 @@ const cartSlice = createSlice({
 })
 
 export const {
+    resetCartState,
     setCartCount,
     setCheckedIds,
 } = cartSlice.actions

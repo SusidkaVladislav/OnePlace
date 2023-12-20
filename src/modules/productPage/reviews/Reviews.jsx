@@ -14,7 +14,10 @@ const Reviews = () =>
     } = useSelector(state => state.userAnalitic)
 
     return (
-        <Grid container className="review-container4">
+        <Grid
+            container
+            className="review-container4"
+        >
             {
                 reviewsProduct?.map((review, index) =>
                 {
@@ -22,7 +25,21 @@ const Reviews = () =>
                         <Fragment
                             key={index}
                         >
-                            <Grid item xs={12} xl={12} className="review-container1">
+                            <Grid item xs={12} xl={12}
+                                className="review-container1"
+                                sx={{
+                                    marginLeft: {
+                                        md: '10%',
+                                        sm: '5%',
+                                        xs: '0',
+                                    },
+                                    marginRight: {
+                                        md: '10%',
+                                        sm: '5%',
+                                        xs: '0',
+                                    }
+                                }}
+                            >
                                 <div className="review-container2">
                                     <div className="review-container3">
                                         <h5 className="bold">{review?.userInitials}</h5>
@@ -37,7 +54,23 @@ const Reviews = () =>
                             </Grid>
                             {
                                 review?.adminReplyComment !== null &&
-                                <Grid item xs={9} xl={9} className="review-container1">
+                                <Grid
+                                    item
+                                    xs={9} xl={9}
+                                    className="review-container1"
+                                    sx={{
+                                        marginLeft: {
+                                            md: '10%',
+                                            sm: '5%',
+                                            xs: '0',
+                                        },
+                                        marginRight: {
+                                            md: '10%',
+                                            sm: '5%',
+                                            xs: '0',
+                                        }
+                                    }}
+                                >
                                     <div className="review-container2">
                                         <div className="review-container3">
                                             <div style={{ display: "flex" }}>

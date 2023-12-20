@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import
 {
     getCategoriesForSelect,
+    setIsCategoryOpen,
 } from '../../features/categories/userCategorySlice';
 
 import { getFullPath } from '../../services/CategoryService';
@@ -67,6 +68,45 @@ const CategoriesPage = () =>
         }
 
     }, [params.id])
+
+    const [step, setStep] = useState(2);
+
+    useEffect(() =>
+    {
+        const handleResize = () =>
+        {
+            const isLg = window.matchMedia('(min-width: 1200px)').matches;
+            const isMd = window.matchMedia('(min-width: 900px)').matches;
+
+            if (isLg)
+            {
+                setStep(4);
+            } else if (isMd)
+            {
+                setStep(3);
+            } else
+            {
+                setStep(2);
+            }
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () =>
+        {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    useEffect(() =>
+    {
+        if (step === 2)
+        {
+            dispatch(setIsCategoryOpen(false))
+        }
+    }, [step]);
 
     const getSubCategories = (id) =>
     {

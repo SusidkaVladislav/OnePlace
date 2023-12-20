@@ -671,3 +671,21 @@ h5.bold-red {
   font-weight: 400;
   line-height: 130%;
 }
+
+.white-500-16 {
+  color: var(--white);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.white-500-18 {
+  color: var(--white);
+  font-family: 'Montserrat Alternates';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}

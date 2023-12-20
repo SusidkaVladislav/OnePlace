@@ -56,7 +56,7 @@ const UserRegisterForm = () =>
 
     useEffect(() =>
     {
-        
+
     }, [dataValidated]);
 
     const handleClose = () =>
@@ -132,7 +132,7 @@ const UserRegisterForm = () =>
                 email: email,
                 password: password
             }
-        
+
             await dispatch(registerUser(register));
         }
     }
@@ -201,7 +201,7 @@ const UserRegisterForm = () =>
                         },
                     }
                 );
-                
+
                 setName(res.data.given_name)
                 setSurname(res.data.family_name)
                 setEmail(res.data.email)
@@ -220,11 +220,16 @@ const UserRegisterForm = () =>
 
             <Stack
                 className='register-body'
-                width={'70%'}
+                sx={{
+                    width: {
+                        md: '70%',
+                        sm: '80%',
+                        xs: '90%',
+                    }
+                }}
+
                 height={'fit-content'}
-                padding={'2%'}
-                top={'10%'}
-                left={'15%'}
+                padding={'1%'}
             >
 
                 <Stack
@@ -251,16 +256,15 @@ const UserRegisterForm = () =>
 
                 <Grid
                     container
+                    item
                     direction={'row'}
-                    md={12}
-                    sm={12}
                     xs={12}
                 >
                     <Grid
                         container
+                        item
                         padding={'2%'}
                         md={8}
-                        sm={12}
                         xs={12}
                         sx={{
                             borderRight: '1px solid  #CED8DE',
@@ -272,6 +276,7 @@ const UserRegisterForm = () =>
 
                         <Grid
                             container
+                            item
                             md={6}
                             sm={12}
                             xs={12}
@@ -404,6 +409,7 @@ const UserRegisterForm = () =>
                         </Grid>
 
                         <Grid
+                            item
                             container
                             md={6}
                             padding={'2%'}
@@ -487,9 +493,8 @@ const UserRegisterForm = () =>
                             </Stack>
 
                             <Grid
+                                item
                                 container
-                                md={12}
-                                sm={12}
                                 xs={12}
                                 direction={'row'}
                                 gap={'4%'}
@@ -570,9 +575,9 @@ const UserRegisterForm = () =>
                     </Grid>
 
                     <Grid
+                        item
                         container
                         md={4}
-                        sm={12}
                         xs={12}
                         padding={'2%'}
                         justifyContent={'center'}

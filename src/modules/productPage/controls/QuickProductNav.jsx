@@ -44,6 +44,8 @@ import
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
+
 const LOCAL_STORAGE_CART_KEY = 'cart';
 const QuickProductNav = () =>
 {
@@ -157,7 +159,7 @@ const QuickProductNav = () =>
 
     if (likedProductLoading)
     {
-        return <></>
+        return <LoadingAnimation/>
     }
     return (
         <div

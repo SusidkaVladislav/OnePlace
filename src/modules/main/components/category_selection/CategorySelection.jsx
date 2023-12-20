@@ -15,6 +15,7 @@ const CaregorySelection = (props) =>
 {
     const navigate = useNavigate();
 
+
     const sm = useMediaQuery('(min-width: 600px)');
 
     const {
@@ -33,7 +34,7 @@ const CaregorySelection = (props) =>
 
         if (hasSubCategories !== undefined)
         {
-            navigate('/category/' + id)
+            navigate('/category/' + id);
         }
         else
         {

@@ -23,6 +23,8 @@ const initialState = {
 
     product: {},
     productRaitingInfo: {},
+
+    serverConnectionError: false,
 }
 
 export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters', async (filter, { rejectWithValue }) =>
@@ -181,12 +183,13 @@ export const getInterestingProducts = createAsyncThunk('user/getInterestingProdu
 {
     try
     {
-        const response = await axios.get(`${REACT_APP_BASE_URL}/Product/getInterestingForYou/${categoryId}`, null, {
+        const response = await axios.get(`${REACT_APP_BASE_URL}/Product/getInterestingForYou/${categoryId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("access-token")}`
             }
         });
         return response.data;
+
     }
     catch (error)
     {
@@ -352,6 +355,7 @@ const userProductSlice = createSlice({
             })
             .addCase(getInterestingProducts.fulfilled, (state, { payload }) =>
             {
+                console.log(payload)
                 return {
                     ...state,
                     loadingInterestingProducts: false,

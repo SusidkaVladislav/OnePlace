@@ -18,7 +18,7 @@ const DescriptionOfCategory = (props) =>
     const { charachteristicsValid } = useSelector(state => state.adminProducts);
 
     const [about, setAbout] = useState(descriptionInfo.about ? descriptionInfo.about : '')
-    console.log(descriptionInfo.id)
+
     return (
         <div className='description-of-category-container' >
             <div>

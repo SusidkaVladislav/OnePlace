@@ -1,380 +1,691 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './PersonalDataStyle.css';
-import Grid from '@mui/material/Unstable_Grid2';
-import { Container, Typography, TextField, Button, Box } from '@mui/material';
 
-
-{/*---------------------DataBaseVersion--------------------------*/ }
-// тут ми підключаємо Api запити, я правда ще не перевіряв чи вони працюють правильно, але мали би)))
-
-export const updateProfileImage = async (imageData) =>
+import
 {
-  const formData = new FormData();
-  formData.append('image', imageData);
+  Grid,
+  Typography,
+} from '@mui/material';
 
-
-  const response = await fetch('/api/user/profile-image', {
-    method: 'POST',
-    body: formData,
-  });
-
-  return response.json();
-};
-
-export const updatePersonalInfo = async (info) =>
+import { useSelector, useDispatch } from 'react-redux';
+import
 {
-
-  const response = await fetch('/api/user/info', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    //body: JSON.stringify(personalInfo),
-  });
-
-  return response.json();
-};
-
-export const updatePassword = async (passwordData) =>
+  updataPhoto,
+  updataPersonalData,
+  resetMessageFromServer,
+  updatePassword,
+  resetPasswordMessage,
+  setShowPasswordSuccessAlert,
+} from '../../features/personal-data/myPersonalDataSlice';
+import
 {
+  getUserPersonalData,
+} from '../../../main/features/userAuth/userAuthSlice';
 
-  const response = await fetch('/api/user/password', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(passwordData),
-  });
+import
+{
+  resetOrderState
+} from '../../../main/features/order/userOrderSlice';
 
-  return response.json();
-};
-{/*--------------------------------------------------------------*/ }
+import
+{
+  resetLikedProductsState
+} from '../../../main/features/liked-products/likedProductsSlice';
 
+import
+{
+  resetCategoryState
+} from '../../../main/features/categories/userCategorySlice';
+
+import
+{
+  resetCartState
+} from '../../../main/features/basket/cartSlice';
+
+import { useNavigate } from 'react-router-dom';
+
+import PasswordInput from '../../../../services/passwordInputs/PasswordInput';
+import ImgBBUpload from '../../../../services/image-upload-service/ImgBBUpload';
+import PasswordSuccessAlert from './PasswordSuccessAlert';
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+
+
+const IMG_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTR3zZjipG0-Lf-MtJcieX_ASoCDA_6JfGxA&usqp=CAU';
+const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const MIN_PASSWORD_LENGTH = 8;
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]+$/;
 const MyPersonalData = () =>
 {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  {/*-------------------------HandleDataBaseShit------------------*/ }
-  const handleImageSubmit = async (e) =>
+  const { upload } = ImgBBUpload();
+
+  const inputFile = useRef(null);
+  const [pictureFile, setPictureFile] = useState(null);
+  const [picturePath, setPicturePath] = useState(IMG_URL)
+
+  const [userName, setUserName] = useState('')
+  const [userSurname, setUserSurname] = useState('')
+  const [userPhone, setUserPhone] = useState('')
+
+  const [userNameError, setUserNameError] = useState(false)
+  const [userSurnameError, setUserSurnameError] = useState(false)
+  const [userPhoneError, setUserPhoneError] = useState(false)
+
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [currentPasswordError, setCurrentPasswordError] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false)
+
+  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+
+  const [loadingPhoto, setLoadingPhoto] = useState(false)
+
+  const {
+    userPersonalData,
+  } = useSelector(state => state.userAuth);
+
+  const {
+    messageFromServer,
+    passwordMessage,
+    showPasswordSuccessAlert,
+  } = useSelector(state => state.myPersonalData)
+
+  useEffect(() =>
   {
-    e.preventDefault();
-    try
+    if (userPersonalData?.pictureAddress !== null)
     {
-      const file = e.target.files[0];
-      const response = await updateProfileImage(file);
-      if (response && response.imageUrl)
-      { // Assuming the response contains the imageUrl
-        //setImage(response.imageUrl);
-      }
-      //alert('Зображення успішно оновлено');
-    } catch (error)
-    {
-      console.error('Помилка оновлення зображення:', error);
+      setPicturePath(userPersonalData?.pictureAddress)
     }
-  };
+    setUserName(userPersonalData?.name)
+    setUserSurname(userPersonalData?.surname)
+    setUserPhone(userPersonalData?.phoneNumber)
+  }, [])
 
-  const handlePersonalInfoSubmit = async (info) =>
+  const openFileManager = () =>
   {
-    try
-    {
-      const response = await updatePersonalInfo(info);
-      if (response && response.updatedInfo)
-      { // Assuming the response contains the updatedInfo
-        //setInfo(response.updatedInfo);
-      }
-      //alert('Особиста інформація успішно оновлена');
-    } catch (error)
-    {
-      console.error('Помилка оновлення особистої інформації:', error);
-    }
-  };
-
-  const handlePasswordSubmit = async (newPassword) =>
-  {
-    try
-    {
-      const response = await updatePassword({ newPassword });
-      if (passwordInput === reenteredPassword)
-        if (response && response.success)
-        { // Assuming the response indicates success
-          // alert('Пароль успішно оновлено');
-          // Update any necessary state or UI here
-        }
-    } catch (error)
-    {
-      console.error('Помилка оновлення пароля:', error);
-    }
-
-  };
-
-  {/*---------------------------------------------------------------*/ }
-
-  {/*це ми щас попробуємо це все редагування в один блок запхати*/ }
-  // Оновлення станів для контролю трьох різних режимів редагування
-  const [editImageMode, setEditImageMode] = useState(false);
-  const [editPersonalInfoMode, setEditPersonalInfoMode] = useState(false);
-
-  // Функції для перемикання режимів редагування
-  const toggleEditImageMode = () => setEditImageMode(!editImageMode);
-  const toggleEditPersonalInfoMode = () => setEditPersonalInfoMode(!editPersonalInfoMode);
-
-  {/*-----------------------------------------------------------*/ }
-
-  const textFieldStyle = {
-    maxWidth: '300px',
-    margin: '10px 0',
-    '& .MuiInputBase-root': {
-      height: '50px',
-    },
-    '& .MuiOutlinedInput-input': {
-      padding: '4px 24px',
-    }
-
-  };
-  {/*---------------------------------------------------------------*/ }
-
-  // const [info, setInfo] = useState({
-  //   name: 'Данило Барчук',
-  //   email: 'vip.mkola@gmail.com',
-  //   phone: '+380963023182',
-
-  // });
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
-
-  // Regular expressions for validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\+380\d{9}$/;
-
-  // Handle form submission
-  const handleSubmit = (e) =>
-  {
-    e.preventDefault();
-    console.log("handleSubmit is called");
-    const formData = new FormData(e.target);
-    const newInfo = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-    };
-
-    // Валідація введених даних
-    const newErrors = {
-      email: emailRegex.test(newInfo.email) ? '' : 'Неправильне введеня емейлу',
-      phone: phoneRegex.test(newInfo.phone) ? '' : 'Неправильне введення. Формат: +380xxxxxxxxx',
-    };
-
-    setErrors(newErrors);
-
-    // Перевірка на наявність помилок
-    if (!Object.values(newErrors).some(error => error))
-    {
-      //setInfo(newInfo);
-      setEditPersonalInfoMode(false); // Вихід з режиму редагування після успішного збереження даних
-    }
-  };
-  {/*---------------------------------------------------------------*/ }
-  {/*Пароль*/ }
-
-  const [password, setPassword] = useState(encryptPassword('initialPassword')); // replace 'initialPassword' with your default
-  const [editPasswordMode, setEditPasswordMode] = useState(false);
-  const [passwordInput, setPasswordInput] = useState(''); // New state for handling password input
-  const [reenteredPassword, setReenteredPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-
-  // Function to encrypt the password 
-  function encryptPassword(password)
-  {
-    return btoa(password);
-  }
-  function decryptPassword(encryptedPassword)
-  {
-    return atob(encryptedPassword);
+    inputFile.current.click();
   }
 
-  const toggleEditPasswordMode = () =>
+  const getPicture = async (event) =>
   {
-    setEditPasswordMode(!editPasswordMode);
+    let file = event.target.files[0];
 
-    if (editPasswordMode)
+    if (file !== undefined)
     {
-      setPasswordInput('');
-      setReenteredPassword('');
-    } else
-    {
-
-      setPasswordInput(decryptPassword(password));
+      let urlToPicture = await upload(file)
+      setLoadingPhoto(true)
+      await dispatch(updataPhoto({
+        pictureAddress: urlToPicture?.data?.display_url,
+      })).then(() =>
+      {
+        setLoadingPhoto(false)
+        dispatch(getUserPersonalData())
+      }).catch(() =>
+      {
+        setLoadingPhoto(false)
+      })
     }
-  };
+  }
 
-  const handlePasswordInputChange = (e) =>
+  const onConfirmEditData = async () =>
   {
-    setPasswordInput(e.target.value);
-  };
-
-  const handleReenteredPasswordChange = (e) =>
-  {
-    setReenteredPassword(e.target.value);
-  };
-
-  const handleSavePassword = () =>
-  {
-    if (passwordInput === reenteredPassword)
+    let isValid = true;
+    if (userName.length < 2)
     {
-      setPassword(encryptPassword(passwordInput));
-      setEditPasswordMode(false);
-      setPasswordError('');
-    } else
-    {
-      setPasswordError('Паролі не співпадають');
+      setUserNameError(true);
+      isValid = false;
     }
-  };
-  {/*---------------------------------------------------------------*/ }
-  {/*Image*/ }
-  //const [image, setImage] = useState(personImage);
+    if (userSurname.length < 2)
+    {
+      setUserSurnameError(true);
+      isValid = false;
+    }
+    if (!PHONE_PATTERN.test(userPhone))
+    {
+      setUserPhoneError(true);
+      isValid = false;
+    }
 
-  const handleImageChange = (e) =>
+    if (isValid === true)
+    {
+      if (userPersonalData?.name !== userName ||
+        userPersonalData?.surname !== userSurname ||
+        userPersonalData?.phoneNumber !== userPhone)
+
+        await dispatch(updataPersonalData({
+          name: userName,
+          surname: userSurname,
+          email: "",
+          phoneNumber: userPhone,
+        })).then(({ payload }) =>
+        {
+          if (payload?.status === 200)
+            dispatch(getUserPersonalData())
+        })
+    }
+  }
+
+  const onConfirmEditPassword = async () =>
   {
-    const file = e.target.files[0];
-    const imageUrl = URL.createObjectURL(file);
-    //setImage(imageUrl);
+    if (MIN_PASSWORD_LENGTH > currentPassword.length)
+    {
+      setCurrentPasswordError(true)
+    }
+    else if (password.length < MIN_PASSWORD_LENGTH)
+    {
+      setPasswordError(true)
+    }
+    else if (!PASSWORD_PATTERN.test(password))
+    {
+      setPasswordError(true)
+    }
+    else if (password !== confirmPassword)
+    {
+      setConfirmPasswordError(true);
+    }
+    else
+    {
+      await dispatch(updatePassword({
+        currentPassword: currentPassword,
+        newPassword: password,
+      })).then(({ payload }) =>
+      {
+        if (payload?.status === 200)
+          dispatch(getUserPersonalData()).then(() =>
+          {
+            dispatch(setShowPasswordSuccessAlert(true));
+            setTimeout(() =>
+            {
+              dispatch(setShowPasswordSuccessAlert(false));
+            }, 2000)
+          })
+      })
+    }
+  }
+
+  const handleConfirmExit = () =>
+  {
+    localStorage.removeItem('access-token');
+    localStorage.setItem('cart', JSON.stringify([]))
+    dispatch(resetOrderState())
+    dispatch(resetLikedProductsState())
+    dispatch(resetCategoryState())
+    dispatch(resetCartState())
+    navigate('/')
+    setIsConfirmDialogVisible(false);
   };
+
+  const handleCancelExit = () =>
+  {
+    setIsConfirmDialogVisible(false);
+  };
+
 
   return (
-
-    <Container>
-
-      <Box style={{
-        padding: '40px',
-        marginTop: '100px',
-        marginRight: '250px',
-        backgroundColor: '#E9ECEC',
-        borderRadius: '20px',
+    <Grid
+      item
+      sx={{
+        minHeight: '100vh',
+        height: '100%',
+        marginLeft: {
+          sm: 0,
+          xs: '15px',
+        }
       }}
-        elevation={3}>
+      xs={12}
+    >
 
-        <Grid container spacing={2} >
+      <Grid
+        container
 
-          {/*Блок 1*/}
-          {/* Image and Edit Button */}
-          <Grid item xs={12} md={4} lg={4}>
-            <Box textAlign="center">
-              <img src='' alt="Profile" width="200" height="200" padding="10px" style={{ border: '3px solid #0A3D58', padding: '5px', borderRadius: '10px' }} />
-              <input type="file" style={{ display: 'none' }} id="image-upload" onChange={handleImageSubmit} />
-              <label htmlFor="image-upload">
-                <Button className='button_style' component="span" onClick={toggleEditImageMode}>
-                  <Typography className='button_text_style'>Змінити зображення</Typography>
-                </Button>
-              </label>
-            </Box>
+        item
+        xs={12}
+        sx={{
+          padding: '10px',
+
+        }}
+      >
+        <Grid
+          container
+          item
+          direction={'row'}
+          xs={12}
+          alignContent={'center'}
+          sx={{
+            paddingLeft: {
+              lg: '5%',
+              md: '5%',
+              sm: '10%',
+              xs: '10%'
+            },
+            borderRadius: '10px',
+          }}
+        >
+          <Grid
+            item
+            xs={2}
+          >
+            <img
+              src={picturePath}
+              alt='user'
+              width="120"
+              height="120"
+              style={{
+                borderRadius: '90px',
+                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+              }}
+            />
           </Grid>
-          {/*-------------------------------------------------------------*/}
-          {/* Блок 2 */}
-          <Grid item xs={12} md={4} lg={4} >
 
-            {editPersonalInfoMode ? (
-              <form onSubmit={handlePersonalInfoSubmit}>
-                <TextField
-                  label="Name"
-                  variant="outlined"
-                  name="name"
-                  defaultValue=''//{info.name}
+          <Grid
+            item
+            container
+            xs={10}
+            alignContent={'end'}
+            sx={{
+              paddingLeft: {
+                lg: 0,
+                md: '5%',
+                sm: '8%',
+                xs: '15%',
+              },
+              paddingBottom: {
+                xs: '10px'
+              }
+            }}
+          >
+            <button
+              onClick={openFileManager}
+              style={{
+                border: 'none',
+                background: 'none',
+              }}
+              className='h5-bold-brown2'
+            >Змінити світлину</button>
+            <input
+              type='file'
+              id='file'
+              ref={inputFile}
+              style={{ display: 'none' }}
+              accept="image/png, image/gif, image/jpeg"
+              onChange={getPicture}
+            />
+          </Grid>
 
-                  sx={textFieldStyle}
+        </Grid>
 
-                />
-                <TextField
-                  label="Email"
-                  variant="outlined"
-                  name="email"
-                  defaultValue=''//{info.email}
-                  error={!!errors.email}
-                  helperText={errors.email}
-                  sx={textFieldStyle}
+      </Grid>
+      <Grid
+        container
+        item
+        xs={12}
 
-                />
-                <TextField
-                  label="Phone"
-                  variant="outlined"
-                  name="phone"
-                  defaultValue=''//{info.phone}
-                  error={!!errors.phone}
-                  helperText={errors.phone}
-                  sx={textFieldStyle}
+        rowGap={1}
+        sx={{
+          padding: '10px',
+        }}
 
-                />
+        justifyContent={'space-between'}
+      >
+        <Grid
+          container
+          item
+          lg={5.9}
+          xs={12}
+          bgcolor={'#E9ECEC'}
+          height={'100%'}
+          sx={{
+            borderRadius: '10px',
+            padding: '10px',
+          }}
+        >
+          <Grid
+            container
+            item
+            xs={12}
+            sx={{
+              marginBottom: '10px',
+            }}
+          >
+            <Grid
+              item
+              xs={8}
+            >
+              <Typography
+                className='brown1-500-18'
+              >
+                Інформація про себе:
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              container
+              xs={4}
+              justifyContent={'right'}
+              alignContent={'center'}
+            >
+              <button
+                style={{
+                  backgroundColor: '#DA8D33',
+                  border: 'none',
+                  borderRadius: '15px',
+                  width: 'fit-content',
+                  padding: '5px',
+                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                }}
+                className='white-500-16'
+                onClick={() =>
+                {
+                  onConfirmEditData()
+                }}
+              >
+                Підтвердити
+              </button>
+            </Grid>
+          </Grid>
 
-                <Button className='button_style' type="submit"><Typography className='button_text_style'>Зберегти</Typography></Button>
-              </form>
+          <Grid
+            item
+            container
+            xs={12}
+            alignContent={'center'}
+          >
+            <input
+              style={{
+                border: userNameError ? '1px solid red' : 'none',
+              }}
+              type='text'
+              value={userName}
+              placeholder="Ім'я"
+              className='input-my-data-row brown2-500-20'
+              onChange={({ target }) =>
+              {
+                setUserName(target.value);
+                if (userNameError)
+                {
+                  setUserNameError(false)
+                }
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            container
+            xs={12}
+            alignContent={'center'}
+          >
+            <input
+              style={{
+                border: userSurnameError ? '1px solid red' : 'none',
+              }}
+              type='text'
+              value={userSurname}
+              className='input-my-data-row brown2-500-20'
+              placeholder='Прізвище'
+              onChange={({ target }) =>
+              {
+                setUserSurname(target.value);
+                if (userSurnameError)
+                {
+                  setUserSurnameError(false);
+                }
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            container
+            xs={12}
+            alignContent={'center'}
+          >
+            <input
+              style={{
+                border: userPhoneError ? '1px solid red' : 'none',
+              }}
+              className='input-my-data-row brown2-500-20'
+              type='text'
+              value={userPhone}
+              placeholder='Номер телефону'
+              onChange={({ target }) =>
+              {
+                setUserPhone(target.value);
+                if (userPhoneError)
+                {
+                  setUserPhoneError(false);
+                }
+                if (messageFromServer.length > 0)
+                {
+                  dispatch(resetMessageFromServer())
+                }
+              }}
+            />
+            <label
+              className={'t2-medium-red'}
+            >{messageFromServer}</label>
+          </Grid>
 
-            ) : (
+        </Grid>
 
-              <Box className='infoStyle'>
-                <Typography className='titleStyle'>
-                  {/* {info.name} */}
-                </Typography>
-                <Typography className='infoElementStyle'>
-                  {/* {info.email} */}
-                </Typography>
-                <Typography className='infoElementStyle'>
-                  {/* {info.phone} */}
-                </Typography>
-                <Button className='button_style' onClick={toggleEditPersonalInfoMode}><Typography className='button_text_style'>Змінити дані</Typography></Button>
-              </Box>
-            )}
+        <Grid
+          container
+          item
+          lg={5.9}
+          xs={12}
+          bgcolor={'#E9ECEC'}
+          sx={{
+            borderRadius: '10px',
+            padding: '10px',
+          }}
+        >
+          <Grid
+            container
+            item
+            xs={12}
+            sx={{
+              marginBottom: {
+                sm: 0,
+                xs: '10px',
+              }
+            }}
+          >
+            <Grid
+              item
+              xs={8}
+            >
+              <Typography
+                className='brown1-500-18'
+              >
+                Зміна паролю:
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              container
+              xs={4}
+              justifyContent={'right'}
+
+            >
+              <button
+                style={{
+                  backgroundColor: '#DA8D33',
+                  border: 'none',
+                  borderRadius: '15px',
+                  width: 'fit-content',
+                  height: 'fit-content',
+                  padding: '5px',
+                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                }}
+                className='white-500-16'
+                onClick={() =>
+                {
+                  onConfirmEditPassword()
+                }}
+              >
+                Підтвердити
+              </button>
+            </Grid>
 
           </Grid>
-          {/*-------------------------------------------------------------*/}
-          {/* Блок 3 */}
-          <Grid item xs={11} md={3} lg={3}>
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <Typography className='titleStyle'>Пароль</Typography>
 
-            </Box>
-            {editPasswordMode ? (
-              <>
-                <TextField
-                  label="Пароль"
-                  variant="outlined"
-                  type="text"
-                  value={passwordInput}
-                  onChange={handlePasswordInputChange}
-                  error={!!passwordError}
-                  helperText={passwordError}
-                  sx={{ marginBottom: '20px' }}
+          <Grid
+            container
+            item
+            xs={12}
+            rowGap={1}
+          >
+            <Grid
+              item
+              xs={12}
+            >
+              <label
+                className={'t2-medium'}
+              >Поточний пароль</label>
+              <PasswordInput
+                onChange={(value) =>
+                {
+                  setCurrentPassword(value)
+                  if (currentPasswordError)
+                  {
+                    setCurrentPasswordError(false);
+                  }
+                  if (passwordMessage.length > 0)
+                  {
+                    dispatch(resetPasswordMessage())
+                  }
+                }}
+                isError={currentPasswordError}
+              />
+              <label
+                style={{
+                  display: currentPasswordError ? 'flex' : 'none',
+                }}
+                className={'t2-medium-red'}
+              >Введіть поточний пароль</label>
+              <label
+                className={'t2-medium-red'}
+              >{passwordMessage}</label>
+            </Grid>
 
-                />
-                <TextField
-                  label="Повторіть пароль"
-                  variant="outlined"
-                  type="text"
-                  value={reenteredPassword}
-                  onChange={handleReenteredPasswordChange}
-                  error={!!passwordError}
-
-                />
-                <Button className='button_style' onClick={handlePasswordSubmit}><Typography className='button_text_style'>Зберегти</Typography></Button>
-              </>
-            ) : (
-              <Box>
-                <TextField
-                  label="Пароль"
-                  variant="outlined"
-                  type="password"
-                  value={password}
-                  disabled={true}
-                  sx={textFieldStyle}
-                />
-                <Button className='button_style' onClick={toggleEditPasswordMode}><Typography className='button_text_style'> Змінити пароль</Typography></Button>
-              </Box>
-            )}
-
+            <Grid
+              item
+              xs={12}
+            >
+              <label
+                className={'t2-medium'}
+              >Новий пароль</label>
+              <PasswordInput
+                onChange={(value) =>
+                {
+                  setPassword(value)
+                  if (passwordError)
+                  {
+                    setPasswordError(false);
+                  }
+                }}
+                isError={passwordError}
+              />
+              <label
+                style={{
+                  display: passwordError ? 'flex' : 'none',
+                }}
+                className={'t2-medium-red'}
+              >Придумайте складніший пароль</label>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+            >
+              <label
+                className={'t2-medium'}
+              >Введіть ще раз</label>
+              <PasswordInput
+                onChange={(value) =>
+                {
+                  setConfirmPassword(value)
+                  if (confirmPasswordError)
+                  {
+                    setConfirmPasswordError(false)
+                  }
+                }}
+                isError={confirmPasswordError}
+              />
+              <label
+                style={{
+                  display: confirmPasswordError ? 'flex' : 'none',
+                }}
+                className={'t2-medium-red'}
+              >Паролі не співпадають</label>
+            </Grid>
           </Grid>
         </Grid>
-      </Box>
-    </Container>
+      </Grid>
+
+      <Grid
+        container
+        item
+        xs={12}
+        sx={{
+          padding: '10px',
+        }}
+        justifyContent={'right'}
+      >
+        <button
+          style={{
+            backgroundColor: '#B31D21',
+            border: 'none',
+            borderRadius: '15px',
+            width: 'fit-content',
+            padding: '10px 25px 10px 25px',
+            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+          }}
+          className='white-500-18'
+          onClick={() =>
+          {
+            setIsConfirmDialogVisible(true);
+          }}
+        >
+          Вийти
+        </button>
+      </Grid>
+
+      {
+        showPasswordSuccessAlert &&
+        <span
+          className="modal-backdrop"
+        >
+          <PasswordSuccessAlert />
+        </span>
+      }
+
+      {
+        isConfirmDialogVisible && (
+          <div className='modal-backdrop'>
+            <div className='confirm-dialog'>
+              <p>Ви впевнені, що бажаєте вийти?</p>
+              <label className='confirm-buttom' onClick={handleConfirmExit}>Так</label>
+              <label className='confirm-buttom' onClick={handleCancelExit}>Ні</label>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        loadingPhoto && (
+          <Grid
+            sx={{
+              minHeight: '100vh'
+            }}
+          >
+            <LoadingAnimation />
+          </Grid>
+        )
+      }
+
+    </Grid>
   );
 };
 
