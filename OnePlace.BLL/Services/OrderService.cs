@@ -209,7 +209,7 @@ namespace OnePlace.BLL.Services
             var options = new SessionCreateOptions();
 
             
-            options.SuccessUrl = "http://localhost:3000/";
+            options.SuccessUrl = "http://localhost:3000/?order_success=true";
             options.CancelUrl = "http://localhost:3000/basket";
 
 
@@ -270,7 +270,6 @@ namespace OnePlace.BLL.Services
                 OrderState = order.State.ToString(),
                 PaymentMethod = order.PaymentMethod.ToString(),
                 PaymentStatus = order.PaymentStatus.ToString(),
-                //DeliveryCompany = 
                 PhoneNumber = order.PhoneNumber,
                 UserId = order.UserId,
                 UserInitials = order.Name + " " + order.Surname,
@@ -315,6 +314,72 @@ namespace OnePlace.BLL.Services
             #endregion
 
             return orderDetails;
+        }
+
+        public async Task<List<OrderDetails>> GetAllUsersOrders()
+        {
+            List<OrderDetails> orders= new List<OrderDetails>();
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userId is not null)
+            {
+                var orderIds = await _unitOfWork.Orders.FindAsync(o=>o.UserId == Int32.Parse(userId.Value));
+
+                if(orderIds is not null)
+                {
+                    foreach (var orderId in orderIds)
+                    {
+                        Order order = await _unitOfWork.Orders.GetAsync(orderId.Id);
+                        if(order is not null) 
+                        {
+                            OrderDetails orderDetails = new OrderDetails
+                            {
+                                Id = orderId.Id,
+                                Date = order.Date,
+                                Comment = order.Comment,
+                                DeliveryInfo = order.DeliveryInfo,
+                                Number = order.Number,
+                                OrderState = order.State.ToString(),
+                                PaymentMethod = order.PaymentMethod.ToString(),
+                                PaymentStatus = order.PaymentStatus.ToString(),
+                                PhoneNumber = order.PhoneNumber,
+                                UserId = order.UserId,
+                                UserInitials = order.Name + " " + order.Surname,
+                                Email = order.User is not null ? order.User.Email : null
+                            };
+
+                            #region Products
+                            var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId.Id);
+                            foreach (var product in productsOrder)
+                            {
+                                string productName = _unitOfWork.Products.FindAsync(p => p.Id == product.ProductId).Result.Select(p => p.Name).FirstOrDefault();
+                                //Підтягнути титульну картинку товару
+                                var picture = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.ProductId
+                                && pp.IsTitle == true);
+
+                                OrderedProduct orderedProduct = new OrderedProduct
+                                {
+                                    Id = product.ProductId,
+                                    Name = productName,
+                                    Quantity = product.Quantity,
+                                    ColorId = product.ColorId,
+                                    Picture = picture.Select(p => p.Picture.Address).FirstOrDefault(),
+                                    Price = product.Price//Ціна вже зі знижкою
+                                };
+                                var color = await _unitOfWork.Colors.GetAsync(product.ColorId);
+                                orderedProduct.ColorName = color.Name;
+                                orderDetails.TotalPrice += product.Price * product.Quantity;
+
+                                orderDetails.Products.Add(orderedProduct);
+                            }
+                            #endregion
+
+                            orders.Add(orderDetails);
+                        }
+                    }
+                }
+            }
+
+            return orders;
         }
 
         /// <summary>
@@ -489,30 +554,5 @@ namespace OnePlace.BLL.Services
             await _unitOfWork.SaveAsync();
             return id;
         }
-
-        //Формування інформації про доставку (допоміжний метод)
-        //private string ExtractDeliveryInfo(OrderCreateDTO orderCreateDTO)
-        //{
-        //    StringBuilder deliveryInfo = new StringBuilder();
-
-        //    deliveryInfo.Append(orderCreateDTO.ServiceName.ToString());
-        //    deliveryInfo.Append(" {" + orderCreateDTO.DeliveryMethod.ToString().TrimEnd() + "}. ");
-        //    deliveryInfo.Append(orderCreateDTO.City);
-        //    deliveryInfo.Append(", ");
-
-        //    if (orderCreateDTO.DeliveryMethod.Equals(DeliveryMethods.Courier))
-        //    {
-        //        deliveryInfo.Append(orderCreateDTO.Street);
-        //        deliveryInfo.Append(", ");
-        //        deliveryInfo.Append(orderCreateDTO.HouseNumber);
-        //        deliveryInfo.Append('/');
-        //        deliveryInfo.Append(orderCreateDTO.FlatNumber);
-        //    }
-        //    else
-        //    {
-        //        deliveryInfo.Append(orderCreateDTO.Department);
-        //    }
-        //    return deliveryInfo.ToString();
-        //}
     }
 }

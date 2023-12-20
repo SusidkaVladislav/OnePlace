@@ -63,5 +63,7 @@ namespace OnePlace.BLL.Interfaces
         Task<List<OrderListModel>> GetAllOrders();
 
         Task<int> DeleteOrer(int id);
+
+        Task<List<OrderDetails>> GetAllUsersOrders();
     }
 }

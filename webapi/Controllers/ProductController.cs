@@ -82,5 +82,33 @@ namespace webapi.Controllers
             var result = await _productService.GetProductsFromCart(ids);
             return Ok(result);
         }
+
+        [HttpPost("getRecommendedProducts")]
+        public async Task<IActionResult> GetRecommendedProducts(PayloadGetRecommendedProducts getRecommendedProducts)
+        {
+            var result = await _productService.GetRecommendedProducts(getRecommendedProducts);
+            return Ok(result);
+        }
+
+        [HttpPost("getAllRecommendedProducts")]
+        public async Task<IActionResult> GetAllRecommendedProducts()
+        {
+            var result = await _productService.GetAllRecommendedProducts();
+            return Ok(result);
+        }
+
+        [HttpGet("getInterestingForYou/{categoryId}")]
+        public async Task<IActionResult> GetInterestingForYou(int categoryId)
+        {
+            var result = await _productService.InterestingForYou(categoryId);
+            return Ok(result);
+        }
+
+        [HttpPost("getLikedProducts")]
+        public async Task<IActionResult> GetLikedProducts(List<int> productIds)
+        {
+            var result = await _productService.LikedProducts(productIds);
+            return Ok(result);
+        }
     }
 }

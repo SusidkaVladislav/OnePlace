@@ -83,5 +83,13 @@ namespace webapi.Controllers
             var res = await _orderService.DeleteOrer(id);
             return Ok(res);
         }
+
+        [HttpPost("getAllUsersOrders")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetAllUsersOrders()
+        {
+            var res = await _orderService.GetAllUsersOrders();
+            return Ok(res);
+        }
     }
 }

@@ -39,5 +39,27 @@ namespace OnePlace.BLL.Validators
             if (user != null)
                 throw new BusinessException("Користувач з таким номером телефону уже існує!");
         }
+
+        
+        public async Task ValidateUpdateUser(User user, string oldPhone)
+        {
+            await PhoneUpdateValid(oldPhone, user.PhoneNumber);
+        }
+
+
+        public async Task PhoneUpdateValid(string oldPhone, string newPhone)
+        {
+            if (string.IsNullOrEmpty(oldPhone) || string.IsNullOrEmpty(newPhone))
+                throw new ArgumentNullException("phone is null or empty");
+
+            if(oldPhone != newPhone)
+            {
+                User? user = await _userManager.Users
+                .Where(u => u.PhoneNumber == newPhone).FirstOrDefaultAsync();
+
+                if (user != null)
+                    throw new BusinessException("Користувач з таким номером телефону уже існує!");
+            }
+        }
     }
 }

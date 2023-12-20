@@ -70,6 +70,8 @@ namespace OnePlace.BLL.Mappings
 
             CreateMap<DAL.Models.PaginatedList<Product>, PaginatedList<ProductDetails>>();
             #endregion
+
+            CreateMap<PayloadGetRecommendedProducts, GetRecommendedProductsDTO>().ReverseMap();
         }
     }
 }

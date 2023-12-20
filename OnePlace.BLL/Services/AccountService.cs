@@ -214,8 +214,6 @@ namespace OnePlace.BLL.Services
 
             user.RefreshToken = null;
             await _userManager.UpdateAsync(user);
-
-
         }
 
         public async Task SendCode(string emailAddress)

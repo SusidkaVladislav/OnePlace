@@ -48,5 +48,13 @@ namespace OnePlace.BLL.Interfaces
         Task<List<ProductToReturnAllDTO>> GetAllProducts(int? categoryId = null);
 
         Task<List<ProductFromCartDTO>> GetProductsFromCart(List<PayloadProductIdColorId> ids);
+
+        Task<List<ProductListModel>> GetRecommendedProducts(PayloadGetRecommendedProducts getRecommendedProducts);
+
+        Task<List<ProductListModel>> GetAllRecommendedProducts();
+
+        Task<List<ProductListModel>> InterestingForYou(int categoryId);
+
+        Task<List<ProductListModel>> LikedProducts(List<int> productIds);
     }
 }
