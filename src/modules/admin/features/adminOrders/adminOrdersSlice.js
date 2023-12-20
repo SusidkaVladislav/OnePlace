@@ -9,6 +9,14 @@ const initialState = {
     successfulAlertShow: false,
     unsuccessfulAlertShow: false,
     actionNotification: '',
+
+    getOrdersLoading: false,
+    getOrdersByDateLoading: false,
+    getAllOrdersByUserIdLoading: false,
+    getOrderByIdLoading: false,
+    updateOrderStatusLoading: false,
+    updateOrderPaymentStatusLoading: false,
+    deleteOrderLoading: false,
 }
 
 export const getOrders = createAsyncThunk('adminOrders/getOrders', async (_, { rejectWithValue }) =>
@@ -309,7 +317,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getOrdersLoading: true,
                 }
             })
             .addCase(getOrders.fulfilled, (state, { payload }) =>
@@ -317,14 +325,14 @@ const adminOrdersSlice = createSlice({
                 return {
                     ...state,
                     orders: payload.sort(sortByNumber),
-                    loading: false
+                    getOrdersLoading: false
                 }
             })
             .addCase(getOrders.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getOrdersLoading: false,
                 }
             })
 
@@ -332,7 +340,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getAllOrdersByUserIdLoading: true,
                 }
             })
             .addCase(getAllOrdersByUserId.fulfilled, (state, { payload }) =>
@@ -340,14 +348,14 @@ const adminOrdersSlice = createSlice({
                 return {
                     ...state,
                     orders: payload.sort(sortByNumber),
-                    loading: false,
+                    getAllOrdersByUserIdLoading: false,
                 }
             })
             .addCase(getAllOrdersByUserId.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getAllOrdersByUserIdLoading: false,
                 }
             })
 
@@ -355,14 +363,14 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getOrdersByDateLoading: true,
                 }
             })
             .addCase(getOrdersByDate.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getOrdersByDateLoading: false,
                     orders: payload.sort(sortByNumber)
                 }
             })
@@ -370,7 +378,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    getOrdersByDateLoading: false,
 
                 }
             })
@@ -379,14 +387,14 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getOrderByIdLoading: true,
                 }
             })
             .addCase(getOrderById.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getOrderByIdLoading: false,
                     order: payload
                 }
             })
@@ -394,7 +402,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    getOrderByIdLoading: false,
                 }
             })
 
@@ -402,21 +410,21 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    updateOrderStatusLoading: true,
                 }
             })
             .addCase(updateOrderStatus.fulfilled, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    updateOrderStatusLoading: false,
                 }
             })
             .addCase(updateOrderStatus.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    updateOrderStatusLoading: false,
                 }
             })
 
@@ -424,21 +432,21 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    updateOrderPaymentStatusLoading: true,
                 }
             })
             .addCase(updateOrderPaymentStatus.fulfilled, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    updateOrderPaymentStatusLoading: false,
                 }
             })
             .addCase(updateOrderPaymentStatus.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    updateOrderPaymentStatusLoading: false,
                 }
             })
 
@@ -446,7 +454,7 @@ const adminOrdersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    deleteOrderLoading: true,
                 }
             })
             .addCase(deleteOrder.fulfilled, (state) =>
@@ -455,7 +463,7 @@ const adminOrdersSlice = createSlice({
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    loading: false,
+                    deleteOrderLoading: false,
                     actionNotification: 'Замовлення видалено!'
                 }
             })
@@ -465,7 +473,7 @@ const adminOrdersSlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    loading: false,
+                    deleteOrderLoading: false,
                     actionNotification: payload.detail,
                 }
             })

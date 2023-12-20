@@ -50,6 +50,7 @@ import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCh
 //#endregion
 import ImgBBUpload from '../../../../../services/image-upload-service/ImgBBUpload';
 import './ItemEditProductStyles.css';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 const ItemEditProduct = () =>
 {
@@ -62,11 +63,11 @@ const ItemEditProduct = () =>
     const [percentAmount, setPercentAmount] = useState(0);
     const [startDiscount, setStartDiscount] = useState(new Date());
     const [endDiscount, setEndDiscount] = useState(new Date());
-    const [loading, setLoading] = useState(true);
     const [description, setDescription] = useState('');
     const [productCharacteristics, setProductCharacteristics] = useState(false);
     var characteristicFromCategoryLeftSide = [];
     var characteristicFromCategoryRightSide = [];
+
     const {
         category,
         allBrands,
@@ -86,7 +87,18 @@ const ItemEditProduct = () =>
         codeValid,
         descriptionValid,
         productImages,
+
+
+        getProductLoading,
+        updateProductLoading,
+        getAllBrandsLoading,
+        getAllCountriesLoading,
+        getAllColorsLoading,
     } = useSelector(state => state.adminProducts);
+
+    const {
+        categoryForSelectLoading
+    } = useSelector(state => state.adminCategories)
 
     //#region Validation states
     const [colorValidity, setColorValidadity] = useState(true)
@@ -119,17 +131,17 @@ const ItemEditProduct = () =>
         reader.readAsDataURL(file);
         reader.onload = () =>
         {
-            if (mainPicturePath.length > 0)
+            if (mainPicturePath?.length > 0)
             {
                 var newPictureBlock = {}
 
                 try
                 {
-                    let lastPictureBlockId = productPictures[productPictures.length - 1].blockId;
+                    let lastPictureBlockId = productPictures[productPictures?.length - 1]?.blockId;
                     newPictureBlock = {
                         id: -1,
                         blockId: lastPictureBlockId + 1,
-                        address: reader.result,
+                        address: reader?.result,
                         isTitle: false,
                     };
 
@@ -143,7 +155,7 @@ const ItemEditProduct = () =>
                     newPictureBlock = {
                         id: -1,
                         blockId: 0,
-                        address: reader.result,
+                        address: reader?.result,
                         isTitle: false,
                     };
 
@@ -172,13 +184,16 @@ const ItemEditProduct = () =>
 
     const generatePicturesBlocks = () =>
     {
-        for (let i = 0; i < productPictures.length; i++)
+        for (let i = 0; i < productPictures?.length; i++)
         {
-            images.push(<CommonPicture
-                srcPath={productPictures[i].address}
-                pictureId={productPictures[i].blockId}
-                onRemove={RemovePicture}
-                onSetMain={setMainPicture} />)
+            images.push(
+                <CommonPicture
+                    key={i}
+                    srcPath={productPictures[i]?.address}
+                    pictureId={productPictures[i]?.blockId}
+                    onRemove={RemovePicture}
+                    onSetMain={setMainPicture} />
+            )
         }
 
         return images;
@@ -186,12 +201,12 @@ const ItemEditProduct = () =>
 
     const RemovePicture = (blockId) =>
     {
-        const forDelete = productPictures.filter((block) => block.blockId === blockId)
-        if (forDelete[0].address !== mainPicturePath)
+        const forDelete = productPictures?.filter((block) => block?.blockId === blockId)
+        if (forDelete[0]?.address !== mainPicturePath)
         {
-            const fileterFiles = imgFiles.filter((file) => file.blockId !== blockId)
+            const fileterFiles = imgFiles?.filter((file) => file?.blockId !== blockId)
             setImageFiles(fileterFiles)
-            const filteredPictures = productPictures.filter((block) => block.blockId !== blockId);
+            const filteredPictures = productPictures?.filter((block) => block?.blockId !== blockId);
             setProductPictures(filteredPictures)
             dispatch(setPictures(filteredPictures))
         }
@@ -199,18 +214,18 @@ const ItemEditProduct = () =>
 
     const setMainPicture = (blockId) => 
     {
-        productPictures = productPictures.map((pict) =>
+        productPictures = productPictures?.map((pict) =>
         {
             let p = {
-                blockId: pict.blockId,
-                id: pict.id,
-                address: pict.address,
-                deleteURL: pict.deleteURL,
+                blockId: pict?.blockId,
+                id: pict?.id,
+                address: pict?.address,
+                deleteURL: pict?.deleteURL,
             }
 
-            if (pict.blockId === blockId)
+            if (pict?.blockId === blockId)
             {
-                setPicturePath(pict.address)
+                setPicturePath(pict?.address)
                 p.isTitle = true
             }
             else
@@ -232,48 +247,43 @@ const ItemEditProduct = () =>
 
     var blocks = [];
 
+    const [editPageContorollLoading, setEditPageContorollLoading] = useState(true);
+
     useEffect(() =>
     {
         dispatch(resetProduct())
-
         dispatch(resetColorPrice())
         dispatch(getCategoriesForSelect())
-
         blocks = []
         dispatch(getAllBrands());
         dispatch(getAllCountries());
         dispatch(getAllColors());
-
-        dispatch(getProduct(productId))
-            .then(() =>
+        dispatch(getProduct(Number(params.id))).then(({ payload }) =>
+        {
+            setSaleId(payload?.sale !== null ? payload?.sale?.id : null);
+            setPercentAmount(payload?.sale !== null ? payload?.sale?.discountPercent : 0);
+            setStartDiscount(payload?.sale !== null ? new Date(payload?.sale?.startDate) : new Date())
+            setEndDiscount(payload?.sale !== null ? new Date(payload?.sale?.endDate) : new Date())
+            setEditPageContorollLoading(false)
+        })
+            .catch(() =>
             {
-                setLoading(false);
+                setEditPageContorollLoading(false)
             })
-            .catch((error) =>
-            {
-                console.error('Failed to fetch data', error);
-                setLoading(false);
-                navigate(-1);
-            });
-
     }, [])
 
     useEffect(() =>
     {
-        setSaleId(productSale !== null ? productSale.id : null);
-        setPercentAmount(productSale !== null ? productSale.discountPercent : 0);
-        setStartDiscount(productSale !== null ? new Date(productSale.startDate) : new Date())
-        setEndDiscount(productSale !== null ? new Date(productSale.endDate) : new Date())
         setDescription(productDescription)
         setProductPictures(productImages)
 
-        let mainPicture = productImages.filter(img => img.isTitle === true);
+        let mainPicture = productImages?.filter(img => img?.isTitle === true);
         setPicturePath(mainPicture[0]?.address)
         productAddedCharacteristics = {
             productCharacteristic: charachteristics
         }
 
-    }, [productSale, productDescription, charachteristics, productImages]);
+    }, [productDescription, charachteristics, productImages]);
 
 
     const handleSelectBrand = (event) =>
@@ -290,16 +300,16 @@ const ItemEditProduct = () =>
 
     const addColorPrice = () =>
     {
-        if (productColorPrice.length < allColors.length)
+        if (productColorPrice?.length < allColors?.length)
         {
             let lastBlockId = 0;
-            if (productColorPrice.length > 0)
-                lastBlockId = productColorPrice[productColorPrice.length - 1].blockId;
+            if (productColorPrice?.length > 0)
+                lastBlockId = productColorPrice[productColorPrice?.length - 1]?.blockId;
 
             dispatch(addColorPriceBlock(
                 {
                     blockId: lastBlockId + 1,
-                    colorId: allColors[allColors.length - 1].id,
+                    colorId: allColors[allColors?.length - 1]?.id,
                     price: 0,
                     quantity: 0,
                 }
@@ -309,16 +319,17 @@ const ItemEditProduct = () =>
 
     const generateColorBlocks = () =>
     {
-        for (let i = 0; i < productColorPrice.length; i++)
+        for (let i = 0; i < productColorPrice?.length; i++)
         {
-            blocks.push(
+            blocks?.push(
                 <ColorPriceItem
                     colors={allColors}
                     productColorsBlocks={productColorPrice[i]}
-                    key={productColorPrice[i].blockId}
+                    key={productColorPrice[i]?.blockId}
                     deleteColorPriceBlock={deleteBlock}
                     colorValidity={colorValidity}
-                />)
+                />
+            )
         }
 
         return blocks;
@@ -326,7 +337,7 @@ const ItemEditProduct = () =>
 
     const deleteBlock = (blockId) =>
     {
-        if (productColorPrice.length >= 2)
+        if (productColorPrice?.length >= 2)
         {
             dispatch(deleteColorPriceBlock(blockId));
             dispatch(setColorValid(true));
@@ -385,7 +396,7 @@ const ItemEditProduct = () =>
 
     const nameValidation = () =>
     {
-        if (productName.length < 2)
+        if (productName?.length < 2)
         {
             dispatch(setNameValid(false))
             return false;
@@ -399,15 +410,15 @@ const ItemEditProduct = () =>
 
     const colorIdValidation = () =>
     {
-        if (productColorPrice[0].colorId === -1)
+        if (productColorPrice[0]?.colorId === -1)
         {
             setColorValidadity(false)
             return false;
         }
 
-        const colorIds = productColorPrice.map((block) => block.colorId);
+        const colorIds = productColorPrice?.map((block) => block?.colorId);
         const uniqueColorIds = new Set(colorIds);
-        const areAllUnique = colorIds.length === uniqueColorIds.size;
+        const areAllUnique = colorIds?.length === uniqueColorIds?.size;
         if (areAllUnique)
         {
             dispatch(setColorValid(true))
@@ -426,9 +437,9 @@ const ItemEditProduct = () =>
     {
         if (manufacturerId === -1)
         {
-            if (allBrands.length > 0)
+            if (allBrands?.length > 0)
             {
-                dispatch(setManufacturer(allBrands[0].id));
+                dispatch(setManufacturer(allBrands[0]?.id));
                 return true;
             }
             else
@@ -443,9 +454,9 @@ const ItemEditProduct = () =>
     {
         if (manufacturerCountryId === -1)
         {
-            if (allCountries.length > 0)
+            if (allCountries?.length > 0)
             {
-                dispatch(setManufacturerCountry(allCountries[0].id));
+                dispatch(setManufacturerCountry(allCountries[0]?.id));
                 return true;
             }
             else
@@ -459,7 +470,7 @@ const ItemEditProduct = () =>
 
     const codeValidation = () =>
     {
-        if (productCode.length >= 4)
+        if (productCode?.length >= 4)
         {
             dispatch(setCodeValid(true))
             return true;
@@ -473,7 +484,7 @@ const ItemEditProduct = () =>
 
     const descriptionValidation = () =>
     {
-        if (description.length < 20)
+        if (description?.length < 20)
         {
             dispatch(setDescriptionValid(false))
             return false;
@@ -488,8 +499,8 @@ const ItemEditProduct = () =>
     const addCharacteristic = () =>
     {
         var block = 0;
-        if (productAddedCharacteristics.productCharacteristic.length > 0)
-            block = productAddedCharacteristics.productCharacteristic[productAddedCharacteristics.productCharacteristic.length - 1].blockId;
+        if (productAddedCharacteristics?.productCharacteristic?.length > 0)
+            block = productAddedCharacteristics?.productCharacteristic[productAddedCharacteristics?.productCharacteristic?.length - 1]?.blockId;
 
         dispatch(addCharachteristic({
             blockId: block + 1,
@@ -501,15 +512,15 @@ const ItemEditProduct = () =>
     const generateDescriptionsFromCategoryLeft = () =>
     {
         characteristicFromCategoryLeftSide = [];
-        if (productAddedCharacteristics.productCharacteristic !== undefined)
+        if (productAddedCharacteristics?.productCharacteristic !== undefined)
         {
-            for (let c = 0; c < productAddedCharacteristics.productCharacteristic.length; c++)
+            for (let c = 0; c < productAddedCharacteristics?.productCharacteristic?.length; c++)
             {
                 if (c % 2 === 0)
                     characteristicFromCategoryLeftSide.push(
                         <NewDescription
                             key={c}
-                            charachteristicInfo={productAddedCharacteristics.productCharacteristic[c]}
+                            charachteristicInfo={productAddedCharacteristics?.productCharacteristic[c]}
                             deleteDescription={deleteAddedDescription}
                         />
                     )
@@ -522,15 +533,15 @@ const ItemEditProduct = () =>
     const generateDescriptionsFromCategoryRight = () =>
     {
         characteristicFromCategoryRightSide = [];
-        if (productAddedCharacteristics.productCharacteristic !== undefined)
+        if (productAddedCharacteristics?.productCharacteristic !== undefined)
         {
-            for (let c = 0; c < productAddedCharacteristics.productCharacteristic.length; c++)
+            for (let c = 0; c < productAddedCharacteristics?.productCharacteristic?.length; c++)
             {
                 if (c % 2 !== 0)
                     characteristicFromCategoryRightSide.push(
                         <NewDescription
                             key={c}
-                            charachteristicInfo={productAddedCharacteristics.productCharacteristic[c]}
+                            charachteristicInfo={productAddedCharacteristics?.productCharacteristic[c]}
                             deleteDescription={deleteAddedDescription}
                         />
                     )
@@ -553,60 +564,84 @@ const ItemEditProduct = () =>
 
     const confirmUpdateProduct = async () =>
     {
-        setLoading(true);
         let pictures = [];
 
-        for (let i = 0; i < productPictures.length; i++)
+        const set = new Set(charachteristics.map(c => c.name?.toUpperCase()));
+        if (set.size === charachteristics?.length)
         {
-            let picture = {
-                id: productPictures[i].id,
-                isTitle: productPictures[i].isTitle
-            }
-
-            if (productPictures[i].id === -1)
+            if (charachteristics?.every(c => c?.name?.length > 0) && charachteristics?.every(c => c?.about?.length > 0))
             {
-                let file = imgFiles.filter(f => f.blockId === productPictures[i].blockId)
-                let uploadResult = await upload(file[0].pictureFile);
+                for (let i = 0; i < productPictures?.length; i++)
+                {
+                    let picture = {
+                        id: productPictures[i]?.id,
+                        isTitle: productPictures[i]?.isTitle
+                    }
 
-                picture.address = uploadResult.data.display_url
-                picture.deleteURL = uploadResult.data.delete_url
-            }
-            else
-            {
-                picture.address = productPictures[i].address
-                picture.deleteURL = productPictures[i].deleteURL
-            }
+                    if (productPictures[i]?.id === -1)
+                    {
+                        let file = imgFiles?.filter(f => f?.blockId === productPictures[i]?.blockId)
+                        let uploadResult = await upload(file[0]?.pictureFile);
 
-            pictures.push(picture)
+                        picture.address = uploadResult?.data?.display_url
+                        picture.deleteURL = uploadResult?.data?.delete_url
+                    }
+                    else
+                    {
+                        picture.address = productPictures[i]?.address
+                        picture.deleteURL = productPictures[i]?.deleteURL
+                    }
+
+                    pictures.push(picture)
+                }
+
+                await dispatch(updateProduct({
+                    id: productId,
+                    pictures: pictures
+                }));
+
+                navigate(-1);
+                setTimeout(() =>
+                {
+                    dispatch(hideSuccessfulAlert())
+                }, 1000);
+                setTimeout(() =>
+                {
+                    dispatch(hideUnsuccessfulAlert())
+                }, 2000);
+            }
         }
-
-        await dispatch(updateProduct({
-            id: productId,
-            pictures: pictures
-        }));
-        setLoading(false);
-        navigate(-1);
-        setTimeout(() =>
-        {
-            dispatch(hideSuccessfulAlert())
-        }, 1000);
-        setTimeout(() =>
-        {
-            dispatch(hideUnsuccessfulAlert())
-        }, 2000);
     }
 
-    if (loading)
+
+
+    if (categoryForSelectLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
+    }
+    if (getAllBrandsLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllCountriesLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllColorsLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getProductLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (updateProductLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (editPageContorollLoading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <div className="edit-product-main-container">
@@ -622,7 +657,7 @@ const ItemEditProduct = () =>
                                         className='product-edit-category'
                                         type='text'
                                         id='product-name-input'
-                                        value={category.name.charAt(0).toUpperCase() + category.name.slice(1) || ''}
+                                        value={category?.name?.charAt(0)?.toUpperCase() + category?.name?.slice(1) || ''}
                                     />
                                 </div>
 
@@ -636,8 +671,8 @@ const ItemEditProduct = () =>
                                         {
                                             allBrands.map((brand) => (
                                                 <option
-                                                    selected={brand.id === Number(manufacturerId)}
-                                                    key={brand.id} value={Number(brand.id)}>{brand.name}</option>
+                                                    selected={brand?.id === Number(manufacturerId)}
+                                                    key={brand?.id} value={Number(brand?.id)}>{brand?.name}</option>
                                             ))
                                         }
                                     </select>
@@ -669,12 +704,12 @@ const ItemEditProduct = () =>
                                     <label>Країна виробник</label>
                                     <select className='select-option-add-product' onChange={handleSelectCountry}>
                                         <option disabled ></option>
-                                        {allCountries.map((country) => (
+                                        {allCountries?.map((country) => (
                                             <option
-                                                selected={country.id === Number(manufacturerCountryId)}
-                                                key={country.id}
-                                                value={Number(country.id)}
-                                            >{country.name}</option>
+                                                selected={country?.id === Number(manufacturerCountryId)}
+                                                key={country?.id}
+                                                value={Number(country?.id)}
+                                            >{country?.name}</option>
                                         ))}
                                     </select>
                                 </div>

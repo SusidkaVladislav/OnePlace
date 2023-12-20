@@ -14,6 +14,7 @@ const initialState = {
     isInLiked: false,
     likedProductLoading: false,
     likedProductsDataLoading: false,
+    likedProductsServerConnectionError: false,
 }
 
 export const isProductInLiked = createAsyncThunk('likedProducts/isProductInLiked', async (productId, { rejectWithValue }) =>
@@ -157,6 +158,7 @@ export const getLikedProductsData = createAsyncThunk('likedProducts/getLikedProd
         return rejectWithValue(customError)
     }
 })
+
 const likedProductsSlice = createSlice({
     name: 'likedProducts',
     initialState,
@@ -180,6 +182,13 @@ const likedProductsSlice = createSlice({
                 likedProductsCount: payload
             }
         },
+        resetLikedProductsServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                likedProductsServerConnectionError: false,
+            }
+        }
     },
     extraReducers(builder)
     {
@@ -199,12 +208,18 @@ const likedProductsSlice = createSlice({
                     likedProductLoading: false,
                 }
             })
-            .addCase(isProductInLiked.rejected, (state) =>
+            .addCase(isProductInLiked.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     isInLiked: false,
                     likedProductLoading: false,
+                    likedProductsServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -223,12 +238,18 @@ const likedProductsSlice = createSlice({
                     likedProductLoading: false,
                 }
             })
-            .addCase(addToLiked.rejected, (state) =>
+            .addCase(addToLiked.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     isInLiked: false,
                     likedProductLoading: false,
+                    likedProductsServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -247,11 +268,17 @@ const likedProductsSlice = createSlice({
                     likedProductLoading: false,
                 }
             })
-            .addCase(deleteFromLiked.rejected, (state) =>
+            .addCase(deleteFromLiked.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     likedProductLoading: false,
+                    likedProductsServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -273,10 +300,16 @@ const likedProductsSlice = createSlice({
             })
             .addCase(getLikedProducts.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     likedProductLoading: false,
                     likedProductsCount: 0,
+                    likedProductsServerConnectionError: isServerConnectionError
                 }
             })
             .addCase(getLikedProductsData.pending, (state) =>
@@ -296,9 +329,15 @@ const likedProductsSlice = createSlice({
             })
             .addCase(getLikedProductsData.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     likedProductsDataLoading: false,
+                    likedProductsServerConnectionError: isServerConnectionError
                 }
             })
     }
@@ -307,6 +346,7 @@ const likedProductsSlice = createSlice({
 export const {
     resetLikedProductsState,
     setLikedProductsCount,
+    resetLikedProductsServerConnectionError,
 } = likedProductsSlice.actions
 
 export default likedProductsSlice.reducer

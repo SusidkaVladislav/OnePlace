@@ -13,7 +13,15 @@ import CategoryUnit from './tab_components/CategoryUnit'
 import LoadingIcon from "../../../../../svg/animations/LoadingAnimation.gif"
 
 import { useDispatch, useSelector } from 'react-redux';
-import { changeCategoryPath, getCategories, getCategoryById, sliceCategoryPath, resetPath } from '../../../features/adminCategory/adminCategorySlice';
+import
+{
+    changeCategoryPath,
+    getCategories,
+    getCategoryById,
+    sliceCategoryPath,
+    resetPath,
+} from '../../../features/adminCategory/adminCategorySlice';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 const TabTemplate = () =>
 {
@@ -39,7 +47,9 @@ const TabTemplate = () =>
         mainCategories,
         categoryPath,
         childrenCategories,
-        loading, } = useSelector(state => state.adminCategories);
+        getCategoriesLoading,
+        getCategoryByIdLoading,
+    } = useSelector(state => state.adminCategories);
 
     const categoriesByPath = async (event) =>
     {
@@ -75,17 +85,13 @@ const TabTemplate = () =>
         dispatch(resetPath())
     }, [])
 
-    if (loading)
+    if (getCategoriesLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation/>
+    }
+    if (getCategoryByIdLoading)
+    {
+        return <LoadingAnimation/>
     }
     return (
         <div className='category-main-container'>

@@ -9,6 +9,8 @@ const initialState = {
     isAuth: false,
     cartCount: 0,
     loading: false,
+
+    cartServerConnectionError: false,
 };
 
 export const addToCart = createAsyncThunk('user/addToCart', async (cart, { rejectWithValue }) =>
@@ -152,6 +154,13 @@ const cartSlice = createSlice({
                 checkedProductIds: payload,
             }
         },
+        resetCategoryServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                cartServerConnectionError: false,
+            }
+        },
     },
     extraReducers(builder)
     {
@@ -172,9 +181,15 @@ const cartSlice = createSlice({
             })
             .addCase(addToCart.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
+                    cartServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -209,10 +224,16 @@ const cartSlice = createSlice({
             })
             .addCase(getUserCart.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
                     isAuth: false,
+                    cartServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -232,9 +253,15 @@ const cartSlice = createSlice({
             })
             .addCase(deleteFromCart.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
+                    cartServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -250,14 +277,20 @@ const cartSlice = createSlice({
                 return {
                     ...state,
                     loading: false,
-                    products: payload
+                    products: payload,
                 }
             })
             .addCase(getProductsFromCart.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
+                    cartServerConnectionError: isServerConnectionError
                 }
             })
     }
@@ -267,6 +300,7 @@ export const {
     resetCartState,
     setCartCount,
     setCheckedIds,
+    resetCategoryServerConnectionError,
 } = cartSlice.actions
 
 export default cartSlice.reducer

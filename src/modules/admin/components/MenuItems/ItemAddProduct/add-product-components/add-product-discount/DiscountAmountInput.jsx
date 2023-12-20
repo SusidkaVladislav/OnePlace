@@ -11,10 +11,8 @@ const DiscountAmountInput = (props) =>
 
 
     const [discountPercent, setDiscountPercent] = useState(Number(percentAmount) ? Number(percentAmount) : 0);
-
     const timerId = useRef();
     const DURATION = 150;
-
 
     const handlerKeyDown = (event) =>
     {

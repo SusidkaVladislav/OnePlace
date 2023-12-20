@@ -24,6 +24,13 @@ const initialState = {
     chosenCategoryId: null,
     categoriesForSelect: [],
     loading: false,
+
+    categoryForSelectLoading: false,
+    getCategoriesLoading: false,
+    getCategoryByIdLoading: false,
+    addCategoryLoading: false,
+    updateCategoryLoading: false,
+    deleteCategoryLoading: false,
 }
 
 export const getCategoriesForSelect = createAsyncThunk('admin/gatCategoriesForSelect', async (args, { rejectWithValue }) =>
@@ -263,7 +270,7 @@ const adminCategorySlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    categoryForSelectLoading: true,
                 }
             })
             .addCase(getCategoriesForSelect.fulfilled, (state, { payload }) =>
@@ -276,23 +283,22 @@ const adminCategorySlice = createSlice({
                 return {
                     ...state,
                     categoriesForSelect: payload,
-                    loading: false,
+                    categoryForSelectLoading: false,
                 }
             })
             .addCase(getCategoriesForSelect.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    categoryForSelectLoading: false,
                 }
             })
-
 
             .addCase(getCategories.pending, (state) =>
             {
                 return {
                     ...state,
-                    loading: true,
+                    getCategoriesLoading: true,
                 }
             })
             .addCase(getCategories.fulfilled, (state, { payload }) =>
@@ -306,14 +312,14 @@ const adminCategorySlice = createSlice({
                 return {
                     ...state,
                     mainCategories: payload,
-                    loading: false
+                    getCategoriesLoading: false
                 }
             })
             .addCase(getCategories.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getCategoriesLoading: false,
                 }
             })
 
@@ -321,7 +327,7 @@ const adminCategorySlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getCategoryByIdLoading: true,
                 }
             })
             .addCase(getCategoryById.fulfilled, (state, { payload }) =>
@@ -339,23 +345,22 @@ const adminCategorySlice = createSlice({
                         pictureURL: payload.PictureURL,
                         deletePictureURL: payload.DeletePictureURL,
                     },
-                    loading: false,
+                    getCategoryByIdLoading: false,
                 }
             })
             .addCase(getCategoryById.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getCategoryByIdLoading: false,
                 }
             })
-
 
             .addCase(addCategory.pending, (state) =>
             {
                 return {
                     ...state,
-                    loading: true,
+                    addCategoryLoading: true,
                 }
             })
             .addCase(addCategory.fulfilled, (state) =>
@@ -365,7 +370,7 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     actionNotification: 'Категорію успішно додано!',
-                    loading: false,
+                    addCategoryLoading: false,
                 }
             })
             .addCase(addCategory.rejected, (state, { payload }) =>
@@ -375,7 +380,7 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,
-                    loading: false,
+                    addCategoryLoading: false,
                 }
             })
 
@@ -383,7 +388,7 @@ const adminCategorySlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    updateCategoryLoading: true,
                 }
             })
             .addCase(updateCategory.fulfilled, (state) =>
@@ -393,7 +398,7 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     actionNotification: 'Категорію оновлено!',
-                    loading: false,
+                    updateCategoryLoading: false,
                 }
             })
             .addCase(updateCategory.rejected, (state, { payload }) =>
@@ -403,16 +408,15 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,
-                    loading: false,
+                    updateCategoryLoading: false,
                 }
             })
-
 
             .addCase(deleteCategory.pending, (state) =>
             {
                 return {
                     ...state,
-                    loading: true,
+                    deleteCategoryLoading: true,
                 }
             })
             .addCase(deleteCategory.fulfilled, (state) =>
@@ -422,7 +426,7 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     actionNotification: 'Категорію видалено!',
-                    loading: false,
+                    deleteCategoryLoading: false,
                 }
             })
             .addCase(deleteCategory.rejected, (state, { payload }) =>
@@ -432,7 +436,7 @@ const adminCategorySlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,
-                    loading: false,
+                    deleteCategoryLoading: false,
                 }
             })
     }

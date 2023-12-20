@@ -15,7 +15,6 @@ import
     getCategoryById,
     getCategories
 } from '../../../features/adminCategory/adminCategorySlice';
-
 const ItemCategory = () =>
 {
     const dispatch = useDispatch();
@@ -27,7 +26,8 @@ const ItemCategory = () =>
         successfulAlertShow,
         unsuccessfulAlertShow,
         chosenCategoryId,
-        actionNotification, } = useSelector(state => state.adminCategories);
+        actionNotification,
+    } = useSelector(state => state.adminCategories);
 
     useEffect(() =>
     {

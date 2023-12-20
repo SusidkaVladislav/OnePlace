@@ -11,6 +11,7 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     errorFromServer: false,
     messageFromServer: '',
+    loginServerConnectionError: false,
 }
 
 export const userLogin = createAsyncThunk('user/userLogin', async (login, { rejectWithValue }) =>
@@ -63,7 +64,13 @@ const userLoginSlice = createSlice({
                 error: false,
             }
         },
-
+        resetLoginServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                loginServerConnectionError: false,
+            }
+        },
     },
     extraReducers(builder)
     {
@@ -99,18 +106,26 @@ const userLoginSlice = createSlice({
             })
             .addCase(userLogin.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 localStorage.removeItem("access-token");
+
                 return {
                     ...state,
                     errorFromServer: true,
-                    messageFromServer: payload.detail
+                    messageFromServer: payload.detail,
+                    loginServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
 
 export const {
-    removeError
+    removeError,
+    resetLoginServerConnectionError,
 } = userLoginSlice.actions;
 
 export default userLoginSlice.reducer

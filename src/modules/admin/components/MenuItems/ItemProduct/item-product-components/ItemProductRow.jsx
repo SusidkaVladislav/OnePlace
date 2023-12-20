@@ -2,10 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteProduct, getAllProducts, hideSuccessfulAlert, hideUnsuccessfulAlert } from '../../../../features/adminProduct/adminProductSlice';
+import
+{
+    deleteProduct,
+    getAllProducts,
+    hideSuccessfulAlert,
+    hideUnsuccessfulAlert,
+} from '../../../../features/adminProduct/adminProductSlice';
 
 import EditIcon from '../../../../../../svg/shared-icons/EditIcon';
-
+import LoadingAnimation from '../../../../../../common-elements/loading/LoadingAnimation';
 import CustomDelete from "../../../../../../services/delete/CustomDelete";
 import './ItemProductRowStyles.css';
 
@@ -24,7 +30,11 @@ const ItemProductRow = props =>
         productId,
     } = props;
 
-    const { category } = useSelector(state => state.adminProducts);
+    const {
+        category,
+        deleteProductLoading,
+        getAllProductsLoading,
+    } = useSelector(state => state.adminProducts);
 
     const deleteHandler = async (isDelete, id) =>
     {
@@ -43,6 +53,15 @@ const ItemProductRow = props =>
         }
     }
 
+
+    if (deleteProductLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllProductsLoading)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <div className='item-product-row-container'>
             <img className='item-product-row-img' src={picture} />

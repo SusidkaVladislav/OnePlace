@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment, useMemo } from 'react';
 import './ItemOrderStyles.css';
 import AdminSearch from '../../../../../services/search/adminSearch';
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
 
 import { useNavigate } from 'react-router-dom'
@@ -25,7 +25,7 @@ const ItemOrder = () =>
     const filteredData = useSelector(state => getFilteredOrders(state, inputValue));
 
     const {
-        loading,
+        getOrdersLoading,
         orders,
     } = useSelector(state => state.adminOrders);
 
@@ -48,17 +48,9 @@ const ItemOrder = () =>
         navigate('order/' + id)
     }
 
-    if (loading)
+    if (getOrdersLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
 
     return (

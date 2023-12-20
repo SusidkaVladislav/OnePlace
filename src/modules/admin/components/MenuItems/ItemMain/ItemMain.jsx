@@ -22,12 +22,11 @@ import
 } from '../../../features/adminUsers/adminUsersSlice.js';
 
 //#region Icons
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
 import UsersIcon from '../../../../../svg/shared-icons/UsersIcon';
-import ProductsIcon from '../../../../../svg/shared-icons/ProductsIcon';
 import OrdersIcon from '../../../../../svg/shared-icons/OrdersIcon';
 import DollarIcon from '../../../../../svg/shared-icons/DollarIcon';
 //#endregion
+import LoadinAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 const BLUE_COLOR = '#0A3D58';
 const WHITE_COLOR = '#E9ECEC';
@@ -39,7 +38,6 @@ const ItemMain = () =>
 
   const [iconUserColor, setIconUserColor] = useState(BLUE_COLOR);
   const [iconOrderColor, setIconOrderColor] = useState(BLUE_COLOR);
-  const [iconProductColor, setIconProductColor] = useState(BLUE_COLOR);
   const [iconDollarColor, setIconDollarColor] = useState(BLUE_COLOR);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -53,12 +51,13 @@ const ItemMain = () =>
   const [inputValue, setInputValue] = useState('');
 
   const {
-    loading,
+    getOrdersByDateLoading,
     orders,
   } = useSelector(state => state.adminOrders);
 
   const {
-    usersCountByDate
+    usersCountByDate,
+    getUsersCountLoading,
   } = useSelector(state => state.adminUsers);
 
   const filteredData = useSelector(state => getFilteredOrders(state, inputValue));
@@ -82,19 +81,15 @@ const ItemMain = () =>
     setIsOpen(false);
   };
 
-  if (loading)
+  if (getOrdersByDateLoading)
   {
-    return <img style={{
-      width: '100px',
-      height: '100px',
-      position: 'absolute',
-      alignSelf: 'center',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-    }} src={LoadingIcon} alt="loading" />
+    return <LoadinAnimation />
   }
 
+  if (getUsersCountLoading)
+  {
+    return <LoadinAnimation />
+  }
   return (
     <div className='main-body'>
 
@@ -137,7 +132,7 @@ const ItemMain = () =>
           onMouseLeave={() => { setIconUserColor(BLUE_COLOR) }}
           text={'Користувачів'}
           icon={<UsersIcon color={iconUserColor} />}
-          value={'+'+ usersCountByDate}
+          value={'+' + usersCountByDate}
           color={iconUserColor}
         />
 
@@ -156,7 +151,7 @@ const ItemMain = () =>
           text={'Прибуток'}
           icon={<DollarIcon color={iconDollarColor} />}
           value={'+' + orders.reduce((accumulator, currentValue) =>
-            accumulator + (currentValue?.paymentStatus === 'Approved'? currentValue.totalPrice : 0), 0)
+            accumulator + (currentValue?.paymentStatus === 'Approved' ? currentValue.totalPrice : 0), 0)
           }
           color={iconDollarColor}
         />

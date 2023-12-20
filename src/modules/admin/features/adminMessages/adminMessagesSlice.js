@@ -12,7 +12,10 @@ const initialState = {
   successfulAlertShow: false,
   unsuccessfulAlertShow: false,
   actionNotification: '',
-  loading: false,
+
+  getMessagesLoading: false,
+  updateMessageLoading: false,
+  deleteMessageLoading: false,
 }
 
 export const getMessages = createAsyncThunk('adminMessages/getMessages', async (_, { rejectWithValue }) =>
@@ -145,7 +148,7 @@ const adminMessagesSlice = createSlice({
       {
         return {
           ...state,
-          loading: true,
+          getMessagesLoading: true,
         }
       })
       .addCase(getMessages.fulfilled, (state, { payload }) =>
@@ -153,14 +156,14 @@ const adminMessagesSlice = createSlice({
         return {
           ...state,
           messages: payload,
-          loading: false,
+          getMessagesLoading: false,
         }
       })
       .addCase(getMessages.rejected, (state) =>
       {
         return {
           ...state,
-          loading: false,
+          getMessagesLoading: false,
         }
       })
 
@@ -168,7 +171,7 @@ const adminMessagesSlice = createSlice({
       {
         return {
           ...state,
-          loading: true,
+          updateMessageLoading: true,
         }
       })
       .addCase(updateMessage.fulfilled, (state, { payload }) =>
@@ -177,7 +180,7 @@ const adminMessagesSlice = createSlice({
           ...state,
           unsuccessfulAlertShow: false,
           successfulAlertShow: true,
-          loading: false,
+          updateMessageLoading: false,
           actionNotification: 'Повідомлення відредаговано!',
         }
       })
@@ -187,7 +190,7 @@ const adminMessagesSlice = createSlice({
           ...state,
           successfulAlertShow: false,
           unsuccessfulAlertShow: true,
-          loading: false,
+          updateMessageLoading: false,
           actionNotification: payload.detail,
         }
       })
@@ -196,7 +199,7 @@ const adminMessagesSlice = createSlice({
       {
         return {
           ...state,
-          loading: true,
+          deleteMessageLoading: true,
         }
       })
       .addCase(deleteMessage.fulfilled, (state, { payload }) =>
@@ -205,7 +208,7 @@ const adminMessagesSlice = createSlice({
           ...state,
           unsuccessfulAlertShow: false,
           successfulAlertShow: true,
-          loading: false,
+          deleteMessageLoading: false,
           actionNotification: 'Повідомлення видалено!'
         }
       })
@@ -215,10 +218,10 @@ const adminMessagesSlice = createSlice({
           ...state,
           successfulAlertShow: false,
           unsuccessfulAlertShow: true,
-          loading: false,
+          deleteMessageLoading: false,
           actionNotification: payload.detail,
         }
-      });;
+      });
 
   }
 })

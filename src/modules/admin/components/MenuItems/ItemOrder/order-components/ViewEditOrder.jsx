@@ -25,6 +25,7 @@ import UkrPoshtaLogo from '../../../../../../svg/shared-icons/ukrposhtalogo.png'
 import SuccessfulNotification from '../../../../controls/notifications/SuccessfulNotification';
 import UnsuccessfulNotification from '../../../../controls/notifications/UnsuccessfulNotification';
 //#endregion
+import LoadingAnimation from '../../../../../../common-elements/loading/LoadingAnimation.jsx';
 
 export const ViewEditOrder = () =>
 {
@@ -48,7 +49,8 @@ export const ViewEditOrder = () =>
 
     const {
         order,
-        loading,
+        getOrderByIdLoading,
+        updateOrderPaymentStatusLoading,
         successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification,
@@ -160,17 +162,13 @@ export const ViewEditOrder = () =>
         setIsConfirmDialogVisible(true);
     }
 
-    if (loading)
+    if (getOrderByIdLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
+    }
+    if (updateOrderPaymentStatusLoading)
+    {
+        return <LoadingAnimation />
     }
 
     return (

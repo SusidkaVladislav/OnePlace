@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './ItemReviewStyle.css';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
 import AdminSearch from '../../../../../services/search/adminSearch';
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
 import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
@@ -35,7 +35,10 @@ const ItemReview = () =>
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     const {
-        loading,
+        loadingDeleteReview,
+        loadingReviews,
+        loadingReviewReplies,
+
         reviews,
         successfulAlertShow,
         unsuccessfulAlertShow,
@@ -93,6 +96,7 @@ const ItemReview = () =>
 
         }
     }
+
     const handleDeleteReview = () =>
     {
         if (checkedUsers.length === 0)
@@ -128,7 +132,6 @@ const ItemReview = () =>
         setIsConfirmDialogVisible(false);
     };
 
-
     const filteredAndPaginatedData = useMemo(() =>
     {
         const firstPageIndex = (currentPage - 1) * PageSize;
@@ -136,17 +139,17 @@ const ItemReview = () =>
         return filteredData.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, inputValue, reviews]);
 
-    if (loading)
+    if (loadingDeleteReview)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return < LoadingAnimation />
+    }
+    if (loadingReviews)
+    {
+        return < LoadingAnimation />
+    }
+    if (loadingReviewReplies)
+    {
+        return < LoadingAnimation />
     }
 
     return (

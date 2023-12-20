@@ -41,6 +41,7 @@ const initialState = {
     cardErrorList: [
         false, false, false, false,
     ],
+    orderServerConnectionError: false,
 }
 
 export const createCashOrder = createAsyncThunk('user/createCashOrder', async (checkedProductIds, { rejectWithValue, getState }) =>
@@ -411,6 +412,13 @@ const userOrderSlice = createSlice({
                 cardErrorList: payload,
             }
         },
+        resetOrderServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                orderServerConnectionError: false,
+            }
+        }
     },
     extraReducers(builder)
     {
@@ -438,11 +446,22 @@ const userOrderSlice = createSlice({
             })
             .addCase(createCashOrder.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                let showUnsuccessful = true;
+                let actionNote = payload?.detail;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                    showUnsuccessful = false;
+                    actionNote = '';
+                }
+
                 return {
                     ...state,
                     loading: false,
-                    actionNotification: payload?.detail,
-                    showUnsuccessfulOrderAlert: true,
+                    actionNotification: actionNote,
+                    showUnsuccessfulOrderAlert: showUnsuccessful,
+                    orderServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -463,9 +482,15 @@ const userOrderSlice = createSlice({
             })
             .addCase(createCardOrder.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loading: false,
+                    orderServerConnectionError: isServerConnectionError,
                 }
             })
     }
@@ -495,6 +520,8 @@ export const {
 
     setErrorList,
     setCardErrorList,
+
+    resetOrderServerConnectionError,
 } = userOrderSlice.actions;
 
 export default userOrderSlice.reducer;

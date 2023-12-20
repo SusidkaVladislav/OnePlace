@@ -8,14 +8,15 @@ import { getCategoriesForSelect } from '../../../features/adminCategory/adminCat
 import
 {
     addProduct,
-    setCategory,
-    setFullCategoryPath,
     getAllBrands,
     getAllCountries,
     getAllColors,
+    getCharacteristicsFromCategory,
+
+    setCategory,
+    setFullCategoryPath,
     addColorPriceBlock,
     deleteColorPriceBlock,
-    getCharacteristicsFromCategory,
     deleteCharachteristicFormCategory,
     addCharachteristic,
     deleteCharachteristic,
@@ -60,7 +61,9 @@ import BackIcon from '../../../../../svg/arrows/BackTextAndArrowIcon';
 import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 //#endregion
 
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+//import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation'
 import './ItemAddProductStyles.css';
 
 const ItemAddProduct = () =>
@@ -113,14 +116,22 @@ const ItemAddProduct = () =>
         descriptionValid,
         charachteristicsValid,
         unsuccessfulAlertShow,
-        actionNotification, } = useSelector(state => state.adminProducts);
+        actionNotification,
+
+
+        addProductLoading,
+        getAllBrandsLoading,
+        getAllCountriesLoading,
+        getAllColorsLoading,
+        getCharacteristicsFromCategoryLoading,
+
+    } = useSelector(state => state.adminProducts);
 
     const [percentAmount, setPercentAmount] = useState(productSale ? productSale.percent ? productSale.percent : 0 : 0);
     const [startDiscount, setStartDiscount] = useState(productSale ? productSale.startDate ? new Date(productSale.startDate) : new Date() : new Date());
     const [endDiscount, setEndDiscount] = useState(productSale ? productSale.endDate ? new Date(productSale.endDate) : new Date() : new Date());
     const [pictureFiles, setPictureFiles] = useState([])
-    const [loading, setLoading] = useState(true);
-
+    const [categoryLoading, setCategoryLoading] = useState(false)
 
     var productColorsBlocks = {
         productColorPriceBlock: productColorPrice
@@ -140,21 +151,37 @@ const ItemAddProduct = () =>
         dispatch(resetAllProducts())
         dispatch(resetFilteredProducts())
         dispatch(resetCategory())
+
         dispatch(getAllBrands());
         dispatch(getAllCountries());
         dispatch(getAllColors());
 
+        // dispatch(getCategoriesForSelect())
+        //     .then(() =>
+        //     {
+        //         setLoading(false);
+        //         mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
+        //         subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
+        //     })
+        //     .catch((error) =>
+        //     {
+        //         console.error('Failed to fetch data', error);
+        //         setLoading(false);
+        //         navigate(-1);
+        //     });
+
         dispatch(getCategoriesForSelect())
-            .then(() =>
+            .then((response) =>
             {
-                setLoading(false);
-                mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null)
-                subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null)
+                const categoriesForSelect = response.payload;
+                mainCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId === null);
+                subCategories.current = categoriesForSelect.filter((category) => category.parentCategoryId !== null);
+                setCategoryLoading(true);
             })
             .catch((error) =>
             {
-                console.error('Failed to fetch data', error);
-                setLoading(false);
+                console.error("Failed to fetch data", error);
+                setCategoryLoading(true);
                 navigate(-1);
             });
 
@@ -717,24 +744,39 @@ const ItemAddProduct = () =>
 
     const confirmAddProduct = async () =>
     {
-        setLoading(true);
+        let isValid = true;
         for (let i = 0; i < charachteristicsFromCategory.length; i++)
         {
-            if (charachteristicsFromCategory[i].about === undefined || charachteristicsFromCategory[i].about === '')
+            if (charachteristicsFromCategory[i]?.about === undefined || charachteristicsFromCategory[i]?.about === '')
             {
                 dispatch(setCharachteristicsValid(false))
+                isValid = false;
+            }
+            let c = charachteristics?.filter(({ name }) => name?.toUpperCase() === charachteristicsFromCategory[i]?.name.toUpperCase())?.length;
+            if (c > 0)
+            {
+                dispatch(setCharachteristicsValid(false))
+                isValid = false;
             }
         }
         for (let i = 0; i < charachteristics.length; i++)
         {
-            if (charachteristics[i].name === '' || charachteristics[i].about === '')
+            if (charachteristics[i]?.name === '' || charachteristics[i]?.about === '')
             {
                 dispatch(setCharachteristicsValid(false))
+                isValid = false;
+            }
+            let c = charachteristics?.filter(({ name }) => name?.toUpperCase() === charachteristics[i]?.name.toUpperCase())?.length;
+            if (c > 1)
+            {
+                dispatch(setCharachteristicsValid(false))
+                isValid = false;
             }
         }
 
-        if (charachteristicsValid)
+        if (isValid)
         {
+
             var pictures = [];
             for (var i = 0; i < pictureFiles.length; i++)
             {
@@ -749,8 +791,6 @@ const ItemAddProduct = () =>
             try
             {
                 await dispatch(addProduct(pictures)).unwrap();
-                setLoading(false);
-
                 navigate('/admin/main/products');
                 setTimeout(() =>
                 {
@@ -759,28 +799,39 @@ const ItemAddProduct = () =>
             }
             catch (error)
             {
-                setLoading(false);
-
                 setTimeout(() =>
                 {
                     dispatch(hideUnsuccessfulAlert());
                 }, 2000);
             }
+
         }
     }
 
 
-    if (loading)
+    if (!categoryLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
+    }
+    if (addProductLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllBrandsLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllCountriesLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getAllColorsLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getCharacteristicsFromCategoryLoading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <Fragment>
@@ -1007,7 +1058,7 @@ const ItemAddProduct = () =>
 
                             </div>
 
-                            {
+                            {/* {
                                 loading && (
                                     <img style={{
                                         width: '100px',
@@ -1019,7 +1070,7 @@ const ItemAddProduct = () =>
                                         transform: 'translate(-50%, -50%)',
                                     }} src={LoadingIcon} alt="loading" />
                                 )
-                            }
+                            } */}
                         </div>
                     )
                 }

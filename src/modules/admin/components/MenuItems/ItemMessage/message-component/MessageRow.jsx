@@ -18,10 +18,11 @@ const MessageRow = (props) =>
         checkedMessages,
         onRowClick,
         isRowClicked,
+        pictureAddress,
     } = props;
 
     return (
-        <div className={isRowClicked? 'message-row-clicked-container' : 'message-row-container'} onClick={() => { onRowClick(id) }} key={id}>
+        <div className={isRowClicked ? 'message-row-clicked-container' : 'message-row-container'} onClick={() => { onRowClick(id) }} key={id}>
             <div>
                 <label className="message-custom-checkbox">
                     <input
@@ -33,7 +34,18 @@ const MessageRow = (props) =>
                 </label>
             </div>
             <div>
-                <label style={{ 'cursor': 'pointer' }}> <UnknownUserIcon /></label>
+                <label style={{ 'cursor': 'pointer' }}>
+                    {
+                        pictureAddress !== null ? <img
+                            src={pictureAddress} alt='userIcon'
+                            style={{
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '90px'
+                            }}
+                        /> : <UnknownUserIcon />
+                    }
+                </label>
             </div>
 
             <div className='user-initials-message-container'>

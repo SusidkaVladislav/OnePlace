@@ -3,7 +3,6 @@ import './CommonPictureStyles.css';
 
 const CommonPicture = (props) =>
 {
-
     const {
         keyIndex,
         imageHintId,
@@ -31,8 +30,7 @@ const CommonPicture = (props) =>
             }}
         >
 
-            <img
-                
+            <img 
                 ref={picture}
                 id='common-picture-add-product'
                 className='common-picture-add-product'

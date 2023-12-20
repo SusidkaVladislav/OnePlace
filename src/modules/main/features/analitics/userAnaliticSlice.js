@@ -11,6 +11,8 @@ const initialState = {
     productInfoFilters: [],
     reviewsProduct: [],
     analiticLoading: false,
+
+    analiticServerConnectionError: false,
 }
 
 export const getCategoryProductsInfo = createAsyncThunk('user/getCategoryProductsInfo', async (categoryId, { rejectWithValue }) =>
@@ -72,7 +74,15 @@ export const getProductReviews = createAsyncThunk('user/getProductReviews', asyn
 const userAnaliticSlice = createSlice({
     name: 'userAnalitic',
     initialState,
-    reducers: {},
+    reducers: {
+        resetAnalicticServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                analiticServerConnectionError: false,
+            }
+        },
+    },
     extraReducers(builder)
     {
         builder
@@ -91,11 +101,17 @@ const userAnaliticSlice = createSlice({
                     analiticLoading: false,
                 }
             })
-            .addCase(getCategoryProductsInfo.rejected, (state) =>
+            .addCase(getCategoryProductsInfo.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     analiticLoading: false,
+                    analiticServerConnectionError: isServerConnectionError
                 }
             })
 
@@ -114,18 +130,24 @@ const userAnaliticSlice = createSlice({
                     analiticLoading: false,
                 }
             })
-            .addCase(getProductReviews.rejected, (state) =>
+            .addCase(getProductReviews.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     analiticLoading: false,
+                    analiticServerConnectionError: isServerConnectionError
                 }
             })
     }
 })
 
 export const {
-
+    resetAnalicticServerConnectionError,
 } = userAnaliticSlice.actions;
 
 export default userAnaliticSlice.reducer;

@@ -9,7 +9,9 @@ import { instance } from "../../../../api.config.js";
 const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
-    error: false
+    error: false,
+
+    loadingAdminLogin: false,
 }
 
 
@@ -112,6 +114,7 @@ const adminAuthSlice = createSlice({
                 return {
                     ...state,
                     error: false,
+                    loadingAdminLogin: true,
                 }
             })
             .addCase(adminLogin.fulfilled, (state, { payload }) =>
@@ -123,6 +126,7 @@ const adminAuthSlice = createSlice({
                 return {
                     ...state,
                     error: isInRole,
+                    loadingAdminLogin: false,
                 }
             })
             .addCase(adminLogin.rejected, (state) =>
@@ -131,6 +135,7 @@ const adminAuthSlice = createSlice({
                 return {
                     ...state,
                     error: true,
+                    loadingAdminLogin: false
                 }
             })
     }

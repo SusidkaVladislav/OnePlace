@@ -366,7 +366,7 @@
 
 .order-dropdown-list {
     position: absolute;
-    background-color: rgba(206, 216, 222, 0.8);
+    background-color: rgba(206, 216, 222);
     border-radius: 10px;
     overflow-y: auto;
     width: 13%;

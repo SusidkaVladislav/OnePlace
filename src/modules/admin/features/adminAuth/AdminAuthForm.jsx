@@ -17,6 +17,7 @@ import AdminLoginBackground1 from '../../../../svg/login-icons/AdminLoginBackgro
 
 import { setPassword } from '../servicesState/passwordState';
 import PasswordInput from "../../../../services/passwordInputs/PasswordInput";
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 
 const AdminAuthForm = () =>
@@ -25,9 +26,11 @@ const AdminAuthForm = () =>
     const dispatch = useDispatch();
 
     const { password } = useSelector(state => state.passwordInputState)
-    const { error } = useSelector(state => state.adminAuth)
+    const {
+        error,
+        loadingAdminLogin, } = useSelector(state => state.adminAuth)
 
-    const [email, setEmail] = useState(localStorage.getItem("email") !== 'null'? localStorage.getItem("email") : '');
+    const [email, setEmail] = useState(localStorage.getItem("email") !== 'null' ? localStorage.getItem("email") : '');
     const [loginError, setLoginError] = useState(error);
 
     const handleEmailChange = (event) =>
@@ -51,6 +54,10 @@ const AdminAuthForm = () =>
         navigate('main');
     }
 
+    if (loadingAdminLogin)
+    {
+        return <LoadingAnimation />
+    }
     return (
 
         <div className='admin-login-container'>

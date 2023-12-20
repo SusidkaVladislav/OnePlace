@@ -108,7 +108,8 @@
     margin-top: 50px;
     padding: 10px;
 
-} 
+}
+
 .review-list-item {
     height: 75px;
     gap: 24px;
@@ -165,11 +166,11 @@
 
 .review-item-by-user-msg {
     display: flex;
+    align-items: center;
 }
 
 .review-item-by-user-msg-label {
     margin-top: 15px;
-
 }
 
 .review-item-by-admin-msg {

@@ -14,7 +14,6 @@ const DiscountRangePicker = (props) =>
         endDiscountDate,
         onStartDateChange,
         onEndDateChange,
-
     } = props;
 
     const [showCalendar, setShowCalendar] = useState(false);

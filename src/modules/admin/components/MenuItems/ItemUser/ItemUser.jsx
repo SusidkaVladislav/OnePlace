@@ -13,10 +13,14 @@ import AdminSearch from '../../../../../services/search/adminSearch';
 
 //#region Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { getUsers, getFilteredUsers } from '../../../features/adminUsers/adminUsersSlice';
+import
+{
+    getUsers,
+    getFilteredUsers,
+} from '../../../features/adminUsers/adminUsersSlice';
 //#endregion
 
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 //#region Router
 import { useNavigate } from "react-router-dom";
@@ -32,7 +36,10 @@ const ItemUser = () =>
     const [inputValue, setInputValue] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
-    const { loading, users } = useSelector((state) => state.adminUsers)
+    const {
+        getUsersLoading,
+        users,
+    } = useSelector((state) => state.adminUsers)
     const filteredData = useSelector(state => getFilteredUsers(state, inputValue));
 
     useEffect(() =>
@@ -48,17 +55,9 @@ const ItemUser = () =>
     }, [currentPage, inputValue, users]);
 
 
-    if (loading)
+    if (getUsersLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
 
     return (

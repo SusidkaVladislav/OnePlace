@@ -42,7 +42,7 @@ const EditCategory = props =>
             if (pictureFile !== null)
                 urlToPicture = await upload(pictureFile)
 
-            onEditHandler(true, name, categoryId, urlToPicture.data.display_url, urlToPicture.data.delete_url);
+            onEditHandler(true, name, categoryId, urlToPicture?.data?.display_url, urlToPicture?.data?.delete_url);
         }
     };
 

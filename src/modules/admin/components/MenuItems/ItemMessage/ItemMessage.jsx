@@ -27,7 +27,7 @@ import MessageRow from './message-component/MessageRow';
 //#region Icons
 import GreenCheckCheckboxIcon from '../../../../../svg/shared-icons/GreenCheckCheckboxIcon';
 import BackTextAndArrowIcon from '../../../../../svg/arrows/BackTextAndArrowIcon';
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 import UnknownUserIcon from '../../../../../svg/shared-icons/UnknownUserIcon';
 //#endregion
 
@@ -46,7 +46,10 @@ const ItemMessage = () =>
     const [rowClicked, setRowClicked] = useState(false);
 
     const {
-        loading,
+        deleteMessageLoading,
+        updateMessageLoading,
+        getMessagesLoading,
+
         messages,
         successfulAlertShow,
         unsuccessfulAlertShow,
@@ -189,17 +192,18 @@ const ItemMessage = () =>
         return filteredData.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, inputValue, messages]);
 
-    if (loading)
+
+    if (deleteMessageLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
+    }
+    if (updateMessageLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getMessagesLoading)
+    {
+        return <LoadingAnimation />
     }
 
     return (
@@ -260,6 +264,7 @@ const ItemMessage = () =>
                                 checkedMessages={checkedMessages}
                                 onRowClick={handleRowClick}
                                 isRowClicked={rowClicked}
+                                pictureAddress={msg?.userPictureAddress}
                             />
                         ))}
                     </div>
@@ -270,7 +275,19 @@ const ItemMessage = () =>
                                 <div className='user-product-info'>
                                     {checkedMessage?.userId !== 0 ? (
                                         <div className='user-info'>
-                                            <label> <UnknownUserIcon /></label>
+                                            <label>
+                                                {
+                                                    checkedMessage?.userPictureAddress !== null ?
+                                                        <img
+                                                            src={checkedMessage?.userPictureAddress} alt='userIcon'
+                                                            style={{
+                                                                width: '50px',
+                                                                height: '50px',
+                                                                borderRadius: '90px'
+                                                            }}
+                                                        /> : <UnknownUserIcon />
+                                                }
+                                            </label>
 
                                             <div className='user-initials-message-container'>
                                                 <div className='user-initials-message-name'

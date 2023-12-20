@@ -11,9 +11,8 @@ import
     getReviewById,
     createPostReview,
     getGetReviewReply,
-
 } from '../../../../features/adminReviews/adminReviewsSlice';
-import LoadingIcon from '../../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../../common-elements/loading/LoadingAnimation';
 
 const ReviewInfo = () =>
 {
@@ -23,9 +22,10 @@ const ReviewInfo = () =>
     const reviewId = params.id;
 
     const [message, setMessage] = useState('')
+    const [messagePageLoadingControll, setMessagePageLoadingControll] = useState(true)
 
     const {
-        loading,
+        loadingReviewReply,
         loadingReplies,
         loadingRewieById,
         reviewById,
@@ -34,24 +34,30 @@ const ReviewInfo = () =>
 
     useEffect(() =>
     {
-        dispatch(getGetReviewReply(Number(reviewId)))
-        dispatch(getReviewById(Number(reviewId)))
-    }, [])
+        dispatch(getGetReviewReply(Number(params.id)))
+        dispatch(getReviewById(Number(params.id))).then(({ payload }) =>
+        {
+            setMessagePageLoadingControll(false)
+        })
+    }, [params.id])
 
     const handleSendAnswer = (id) =>
     {
-        const reviewID = id;
-        const comment = message;
+        if (message.length > 0)
+        {
+            const reviewID = id;
+            const comment = message;
 
-        const reviewPostData = {
-            reviewId: reviewID,
-            comment: comment,
-        };
-        dispatch(createPostReview(reviewPostData))
-            .then(() =>
-            {
-                dispatch(getGetReviewReply(Number(reviewId)))
-            })
+            const reviewPostData = {
+                reviewId: reviewID,
+                comment: comment,
+            };
+            dispatch(createPostReview(reviewPostData))
+                .then(() =>
+                {
+                    dispatch(getGetReviewReply(Number(reviewId)))
+                })
+        }
     }
 
     const handleMessageChange = (event) =>
@@ -59,26 +65,42 @@ const ReviewInfo = () =>
         setMessage(event.target.value);
     }
 
-    if (loading || loadingReplies || loadingRewieById)
+
+    if (loadingReviewReply)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
-
-
+    if (loadingRewieById)
+    {
+        return <LoadingAnimation />
+    }
+    if (loadingReplies)
+    {
+        return <LoadingAnimation />
+    }
+    if (messagePageLoadingControll)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <Fragment>
             <div className='user-div'>
                 <div className='back-div'>
                     <div className='review-user-img'>
-                        <label> <UnknownUserIcon /></label>
+                        <label>
+                            {
+                                reviewById?.userPictureAddress !== null ?
+                                    <img
+                                        src={reviewById?.userPictureAddress}
+                                        alt='userIcon'
+                                        style={{
+                                            width: '70px',
+                                            height: '70px',
+                                            borderRadius: '90px',
+                                        }}
+                                    /> : <UnknownUserIcon />
+                            }
+                        </label>
                     </div>
                     {
                         reviewById !== null ? (
@@ -137,7 +159,20 @@ const ReviewInfo = () =>
                                     <div>
                                         <div className='review-item-by-user'>
                                             <div className='review-item-by-user-msg'>
-                                                <label className='review-item-by-user-msg-label'> <UnknownUserIcon /></label>
+                                                <label className='review-item-by-user-msg-label'>
+                                                    {
+                                                        reviewById?.userPictureAddress !== null ?
+                                                            <img
+                                                                src={reviewById?.userPictureAddress}
+                                                                alt='userIcon'
+                                                                style={{
+                                                                    width: '50px',
+                                                                    height: '50px',
+                                                                    borderRadius: '90px',
+                                                                }}
+                                                            /> : <UnknownUserIcon />
+                                                    }
+                                                </label>
                                                 <div className='review-by-user t2-medium-blue' id='scrollbar-style-2'>
                                                     {reviewById?.comment}
                                                 </div>
@@ -157,9 +192,14 @@ const ReviewInfo = () =>
                                         {replyById === undefined && (
                                             <div key={reviewById?.id} className='review-msg-from-admin'>
                                                 <input type="text"
+                                                    style={{
+                                                        padding: '10px',
+                                                        borderRadius: '10px',
+                                                        border: 'none'
+                                                    }}
                                                     onChange={handleMessageChange}
                                                     placeholder='Додайте коментар' />
-                                                <label onClick={() => handleSendAnswer(reviewById?.id)}><SendMessageIcon /></label>
+                                                <label onClick={() => { handleSendAnswer(reviewById?.id) }}><SendMessageIcon /></label>
                                             </div>
                                         )}
                                     </div>

@@ -18,6 +18,10 @@ const initialState = {
     loadingReplies: false,
     loadingRewieById: false,
     loadingUserReviews: false,
+    loadingReviewReplies: false,
+    loadingDeleteReview: false,
+
+    loadingReviewReply: false,
 }
 
 export const getReviews = createAsyncThunk('adminReviews/fetchReviews', async (_, { rejectWithValue }) =>
@@ -65,7 +69,7 @@ export const getReviewReplies = createAsyncThunk('adminReviews/fetchReviewReplie
     }
 })
 
-export const getGetReviewReply = createAsyncThunk('adminReviews/fetchGetReviewReply', async (id, { rejectWithValue }) =>
+export const getGetReviewReply = createAsyncThunk('adminReviews/getGetReviewReply', async (id, { rejectWithValue }) =>
 {
     try
     {
@@ -265,7 +269,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loadingReplies: true,
+                    loadingReviewReplies: true,
                 }
             })
             .addCase(getReviewReplies.fulfilled, (state, { payload }) =>
@@ -273,7 +277,7 @@ const adminReviewsSlice = createSlice({
                 return {
                     ...state,
                     replies: payload,
-                    loadingReplies: false,
+                    loadingReviewReplies: false,
                 }
             })
             .addCase(getReviewReplies.rejected, (state, { payload }) =>
@@ -283,7 +287,7 @@ const adminReviewsSlice = createSlice({
                     unsuccessfulAlertShow: true,
                     successfulAlertShow: false,
                     actionNotification: payload.detail,
-                    loadingReplies: false,
+                    loadingReviewReplies: false,
                 }
             })
 
@@ -291,7 +295,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    loadingReviewReply: true,
                 }
             })
             .addCase(getGetReviewReply.fulfilled, (state, { payload }) =>
@@ -299,7 +303,7 @@ const adminReviewsSlice = createSlice({
                 return {
                     ...state,
                     replyById: payload,
-                    loading: false,
+                    loadingReviewReply: false,
                 }
             })
             .addCase(getGetReviewReply.rejected, (state, { payload }) =>
@@ -309,7 +313,7 @@ const adminReviewsSlice = createSlice({
                     unsuccessfulAlertShow: true,
                     successfulAlertShow: false,
                     actionNotification: payload.detail,
-                    loading: false,
+                    loadingReviewReply: false,
                 }
             })
 
@@ -343,7 +347,7 @@ const adminReviewsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    loadingDeleteReview: true,
                 }
             })
             .addCase(deleteReview.fulfilled, (state) =>
@@ -352,7 +356,7 @@ const adminReviewsSlice = createSlice({
                     ...state,
                     unsuccessfulAlertShow: false,
                     successfulAlertShow: true,
-                    loading: false,
+                    loadingDeleteReview: false,
                     actionNotification: 'Коментарі видалено!'
                 }
             })
@@ -362,7 +366,7 @@ const adminReviewsSlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    loading: false,
+                    loadingDeleteReview: false,
                     actionNotification: payload.detail,
                 }
             })
@@ -389,6 +393,7 @@ const adminReviewsSlice = createSlice({
                     loadingRewieById: false,
                 }
             })
+
             .addCase(getUserReviews.pending, (state) =>
             {
                 return {

@@ -20,7 +20,7 @@ import
     setCategoryValid
 } from '../../../features/adminProduct/adminProductSlice';
 
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 import SuccessfulNotification from '../../../controls/notifications/SuccessfulNotification';
 import UnsuccessfulNotification from '../../../controls/notifications/UnsuccessfulNotification';
 import CustomPagination from '../../../../../services/pagination/CustomPagination';
@@ -46,7 +46,7 @@ const ItemSale = () =>
     const [inputValue, setInputValue] = useState('');
 
     const {
-        loading,
+        getProductSaleInfoLoading,
         category,
         sales,
         successfulAlertShow,
@@ -55,7 +55,7 @@ const ItemSale = () =>
     } = useSelector(state => state.adminSales);
 
     const [categoryLoading, setCategoryLoading] = useState(false)
-    const { categoriesForSelect } = useSelector(state => state.adminCategories);
+
     var mainCategories = useRef([]);
     var subCategories = useRef([]);
 
@@ -118,27 +118,11 @@ const ItemSale = () =>
 
     if (!categoryLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
-    if (loading) 
+    if (getProductSaleInfoLoading) 
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
     return (
         <div className='sale-body'>

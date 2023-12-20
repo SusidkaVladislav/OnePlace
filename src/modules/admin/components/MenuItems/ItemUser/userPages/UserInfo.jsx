@@ -31,9 +31,7 @@ import UnsuccessfulNotification from '../../../../controls/notifications/Unsucce
 import { useSelector, useDispatch } from 'react-redux';
 import
 {
-    getUserById,
     deleteUser,
-    //getUsers,
     hideSuccessfulAlert,
     hideUnsuccessfulAlert,
 
@@ -41,7 +39,7 @@ import
 } from '../../../../features/adminUsers/adminUsersSlice';
 //#endregion
 //#endregion
-import LoadingIcon from '../../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from "../../../../../../common-elements/loading/LoadingAnimation";
 
 const UserInfo = () =>
 {
@@ -51,23 +49,23 @@ const UserInfo = () =>
     const userId = params.id;
 
     const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+    const [userPageControllLoading, setUserPageControllLoading] = useState(true);
 
     const {
         successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification,
-    } = useSelector(state => state.adminUsers)
-
-    //const userPersonalData = useSelector(state => getUserById(state, Number(userId)));
-
-    const {
-        loading,
+        getUserPersonalDataLoading,
         userPersonalData,
-    } = useSelector(state => state.adminUsers);
+        deleteUsersLoading,
+    } = useSelector(state => state.adminUsers)
 
     useEffect(() =>
     {
-        dispatch(getUserPersonalData(Number(userId)))
+        dispatch(getUserPersonalData(Number(userId))).then(({ payload }) =>
+        {
+            setUserPageControllLoading(false)
+        })
     }, [])
 
     const handleRemoveButtonClick = () =>
@@ -102,19 +100,18 @@ const UserInfo = () =>
         setIsConfirmDialogVisible(false);
     };
 
-    if (loading)
+    if (getUserPersonalDataLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
-
+    if (userPageControllLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (deleteUsersLoading)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <Fragment>
 
@@ -133,7 +130,17 @@ const UserInfo = () =>
 
                 <div className='back-div'>
                     <div className='user-img'>
-                        <label> <UnknownUserIcon /></label>
+                        <label>
+                            {
+                                userPersonalData?.pictureAddress?.length > 0 ?
+                                    <img
+                                        style={{
+                                            width: '60px',
+                                            height: '60px',
+                                            borderRadius: '90px'
+                                        }}
+                                        src={userPersonalData?.pictureAddress} /> : <UnknownUserIcon />
+                            } </label>
                     </div>
                     {userPersonalData !== null ? (
                         <span>

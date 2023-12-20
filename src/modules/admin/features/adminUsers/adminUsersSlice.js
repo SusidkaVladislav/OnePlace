@@ -10,6 +10,11 @@ const initialState = {
     unsuccessfulAlertShow: false,
     actionNotification: '',
     usersCountByDate: 0,
+
+    getUsersLoading: false,
+    deleteUsersLoading: false,
+    getUsersCountLoading: false,
+    getUserPersonalDataLoading: false,
 }
 
 export const getUsers = createAsyncThunk('adminUsers/getUsers', async (_, { rejectWithValue }) =>
@@ -190,7 +195,7 @@ const adminUsersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getUsersLoading: true,
                 }
             })
             .addCase(getUsers.fulfilled, (state, { payload }) =>
@@ -198,21 +203,22 @@ const adminUsersSlice = createSlice({
                 return {
                     ...state,
                     users: payload,
-                    loading: false,
+                    getUsersLoading: false,
                 }
             })
             .addCase(getUsers.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getUsersLoading: false,
                 }
             })
+
             .addCase(deleteUser.pending, (state) =>
             {
                 return {
                     ...state,
-                    loading: true,
+                    deleteUsersLoading: true,
                 }
             })
             .addCase(deleteUser.fulfilled, (state) =>
@@ -221,7 +227,7 @@ const adminUsersSlice = createSlice({
                     ...state,
                     unsuccessfulAlertShow: false,
                     successfulAlertShow: true,
-                    loading: false,
+                    deleteUsersLoading: false,
                     actionNotification: 'Користувача видалено!'
                 }
             })
@@ -231,7 +237,7 @@ const adminUsersSlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    loading: false,
+                    deleteUsersLoading: false,
                     actionNotification: payload.detail,
                 }
             })
@@ -240,14 +246,14 @@ const adminUsersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getUsersCountLoading: true,
                 }
             })
             .addCase(getUsersCount.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getUsersCountLoading: false,
                     usersCountByDate: payload
                 }
             })
@@ -255,7 +261,7 @@ const adminUsersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false
+                    getUsersCountLoading: false
                 }
             })
 
@@ -263,7 +269,7 @@ const adminUsersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getUserPersonalData: true,
                 }
             })
             .addCase(getUserPersonalData.fulfilled, (state, { payload }) =>
@@ -271,7 +277,7 @@ const adminUsersSlice = createSlice({
 
                 return {
                     ...state,
-                    loading: false,
+                    getUserPersonalData: false,
                     userPersonalData: payload,
                 }
             })
@@ -279,8 +285,7 @@ const adminUsersSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
-
+                    getUserPersonalData: false,
                 }
             })
     }

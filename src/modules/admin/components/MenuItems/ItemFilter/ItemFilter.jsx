@@ -26,6 +26,7 @@ import
     createBrand,
 
 } from '../../../features/adminFilter/adminFilterSlice';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 const ItemFilter = () =>
 {
@@ -35,6 +36,7 @@ const ItemFilter = () =>
         successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification,
+        loading,
     } = useSelector(state => state.adminFilter);
 
     const [showAddCountry, setShowAddCountry] = useState(false)
@@ -154,6 +156,11 @@ const ItemFilter = () =>
         {
             dispatch(hideUnsuccessfulAlert())
         }, 2000);
+    }
+
+    if (loading)
+    {
+        return <LoadingAnimation/>
     }
 
     return (

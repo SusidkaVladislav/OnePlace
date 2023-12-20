@@ -24,7 +24,7 @@ import
 import WhiteSmallToBottomArrow from '../../../../../svg/arrows/WhiteSmallToBottomArrow';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoadingIcon from '../../../../../svg/animations/LoadingAnimation.gif';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 import './ItemProductStyles.css';
 
 const PageSize = 8;
@@ -53,10 +53,12 @@ const ItemProduct = () =>
     const {
         category,
         allProducts,
-        loading,
         successfulAlertShow,
         unsuccessfulAlertShow,
         actionNotification,
+
+        filterProductsLoading,
+        getAllProductsLoading,
     } = useSelector(state => state.adminProducts);
 
     var mainCategories = useRef([]);
@@ -125,27 +127,15 @@ const ItemProduct = () =>
 
     if (!categoryLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
     }
-    if (loading)
+    if (filterProductsLoading)
     {
-        return <img style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            alignSelf: 'center',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-        }} src={LoadingIcon} alt="loading" />
+        return <LoadingAnimation />
+    }
+    if (getAllProductsLoading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <Fragment>

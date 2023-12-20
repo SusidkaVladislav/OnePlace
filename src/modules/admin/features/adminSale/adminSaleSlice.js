@@ -6,8 +6,9 @@ const { REACT_APP_BASE_URL } = process.env;
 
 const initialState = {
     category: {},
-    loading: false,
     sales: [],
+
+    getProductSaleInfoLoading: false,
 }
 
 export const getProductSaleInfo = createAsyncThunk('adminSales/getProductSaleInfo', async (saleStatisticPayload, { rejectWithValue }) =>
@@ -84,14 +85,14 @@ const adminSalesSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getProductSaleInfoLoading: true,
                 }
             })
             .addCase(getProductSaleInfo.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getProductSaleInfoLoading: false,
                     sales: payload
                 }
             })
@@ -99,7 +100,7 @@ const adminSalesSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    getProductSaleInfoLoading: false,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,

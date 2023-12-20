@@ -39,12 +39,55 @@ const initialState = {
     allProductCount: 0,
     allProducts: [],
     loading: false,
+
+    getProductLoading: false,
+    addProductLoading: false,
+    updateProductLoading: false,
+    deleteProductLoading: false,
+    filterProductsLoading: false,
+    allProductCountLoading: false,
+    getAllProductsLoading: false,
+    getAllBrandsLoading: false,
+    getAllCountriesLoading: false,
+    getAllColorsLoading: false,
+    getCharacteristicsFromCategoryLoading: false,
 }
 
 export const getProduct = createAsyncThunk('adminProducts/getProduct', async (id, { rejectWithValue }) =>
 {
-    const response = await instance.get(REACT_APP_BASE_URL + '/Product/product/' + id);
-    return response.data
+    try
+    {
+        const response = await instance.get(REACT_APP_BASE_URL + '/Product/product/' + id);
+        return response.data
+    }
+    catch (error)
+    {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
+
+            return rejectWithValue(customError);
+        }
+        if (error.response.status === 400)
+        {
+            const customError = {
+                status: error.response.data.status,
+                message: error.response.data.title,
+                detail: error.response.data.title,
+            };
+            return rejectWithValue(customError)
+        }
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+        return rejectWithValue(customError)
+    }
 })
 
 export const addProduct = createAsyncThunk('adminProducts/addProduct', async (pictures, { rejectWithValue, getState }) =>
@@ -768,7 +811,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    addProductLoading: true,
                 }
             })
             .addCase(addProduct.fulfilled, (state, { payload }) =>
@@ -778,7 +821,7 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     actionNotification: 'Товар розміщено на сайті!',
-                    loading: false
+                    addProductLoading: false
                 }
             })
             .addCase(addProduct.rejected, (state, { payload }) =>
@@ -788,7 +831,7 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,
-                    loading: false
+                    addProductLoading: false
                 }
             })
 
@@ -796,7 +839,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    deleteProductLoading: true,
                 }
             })
             .addCase(deleteProduct.fulfilled, (state) =>
@@ -805,7 +848,7 @@ const adminProductsSlice = createSlice({
                     ...state,
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
-                    loading: false,
+                    deleteProductLoading: false,
                     actionNotification: 'Товар видалено!'
                 }
             })
@@ -815,7 +858,7 @@ const adminProductsSlice = createSlice({
                     ...state,
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
-                    loading: false,
+                    deleteProductLoading: false,
                     actionNotification: payload.detail,
                 }
             })
@@ -824,14 +867,14 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getAllBrandsLoading: true,
                 }
             })
             .addCase(getAllBrands.fulfilled, (state, { payload }) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getAllBrandsLoading: false,
                     allBrands: payload.sort(sortByName),
                 }
             })
@@ -839,7 +882,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: false,
+                    getAllBrandsLoading: false,
                 }
             })
 
@@ -847,7 +890,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getAllCountriesLoading: true,
                 }
             })
             .addCase(getAllCountries.fulfilled, (state, { payload }) =>
@@ -855,14 +898,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allCountries: payload.sort(sortByName),
-                    loading: false,
+                    getAllCountriesLoading: false,
                 }
             })
             .addCase(getAllCountries.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false
+                    getAllCountriesLoading: false
                 }
             })
 
@@ -870,7 +913,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getAllColorsLoading: true,
                 }
             })
             .addCase(getAllColors.fulfilled, (state, { payload }) =>
@@ -878,14 +921,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allColors: payload.sort(sortByName),
-                    loading: false,
+                    getAllColorsLoading: false,
                 }
             })
             .addCase(getAllColors.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getAllColorsLoading: false,
                 }
             })
 
@@ -893,7 +936,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getCharacteristicsFromCategoryLoading: true,
                 }
             })
             .addCase(getCharacteristicsFromCategory.fulfilled, (state, { payload }) =>
@@ -901,14 +944,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     charachteristicsFromCategory: payload,
-                    loading: false,
+                    getCharacteristicsFromCategoryLoading: false,
                 }
             })
             .addCase(getCharacteristicsFromCategory.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false
+                    getCharacteristicsFromCategoryLoading: false
                 }
             })
 
@@ -916,7 +959,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    filterProductsLoading: true,
                 }
             })
             .addCase(filterProducts.fulfilled, (state, { payload }) =>
@@ -924,14 +967,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     filteredProducts: payload,
-                    loading: false,
+                    filterProductsLoading: false,
                 }
             })
             .addCase(filterProducts.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    filterProductsLoading: false,
                 }
             })
 
@@ -939,7 +982,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    allProductCountLoading: true,
                 }
             })
             .addCase(allProductCount.fulfilled, (state, { payload }) =>
@@ -947,14 +990,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allProductCount: payload,
-                    loading: false,
+                    allProductCountLoading: false,
                 }
             })
             .addCase(allProductCount.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    allProductCountLoading: false,
                 }
             })
 
@@ -963,7 +1006,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getAllProductsLoading: true,
                 }
             })
             .addCase(getAllProducts.fulfilled, (state, { payload }) =>
@@ -971,14 +1014,14 @@ const adminProductsSlice = createSlice({
                 return {
                     ...state,
                     allProducts: payload,
-                    loading: false,
+                    getAllProductsLoading: false,
                 }
             })
             .addCase(getAllProducts.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getAllProductsLoading: false,
                 }
             })
 
@@ -987,7 +1030,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getProductLoading: true,
                 }
             })
             .addCase(getProduct.fulfilled, (state, { payload }) =>
@@ -1027,7 +1070,6 @@ const adminProductsSlice = createSlice({
 
                 return {
                     ...state,
-                    loading: false,
                     category: payload.category,
                     manufacturerId: payload.manufacturer.id,
                     manufacturerCountryId: payload.manufacturerCountry.id,
@@ -1039,13 +1081,14 @@ const adminProductsSlice = createSlice({
                     isInBestProducts: payload.isInBestProducts,
                     productDescription: payload.description,
                     charachteristics: productCharachteristics,
+                    getProductLoading: false,
                 }
             })
             .addCase(getProduct.rejected, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    getProductLoading: false,
                 }
             })
 
@@ -1053,7 +1096,7 @@ const adminProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    updateProductLoading: true,
                 }
             })
             .addCase(updateProduct.fulfilled, (state) =>
@@ -1063,7 +1106,7 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: true,
                     unsuccessfulAlertShow: false,
                     actionNotification: 'Товар оновлено!',
-                    loading: false,
+                    updateProductLoading: false,
                 }
             })
             .addCase(updateProduct.rejected, (state, { payload }) =>
@@ -1073,7 +1116,7 @@ const adminProductsSlice = createSlice({
                     successfulAlertShow: false,
                     unsuccessfulAlertShow: true,
                     actionNotification: payload.detail,
-                    loading: false,
+                    updateProductLoading: false,
                 }
             })
     }
@@ -1129,7 +1172,7 @@ export const getFilteredProducts = createSelector(
             return discount === 2 ? product.discountPercent === 0 : discount === 3 ? product.discountPercent > 0 : product.discountPercent >= 0
         });
 
-        return discountFilter.filter(product =>
+        return discountFilter.reverse().filter(product =>
         {
             return [product.name, product.code, product.color].some(field => field.toLowerCase().includes(inputValue))
         })
