@@ -13,17 +13,19 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <GoogleOAuthProvider clientId='195803029050-8tvhphtcii74f4jr974cac78ltick1rb.apps.googleusercontent.com'>
     {/* <React.StrictMode> */}
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <StyledEngineProvider injectFirst>
-            <Router>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <StyledEngineProvider injectFirst>
+          <Router>
+
               <Routes>
                 <Route path="/*" element={<App />} />
               </Routes>
-            </Router>
-          </StyledEngineProvider>
-        </PersistGate>
-      </Provider>
+
+          </Router>
+        </StyledEngineProvider>
+      </PersistGate>
+    </Provider>
     {/* </React.StrictMode> */}
   </GoogleOAuthProvider>
 );
