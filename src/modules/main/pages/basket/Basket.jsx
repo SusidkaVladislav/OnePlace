@@ -34,11 +34,12 @@ const Basket = () =>
     const {
         isCategoryOpen,
         categoryServerConnectionError,
-        //loading,
+
     } = useSelector(state => state.userCategories);
 
     const {
-        cartServerConnectionError
+        cartServerConnectionError,
+        loading,
     } = useSelector(state => state.userBasket)
 
 
@@ -105,10 +106,10 @@ const Basket = () =>
     {
         navigate(NO_SERVER_CONNECTION_PATH)
     }
-    // if (loading)
-    // {
-    //     return <LoadingAnimation />
-    // }
+    if (loading)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <Fragment>
             <Header />

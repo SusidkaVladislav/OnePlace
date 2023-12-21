@@ -67,6 +67,7 @@ const ProductInfo = () =>
         //dispatch(getCategoriesForSelect())
         getFullPath(product.categoryId, categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
+        setPageLoaded(!pageLoaded)
     }, [])
 
     useEffect(() =>
