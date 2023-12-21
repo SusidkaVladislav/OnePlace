@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Switch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 //#region Main routes
