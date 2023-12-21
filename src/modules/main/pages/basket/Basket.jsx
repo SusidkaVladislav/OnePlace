@@ -21,7 +21,7 @@ import
 {
     useMediaQuery
 } from '@mui/material';
-//import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const Basket = () =>
