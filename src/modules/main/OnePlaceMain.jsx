@@ -16,18 +16,22 @@ import
     getCategoriesForSelect
 } from '../main/features/categories/userCategorySlice';
 import LoadingAnimation from '../../common-elements/loading/LoadingAnimation';
+import { useNavigate } from 'react-router-dom';
 
-
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const OnePlaceMain = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         loadingRecommendedProducts,
+        productServerConnectionError,
     } = useSelector(state => state.userProducts)
 
     const {
         loading,
+        categoryServerConnectionError,
     } = useSelector(state => state.userCategories)
 
     const [recommendedCategories, setRecommendedCategories] = useState([]);
@@ -95,13 +99,18 @@ const OnePlaceMain = () =>
         setProductsInCart(cart);
     }, [])
 
+    if (productServerConnectionError || categoryServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+        return<></>;
+    }
     if (loadingRecommendedProducts)
     {
-        return <LoadingAnimation/>
+        return <LoadingAnimation />
     }
     if (loading)
     {
-        return <LoadingAnimation/>
+        return <LoadingAnimation />
     }
     return (
         <div>
@@ -111,7 +120,7 @@ const OnePlaceMain = () =>
                 productsInCart={productsInCart}
             />
             {
-                recommendedCategories.length > 1 && <CategorySelection
+                recommendedCategories?.length > 1 && <CategorySelection
                     id={recommendedCategories[0]?.id}
                     categoryName={recommendedCategories[0]?.name}
                     items={recommendedSubCategories?.filter(c =>
@@ -122,7 +131,7 @@ const OnePlaceMain = () =>
                 />
             }
             {
-                recommendedCategories.length > 2 && <CategorySelection
+                recommendedCategories?.length > 2 && <CategorySelection
                     id={recommendedCategories[1]?.id}
                     categoryName={recommendedCategories[1]?.name}
                     items={recommendedSubCategories?.filter(c =>

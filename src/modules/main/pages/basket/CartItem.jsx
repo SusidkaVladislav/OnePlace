@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 import CustomCheckbox from '../../../../services/custom-inputs/CustomCheckbox';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const CartItem = (props) =>
 {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const CartItem = (props) =>
 
   const {
     checkedProductIds,
+    cartServerConnectionError,
   } = useSelector(state => state.userBasket)
 
   const sm = useMediaQuery('(min-width: 600px)');
@@ -240,6 +242,11 @@ const CartItem = (props) =>
         }
       }
     }
+  }
+
+  if (cartServerConnectionError)
+  {
+    navigate(NO_SERVER_CONNECTION_PATH)
   }
 
   return (

@@ -40,10 +40,6 @@ import
 import
 {
   refreshToken,
-} from '../../main/features/userAuth/userAuthSlice';
-
-import
-{
   setIsLoginFormOpen,
 } from '../../main/features/userAuth/userAuthSlice';
 
@@ -57,6 +53,7 @@ import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation'
 
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const AllAboutBroduct = () =>
 {
   const dispatch = useDispatch();
@@ -72,12 +69,19 @@ const AllAboutBroduct = () =>
 
   const {
     isAuth,
+    cartServerConnectionError,
   } = useSelector(state => state.userBasket);
+
+  const {
+    refreshTokenLoading,
+    authServerConnectionError,
+  } = useSelector(state => state.userAuth)
 
   const {
     isInLiked,
     likedProductLoading,
     likedProductsCount,
+    likedProductsServerConnectionError,
   } = useSelector(state => state.userLikedProducts);
 
   const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
@@ -193,9 +197,17 @@ const AllAboutBroduct = () =>
 
   }
 
+  if (cartServerConnectionError || authServerConnectionError || likedProductsServerConnectionError)
+  {
+    navigate(NO_SERVER_CONNECTION_PATH)
+  }
   if (likedProductLoading)
   {
-    return <LoadingAnimation/>
+    return <LoadingAnimation />
+  }
+  if (refreshTokenLoading)
+  {
+    return <LoadingAnimation />
   }
   return (
     <Grid container>

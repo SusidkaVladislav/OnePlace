@@ -8,7 +8,7 @@ import
 
 import StarRating from '../../../productPage/controls/StarRating';
 import SendMessageBrownIcon from '../../../../svg/shared-icons/SendMessageBrownIcon';
-
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import
 {
@@ -17,6 +17,7 @@ import
 } from '../../features/reviews/myReviewsSlice';
 import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const CreateReviewForm = (props) =>
 {
     const {
@@ -24,14 +25,20 @@ const CreateReviewForm = (props) =>
     } = props;
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
-        createUserReviewLoading
+        createUserReviewLoading,
+        myReviewsServerConnectionError,
     } = useSelector(state => state.myReviews);
 
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('')
     const [commentValidError, setCommentValidError] = useState(false)
+
+    if(myReviewsServerConnectionError){
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     if (createUserReviewLoading)
     {

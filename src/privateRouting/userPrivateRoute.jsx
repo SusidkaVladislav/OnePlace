@@ -18,17 +18,28 @@ import
 } from '../modules/main/features/basket/cartSlice';
 
 import LoadingAnimation from '../common-elements/loading/LoadingAnimation';
+import { useNavigate } from "react-router-dom";
 
 const { REACT_APP_BASE_URL } = process.env;
 const LOCAL_STORAGE_TOKEN_KEY = "access-token";
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const UserPrivateRoute = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         beforeAuthPath
     } = useSelector(state => state.userAuth);
+
+    const {
+        likedProductsServerConnectionError
+    } = useSelector(state => state.userLikedProducts);
+
+    const {
+        cartServerConnectionError
+    } = useSelector(state => state.userBasket);
 
     const [isAuthInProgress, setIsAuthInProgress] = useState(true);
     const [isUser, setIsUser] = useState(false);
@@ -103,6 +114,11 @@ const UserPrivateRoute = () =>
             dispatch(setIsAuthState(false));
         }
     }, [])
+
+    if (likedProductsServerConnectionError || cartServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     if (isAuthInProgress)
     {

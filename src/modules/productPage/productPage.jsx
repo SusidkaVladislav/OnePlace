@@ -51,11 +51,14 @@ import
 } from '@mui/material';
 
 import LoadingAnimation from '../../common-elements/loading/LoadingAnimation';
+import { useNavigate } from 'react-router-dom';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const ProductPage = () =>
 {
     const params = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const md = useMediaQuery('(min-width: 900px)');
 
@@ -65,11 +68,25 @@ const ProductPage = () =>
         loadingProduct,
         loadingRating,
         loadingInterestingProducts,
+        productServerConnectionError,
     } = useSelector(state => state.userProducts)
 
     const {
         analiticLoading,
+        analiticServerConnectionError,
     } = useSelector(state => state.userAnalitic);
+
+    const {
+        authServerConnectionError
+    } = useSelector(state => state.userAuth);
+
+    const {
+        cartServerConnectionError
+    } = useSelector(state => state.userBasket);
+
+    const {
+        likedProductsServerConnectionError
+    } = useSelector(state => state.userLikedProducts);
 
     const {
         isCategoryOpen,
@@ -89,10 +106,6 @@ const ProductPage = () =>
             .then(({ payload }) =>
             {
                 dispatch(getInterestingProducts(Number(payload?.categoryId)))
-                    .then((data) =>
-                    {
-                        console.log(data)
-                    })
             });
         dispatch(getProductRaitingInfo(Number(params.id)))
         dispatch(getProductReviews(Number(params.id)))
@@ -145,6 +158,11 @@ const ProductPage = () =>
             dispatch(setIsCategoryOpen(false))
         }
     }, [step]);
+
+    if (productServerConnectionError || analiticServerConnectionError || authServerConnectionError || cartServerConnectionError || likedProductsServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     if (loadingProduct)
     {

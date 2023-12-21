@@ -27,6 +27,7 @@ import
 import { getFullPath } from '../../main/services/CategoryService';
 import { useNavigate } from 'react-router-dom';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const ProductInfo = () =>
 {
     const dispatch = useDispatch();
@@ -44,7 +45,8 @@ const ProductInfo = () =>
     var categoryPath = useRef([]);
 
     const {
-        categoriesForSelect
+        categoriesForSelect,
+        categoryServerConnectionError,
     } = useSelector(state => state.userCategories);
 
     const handleMenuItemClick = (menuItem) =>
@@ -65,6 +67,10 @@ const ProductInfo = () =>
         setActiveMenuItem(activeTab)
     }, [activeTab])
 
+    if (categoryServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
     return (
         <div className='pi-container1'>
             <Grid container className="pi-categories-container">

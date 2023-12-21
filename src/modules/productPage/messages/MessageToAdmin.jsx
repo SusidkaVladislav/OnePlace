@@ -21,20 +21,33 @@ import
 } from '../../main/features/messages/userMessageSlice';
 import SuccessfulMessageAlert from './SuccessfulMessageAlert';
 import './MessageToAdminStyles.css';
+import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
+import { useNavigate } from 'react-router-dom';
 
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const MessageToAdmin = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         product
     } = useSelector(state => state.userProducts);
 
     const {
+        refreshTokenLoading,
+        authServerConnectionError,
+    } = useSelector(state => state.userAuth)
+
+    const {
         userName,
         userEmail,
     } = useSelector(state => state.userViewProduct)
+
+    const {
+        messagesServerConnectionError
+    } = useSelector(state => state.userMessages)
 
     const xs = useMediaQuery('(min-width: 0px)');
     const md = useMediaQuery('(min-width: 900px)');
@@ -88,6 +101,15 @@ const MessageToAdmin = () =>
                     }, 2000)
                 })
         }
+    }
+
+    if (authServerConnectionError || messagesServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
+    if (refreshTokenLoading)
+    {
+        return <LoadingAnimation />
     }
 
     return (

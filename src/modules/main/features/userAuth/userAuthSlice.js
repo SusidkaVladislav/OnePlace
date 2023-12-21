@@ -13,6 +13,10 @@ const initialState = {
 
     userPersonalDataLoading: false,
     userPersonalData: {},
+
+    refreshTokenLoading: false,
+
+    authServerConnectionError: false
 }
 
 export const getUserPersonalData = createAsyncThunk('user/getUserPersonalData', async (_, { rejectWithValue }) =>
@@ -64,9 +68,26 @@ export const refreshToken = createAsyncThunk('user/refreshToken', async (_, { re
 
         localStorage.setItem("access-token", resp.data);
     }
-    catch (err)
+    catch (error)
     {
+        if (error.code === 'ERR_NETWORK')
+        {
+            const customError = {
+                status: 500,
+                message: "Відсутнє з'єднання",
+                detail: 'Немає підключення до серверу',
+            };
 
+            return rejectWithValue(customError);
+        }
+
+        const customError = {
+            status: error.response.data.status,
+            message: error.response.data.title,
+            detail: error.response.data.detail,
+        };
+
+        return rejectWithValue(customError)
     }
 })
 
@@ -109,6 +130,13 @@ const userAuthSlice = createSlice({
                 beforeAuthPath: payload
             }
         },
+        resetAuthServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                authServerConnectionError: false,
+            }
+        },
     },
     extraReducers(builder)
     {
@@ -130,9 +158,43 @@ const userAuthSlice = createSlice({
             })
             .addCase(getUserPersonalData.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     userPersonalDataLoading: false,
+                    authServerConnectionError: isServerConnectionError,
+                }
+            })
+
+            .addCase(refreshToken.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    refreshTokenLoading: true,
+                }
+            })
+            .addCase(refreshToken.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    refreshTokenLoading: false,
+                }
+            })
+            .addCase(refreshToken.rejected, (state, { payload }) =>
+            {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
+                return {
+                    ...state,
+                    refreshTokenLoading: false,
+                    authServerConnectionError: isServerConnectionError,
                 }
             })
     }
@@ -145,6 +207,7 @@ export const {
 
     setIsAuthState,
     setBeforeAuthPath,
+    resetAuthServerConnectionError,
 } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;

@@ -10,6 +10,8 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     loadingUserOrders: false,
     userOrders: [],
+
+    myOrdersServerConnectionError: false,
 }
 
 export const getAllMyOrders = createAsyncThunk('myOrders/getAllMyOrders', async (_, { rejectWithValue }) =>
@@ -45,7 +47,15 @@ export const getAllMyOrders = createAsyncThunk('myOrders/getAllMyOrders', async 
 const myOrderSlice = createSlice({
     name: 'myOrders',
     initialState,
-    reducers: {},
+    reducers: {
+        resetMyOrdersServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                myOrdersServerConnectionError: false,
+            }
+        }
+    },
     extraReducers(builder)
     {
         builder
@@ -66,12 +76,22 @@ const myOrderSlice = createSlice({
             })
             .addCase(getAllMyOrders.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingUserOrders: false,
+                    myOrdersServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
+
+export const {
+    resetMyOrdersServerConnectionError
+} = myOrderSlice.actions;
 
 export default myOrderSlice.reducer;

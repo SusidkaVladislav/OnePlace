@@ -66,7 +66,7 @@ const CouldInterest = () =>
         const step = lg ? 4 : md ? 3 : 16;
         let productBlock = [];
 
-        interestingProducts?.map((item, index) =>
+        interestingProducts?.slice()?.reverse()?.map((item, index) =>
         {
             if (index < step)
             {
@@ -201,22 +201,17 @@ const CouldInterest = () =>
                 rowGap={'20px'}
                 sx={{
 
-                    paddingLeft: lg1 ? '80px' : lg ? '45px' :
+                    paddingLeft: lg1 ? '150px' : lg ? '45px' :
                         md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
 
-                    paddingRight: lg1 ? '80px' : lg ? '45px' :
+                    paddingRight: lg1 ? '150px' : lg ? '45px' :
                         md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
                 }}
                 justifyContent={'space-between'}
             >
                 {
-                    console.log(interestingProducts)
-                }
-                {
-
                     productBlock?.items?.map((product, index) =>
                     {
-
                         return (
                             <Grid
                                 container

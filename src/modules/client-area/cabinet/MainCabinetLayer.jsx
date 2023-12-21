@@ -27,6 +27,7 @@ const ACTIVE_ICON_COLOR = "#0A3D58";
 
 const IMG_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTR3zZjipG0-Lf-MtJcieX_ASoCDA_6JfGxA&usqp=CAU';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const MainCabinetLayer = () =>
 {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ const MainCabinetLayer = () =>
     const {
         userPersonalData,
         userPersonalDataLoading,
+        authServerConnectionError,
     } = useSelector(state => state.userAuth);
 
     const [hoveredIndex, setHoveredIndex] = useState(0);
@@ -60,6 +62,12 @@ const MainCabinetLayer = () =>
     {
         dispatch(getUserPersonalData());
     }, [])
+
+
+    if (authServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     if (userPersonalDataLoading)
     {

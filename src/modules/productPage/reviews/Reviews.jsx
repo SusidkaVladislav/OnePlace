@@ -77,7 +77,7 @@ const Reviews = () =>
                                                 <ReviewReplyIcon />
                                                 <Typography className="t1-bold-orange1">Відповідь адміністратора</Typography>
                                             </div>
-                                            <Typography className="t2-medium-brown3">{new Date(review?.amindReplyDate).getUTCDay() + '.' +
+                                            <Typography className="t2-medium-brown3">{new Date(review?.amindReplyDate).getDate() + '.' +
                                                 (new Date(review?.amindReplyDate).getMonth() + 1) + '.' + new Date(review?.amindReplyDate).getFullYear()}</Typography>
                                         </div>
                                         <Typography className="t1-bold review-description">

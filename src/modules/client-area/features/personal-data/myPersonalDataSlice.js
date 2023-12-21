@@ -11,8 +11,11 @@ const initialState = {
     messageFromServer: '',
     updataPersonalDataLoading: false,
     updatePasswordLoading: false,
+    updatePhotoLoading: false,
     passwordMessage: '',
     showPasswordSuccessAlert: false,
+
+    myPersonalDataServerConnectionError: false,
 }
 
 export const updataPhoto = createAsyncThunk('myPersonalData/updataPhoto', async (pictureAddress, { rejectWithValue }) =>
@@ -129,11 +132,46 @@ const myPersonalDataSlice = createSlice({
                 ...state,
                 showPasswordSuccessAlert: payload
             }
+        },
+        resetMyPersonalDataServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                myPersonalDataServerConnectionError: false,
+            }
         }
     },
     extraReducers(builder)
     {
         builder
+            .addCase(updataPhoto.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    updatePhotoLoading: true,
+                }
+            })
+            .addCase(updataPhoto.fulfilled, (state) =>
+            {
+                return {
+                    ...state,
+                    updatePhotoLoading: false,
+                }
+            })
+            .addCase(updataPhoto.rejected, (state, { payload }) =>
+            {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
+                return {
+                    ...state,
+                    updatePhotoLoading: false,
+                    myPersonalDataServerConnectionError: isServerConnectionError,
+                }
+            })
+
             .addCase(updataPersonalData.pending, (state) =>
             {
                 return {
@@ -150,10 +188,16 @@ const myPersonalDataSlice = createSlice({
             })
             .addCase(updataPersonalData.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     updataPersonalDataLoading: false,
-                    messageFromServer: payload.detail
+                    messageFromServer: payload.detail,
+                    myPersonalDataServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -173,10 +217,16 @@ const myPersonalDataSlice = createSlice({
             })
             .addCase(updatePassword.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     updatePasswordLoading: false,
-                    passwordMessage: payload.detail
+                    passwordMessage: payload.detail,
+                    myPersonalDataServerConnectionError: isServerConnectionError,
                 }
             })
     }
@@ -186,6 +236,7 @@ export const {
     resetMessageFromServer,
     resetPasswordMessage,
     setShowPasswordSuccessAlert,
+    resetMyPersonalDataServerConnectionError,
 } = myPersonalDataSlice.actions;
 
 export default myPersonalDataSlice.reducer;

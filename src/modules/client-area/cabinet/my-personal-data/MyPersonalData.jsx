@@ -54,6 +54,7 @@ const IMG_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTR3zZjip
 const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const MIN_PASSWORD_LENGTH = 8;
 const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]+$/;
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const MyPersonalData = () =>
 {
   const dispatch = useDispatch();
@@ -86,12 +87,14 @@ const MyPersonalData = () =>
 
   const {
     userPersonalData,
+    authServerConnectionError,
   } = useSelector(state => state.userAuth);
 
   const {
     messageFromServer,
     passwordMessage,
     showPasswordSuccessAlert,
+    myPersonalDataServerConnectionError,
   } = useSelector(state => state.myPersonalData)
 
   useEffect(() =>
@@ -224,6 +227,11 @@ const MyPersonalData = () =>
     setIsConfirmDialogVisible(false);
   };
 
+
+  if (myPersonalDataServerConnectionError || authServerConnectionError)
+  {
+    navigate(NO_SERVER_CONNECTION_PATH)
+  }
 
   return (
     <Grid

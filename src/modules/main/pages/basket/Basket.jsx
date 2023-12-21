@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import Header from '../../components/header/Header';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux"
 import
 {
@@ -21,13 +22,22 @@ import
     useMediaQuery
 } from '@mui/material';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const Basket = () =>
 {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const md = useMediaQuery('(min-width: 900px)');
+
     const {
         isCategoryOpen,
+        categoryServerConnectionError,
     } = useSelector(state => state.userCategories);
+
+    const {
+        cartServerConnectionError
+    } = useSelector(state => state.userBasket)
 
     useEffect(() =>
     {
@@ -81,6 +91,12 @@ const Basket = () =>
             dispatch(setIsCategoryOpen(false))
         }
     }, [step]);
+
+
+    if (categoryServerConnectionError || cartServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     return (
         <Fragment>

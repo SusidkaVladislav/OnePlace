@@ -126,7 +126,7 @@ export const getProductsFromCart = createAsyncThunk('user/getProductsFromCart', 
 })
 
 const cartSlice = createSlice({
-    name: 'cart',
+    name: 'userBasket',
     initialState,
     reducers: {
         resetCartState: (state) =>
@@ -154,7 +154,7 @@ const cartSlice = createSlice({
                 checkedProductIds: payload,
             }
         },
-        resetCategoryServerConnectionError: (state) =>
+        resetCartServerConnectionError: (state) =>
         {
             return {
                 ...state,
@@ -300,7 +300,7 @@ export const {
     resetCartState,
     setCartCount,
     setCheckedIds,
-    resetCategoryServerConnectionError,
+    resetCartServerConnectionError,
 } = cartSlice.actions
 
 export default cartSlice.reducer

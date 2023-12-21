@@ -11,6 +11,7 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     errorFromServer: false,
     messageFromServer: '',
+    userLoginLoading: false,
     loginServerConnectionError: false,
 }
 
@@ -81,6 +82,7 @@ const userLoginSlice = createSlice({
                     ...state,
                     messageFromServer: '',
                     errorFromServer: false,
+                    userLoginLoading: true,
                 }
             })
             .addCase(userLogin.fulfilled, (state, { payload }) =>
@@ -100,7 +102,8 @@ const userLoginSlice = createSlice({
                 return {
                     ...state,
                     errorFromServer: isInRole,
-                    messageFromServer: ''
+                    messageFromServer: '',
+                    userLoginLoading: false,
                 }
 
             })
@@ -116,6 +119,7 @@ const userLoginSlice = createSlice({
                 return {
                     ...state,
                     errorFromServer: true,
+                    userLoginLoading: false,
                     messageFromServer: payload.detail,
                     loginServerConnectionError: isServerConnectionError,
                 }

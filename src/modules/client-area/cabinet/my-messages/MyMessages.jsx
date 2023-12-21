@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const MyMessages = () =>
 {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const MyMessages = () =>
     const {
         loadingUserMessages,
         userMessages,
+        myMessagesServerConnectionError,
     } = useSelector(state => state.myMessages);
 
     useEffect(() =>
@@ -29,7 +31,10 @@ const MyMessages = () =>
         dispatch(getAllMyMessages());
     }, [])
 
-
+    if (myMessagesServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH);
+    }
     if (loadingUserMessages)
     {
         return (

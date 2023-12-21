@@ -22,10 +22,13 @@ import
 } from '../userAuth/userAuthSlice';
 import axios from 'axios';
 import { useGoogleLogin } from '@react-oauth/google';
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const PHONE_PATTERN = /^\d*$/;
+const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const MIN_PASSWORD_LENGTH = 8;
 const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+])[A-Za-z\d@$!%*?&+]+$/;
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const UserRegisterForm = () =>
 {
     const errorsDefaultList = [
@@ -51,7 +54,9 @@ const UserRegisterForm = () =>
     const [dataValidated, setDataValidated] = useState(false);
     const {
         errorFromServer,
-        messageFromServer
+        messageFromServer,
+        registerUserLoading,
+        registerServerConnectionError,
     } = useSelector(state => state.userRegister);
 
     useEffect(() =>
@@ -110,12 +115,12 @@ const UserRegisterForm = () =>
 
     const handleGoogle = () =>
     {
-
+        // Реалізація планується на майбутнє
     }
 
     const handleFacebook = () =>
     {
-
+        // Реалізація планується на майбутнє
     }
 
     const handleRegister = async () =>
@@ -133,7 +138,17 @@ const UserRegisterForm = () =>
                 password: password
             }
 
-            await dispatch(registerUser(register));
+            await dispatch(registerUser(register)).then(({ payload }) =>
+            {
+                if (payload?.status === 200)
+                {
+                    setTimeout(() =>
+                    {
+                        dispatch(setIsRegisterFormOpen(false))
+                        dispatch(setIsLoginFormOpen(true))
+                    }, 1000)
+                }
+            })
         }
     }
 
@@ -213,11 +228,19 @@ const UserRegisterForm = () =>
         onError: (error) => console.log('Login Failed:', error)
     });
 
+    if (registerServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH);
+    }
+    if (registerUserLoading)
+    {
+        return <LoadingAnimation />
+    }
+
     return (
         <div
             className='modal-backdrop'
         >
-
             <Stack
                 className='register-body'
                 sx={{

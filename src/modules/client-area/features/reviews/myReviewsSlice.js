@@ -13,6 +13,8 @@ const initialState = {
     userReviews: [],
     reviewMessage: '',
     showReviewMessage: false,
+
+    myReviewsServerConnectionError: false,
 }
 
 export const getAllMyReviews = createAsyncThunk('myReviews/getAllMyReviews', async (_, { rejectWithValue }) =>
@@ -116,10 +118,30 @@ const myReviewsSlice = createSlice({
                 showReviewMessage: payload,
             }
         },
+        resetMyReviewsServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                myReviewsServerConnectionError: false,
+            }
+        }
     },
     extraReducers(builder)
     {
         builder
+            .addCase(deleteReview.rejected, (state, { payload }) =>
+            {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
+                return {
+                    ...state,
+                    myReviewsServerConnectionError: isServerConnectionError,
+                }
+            })
+
             .addCase(getAllMyReviews.pending, (state) =>
             {
                 return {
@@ -137,9 +159,15 @@ const myReviewsSlice = createSlice({
             })
             .addCase(getAllMyReviews.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingUserReviews: false,
+                    myReviewsServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -161,11 +189,18 @@ const myReviewsSlice = createSlice({
             })
             .addCase(createReview.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
+
                 return {
                     ...state,
                     createUserReviewLoading: false,
                     showReviewMessage: true,
-                    reviewMessage: payload?.detail
+                    reviewMessage: payload?.detail,
+                    myReviewsServerConnectionError: isServerConnectionError,
                 }
             })
     }
@@ -173,6 +208,7 @@ const myReviewsSlice = createSlice({
 
 export const {
     setShowReviewMessage,
+    resetMyReviewsServerConnectionError,
 } = myReviewsSlice.actions
 
 export default myReviewsSlice.reducer;

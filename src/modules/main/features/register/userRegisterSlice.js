@@ -6,6 +6,9 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     errorFromServer: false,
     messageFromServer: '',
+
+    registerUserLoading: false,
+    registerServerConnectionError: false,
 }
 
 export const registerUser = createAsyncThunk('user/registerUser', async (register, { rejectWithValue }) =>
@@ -51,32 +54,55 @@ const userRegisterSlice = createSlice({
                 messageFromServer: '',
                 errorFromServer: false,
             }
+        },
+        resetRegisterServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                registerServerConnectionError: false,
+            }
         }
     },
     extraReducers(builder)
     {
         builder
+            .addCase(registerUser.pending, (state) =>
+            {
+                return {
+                    ...state,
+                    registerUserLoading: true,
+                }
+            })
             .addCase(registerUser.fulfilled, (state) =>
             {
                 return {
                     ...state,
                     messageFromServer: 'Успішно зареєстровано!',
                     errorFromServer: false,
+                    registerUserLoading: false,
                 }
             })
-            .addCase(registerUser.rejected, (state, action) =>
+            .addCase(registerUser.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     errorFromServer: true,
-                    messageFromServer: action.payload.detail,
+                    messageFromServer: payload.detail,
+                    registerUserLoading: false,
+                    registerServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
 
 export const {
-    resetState
+    resetState,
+    resetRegisterServerConnectionError,
 } = userRegisterSlice.actions;
 
 export default userRegisterSlice.reducer

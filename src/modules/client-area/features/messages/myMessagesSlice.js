@@ -10,6 +10,8 @@ const { REACT_APP_BASE_URL } = process.env;
 const initialState = {
     loadingUserMessages: false,
     userMessages: [],
+
+    myMessagesServerConnectionError: false,
 }
 
 export const getAllMyMessages = createAsyncThunk('myMessages/getAllMyMessages', async (_, { rejectWithValue }) =>
@@ -45,7 +47,15 @@ export const getAllMyMessages = createAsyncThunk('myMessages/getAllMyMessages', 
 const myMessageSlice = createSlice({
     name: 'myMessages',
     initialState,
-    reducers: {},
+    reducers: {
+        resetMyMessagesServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                myMessagesServerConnectionError: false,
+            }
+        }
+    },
     extraReducers(builder)
     {
         builder
@@ -66,12 +76,22 @@ const myMessageSlice = createSlice({
             })
             .addCase(getAllMyMessages.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingUserMessages: false,
+                    myMessagesServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
+
+export const {
+    resetMyMessagesServerConnectionError
+} = myMessageSlice.actions;
 
 export default myMessageSlice.reducer;

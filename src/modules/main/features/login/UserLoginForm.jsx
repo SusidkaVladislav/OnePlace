@@ -37,10 +37,11 @@ import
 {
     userLogin
 } from '../../features/login/userLoginSlice';
-
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 import axios from 'axios';
 
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const UserLoginForm = () =>
 {
     const dispatch = useDispatch();
@@ -53,33 +54,20 @@ const UserLoginForm = () =>
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
-
-
     const [errorsList, setErrorsList] = useState(errorsDefaultList);
     const [dataValidated, setDataValidated] = useState(false);
 
-    //const [authError, setAuthError] = useState(false);
-
     const {
         errorFromServer,
-        messageFromServer
+        messageFromServer,
+        userLoginLoading,
+        loginServerConnectionError,
     } = useSelector(state => state.userLogin);
-
-    useEffect(() =>
-    {
-
-    }, [dataValidated]);
-    // const {
-    //     isLoginFormOpen
-    // } = useSelector(state => state.userAuth);
 
     const handleClose = () => 
     {
         dispatch(setIsLoginFormOpen(false));
     };
-
-
 
     const handleEnter = async () =>
     {
@@ -129,7 +117,6 @@ const UserLoginForm = () =>
                         },
                     }
                 );
-                console.log(res);
             } catch (err)
             {
                 console.log(err);
@@ -165,6 +152,15 @@ const UserLoginForm = () =>
         setErrorsList(errors);
     }
 
+
+    if (loginServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
+    if (userLoginLoading)
+    {
+        return <LoadingAnimation />
+    }
 
     return (
         <div

@@ -37,6 +37,7 @@ import
 
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const ProductCard = (props) =>
 {
     const navigate = useNavigate();
@@ -55,6 +56,14 @@ const ProductCard = (props) =>
 
     const {
         likedProductsCount,
+    } = useSelector(state => state.userLikedProducts);
+
+    const {
+        cartServerConnectionError
+    } = useSelector(state => state.userBasket);
+
+    const {
+        likedProductsServerConnectionError
     } = useSelector(state => state.userLikedProducts);
 
     const {
@@ -228,6 +237,10 @@ const ProductCard = (props) =>
         }
     }
 
+    if (likedProductsServerConnectionError || cartServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     return (
         <Card

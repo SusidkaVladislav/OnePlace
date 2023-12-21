@@ -57,9 +57,10 @@ import BackRightArrowIcon from '../../../../svg/arrows/BackRightArrowIcon';
 
 import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 20;
 const LOCAL_STORAGE_FILTER_KEY = "filtersSet"
 const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 
 const ProductsByCategoryPage = () =>
 {
@@ -101,8 +102,7 @@ const ProductsByCategoryPage = () =>
     const {
         products,
         loadingProduct,
-
-        isErrorProduct
+        productServerConnectionError,
     } = useSelector(state => state.userProducts)
 
     const {
@@ -113,7 +113,12 @@ const ProductsByCategoryPage = () =>
 
     const {
         productInfoFilters,
+        analiticServerConnectionError,
     } = useSelector(state => state.userAnalitic)
+
+    const {
+        cartServerConnectionError
+    } = useSelector(state => state.userBasket)
 
     const [isFiltersUploaded, setIsFiltersUploaded] = useState(false)
 
@@ -260,7 +265,6 @@ const ProductsByCategoryPage = () =>
                 setIsFiltersUploaded(true)
             })
 
-
         getFullPath(Number(params.id), categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
         setShowHideFilterOptions([])
@@ -294,8 +298,9 @@ const ProductsByCategoryPage = () =>
         filterCheckHandler(tmpFiltersSet)
     }
 
-    if(categoryServerConnectionError){
-        navigate('/no_server_connection')
+    if (categoryServerConnectionError || productServerConnectionError || analiticServerConnectionError || cartServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
     }
 
     if (loadingProduct)
@@ -306,6 +311,7 @@ const ProductsByCategoryPage = () =>
     {
         return <LoadingAnimation />
     }
+
     return (
         <Grid>
             <Header />
@@ -423,11 +429,12 @@ const ProductsByCategoryPage = () =>
                         md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
                 }}
                 xs={12}
+                justifyContent={isFiltersShown && !isCategoryOpen && lg ? 'center' : 'space-between'}
             >
 
                 <Grid
                     sx={{
-                        display: isFiltersShown === true && !isCategoryOpen? 'flex' : 'none',
+                        display: isFiltersShown === true && !isCategoryOpen ? 'flex' : 'none',
                         zIndex: !isRegisterFormOpen && !isLoginFormOpen && !isCategoryOpen && !isRenewPasswordFormOpen ? 1000 : 0,
                         position: isFiltersShown === true && !lg && !isRegisterFormOpen && !isLoginFormOpen ? 'absolute' : 'initial',
                     }}
@@ -844,11 +851,12 @@ const ProductsByCategoryPage = () =>
                 <Grid
                     container
                     item
-                    lg={isFiltersShown && !isCategoryOpen ? 9 : 12}
+                    lg={isFiltersShown && !isCategoryOpen ? 8.5 : 12}
                     md={12}
-                    rowGap={3}
+                    rowGap={4}
                     columnSpacing={2}
                     height={'fit-content'}
+                    justifyContent={'center'}
                 >
                     {
                         products?.items?.map((product, index) =>
@@ -857,7 +865,7 @@ const ProductsByCategoryPage = () =>
                                 key={index}
                                 container
                                 item
-                                lg={isFiltersShown && !isCategoryOpen ? 4 : 3}
+                                lg={isFiltersShown && !isCategoryOpen ? 3.7 : 2.7}
                                 md={4}
                                 xs={6}
                                 justifyContent="center"
@@ -889,6 +897,9 @@ const ProductsByCategoryPage = () =>
             <Grid
                 container
                 justifyContent={'center'}
+                sx={{
+                    marginTop: '70px'
+                }}
             >
                 <div className='pag'>
                     <ClientPagination

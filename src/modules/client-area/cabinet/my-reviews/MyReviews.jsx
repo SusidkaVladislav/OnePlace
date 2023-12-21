@@ -33,22 +33,26 @@ import
 
 import CreateReviewAlert from './CreateReviewAlert';
 import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
+
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const MyReviews = () =>
 {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [activeMenuItem, setActiveMenuItem] = useState('yourReviews');
-    const [createReviewFormOpen, setCreateReviewFormOpen] = useState(false);
+    const [createReviewFormOpen, setCreateReviewFormOpen] = useState([]);
 
     const {
         loadingUserReviews,
         userReviews,
         showReviewMessage,
+        myReviewsServerConnectionError,
     } = useSelector(state => state.myReviews);
 
     const {
         loadingBoughtProducts,
         boughtProducts,
+        myProductsServerConnectionError,
     } = useSelector(state => state.myProducts);
 
     const handleMenuItemClick = (menuItem) =>
@@ -59,7 +63,24 @@ const MyReviews = () =>
     useEffect(() =>
     {
         dispatch(getAllMyReviews());
+
+        let falseArray = [];
+        if (boughtProducts?.length > 0)
+        {
+            for (let i = 0; i < boughtProducts.length; i++)
+            {
+                falseArray.push(false);
+            }
+            setCreateReviewFormOpen(falseArray);
+        }
+
+
     }, [])
+
+    if (myProductsServerConnectionError || myReviewsServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
 
     if (loadingUserReviews)
     {
@@ -167,7 +188,7 @@ const MyReviews = () =>
                                                     <Typography className="t1-bold-orange1">Відповідь адміністратора</Typography>
                                                 </div>
                                                 <Typography className="t2-medium-brown3">
-                                                    {new Date(review?.amindReplyDate).getUTCDay() + '.' + (new Date(review?.amindReplyDate).getMonth() + 1) + '.' + new Date(review?.amindReplyDate).getFullYear()}
+                                                    {new Date(review?.amindReplyDate).getDate() + '.' + (new Date(review?.amindReplyDate).getMonth() + 1) + '.' + new Date(review?.amindReplyDate).getFullYear()}
                                                 </Typography>
                                             </div>
                                             <Typography className="t1-bold review-description">{review?.adminReplyComment}</Typography>
@@ -187,7 +208,7 @@ const MyReviews = () =>
                         boughtProducts?.map((product, index) =>
                         {
                             return (
-                                <Grid key={index} item xs={12} sm={12} md={5} lg={5} className='mr-container2'>
+                                <Grid key={index} item xs={12} md={5} className='mr-container2'>
                                     <div className="mr-container7">
                                         <img src={product?.picureAddress} className='mr-product-image'></img>
                                         <div
@@ -208,7 +229,9 @@ const MyReviews = () =>
                                                 <span
                                                     onClick={() =>
                                                     {
-                                                        setCreateReviewFormOpen(!createReviewFormOpen);
+                                                        let falseArray = [...createReviewFormOpen]
+                                                        falseArray[index] = !createReviewFormOpen[index];
+                                                        setCreateReviewFormOpen(falseArray);
                                                     }}
                                                 >
                                                     <PlusIcon />
@@ -217,7 +240,7 @@ const MyReviews = () =>
                                         </div>
                                     </div>
                                     {
-                                        createReviewFormOpen &&
+                                        createReviewFormOpen[index] &&
                                         <CreateReviewForm
                                             id={product?.productId}
                                         />

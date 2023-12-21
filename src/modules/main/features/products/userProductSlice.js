@@ -24,7 +24,7 @@ const initialState = {
     product: {},
     productRaitingInfo: {},
 
-    serverConnectionError: false,
+    productServerConnectionError: false,
 }
 
 export const getProductsByFilters = createAsyncThunk('user/getProductsByFilters', async (filter, { rejectWithValue }) =>
@@ -223,7 +223,14 @@ const userProductSlice = createSlice({
                 ...state,
                 isError: false,
             }
-        })
+        }),
+        resetProductServerConnectionError: (state) =>
+        {
+            return {
+                ...state,
+                productServerConnectionError: false,
+            }
+        }
     },
     extraReducers(builder)
     {
@@ -247,10 +254,16 @@ const userProductSlice = createSlice({
             })
             .addCase(getProductsByFilters.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingProduct: false,
                     isErrorProduct: true,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -271,9 +284,15 @@ const userProductSlice = createSlice({
             })
             .addCase(getProductById.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingProduct: false,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -294,9 +313,15 @@ const userProductSlice = createSlice({
             })
             .addCase(getProductRaitingInfo.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingRating: false,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -317,9 +342,15 @@ const userProductSlice = createSlice({
             })
             .addCase(getRecommendedProducts.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingRecommendedProducts: false,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -340,9 +371,15 @@ const userProductSlice = createSlice({
             })
             .addCase(getAllRecommendedProducts.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingRecommendedProducts: false,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
 
@@ -355,7 +392,6 @@ const userProductSlice = createSlice({
             })
             .addCase(getInterestingProducts.fulfilled, (state, { payload }) =>
             {
-                console.log(payload)
                 return {
                     ...state,
                     loadingInterestingProducts: false,
@@ -364,16 +400,23 @@ const userProductSlice = createSlice({
             })
             .addCase(getInterestingProducts.rejected, (state, { payload }) =>
             {
+                let isServerConnectionError = false;
+                if (payload?.status === 500)
+                {
+                    isServerConnectionError = true;
+                }
                 return {
                     ...state,
                     loadingInterestingProducts: false,
+                    productServerConnectionError: isServerConnectionError,
                 }
             })
     }
 })
 
 export const {
-    resetErrorProduct
+    resetErrorProduct,
+    resetProductServerConnectionError,
 } = userProductSlice.actions;
 
 export default userProductSlice.reducer;

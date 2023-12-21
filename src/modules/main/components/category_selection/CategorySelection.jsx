@@ -15,8 +15,13 @@ const CaregorySelection = (props) =>
 {
     const navigate = useNavigate();
 
-
+    const xs = useMediaQuery('(min-width: 0px)');
     const sm = useMediaQuery('(min-width: 600px)');
+    const sm1 = useMediaQuery('(min-width: 650px)');
+    const md = useMediaQuery('(min-width: 900px)');
+    const md1 = useMediaQuery('(min-width: 1050px)');
+    const lg = useMediaQuery('(min-width: 1200px)');
+    const lg1 = useMediaQuery('(min-width: 1400px)');
 
     const {
         categoriesForSelect,
@@ -61,6 +66,14 @@ const CaregorySelection = (props) =>
                 <Grid
                     container
                     rowGap={'20px'}
+                    sx={{
+
+                        paddingLeft: lg1 ? '40px' : lg ? '0px' :
+                            md1 ? '40px' : md ? '0px' : sm ? '20px' : sm1 ? '30px' : '16px',
+
+                        paddingRight: lg1 ? '40px' : lg ? '0px' :
+                            md1 ? '40px' : md ? '0px' : sm ? '20px' : sm1 ? '30px' : '16px',
+                    }}
                     justifyContent={'space-between'}
                 >
                     {

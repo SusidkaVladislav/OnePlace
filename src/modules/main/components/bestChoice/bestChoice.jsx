@@ -221,7 +221,7 @@ const BestChoice = (props) =>
                             sm: '53px',
                             xs: '16px',
                         },
-                        marginBottom: lg? '60px' : md? '45px' : sm? '35px' : '20px',
+                        marginBottom: lg ? '60px' : md ? '45px' : sm ? '35px' : '20px',
                     }}
                     boxShadow='1px 1px 8px 0px rgba(0, 0, 0, 0.08)'
                 >
@@ -283,17 +283,16 @@ const BestChoice = (props) =>
                     rowGap={'20px'}
                     sx={{
 
-                        paddingLeft: lg1 ? '80px' : lg ? '45px' :
-                            md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
+                        paddingLeft: lg1 ? '140px' : lg ? '75px' :
+                            md1 ? '80px' : md ? '50px' : sm ? '20px' : sm1 ? '30px' : '16px',
 
-                        paddingRight: lg1 ? '80px' : lg ? '45px' :
-                            md ? '50px' : md1 ? '80px' : sm ? '20px' : sm1 ? '30px' : '16px',
+                        paddingRight: lg1 ? '140px' : lg ? '75px' :
+                            md1 ? '80px' : md ? '50px' : sm ? '20px' : sm1 ? '30px' : '16px',
                     }}
                     justifyContent={'space-between'}
                 >
                     {
-
-                        allRecommendedProducts?.map((product, index) =>
+                        allRecommendedProducts?.slice()?.reverse()?.map((product, index) =>
                         {
                             if (index - 1 < (showRecommendProductNumber * 2))
                                 return (

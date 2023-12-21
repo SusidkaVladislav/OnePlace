@@ -152,6 +152,7 @@ QontoStepIcon.propTypes = {
 
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const CheckoutPage = () =>
 {
     const dispatch = useDispatch();
@@ -182,6 +183,8 @@ const CheckoutPage = () =>
 
         actionNotification,
         loading,
+
+        orderServerConnectionError,
     } = useSelector(state => state.userOrder);
 
     const steps =
@@ -303,7 +306,10 @@ const CheckoutPage = () =>
         return isValid;
     }
 
-
+    if (orderServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
     if (loading)
     {
         return <LoadingAnimation />

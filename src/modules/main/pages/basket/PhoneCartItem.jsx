@@ -23,6 +23,7 @@ import CustomCheckbox from '../../../../services/custom-inputs/CustomCheckbox2';
 
 import { useNavigate } from 'react-router-dom';
 
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const PhoneCartItem = (props) =>
 {
     const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const PhoneCartItem = (props) =>
 
     const {
         checkedProductIds,
+        cartServerConnectionError,
     } = useSelector(state => state.userBasket)
 
 
@@ -235,6 +237,11 @@ const PhoneCartItem = (props) =>
                 }
             }
         }
+    }
+
+    if (cartServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
     }
 
     return (

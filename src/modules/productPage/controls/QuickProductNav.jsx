@@ -34,12 +34,8 @@ import
 
 import
 {
-    refreshToken,
-} from '../../main/features/userAuth/userAuthSlice';
-
-import
-{
     setIsLoginFormOpen,
+    refreshToken,
 } from '../../main/features/userAuth/userAuthSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,6 +43,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
 
 const LOCAL_STORAGE_CART_KEY = 'cart';
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const QuickProductNav = () =>
 {
     const dispatch = useDispatch();
@@ -59,11 +56,18 @@ const QuickProductNav = () =>
 
     const {
         isAuth,
+        cartServerConnectionError,
     } = useSelector(state => state.userBasket);
+
+    const {
+        refreshTokenLoading,
+        authServerConnectionError,
+    } = useSelector(state => state.userAuth)
 
     const {
         isInLiked,
         likedProductLoading,
+        likedProductsServerConnectionError,
     } = useSelector(state => state.userLikedProducts);
 
     const [currentColorProductConfig, setCurrentColorProductConfig] = useState({})
@@ -156,10 +160,17 @@ const QuickProductNav = () =>
             })
     }
 
-
+    if (cartServerConnectionError || authServerConnectionError || likedProductsServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
     if (likedProductLoading)
     {
-        return <LoadingAnimation/>
+        return <LoadingAnimation />
+    }
+    if (refreshTokenLoading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <div

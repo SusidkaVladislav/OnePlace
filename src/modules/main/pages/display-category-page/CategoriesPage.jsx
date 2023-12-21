@@ -28,6 +28,7 @@ import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40I
 
 
 const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
+const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const CategoriesPage = () =>
 {
     const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const CategoriesPage = () =>
     const {
         isCategoryOpen,
         categoriesForSelect,
+        categoryServerConnectionError,
     } = useSelector(state => state.userCategories);
 
     const [categoryId, setCategoryId] = useState(params.id);
@@ -128,6 +130,10 @@ const CategoriesPage = () =>
         }
     }
 
+    if (categoryServerConnectionError)
+    {
+        navigate(NO_SERVER_CONNECTION_PATH)
+    }
     return (
         <div>
             <Header />
