@@ -13,6 +13,8 @@ import CartItem from "./CartItem";
 import PhoneCartItem from "./PhoneCartItem";
 import { useSelector } from "react-redux"
 import { useNavigate } from 'react-router-dom';
+import BigBrownLeftArrow from '../../../../svg/arrows/BigBrownLeftArrow';
+import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon';
 
 const OrdersGridView = () =>
 {
