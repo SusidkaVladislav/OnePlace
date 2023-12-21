@@ -47,19 +47,64 @@ const OrdersGridView = () =>
                 }
             }}
         >
-            <Typography
-                className={lg ? 'h2-500-32-brown1 unselectable' :
-                    md ? 'brown1-400-20 unselectable' :
-                        sm ? 'brown1-500-32 unselectable'
-                            : 'light-h5 unselectable'
-                }
+            <Grid
+                container
+                item
+                xs={12}
+                direction="row"
                 sx={{
-                    marginBottom: {
-                        sm: '23px',
-                        xs: '13px',
-                    }
+                    height: 'fit-content',
+                    marginBottom:
+                    {
+                        lg: '13px',
+                        md: '0px',
+                        sm: '13px',
+                    },
+                    paddingLeft: {
+                        lg: '20px',
+                        md: '10px',
+                        sm: '20px',
+                        xs: '10px',
+                    },
                 }}
-            >Корзина</Typography>
+            >
+                <Grid
+                    container
+                    alignItems={'center'}
+                    item
+                    md={0.6}
+                    xs={1}
+                >
+                    <span
+                        style={{
+                            cursor: 'pointer',
+                        }}
+                        onClick={() =>
+                        {
+                            navigate(-1)
+                        }}
+                    >
+                        {
+                            lg ? <BigBrownLeftArrow /> : md ? <BrownLeftArrow40x40Icon /> : sm ? <BigBrownLeftArrow /> : <BrownLeftArrow40x40Icon />
+                        }
+                    </span>
+                </Grid>
+
+                <Grid
+                    container
+                    alignItems={'center'}
+                    item
+                    xs={4}
+                >
+                    <Typography
+                        className={lg ? 'h2-500-32-brown1 unselectable' :
+                            md ? 'brown1-400-20 unselectable' :
+                                sm ? 'brown1-500-32 unselectable'
+                                    : 'light-h5 unselectable'
+                        }
+                    >Корзина</Typography>
+                </Grid>
+            </Grid>
 
             <Grid
                 item

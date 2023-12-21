@@ -689,3 +689,21 @@ h5.bold-red {
   font-weight: 500;
   line-height: 130%;
 }
+
+.brown1-500-16 {
+  color: var(--brown1);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.red-500-16 {
+  color: var(--red);
+  font-family: 'Montserrat Alternates';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}

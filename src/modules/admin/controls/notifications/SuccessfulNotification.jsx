@@ -1,6 +1,11 @@
 import React from 'react';
 import './NotificationStyles.css';
 import SuccessfulCharacterIcon from '../../../../svg/shared-icons/SuccessfulCharacterIcon';
+import
+{
+    Grid,
+    Typography,
+} from '@mui/material'
 
 const CongratulationNotification = (props) =>
 {
@@ -9,16 +14,36 @@ const CongratulationNotification = (props) =>
     } = props;
 
     return (
-        <div className='notification-main-container'>
-            <div className='notification-text'>
-                <p style={{
-                    color: '#0BB43A',
-                }}>{notifiaction}</p>
-            </div>
-            <span className='notification-icon'>
+        <Grid
+            sx={{
+                width: '300px',
+                minHeight: '380px',
+                height: 'fit-content',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '20px',
+                padding: '10px',
+            }}
+            className='brown1-500-16'
+        >
+            <Grid
+                container
+                justifyContent={'center'}
+                sx={{
+                    marginTop: '30px'
+                }}
+            >
+                <Typography>
+                    {notifiaction}
+                </Typography>
+            </Grid>
+            <Grid
+                sx={{
+                    marginRight: '670px'
+                }}
+            >
                 <SuccessfulCharacterIcon />
-            </span>
-        </div>
+            </Grid>
+        </Grid>
     )
 }
 

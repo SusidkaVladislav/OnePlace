@@ -110,6 +110,9 @@ const EditCategory = props =>
                                     className="img-category-edit"
                                     type="image"
                                     src={picture}
+                                    style={{
+                                        objectFit: 'contain'
+                                    }}
                                     alt=""
                                 />
 
