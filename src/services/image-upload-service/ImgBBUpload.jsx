@@ -12,14 +12,13 @@ const ImgBBUpload = () =>
 
         try
         {
-            const response = await axios.post('/upload', formData, { params: { key: apiKey } });
+            const response = await axios.post('https://api.imgbb.com/1/upload', formData, { params: { key: apiKey } });
             return response.data;
         }
         catch (error)
         {
             console.error(error)
         }
-
     }
 
     return { upload };
