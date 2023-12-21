@@ -1,21 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
 using OnePlace.BLL.Validators;
-using OnePlace.BOL.Enums;
 using OnePlace.BOL.Exceptions;
 using OnePlace.BOL.OrderDTO;
 using OnePlace.BOL.OrderPayload;
+using OnePlace.BOL.ProductDTO;
 using OnePlace.DAL;
 using OnePlace.DAL.Entities;
-using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text;
+using Stripe.Checkout;
+using System.Security.Claims;
 
 namespace OnePlace.BLL.Services
 {
@@ -49,11 +47,13 @@ namespace OnePlace.BLL.Services
         /// <param name="orderCreate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<int> CreateOrder(OrderCreatePayload orderCreate)
+        public async Task<int> CreateCashOrder(OrderCreatePayload orderCreate)
         {
             OrderCreateDTO createOrderDTO = _mapper.Map<OrderCreateDTO>(orderCreate);
 
-            if (createOrderDTO == null) throw new ArgumentNullException(nameof(createOrderDTO) + " is null");
+            //Потрібно виправити логіку. Перевіряти чи 
+
+            if (createOrderDTO == null) throw new ArgumentNullException("Передано некоректні дані для створення замовлення!");
 
             #region Valid order information
             OrderValidation validation = new OrderValidation(_unitOfWork);
@@ -72,20 +72,8 @@ namespace OnePlace.BLL.Services
             }
 
             //Авторизований користувач
-            //var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
 
             var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            //if (userId is not null)
-
-            //    if (_httpContextAccessor.HttpContext.User.Claims.Count() > 0)
-            //{
-            //    userId = Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
-            //}
-
-            //if (userId is not null)
-            //{
-
-            //}
 
 
             #endregion
@@ -93,7 +81,7 @@ namespace OnePlace.BLL.Services
             Order newOrder = new Order
             {
                 Date = DateTime.Now,
-                DeliveryInfo = ExtractDeliveryInfo(createOrderDTO),
+                DeliveryInfo = createOrderDTO.Department,
                 Name = createOrderDTO.Name,
                 PhoneNumber = createOrderDTO.PhoneNumber,
                 Surname = createOrderDTO.Surname,
@@ -112,8 +100,10 @@ namespace OnePlace.BLL.Services
             _unitOfWork.Orders.Create(newOrder);
             await _unitOfWork.SaveAsync();
 
+
             foreach (var product in createOrderDTO.Products)
             {
+
                 var sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == product.ProductId).Result.FirstOrDefault();
 
                 ProductColor productColor = await _unitOfWork.ProductColors.GetAsync(new Composite2Key
@@ -138,15 +128,124 @@ namespace OnePlace.BLL.Services
                     //Звичайна ціна
                     orderProduct.Price = productColor.Price;
 
+
                 productColor.Quantity -= product.Quantity;
 
                 _unitOfWork.ProductColors.Update(productColor);
                 _unitOfWork.OrderProducts.Create(orderProduct);
             }
+
             await _unitOfWork.SaveAsync();
 
-
             return newOrder.Id;
+        }
+
+        public async Task<Session> CreateCardOrder(OrderCreatePayload orderCreate)
+        {
+            OrderCreateDTO createOrderDTO = _mapper.Map<OrderCreateDTO>(orderCreate);
+
+            if (createOrderDTO == null) throw new ArgumentNullException("Передано некоректні дані для створення замовлення!");
+
+            #region Valid order information
+            OrderValidation validation = new OrderValidation(_unitOfWork);
+            try
+            {
+                await validation.OrderedProductsValid(createOrderDTO.Products);
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw ex;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            #endregion
+
+            List<ProductCardPaymentInfo> products = new List<ProductCardPaymentInfo>();
+            
+            foreach (var product in createOrderDTO.Products)
+            {
+                var sale = _unitOfWork.Sales.FindAsync(s => s.ProductId == product.ProductId).Result.FirstOrDefault();
+                var productName =_unitOfWork.Products.FindAsync(p=>p.Id == product.ProductId).Result.FirstOrDefault();
+
+                ProductColor productColor = await _unitOfWork.ProductColors.GetAsync(new Composite2Key
+                {
+                    Column1 = product.ProductId,
+                    Column2 = product.ColorId
+                });
+                
+                //Наклaдання знижки
+                if (sale is not null)
+                {
+                    products.Add(new ProductCardPaymentInfo
+                    {
+                        ProductName = productName?.Name,
+                        Price = productColor.Price - (productColor.Price * sale.DiscountPercent / 100),
+                        Quantity = product.Quantity
+                    });
+                }
+                else
+                {
+                    products.Add(new ProductCardPaymentInfo
+                    {
+                        ProductName = productName?.Name,
+                        Price = productColor.Price,
+                        Quantity = product.Quantity
+                    });
+                }
+            }
+
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            Session session = CardPay(products, createOrderDTO, userId);
+            
+            return session;
+        }
+
+        //Здійснення оплати карткою
+        private Session CardPay(List<ProductCardPaymentInfo> products, OrderCreateDTO order, Claim userId)
+        {
+            var options = new SessionCreateOptions();
+
+            
+            options.SuccessUrl = "https://one-place-ua.netlify.app/?order_success=true";
+            options.CancelUrl = "https://one-place-ua.netlify.app/basket";
+
+
+            options.LineItems = new List<SessionLineItemOptions>();
+            options.Mode = "payment";
+            options.PaymentMethodTypes = new List<string> {
+                            "card" };
+
+            options.Metadata = new Dictionary<string, string>();
+            options.Metadata.Add("Order", JsonConvert.SerializeObject(order));
+            if(userId is not null) 
+            {
+                options.Metadata.Add("UserId", userId.Value.ToString());
+            }
+
+
+            foreach (var product in products)
+            {
+                var sessionListItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    { 
+                        UnitAmount=(long)((product.Price * product.Quantity) * 100),
+                        Currency="usd",
+                        ProductData=new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name=product.ProductName,
+                        }
+                    },
+                    Quantity = product.Quantity
+                };
+                options.LineItems.Add(sessionListItem);
+            }
+
+            var service = new SessionService();
+            return service.Create(options);
         }
 
         /// <summary>
@@ -171,7 +270,6 @@ namespace OnePlace.BLL.Services
                 OrderState = order.State.ToString(),
                 PaymentMethod = order.PaymentMethod.ToString(),
                 PaymentStatus = order.PaymentStatus.ToString(),
-                //DeliveryCompany = 
                 PhoneNumber = order.PhoneNumber,
                 UserId = order.UserId,
                 UserInitials = order.Name + " " + order.Surname,
@@ -194,9 +292,10 @@ namespace OnePlace.BLL.Services
                     Quantity = product.Quantity,
                     ColorId = product.ColorId,
                     Picture = picture.Select(p => p.Picture.Address).FirstOrDefault(),
-                    Price = product.Price //Ціна вже зі знижкою
+                    Price = product.Price//Ціна вже зі знижкою
                 };
-
+                var color = await _unitOfWork.Colors.GetAsync(product.ColorId);
+                orderedProduct.ColorName = color.Name;
                 orderDetails.TotalPrice += product.Price * product.Quantity;
 
                 orderDetails.Products.Add(orderedProduct);
@@ -215,6 +314,72 @@ namespace OnePlace.BLL.Services
             #endregion
 
             return orderDetails;
+        }
+
+        public async Task<List<OrderDetails>> GetAllUsersOrders()
+        {
+            List<OrderDetails> orders= new List<OrderDetails>();
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userId is not null)
+            {
+                var orderIds = await _unitOfWork.Orders.FindAsync(o=>o.UserId == Int32.Parse(userId.Value));
+
+                if(orderIds is not null)
+                {
+                    foreach (var orderId in orderIds)
+                    {
+                        Order order = await _unitOfWork.Orders.GetAsync(orderId.Id);
+                        if(order is not null) 
+                        {
+                            OrderDetails orderDetails = new OrderDetails
+                            {
+                                Id = orderId.Id,
+                                Date = order.Date,
+                                Comment = order.Comment,
+                                DeliveryInfo = order.DeliveryInfo,
+                                Number = order.Number,
+                                OrderState = order.State.ToString(),
+                                PaymentMethod = order.PaymentMethod.ToString(),
+                                PaymentStatus = order.PaymentStatus.ToString(),
+                                PhoneNumber = order.PhoneNumber,
+                                UserId = order.UserId,
+                                UserInitials = order.Name + " " + order.Surname,
+                                Email = order.User is not null ? order.User.Email : null
+                            };
+
+                            #region Products
+                            var productsOrder = await _unitOfWork.OrderProducts.FindAsync(o => o.OrderId == orderId.Id);
+                            foreach (var product in productsOrder)
+                            {
+                                string productName = _unitOfWork.Products.FindAsync(p => p.Id == product.ProductId).Result.Select(p => p.Name).FirstOrDefault();
+                                //Підтягнути титульну картинку товару
+                                var picture = await _unitOfWork.ProductPictures.FindAsync(pp => pp.ProductId == product.ProductId
+                                && pp.IsTitle == true);
+
+                                OrderedProduct orderedProduct = new OrderedProduct
+                                {
+                                    Id = product.ProductId,
+                                    Name = productName,
+                                    Quantity = product.Quantity,
+                                    ColorId = product.ColorId,
+                                    Picture = picture.Select(p => p.Picture.Address).FirstOrDefault(),
+                                    Price = product.Price//Ціна вже зі знижкою
+                                };
+                                var color = await _unitOfWork.Colors.GetAsync(product.ColorId);
+                                orderedProduct.ColorName = color.Name;
+                                orderDetails.TotalPrice += product.Price * product.Quantity;
+
+                                orderDetails.Products.Add(orderedProduct);
+                            }
+                            #endregion
+
+                            orders.Add(orderDetails);
+                        }
+                    }
+                }
+            }
+
+            return orders;
         }
 
         /// <summary>
@@ -291,13 +456,6 @@ namespace OnePlace.BLL.Services
             }
 
             return orderList;
-        }
-
-        //Здійснення оплати карткою
-        public Task CardPay()
-        {
-            //Поки-що логіка не реалізована
-            throw new NotImplementedException();
         }
 
         public async Task<List<OrderListModel>> GetOrdersByDate(DateTime? date)
@@ -396,31 +554,5 @@ namespace OnePlace.BLL.Services
             await _unitOfWork.SaveAsync();
             return id;
         }
-
-        //Формування інформації про доставку (допоміжний метод)
-        private string ExtractDeliveryInfo(OrderCreateDTO orderCreateDTO)
-        {
-            StringBuilder deliveryInfo = new StringBuilder();
-
-            deliveryInfo.Append(orderCreateDTO.ServiceName.ToString());
-            deliveryInfo.Append(" {" + orderCreateDTO.DeliveryMethod.ToString().TrimEnd() + "}. ");
-            deliveryInfo.Append(orderCreateDTO.City);
-            deliveryInfo.Append(", ");
-
-            if (orderCreateDTO.DeliveryMethod.Equals(DeliveryMethods.Courier))
-            {
-                deliveryInfo.Append(orderCreateDTO.Street);
-                deliveryInfo.Append(", ");
-                deliveryInfo.Append(orderCreateDTO.HouseNumber);
-                deliveryInfo.Append('/');
-                deliveryInfo.Append(orderCreateDTO.FlatNumber);
-            }
-            else
-            {
-                deliveryInfo.Append(orderCreateDTO.Department);
-            }
-            return deliveryInfo.ToString();
-        }
-
     }
 }

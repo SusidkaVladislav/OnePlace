@@ -11,5 +11,9 @@
         public string? AdminReplyComment { get; set; }
         public DateTime? AmindReplyDate { get; set; }
 
+        public string? ProductPicture { get; set; }
+        public string? ProductName { get; set;}
+        public int? ProductId { get; set; }
+
     }
 }

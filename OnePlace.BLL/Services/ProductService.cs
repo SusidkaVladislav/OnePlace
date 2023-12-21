@@ -157,6 +157,236 @@ namespace OnePlace.BLL.Services
         }
 
         /// <summary>
+        /// Отримати рекомендовані товари
+        /// </summary>
+        /// <param name="getRecommendedProducts"></param>
+        /// <returns></returns>
+        public async Task<List<ProductListModel>> GetRecommendedProducts(PayloadGetRecommendedProducts getRecommendedProducts)
+        {
+            GetRecommendedProductsDTO filters = _mapper.Map<GetRecommendedProductsDTO>(getRecommendedProducts);
+
+            List<ProductListModel> products = new List<ProductListModel>();
+            
+            //Отримання користувача
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            IEnumerable<Product> productsByCategory = new List<Product>();
+
+            if (filters.Skip < 0 || filters.Quantity < 0)
+            {
+                return products;
+            }
+            //Якщо потрібно повернути рекомендовані товари з конкретної категорії
+            if(filters.CategoryId.HasValue)
+            {
+                //Якщо передано неіснуючу категорію, то повернути пустий масив
+                if(filters.CategoryId.Value < 1)
+                {
+                    return products;
+                }
+                else
+                {
+                    productsByCategory = await _unitOfWork.Products
+                        .FindAsync(p => p.IsInBestProducts == true && p.CategoryId == filters.CategoryId.Value);
+                }
+            }
+            else
+            {
+                productsByCategory = await _unitOfWork.Products.FindAsync(p => p.IsInBestProducts == true);
+            }
+
+            //Якщо якісь продукти попали під фільтри (збирання всієї необхідної інформації про продукти)
+            if (productsByCategory.Count() > 0)
+            {
+                int count = 0;
+                foreach (var product in productsByCategory.Skip(filters.Skip))
+                {
+                    ProductListModel productListModel = new ProductListModel
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                    };
+
+                    productListModel.Price = product.ProductColors.First().Price;
+
+                    #region Головна фотографія
+                    var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                    .Where(p => p.IsTitle == true && p.ProductId == product.Id)
+                        .Select(p => p.PictureId).FirstOrDefault());
+
+                    productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                    #endregion
+
+                    #region Чи є цей товар в улуюблених товарах користувача
+                    if (user is not null)
+                    {
+                        var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                        l.ProductId == product.Id);
+
+                        productListModel.IsInLiked = likedProducts.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInLiked = false;
+                    }
+
+                    #endregion
+
+                    #region Чи є цей товар в корзині користувача
+                    if (user is not null)
+                    {
+                        var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                        c.ProductId == product.Id);
+                        productListModel.IsInCart = productsInCart.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInCart = false;
+                    }
+                    #endregion
+
+                    #region Перевірка знижки
+                    var sale = await _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id);
+                    if (sale.Any())
+                    {
+                        //Видалити якщо час знижки закінчився
+                        if (sale.First().EndDate.Date <= DateTime.UtcNow.Date)
+                        {
+                            await _unitOfWork.Sales.DeleteAsync(sale.First().Id);
+                            await _unitOfWork.SaveAsync();
+                            productListModel.DiscountPercent = 0;
+                        }
+                        else
+                            productListModel.DiscountPercent = sale.First().DiscountPercent;
+                    }
+                    else
+                        productListModel.DiscountPercent = 0;
+                    #endregion
+
+                    #region Перевірка наявності
+                    var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
+                    productListModel.IsInStock = isInStock;
+                    #endregion
+
+                    #region Отримання першрої фотографії товару
+                    productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
+                    #endregion
+
+                    products.Add(productListModel);
+
+                    if (++count == filters.Quantity)
+                    {
+                        return products;
+                    }
+                }
+            }
+            
+            return products;
+        }
+
+
+        /// <summary>
+        /// Отримати всі рекомендовані товари
+        /// </summary>
+        /// <param name="getAllRecommendedProducts"></param>
+        /// <returns></returns>
+        public async Task<List<ProductListModel>> GetAllRecommendedProducts()
+        {
+            List<ProductListModel> products = new List<ProductListModel>();
+
+            //Отримання користувача
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            IEnumerable<Product> productsByCategory = new List<Product>();
+
+
+            productsByCategory = await _unitOfWork.Products.FindAsync(p => p.IsInBestProducts == true);
+                
+            //Якщо якісь продукти попали під фільтри (збирання всієї необхідної інформації про продукти)
+            if (productsByCategory.Count() > 0)
+            {
+                int count = 0;
+                foreach (var product in productsByCategory)
+                {
+                    ProductListModel productListModel = new ProductListModel
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                    };
+
+                    productListModel.Price = product.ProductColors.First().Price;
+
+                    #region Головна фотографія
+                    var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                    .Where(p => p.IsTitle == true && p.ProductId == product.Id)
+                        .Select(p => p.PictureId).FirstOrDefault());
+
+                    productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                    #endregion
+
+                    #region Чи є цей товар в улуюблених товарах користувача
+                    if (user is not null)
+                    {
+                        var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                        l.ProductId == product.Id);
+
+                        productListModel.IsInLiked = likedProducts.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInLiked = false;
+                    }
+
+                    #endregion
+
+                    #region Чи є цей товар в корзині користувача
+                    if (user is not null)
+                    {
+                        var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                        c.ProductId == product.Id);
+                        productListModel.IsInCart = productsInCart.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInCart = false;
+                    }
+                    #endregion
+
+                    #region Перевірка знижки
+                    var sale = await _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id);
+                    if (sale.Any())
+                    {
+                        //Видалити якщо час знижки закінчився
+                        if (sale.First().EndDate.Date <= DateTime.UtcNow.Date)
+                        {
+                            await _unitOfWork.Sales.DeleteAsync(sale.First().Id);
+                            await _unitOfWork.SaveAsync();
+                            productListModel.DiscountPercent = 0;
+                        }
+                        else
+                            productListModel.DiscountPercent = sale.First().DiscountPercent;
+                    }
+                    else
+                        productListModel.DiscountPercent = 0;
+                    #endregion
+
+                    #region Перевірка наявності
+                    var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
+                    productListModel.IsInStock = isInStock;
+                    #endregion
+
+                    #region Отримання першрої фотографії товару
+                    productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
+                    #endregion
+
+                    products.Add(productListModel);
+                }
+            }
+
+            return products;
+        }
+
+        /// <summary>
         /// Додати новий товар
         /// </summary>
         /// <param name="product"></param>
@@ -914,6 +1144,9 @@ namespace OnePlace.BLL.Services
                 product.Price = color.Price;
                 product.Quantity = color.Quantity;
 
+                var colorName = await _unitOfWork.Colors.GetAsync(color.ColorId);
+                product.ColorName = colorName.Name;
+
                 int i = p.ProductPictures.Where(c => c.IsTitle == true).FirstOrDefault().PictureId;
                 product.Picture = _unitOfWork.Pictures.GetAsync(i).Result.Address;
 
@@ -933,6 +1166,200 @@ namespace OnePlace.BLL.Services
             return result;
         }
 
+        public async Task<List<ProductListModel>> InterestingForYou(int categoryId)
+        {
+            List<ProductListModel> products = new List<ProductListModel>();
+
+            //Отримання користувача
+            var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            IEnumerable<Product> productsByCategory = new List<Product>();
+
+            productsByCategory = await _unitOfWork.Products.FindAsync(p => p.CategoryId == categoryId);
+
+            //Якщо якісь продукти попали під фільтри (збирання всієї необхідної інформації про продукти)
+            if (productsByCategory.Count() > 0)
+            {
+                int count = 0;
+                foreach (var product in productsByCategory)
+                {
+                    ProductListModel productListModel = new ProductListModel
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                    };
+
+                    productListModel.Price = product.ProductColors.First().Price;
+
+                    #region Головна фотографія
+                    var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                    .Where(p => p.IsTitle == true && p.ProductId == product.Id)
+                        .Select(p => p.PictureId).FirstOrDefault());
+
+                    productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                    #endregion
+
+                    #region Чи є цей товар в улуюблених товарах користувача
+                    if (user is not null)
+                    {
+                        var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                        l.ProductId == product.Id);
+
+                        productListModel.IsInLiked = likedProducts.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInLiked = false;
+                    }
+
+                    #endregion
+
+                    #region Чи є цей товар в корзині користувача
+                    if (user is not null)
+                    {
+                        var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                        c.ProductId == product.Id);
+                        productListModel.IsInCart = productsInCart.Any();
+                    }
+                    else
+                    {
+                        productListModel.IsInCart = false;
+                    }
+                    #endregion
+
+                    #region Перевірка знижки
+                    var sale = await _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id);
+                    if (sale.Any())
+                    {
+                        //Видалити якщо час знижки закінчився
+                        if (sale.First().EndDate.Date <= DateTime.UtcNow.Date)
+                        {
+                            await _unitOfWork.Sales.DeleteAsync(sale.First().Id);
+                            await _unitOfWork.SaveAsync();
+                            productListModel.DiscountPercent = 0;
+                        }
+                        else
+                            productListModel.DiscountPercent = sale.First().DiscountPercent;
+                    }
+                    else
+                        productListModel.DiscountPercent = 0;
+                    #endregion
+
+                    #region Перевірка наявності
+                    var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
+                    productListModel.IsInStock = isInStock;
+                    #endregion
+
+                    #region Отримання першрої фотографії товару
+                    productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
+                    #endregion
+                    if (++count < 16)
+                        products.Add(productListModel);
+                    else
+                        return products;
+                }
+            }
+
+            return products;
+        }
+
+        public async Task<List<ProductListModel>> LikedProducts(List<int> productIds)
+        {
+            List<ProductListModel> products = new List<ProductListModel>();
+
+            if(productIds is not null)
+            {
+                //Отримання користувача
+                var user = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+                IEnumerable<Product> productsByCategory = new List<Product>();
+
+                productsByCategory = await _unitOfWork.Products.FindAsync(p => productIds.Contains(p.Id));
+
+                //Якщо якісь продукти попали під фільтри (збирання всієї необхідної інформації про продукти)
+                if (productsByCategory.Count() > 0)
+                {
+                    foreach (var product in productsByCategory)
+                    {
+                        ProductListModel productListModel = new ProductListModel
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                        };
+
+                        productListModel.Price = product.ProductColors.First().Price;
+
+                        #region Головна фотографія
+                        var pictures = await _unitOfWork.Pictures.FindAsync(pp => pp.Id == product.ProductPictures
+                        .Where(p => p.IsTitle == true && p.ProductId == product.Id)
+                            .Select(p => p.PictureId).FirstOrDefault());
+
+                        productListModel.Picture = pictures.Select(pp => pp.Address).FirstOrDefault();
+                        #endregion
+
+                        #region Чи є цей товар в улуюблених товарах користувача
+                        if (user is not null)
+                        {
+                            var likedProducts = await _unitOfWork.LikedProducts.FindAsync(l => l.UserId == Int32.Parse(user.Value) &&
+                            l.ProductId == product.Id);
+
+                            productListModel.IsInLiked = likedProducts.Any();
+                        }
+                        else
+                        {
+                            productListModel.IsInLiked = false;
+                        }
+
+                        #endregion
+
+                        #region Чи є цей товар в корзині користувача
+                        if (user is not null)
+                        {
+                            var productsInCart = await _unitOfWork.ShoppingCarts.FindAsync(c => c.UserId == Int32.Parse(user.Value) &&
+                            c.ProductId == product.Id);
+                            productListModel.IsInCart = productsInCart.Any();
+                        }
+                        else
+                        {
+                            productListModel.IsInCart = false;
+                        }
+                        #endregion
+
+                        #region Перевірка знижки
+                        var sale = await _unitOfWork.Sales.FindAsync(s => s.ProductId == product.Id);
+                        if (sale.Any())
+                        {
+                            //Видалити якщо час знижки закінчився
+                            if (sale.First().EndDate.Date <= DateTime.UtcNow.Date)
+                            {
+                                await _unitOfWork.Sales.DeleteAsync(sale.First().Id);
+                                await _unitOfWork.SaveAsync();
+                                productListModel.DiscountPercent = 0;
+                            }
+                            else
+                                productListModel.DiscountPercent = sale.First().DiscountPercent;
+                        }
+                        else
+                            productListModel.DiscountPercent = 0;
+                        #endregion
+
+                        #region Перевірка наявності
+                        var isInStock = product.ProductColors.Any(p => p.Quantity > 0);
+                        productListModel.IsInStock = isInStock;
+                        #endregion
+
+                        #region Отримання першрої фотографії товару
+                        productListModel.ColorId = product.ProductColors.FirstOrDefault().ColorId;
+                        #endregion
+
+                        
+                        products.Add(productListModel);
+                    }
+                }
+            }
+            
+            return products;
+        }
 
         private async Task DeleteUnusedDescriptions(int categoryId)
         {

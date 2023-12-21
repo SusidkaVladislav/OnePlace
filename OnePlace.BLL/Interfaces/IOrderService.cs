@@ -2,6 +2,7 @@
 using OnePlace.BOL.Enums;
 using OnePlace.BOL.OrderDTO;
 using OnePlace.BOL.OrderPayload;
+using Stripe.Checkout;
 
 namespace OnePlace.BLL.Interfaces
 {
@@ -22,11 +23,18 @@ namespace OnePlace.BLL.Interfaces
         Task<List<OrderListModel>> FilterOrders(OrderSearchParams filters);
 
         /// <summary>
-        /// Створити замовлення
+        /// Створити замовлення де яке оплачується готівкою
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        Task<int> CreateOrder(OrderCreatePayload order);
+        Task<int> CreateCashOrder(OrderCreatePayload order);
+
+        /// <summary>
+        /// Створити замовлення яке оплачується карткою
+        /// </summary>
+        /// <param name="orderCreate"></param>
+        /// <returns></returns>
+        Task<Session> CreateCardOrder(OrderCreatePayload orderCreate);
 
         /// <summary>
         /// Змінити статус оплати (вручну)
@@ -44,11 +52,6 @@ namespace OnePlace.BLL.Interfaces
         /// <returns></returns>
         Task<int> ChangeOrderState(int orderId, OrderState orderState);
 
-        /// <summary>
-        /// Оплата карткою
-        /// </summary>
-        /// <returns></returns>
-        Task CardPay();
 
         /// <summary>
         /// Повертає всі замовлення за певний період
@@ -60,5 +63,7 @@ namespace OnePlace.BLL.Interfaces
         Task<List<OrderListModel>> GetAllOrders();
 
         Task<int> DeleteOrer(int id);
+
+        Task<List<OrderDetails>> GetAllUsersOrders();
     }
 }

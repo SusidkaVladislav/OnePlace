@@ -20,16 +20,7 @@ namespace OnePlace.BLL.Validators
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="BusinessException"></exception>
-        /*public async Task<int> IsUserExists(int? idUser)
-        {
-            if(idUser >= 0) throw new ArgumentNullException(nameof(idUser) + " is 0 or less then 0");
 
-            var isUser = _unitOfWork.Users.FindAsync(u => u.Id == idUser).Result.FirstOrDefault();
-
-            if (isUser is null)
-                throw new BusinessException(" no user with id={" + idUser +"}");
-            return isUser.Id;
-        }*/
 
         /// <summary>
         /// перевірка кожного товару на наявність в БД і співпадіеея з вказаним
@@ -42,7 +33,7 @@ namespace OnePlace.BLL.Validators
         /// <exception cref="BusinessException"></exception>
         public async Task OrderedProductsValid(List<ProductOrderModelDTO> products)
         {
-            if (products is null) throw new ArgumentNullException("list of products is empty");
+            if (products is null) throw new ArgumentNullException("Не вибрано жодного товару!");
 
             foreach (var product in products)
             {

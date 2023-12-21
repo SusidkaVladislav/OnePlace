@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OnePlace.BLL.Interfaces;
 using OnePlace.BLL.Utilities;
-using OnePlace.BOL.Enums;
 using OnePlace.BOL.OrderPayload;
 
 namespace webapi.Controllers
@@ -17,10 +16,17 @@ namespace webapi.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost("createOrder")]
-        public async Task<IActionResult> AddOrder(OrderCreatePayload orderCreatePayload)
+        [HttpPost("createCashOrder")]
+        public async Task<IActionResult> CreateCashOrder(OrderCreatePayload orderCreatePayload)
         {
-            var res = await _orderService.CreateOrder(orderCreatePayload);
+            var res = await _orderService.CreateCashOrder(orderCreatePayload);
+            return Ok(res);
+        }
+
+        [HttpPost("createCardOrder")]
+        public async Task<IActionResult> CreateCardOrder(OrderCreatePayload orderCreatePayload)
+        {
+            var res = await _orderService.CreateCardOrder(orderCreatePayload);
             return Ok(res);
         }
 
@@ -75,6 +81,14 @@ namespace webapi.Controllers
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var res = await _orderService.DeleteOrer(id);
+            return Ok(res);
+        }
+
+        [HttpPost("getAllUsersOrders")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetAllUsersOrders()
+        {
+            var res = await _orderService.GetAllUsersOrders();
             return Ok(res);
         }
     }

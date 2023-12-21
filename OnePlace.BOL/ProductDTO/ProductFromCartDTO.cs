@@ -15,5 +15,6 @@ namespace OnePlace.BOL.ProductDTO
         public int Discount { get; set; }
         public int Quantity { get; set; }
         public int ColorId { get; set; }
+        public string ColorName { get; set; }
     }
 }

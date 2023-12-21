@@ -3,6 +3,7 @@ using OnePlace.BOL.CategoryPayload;
 using OnePlace.BOL.Message;
 using OnePlace.BOL.Password;
 using OnePlace.BOL.Picture;
+using OnePlace.BOL.ProductDTO;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.ShoppingCart;
 using OnePlace.BOL.User;
@@ -74,6 +75,13 @@ namespace OnePlace.BLL.Interfaces
         Task<int> DeleteLikedProduct(int productId);
 
         /// <summary>
+        /// Check if product is in liked
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<bool> IsProductInLiked (int productId);
+
+        /// <summary>
         /// Returns all liked products by current user
         /// </summary>
         /// <returns></returns>
@@ -105,14 +113,14 @@ namespace OnePlace.BLL.Interfaces
         /// </summary>
         /// /// <param name="passwordUpdate"></param>
         /// <returns></returns>
-        Task<int> UpdatePassword(PasswordUpdatePayload passwordUpdate);
+        Task<int> UpdatePassword(PasswordUpdateDTO passwordUpdate);
 
         /// <summary>
         /// Changes profile picture of the current user
         /// </summary>
-        /// /// <param name="pictureUpdate"></param>
+        /// /// <param name="pictureAddress"></param>
         /// <returns></returns>
-        Task<int> UpdatePhoto(UserPicturePayload pictureUpdate);
+        Task<int> UpdatePhoto(UserPicturePayload pictureAddress);
 
         /// <summary>
         /// Returns all orders of the current user
@@ -121,5 +129,13 @@ namespace OnePlace.BLL.Interfaces
         Task<IEnumerable<Order>> GetOrders();
 
         Task<PureUser> GetUserPersonalData();
+
+        Task<List<ReviewByProduct>> GetUserReviews();
+
+        Task<List<SoldProduct>> GetSoldProducts();
+
+        Task<List<UserMessageDTO>> GetUserMessages();
+
+        Task<int> UpdatePesonalData(UserDetails userData);
     }
 }

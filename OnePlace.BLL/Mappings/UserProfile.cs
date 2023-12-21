@@ -24,8 +24,6 @@ namespace OnePlace.BLL.Mappings
 
             CreateMap<MessagePayload, Message>(MemberList.Source);
 
-            CreateMap<PasswordUpdatePayload, PasswordUpdateDTO>();
-
             CreateMap<UserPicturePayload, UserPictureDTO>();
         }
     }

@@ -8,7 +8,7 @@
         /// <summary>
         /// Замовлення певного користувача
         /// </summary>
-        public int? UserId { get; set; } = null;
+        public int? UserId { get; set; } = null;    
 
         /// <summary>
         /// Фільтрування за датою замовлення

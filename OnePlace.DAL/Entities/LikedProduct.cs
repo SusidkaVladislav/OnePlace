@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
-
-namespace OnePlace.DAL.Entities
+﻿namespace OnePlace.DAL.Entities
 {
     public class LikedProduct
     {

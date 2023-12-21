@@ -7,7 +7,8 @@ using OnePlace.BOL.Password;
 using OnePlace.BOL.Picture;
 using OnePlace.BOL.Review;
 using OnePlace.BOL.ShoppingCart;
-
+using OnePlace.BOL.User;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml.Linq;
 
 namespace webapi.Controllers
@@ -24,15 +25,15 @@ namespace webapi.Controllers
         }
 
         [HttpPost("review")]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> CreateReview(CreateReviewPayload review)
         {
             var result = await _userService.CreateReview(review);
             return Ok(result);
         }
 
-        [HttpDelete("review")]
-        //[Authorize(Roles = "user")]
+        [HttpDelete("review/{id}")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteReview(int id)
         {
             var result = await _userService.DeleteReview(id);
@@ -71,27 +72,35 @@ namespace webapi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [HttpPost("addLikedProduct")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> AddLikedProduct(int id)
         {
             var result = await _userService.AddLikedProduct(id);
             return Ok(result);
         }
 
-        [HttpDelete("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [HttpDelete("deleteLikedProduct/{id}")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteLikedProduct(int id)
         {
             var result = await _userService.DeleteLikedProduct(id);
             return Ok(result);
         }
 
-        [HttpGet("likedProduct")]
-        //[Authorize(Roles = "user")]
+        [HttpGet("getLikedProducts")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> GetLikedProducts()
         {
             var result = await _userService.GetLikedProducts();
+            return Ok(result);
+        }
+
+        [HttpGet("isProductInLiked/{productId}")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> IsProductInLiked(int productId)
+        {
+            var result = await _userService.IsProductInLiked(productId);
             return Ok(result);
         }
 
@@ -120,18 +129,26 @@ namespace webapi.Controllers
         }
 
         [HttpPut("password")]
-        //[Authorize(Roles = "user")]
-        public async Task<IActionResult> UpdatePassword(PasswordUpdatePayload passwordUpdate)
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> UpdatePassword(PasswordUpdateDTO passwordUpdate)
         {
             var result = await _userService.UpdatePassword(passwordUpdate);
             return Ok(result);
         }
 
-        [HttpPut("photo")]
-        //[Authorize(Roles = "user")]
-        public async Task<IActionResult> UpdatePhoto(UserPicturePayload pictureUpdate)
+        [HttpPut("updatePhoto")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> UpdatePhoto(UserPicturePayload pictureAddress)
         {
-            var result = await _userService.UpdatePhoto(pictureUpdate);
+            var result = await _userService.UpdatePhoto(pictureAddress);
+            return Ok(result);
+        }
+
+        [HttpPut("updatePesonalData")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> UpdatePesonalData(UserDetails userData)
+        {
+            var result = await _userService.UpdatePesonalData(userData);
             return Ok(result);
         }
 
@@ -148,6 +165,30 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetUserPersonalData()
         {
             var result = await _userService.GetUserPersonalData();
+            return Ok(result);
+        }
+
+        [HttpPost("getUserReviews")]
+        [Authorize(Roles ="user")]
+        public async Task<IActionResult> GetUserReviews()
+        {
+            var result = await _userService.GetUserReviews();
+            return Ok(result);
+        }
+
+        [HttpPost("getSoldProducts")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetSoldProducts()
+        {
+            var result = await _userService.GetSoldProducts();
+            return Ok(result);
+        }
+
+        [HttpPost("getUserMessages")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetUserMessages()
+        {
+            var result = await _userService.GetUserMessages();
             return Ok(result);
         }
     }

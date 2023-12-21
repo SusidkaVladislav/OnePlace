@@ -6,6 +6,8 @@ using OnePlace.DAL.Entities;
 using OnePlace.DAL.Models;
 using OnePlace.DAL.SearchParams;
 
+//using Abp.Linq.Extensions.QueryableExtensions;
+
 namespace OnePlace.DAL.Repositories
 {
     public class ProductRepository : RepositoryBase<Product, int>
@@ -26,12 +28,6 @@ namespace OnePlace.DAL.Repositories
             }
         }
 
-        public override async Task<IEnumerable<Product>> FindAsync(Func<Product, bool> predicate)
-        {
-            return //await db.Products.Where(p=> p.Id == 0).FirstOrDefaultAsync(); 
-                await GetListAsync(predicate);
-        }
-
         private Task<List<Product>> GetListAsync(Func<Product, bool> predicate)
         {
             return Task.Run(() => db.Products
@@ -43,6 +39,12 @@ namespace OnePlace.DAL.Repositories
                 .Include(o => o.ProductPictures)
                 .Include(o => o.ProductColors)
                 .Where(predicate).ToList());
+        }
+
+
+        public override async Task<IEnumerable<Product>> FindAsync(Func<Product, bool> predicate)
+        {
+            return await GetListAsync(predicate);
         }
 
         public override async Task<PaginatedList<Product>> Filter<T>(T searchParamsModel)

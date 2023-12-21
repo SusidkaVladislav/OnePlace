@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using OnePlace.BLL;
 using OnePlace.DAL.EF;
 using OnePlace.DAL.Entities;
+using Stripe;
 using System.Text;
 using webapi.Exceptions;
 
@@ -86,6 +87,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
     };
 });
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>(); 
 
 builder.Services.AddAuthorization();
 

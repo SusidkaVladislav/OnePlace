@@ -16,7 +16,6 @@ using OnePlace.BOL.User;
 using OnePlace.DAL.Entities;
 using OnePlace.DAL.Enums;
 using OnePlace.DAL.Interfaces;
-//using Org.BouncyCastle.Pqc.Crypto.Frodo;
 
 namespace OnePlace.BLL.Services
 {
@@ -155,6 +154,15 @@ namespace OnePlace.BLL.Services
                 IEnumerable<ProductPicture> productPictures = await _unitOfWork.ProductPictures
                     .FindAsync(p => p.ProductId == message.ProductId && p.IsTitle == true);
 
+                if(message.UserId.HasValue)
+                {
+                    var user = await _unitOfWork.Users.GetAsync(message.UserId.Value);
+                    if(user is not null)
+                    {
+                        messageDTO.UserPictureAddress = user.PictureURL;
+                    }
+                }
+
                 messageDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
                 messagesDTO.Add(messageDTO);
             }
@@ -183,6 +191,7 @@ namespace OnePlace.BLL.Services
                     .FindAsync(p => p.ProductId == review.ProductId && p.IsTitle == true);
 
             reviewDTO.ProductPictureAddress = productPictures.FirstOrDefault().Picture.Address;
+            reviewDTO.UserPictureAddress = review.User.PictureURL;
 
             return reviewDTO;
         }
