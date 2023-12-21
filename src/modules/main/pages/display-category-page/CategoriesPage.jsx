@@ -50,6 +50,7 @@ const CategoriesPage = () =>
         isCategoryOpen,
         categoriesForSelect,
         categoryServerConnectionError,
+        loading,
     } = useSelector(state => state.userCategories);
 
     const [categoryId, setCategoryId] = useState(params.id);

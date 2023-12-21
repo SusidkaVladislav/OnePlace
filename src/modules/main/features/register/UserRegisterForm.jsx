@@ -258,6 +258,7 @@ const UserRegisterForm = () =>
                 <Stack
                     direction={'row'}
                     padding={'2%'}
+                    justifyContent={'space-between'}
                 >
                     <h3>Реєстрація</h3>
                     <button

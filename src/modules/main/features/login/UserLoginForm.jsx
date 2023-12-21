@@ -183,6 +183,7 @@ const UserLoginForm = () =>
                 <Stack
                     direction={'row'}
                     padding={'2%'}
+                    justifyContent={'space-between'}
                 >
                     <h3>Вхід</h3>
                     <button
