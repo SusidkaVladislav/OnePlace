@@ -5,7 +5,7 @@ import App from './App';
 import store, { persistor } from './app/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
-import { BrowserRouter as Router, Routes, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { StyledEngineProvider } from '@mui/material/styles';
 
@@ -17,11 +17,11 @@ root.render(
       <PersistGate loading={null} persistor={persistor}>
         <StyledEngineProvider injectFirst>
           <Router>
-            <Switch>
+
               <Routes>
                 <Route path="/*" element={<App />} />
               </Routes>
-            </Switch>
+
           </Router>
         </StyledEngineProvider>
       </PersistGate>
