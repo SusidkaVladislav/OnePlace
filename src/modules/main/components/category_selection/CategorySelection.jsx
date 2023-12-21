@@ -102,7 +102,7 @@ const CaregorySelection = (props) =>
                                             name={item?.name}
                                             picture={item?.pictureURL}
                                         /> : <CategoryPhoneCard
-                                            bgColor={'#F6F6F6'}
+                                            bgColor={'#E5EAEA'}
                                             name={item?.name}
                                             picture={item?.pictureURL}
                                         />

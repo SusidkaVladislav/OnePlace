@@ -23,6 +23,7 @@ const CategoryPhoneCard = (props) =>
             padding={'5% 1% 5% 1%'}
             borderRadius={'8px'}
             justifyContent={'space-between'}
+            boxShadow={'1px 1px 8px 0px rgba(0, 0, 0, 0.08)'}
         >
             <Grid
                 item
@@ -46,9 +47,9 @@ const CategoryPhoneCard = (props) =>
                 container
                 xs={7.5}
                 sx={{
-                    overflow: 'hidden',
                     wordWrap: 'break-word',
-                    padding: '3%'
+                    paddingTop: '20px',
+                    paddingRight: '25px'
                 }}
             >
                 <Typography

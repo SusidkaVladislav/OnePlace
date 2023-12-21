@@ -66,33 +66,33 @@ const SpecialOffers = () => {
                 <h2>Спеціальні пропозиції</h2>
             </div>
             <Grid container justifyContent="center" className="offersContainer"> 
-                <Grid item xs={2} className="offerItem">
+                <Grid item xs={4} sm={4} md={2} xl={2} className="offerItem">
                 <div>
                     <img src={imageSrc1} onMouseOver={changeImageSrc1}/>
                     <h5 className="bold offerText">Пошук</h5>
                 </div>
                 </Grid>
-                <Grid item xs={2} className="offerItem">
+                <Grid item xs={4} sm={4} md={2} xl={2} className="offerItem">
                 <div>
                     <img src={imageSrc2} onMouseOver={changeImageSrc2}/>
                     <h5 className="bold offerText">Оплата та</h5>
                     <h5 className="bold">доставка</h5>
                 </div>
                 </Grid>
-                <Grid item xs={2} className="offerItem">
+                <Grid item xs={4} sm={4} md={2} xl={2} className="offerItem">
                 <div>
                     <img src={imageSrc3} onMouseOver={changeImageSrc3}/>
                     <h5 className="bold offerText">Відгук</h5>
                 </div>
                 </Grid>
-                <Grid item xs={2} className="offerItem">
+                <Grid item xs={4} sm={4} md={2} xl={2} className="offerItem">
                 <div>
                     <img src={imageSrc4} onMouseOver={changeImageSrc4}/>
                     <h5 className="bold offerText">Повернення</h5>
                     <h5 className="bold">та обмін</h5>
                 </div>
                 </Grid>
-                <Grid item xs={2} className="offerItem">
+                <Grid item xs={4} sm={4} md={2} xl={2} className="offerItem">
                 <div>
                     <img src={imageSrc5} onMouseOver={changeImageSrc5}/>
                     <h5 className="bold offerText">Захист</h5>

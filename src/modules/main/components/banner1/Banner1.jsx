@@ -145,11 +145,7 @@ const Banner1 = () =>
                     <Typography
                         className={lg ? 'h2-500-32-brown1 unselectable' : md ? 'brown1-400-24 unselectable'
                             : sm ? 'light-h5 unselectable' : 't1-bold unselectable'}
-                    >забудь про пошуки тут ти знайдеш</Typography>
-                    <Typography
-                        className={lg ? 'h2-500-32-brown1 unselectable' : md ? 'brown1-400-24 unselectable'
-                            : sm ? 'light-h5 unselectable' : 't1-bold unselectable'}
-                    >все, що потрібно в одному місці!</Typography>
+                    >забудь про пошуки тут ти знайдеш все, що потрібно в одному місці!</Typography>
                 </div>
                 <div className="button-container">
                     <Button

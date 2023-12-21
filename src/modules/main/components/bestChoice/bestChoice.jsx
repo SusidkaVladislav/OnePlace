@@ -233,6 +233,7 @@ const BestChoice = (props) =>
                         justifyContent={'center'}
                         sx={{
                             borderRight: '1px solid #DAD1D0',
+                            alignItems:"center"
                         }}
                     >
                         <Typography
@@ -263,7 +264,7 @@ const BestChoice = (props) =>
                                             className="t1-light"
                                             sx={{
                                                 cursor: 'pointer',
-
+                                                paddingLeft: "25px"
                                             }}
                                             onClick={() =>
                                             {
