@@ -209,8 +209,8 @@ namespace OnePlace.BLL.Services
             var options = new SessionCreateOptions();
 
             
-            options.SuccessUrl = "http://localhost:3000/?order_success=true";
-            options.CancelUrl = "http://localhost:3000/basket";
+            options.SuccessUrl = "https://one-place-ua.netlify.app/?order_success=true";
+            options.CancelUrl = "https://one-place-ua.netlify.app/basket";
 
 
             options.LineItems = new List<SessionLineItemOptions>();
