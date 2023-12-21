@@ -29,8 +29,9 @@
 
 .footer-container3{
     padding-top: 15%;
-    align-items: center;
-    justify-items: center;
+    display: flex;
+    justify-content: space-around;
+    align-content:center;
 }
 
 .footer-container4{
@@ -38,3 +39,6 @@
     padding-left: 6%;
     padding-right: 6%;
 }
+
+
+
