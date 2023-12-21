@@ -38,44 +38,84 @@ const OnePlaceMain = () =>
     const [recommendedSubCategories, setRecommendedSubCategories] = useState([]);
     const [productsInCart, setProductsInCart] = useState([]);
 
+
+
     useEffect(() =>
     {
+        window.onload = async function ()
+        {
+            await dispatch(getCategoriesForSelect()).then((data) =>
+            {
+                if (data?.payload !== null)
+                {
+                    let categories = [];
+                    let subCategories = [];
+
+                    data?.payload?.map((category, index) =>
+                    {
+
+                        if (category?.parentCategoryId === null)
+                        {
+
+                            if (categories.length < 5)
+                            {
+                                categories.push(category);
+                            }
+                        }
+                        if (categories.some(c => c.id === category?.parentCategoryId))
+                        {
+                            const count = subCategories.filter(c =>
+                                c.parentCategoryId === category?.parentCategoryId
+                            ).length;
+
+                            if (count < 4)
+                            {
+                                subCategories.push(category);
+                            }
+                        }
+                    })
+                    setRecommendedCategories(categories);
+                    setRecommendedSubCategories(subCategories);
+                }
+            })
+        }
+
         dispatch(getAllRecommendedProducts())
 
-        dispatch(getCategoriesForSelect()).then((data) =>
-        {
-            if (data?.payload !== null)
-            {
-                let categories = [];
-                let subCategories = [];
+        // dispatch(getCategoriesForSelect()).then((data) =>
+        // {
+        //     if (data?.payload !== null)
+        //     {
+        //         let categories = [];
+        //         let subCategories = [];
 
-                data?.payload?.map((category, index) =>
-                {
+        //         data?.payload?.map((category, index) =>
+        //         {
 
-                    if (category?.parentCategoryId === null)
-                    {
+        //             if (category?.parentCategoryId === null)
+        //             {
 
-                        if (categories.length < 5)
-                        {
-                            categories.push(category);
-                        }
-                    }
-                    if (categories.some(c => c.id === category?.parentCategoryId))
-                    {
-                        const count = subCategories.filter(c =>
-                            c.parentCategoryId === category?.parentCategoryId
-                        ).length;
+        //                 if (categories.length < 5)
+        //                 {
+        //                     categories.push(category);
+        //                 }
+        //             }
+        //             if (categories.some(c => c.id === category?.parentCategoryId))
+        //             {
+        //                 const count = subCategories.filter(c =>
+        //                     c.parentCategoryId === category?.parentCategoryId
+        //                 ).length;
 
-                        if (count < 4)
-                        {
-                            subCategories.push(category);
-                        }
-                    }
-                })
-                setRecommendedCategories(categories);
-                setRecommendedSubCategories(subCategories);
-            }
-        })
+        //                 if (count < 4)
+        //                 {
+        //                     subCategories.push(category);
+        //                 }
+        //             }
+        //         })
+        //         setRecommendedCategories(categories);
+        //         setRecommendedSubCategories(subCategories);
+        //     }
+        // })
 
         if (localStorage.getItem('cart') === null)
         {
@@ -102,7 +142,7 @@ const OnePlaceMain = () =>
     if (productServerConnectionError || categoryServerConnectionError)
     {
         navigate(NO_SERVER_CONNECTION_PATH)
-        return<></>;
+        return <></>;
     }
     if (loadingRecommendedProducts)
     {

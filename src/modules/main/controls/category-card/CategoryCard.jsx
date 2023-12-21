@@ -14,11 +14,6 @@ const CategoryCard = (props) =>
         picture,
     } = props;
 
-    const xs = useMediaQuery('(min-width: 0px)');
-    const sm = useMediaQuery('(min-width: 600px)');
-    const md = useMediaQuery('(min-width: 900px)');
-    const lg = useMediaQuery('(min-width: 1200px)');
-
     return (
         <Card sx={{
             width: '264px',

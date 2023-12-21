@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux"
 import
 {
-    getCategoriesForSelect,
+    //getCategoriesForSelect,
     setIsCategoryOpen,
 } from '../../features/categories/userCategorySlice';
 
@@ -21,6 +21,7 @@ import
 {
     useMediaQuery
 } from '@mui/material';
+//import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
 const Basket = () =>
@@ -33,15 +34,22 @@ const Basket = () =>
     const {
         isCategoryOpen,
         categoryServerConnectionError,
+        //loading,
     } = useSelector(state => state.userCategories);
 
     const {
         cartServerConnectionError
     } = useSelector(state => state.userBasket)
 
+
+
     useEffect(() =>
     {
-        dispatch(getCategoriesForSelect())
+        // window.onload = async function ()
+        // {
+        //     await dispatch(getCategoriesForSelect())
+        // }
+        //dispatch(getCategoriesForSelect())
         let cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'));
         if (cartFromLocalStorage !== null)
         {
@@ -97,7 +105,10 @@ const Basket = () =>
     {
         navigate(NO_SERVER_CONNECTION_PATH)
     }
-
+    // if (loading)
+    // {
+    //     return <LoadingAnimation />
+    // }
     return (
         <Fragment>
             <Header />

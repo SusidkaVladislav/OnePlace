@@ -11,6 +11,10 @@ const initialState = {
     loading: false,
 
     cartServerConnectionError: false,
+
+    getUserCartLoading: false,
+    addToCartLoading: false,
+    deleteFromCartLoading: false,
 };
 
 export const addToCart = createAsyncThunk('user/addToCart', async (cart, { rejectWithValue }) =>
@@ -138,6 +142,9 @@ const cartSlice = createSlice({
                 isAuth: false,
                 cartCount: 0,
                 loading: false,
+                getUserCartLoading: false,
+                addToCartLoading: false,
+                deleteFromCartLoading: false,
             }
         },
         setCartCount: (state, { payload }) =>
@@ -169,14 +176,14 @@ const cartSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    addToCartLoading: true,
                 }
             })
             .addCase(addToCart.fulfilled, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    addToCartLoading: false,
                 }
             })
             .addCase(addToCart.rejected, (state, { payload }) =>
@@ -188,7 +195,7 @@ const cartSlice = createSlice({
                 }
                 return {
                     ...state,
-                    loading: false,
+                    addToCartLoading: false,
                     cartServerConnectionError: isServerConnectionError
                 }
             })
@@ -197,7 +204,7 @@ const cartSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    getUserCartLoading: true,
                 }
             })
             .addCase(getUserCart.fulfilled, (state, { payload }) =>
@@ -217,7 +224,7 @@ const cartSlice = createSlice({
                 localStorage.setItem('cart', JSON.stringify(cart));
                 return {
                     ...state,
-                    loading: false,
+                    getUserCartLoading: false,
                     isAuth: true,
                     cartCount: cart.length,
                 }
@@ -231,7 +238,7 @@ const cartSlice = createSlice({
                 }
                 return {
                     ...state,
-                    loading: false,
+                    getUserCartLoading: false,
                     isAuth: false,
                     cartServerConnectionError: isServerConnectionError
                 }
@@ -241,14 +248,14 @@ const cartSlice = createSlice({
             {
                 return {
                     ...state,
-                    loading: true,
+                    deleteFromCartLoading: true,
                 }
             })
             .addCase(deleteFromCart.fulfilled, (state) =>
             {
                 return {
                     ...state,
-                    loading: false,
+                    deleteFromCartLoading: false,
                 }
             })
             .addCase(deleteFromCart.rejected, (state, { payload }) =>
@@ -260,7 +267,7 @@ const cartSlice = createSlice({
                 }
                 return {
                     ...state,
-                    loading: false,
+                    deleteFromCartLoading: false,
                     cartServerConnectionError: isServerConnectionError
                 }
             })

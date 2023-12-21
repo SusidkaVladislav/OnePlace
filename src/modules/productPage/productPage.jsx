@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -77,7 +77,8 @@ const ProductPage = () =>
     } = useSelector(state => state.userAnalitic);
 
     const {
-        authServerConnectionError
+        authServerConnectionError,
+        userPersonalDataLoading,
     } = useSelector(state => state.userAuth);
 
     const {
@@ -173,6 +174,10 @@ const ProductPage = () =>
         return <LoadingAnimation />
     }
     if (analiticLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (userPersonalDataLoading)
     {
         return <LoadingAnimation />
     }

@@ -25,7 +25,7 @@ import
 import { getFullPath } from '../../services/CategoryService';
 
 import BrownLeftArrow40x40Icon from '../../../../svg/arrows/BrownLeftArrow40x40Icon'
-
+import LoadingAnimation from '../../../../common-elements/loading/LoadingAnimation';
 
 const LOCAL_STORAGE_RELOAD_KEY = "firstLoadPageProductCategories";
 const NO_SERVER_CONNECTION_PATH = "/no_server_connection";
@@ -58,7 +58,13 @@ const CategoriesPage = () =>
     {
         window.scrollTo(0, 0);
         localStorage.removeItem(LOCAL_STORAGE_RELOAD_KEY);
-        dispatch(getCategoriesForSelect())
+
+        //dispatch(getCategoriesForSelect())
+        window.onload = async function ()
+        {
+            dispatch(getCategoriesForSelect())
+        }
+
         setCategoryId(params.id);
         if (Number(params.id) > 0)
         {
@@ -133,6 +139,10 @@ const CategoriesPage = () =>
     if (categoryServerConnectionError)
     {
         navigate(NO_SERVER_CONNECTION_PATH)
+    }
+    if (loading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <div>

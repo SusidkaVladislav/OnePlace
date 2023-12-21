@@ -97,6 +97,7 @@ const ProductsByCategoryPage = () =>
         isCategoryOpen,
         categoriesForSelect,
         categoryServerConnectionError,
+        loading,
     } = useSelector(state => state.userCategories);
 
     const {
@@ -114,10 +115,12 @@ const ProductsByCategoryPage = () =>
     const {
         productInfoFilters,
         analiticServerConnectionError,
+        analiticLoading,
     } = useSelector(state => state.userAnalitic)
 
     const {
-        cartServerConnectionError
+        cartServerConnectionError,
+        getUserCartLoading,
     } = useSelector(state => state.userBasket)
 
     const [isFiltersUploaded, setIsFiltersUploaded] = useState(false)
@@ -237,13 +240,16 @@ const ProductsByCategoryPage = () =>
         setCategoryId(params.id)
         categoryPath.current = [];
 
-        dispatch(getCategoriesForSelect())
+        window.onload = async function ()
+        {
+            dispatch(getCategoriesForSelect())
+        }
+        //dispatch(getCategoriesForSelect())
 
 
         dispatch(getProductsByFilters(filters))
 
-
-        dispatch(getCategoryProductsInfo(params.id))
+        dispatch(getCategoryProductsInfo(Number(params.id)))
             .then(({ payload }) =>
             {
                 var falseFilterOptions = [];
@@ -304,6 +310,18 @@ const ProductsByCategoryPage = () =>
     }
 
     if (loadingProduct)
+    {
+        return <LoadingAnimation />
+    }
+    if (analiticLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (getUserCartLoading)
+    {
+        return <LoadingAnimation />
+    }
+    if (loading)
     {
         return <LoadingAnimation />
     }

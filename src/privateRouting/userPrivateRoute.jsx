@@ -74,17 +74,19 @@ const UserPrivateRoute = () =>
                         {
                             setIsUser(true)
                             localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, response.data);
-                            setIsAuthInProgress(false)
+
                             setIsAuth(true);
                             dispatch(setIsAuthState(true));
                             dispatch(getUserCart());
                             dispatch(getLikedProducts())
+                            setIsAuthInProgress(false)
                         }
                         else
                         {
                             setIsUser(false)
-                            setIsAuthInProgress(false)
+
                             dispatch(setIsAuthState(false));
+                            setIsAuthInProgress(false)
                         }
                     })
                     .catch((error) =>
@@ -93,25 +95,28 @@ const UserPrivateRoute = () =>
                         // {
                         //     localStorage.removeItem(LOCAL_STORAGE_TOKEN_KEY);
                         // }
-                        setIsAuthInProgress(false);
+
                         setIsAuth(false);
                         setIsUser(false);
                         dispatch(setIsAuthState(false));
+                        setIsAuthInProgress(false);
                     });
             }
             catch (error)
             {
-                setIsAuthInProgress(false);
+
                 setIsAuth(false);
                 dispatch(setIsAuthState(false));
+                setIsAuthInProgress(false);
             }
         }
         else
         {
-            setIsAuthInProgress(false);
+
             setIsAuth(false);
             setIsUser(false)
             dispatch(setIsAuthState(false));
+            setIsAuthInProgress(false);
         }
     }, [])
 

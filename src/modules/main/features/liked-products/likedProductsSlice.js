@@ -15,6 +15,7 @@ const initialState = {
     likedProductLoading: false,
     likedProductsDataLoading: false,
     likedProductsServerConnectionError: false,
+    deleteFromLikedProductsLoading: false, 
 }
 
 export const isProductInLiked = createAsyncThunk('likedProducts/isProductInLiked', async (productId, { rejectWithValue }) =>
@@ -257,7 +258,7 @@ const likedProductsSlice = createSlice({
             {
                 return {
                     ...state,
-                    likedProductLoading: true,
+                    deleteFromLikedProductsLoading: true,
                 }
             })
             .addCase(deleteFromLiked.fulfilled, (state, { payload }) =>
@@ -265,7 +266,7 @@ const likedProductsSlice = createSlice({
                 return {
                     ...state,
                     isInLiked: false,
-                    likedProductLoading: false,
+                    deleteFromLikedProductsLoading: false,
                 }
             })
             .addCase(deleteFromLiked.rejected, (state, { payload }) =>
@@ -277,7 +278,7 @@ const likedProductsSlice = createSlice({
                 }
                 return {
                     ...state,
-                    likedProductLoading: false,
+                    deleteFromLikedProductsLoading: false,
                     likedProductsServerConnectionError: isServerConnectionError
                 }
             })

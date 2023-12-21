@@ -102,7 +102,10 @@ const CategoryUnit = (props) =>
                 "left-side-main-category-unit-container"}
                 onClick={onClickHandle}>
                 <div
-                    style={{ backgroundImage: `url(${img})` }}
+                    style={{
+                        backgroundImage: `url(${img})`,
+                        objectFit: 'contain',
+                    }}
                     className="main-category-unit-img">
                 </div>
                 <h6 className="main-category-unit-title">{title}</h6>

@@ -66,7 +66,7 @@ const OrdersGridView = () =>
                         lg: '20px',
                         md: '10px',
                         sm: '20px',
-                        xs: '10px',
+                        xs: '5px',
                     },
                 }}
             >
@@ -75,7 +75,7 @@ const OrdersGridView = () =>
                     alignItems={'center'}
                     item
                     md={0.6}
-                    xs={1}
+                    xs={1.5}
                 >
                     <span
                         style={{

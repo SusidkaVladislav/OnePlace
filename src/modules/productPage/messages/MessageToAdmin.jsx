@@ -91,8 +91,6 @@ const MessageToAdmin = () =>
                         email: email,
                         messageText: message,
                     }))
-                    setName('')
-                    setEmail('')
                     setMessage('')
                     setShowSuccessfulMessageAlert(true)
                     setTimeout(() =>

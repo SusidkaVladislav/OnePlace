@@ -42,7 +42,15 @@ const MyDesires = () =>
         likedProductsDataLoading,
         likedProductsData,
         likedProductsServerConnectionError,
+        deleteFromLikedProductsLoading
     } = useSelector(state => state.userLikedProducts);
+
+    const {
+        getUserCartLoading,
+        addToCartLoading,
+        deleteFromCartLoading,
+        cartServerConnectionError,
+    } = useSelector(state => state.userBasket)
 
     useEffect(() =>
     {
@@ -57,7 +65,7 @@ const MyDesires = () =>
         })
     }, [refreshPage])
 
-    if (likedProductsServerConnectionError)
+    if (likedProductsServerConnectionError || cartServerConnectionError)
     {
         navigate(NO_SERVER_CONNECTION_PATH)
     }
@@ -74,6 +82,54 @@ const MyDesires = () =>
         )
     }
     if (likedProductsDataLoading)
+    {
+        return (
+            <Grid
+                sx={{
+                    minHeight: '100vh'
+                }}
+            >
+                <LoadingAnimation />
+            </Grid>
+        )
+    }
+    if (getUserCartLoading)
+    {
+        return (
+            <Grid
+                sx={{
+                    minHeight: '100vh'
+                }}
+            >
+                <LoadingAnimation />
+            </Grid>
+        )
+    }
+    if (addToCartLoading)
+    {
+        return (
+            <Grid
+                sx={{
+                    minHeight: '100vh'
+                }}
+            >
+                <LoadingAnimation />
+            </Grid>
+        )
+    }
+    if (deleteFromCartLoading)
+    {
+        return (
+            <Grid
+                sx={{
+                    minHeight: '100vh'
+                }}
+            >
+                <LoadingAnimation />
+            </Grid>
+        )
+    }
+    if (deleteFromLikedProductsLoading)
     {
         return (
             <Grid

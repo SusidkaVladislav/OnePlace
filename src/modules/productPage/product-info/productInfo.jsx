@@ -6,7 +6,7 @@ import
     Grid,
     Typography,
 } from '@mui/material'
-
+import LoadingAnimation from '../../../common-elements/loading/LoadingAnimation';
 import BlueRightLongArrow from '../../../svg/arrows/BlueRightLongArrow';
 import Divider from "../../../svg/shared-icons/Divider";
 import AllAboutBroduct from '../all-about-product/AllAboutProduct';
@@ -40,13 +40,14 @@ const ProductInfo = () =>
     const {
         activeTab,
     } = useSelector(state => state.userViewProduct);
-
+    const [pageLoaded, setPageLoaded] = useState(false)
     const [activeMenuItem, setActiveMenuItem] = useState(activeTab);
     var categoryPath = useRef([]);
 
     const {
         categoriesForSelect,
         categoryServerConnectionError,
+        loading,
     } = useSelector(state => state.userCategories);
 
     const handleMenuItemClick = (menuItem) =>
@@ -54,10 +55,16 @@ const ProductInfo = () =>
         setActiveMenuItem(menuItem);
     };
 
+
+
     useEffect(() =>
     {
+        window.onload = async function ()
+        {
+            await dispatch(getCategoriesForSelect())
+        }
         categoryPath.current = [];
-        dispatch(getCategoriesForSelect())
+        //dispatch(getCategoriesForSelect())
         getFullPath(product.categoryId, categoriesForSelect, categoryPath)
         categoryPath.current = categoryPath.current.reverse();
     }, [])
@@ -70,6 +77,10 @@ const ProductInfo = () =>
     if (categoryServerConnectionError)
     {
         navigate(NO_SERVER_CONNECTION_PATH)
+    }
+    if (loading)
+    {
+        return <LoadingAnimation />
     }
     return (
         <div className='pi-container1'>

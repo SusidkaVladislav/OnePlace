@@ -429,7 +429,6 @@ const AllAboutBroduct = () =>
                         })
                         .catch((error) =>
                         {
-                          console.log(error);
                           if (error.status === undefined)
                             dispatch(setIsLoginFormOpen(true))
                         })

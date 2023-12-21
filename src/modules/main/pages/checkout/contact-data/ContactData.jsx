@@ -21,6 +21,7 @@ import
 
     setErrorList,
 } from '../../../features/order/userOrderSlice';
+import LoadingAnimation from '../../../../../common-elements/loading/LoadingAnimation';
 
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PHONE_PATTERN = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
@@ -38,6 +39,10 @@ const ContactData = () =>
         errorList,
     } = useSelector(state => state.userOrder);
 
+    const {
+        userPersonalDataLoading
+    } = useSelector(state => state.userAuth)
+
     useEffect(() =>
     {
         dispatch(getUserPersonalData())
@@ -54,6 +59,11 @@ const ContactData = () =>
             })
     }, [])
 
+
+    if (userPersonalDataLoading)
+    {
+        return <LoadingAnimation />
+    }
     return (
         <Grid
             container

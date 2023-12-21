@@ -147,7 +147,17 @@ const Header = () =>
             spacing={2}
             alignItems={'center'}
           >
-            <Logo />
+            <span
+              style={{
+                cursor: 'pointer'
+              }}
+              onClick={() =>
+              {
+                navigate('/')
+              }}
+            >
+              <Logo />
+            </span>
             {
               md ? <Stack
                 //display={md ? 'flex' : 'none'}
